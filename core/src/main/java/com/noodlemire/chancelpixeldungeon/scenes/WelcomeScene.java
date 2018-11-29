@@ -83,12 +83,6 @@ public class WelcomeScene extends PixelScene {
 				am = Math.max(0f, (float)Math.sin( time += Game.elapsed ));
 				if (time >= 1.5f*Math.PI) time = 0;
 			}
-			@Override
-			public void draw() {
-				Blending.setLightMode();
-				super.draw();
-				Blending.setNormalMode();
-			}
 		};
 		signs.x = title.x + (title.width() - signs.width())/2f;
 		signs.y = title.y;

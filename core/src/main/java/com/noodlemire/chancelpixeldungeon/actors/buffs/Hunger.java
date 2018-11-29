@@ -138,16 +138,22 @@ public class Hunger extends Buff implements Hero.Doom {
 	}
 
 	//directly interacts with hunger, no checks.
-	public void reduceHunger( float energy ) {
+	public void reduceHunger( float energy )
+	{
 
 		level -= energy;
-		if (level < 0) {
+		if (level < 0)
 			level = 0;
-		} else if (level > STARVING) {
+		else if (level > STARVING)
+		{
 			float excess = level - STARVING;
 			level = STARVING;
 			partialDamage += excess * (target.HT/1000f);
 		}
+
+		lastingDamage = (int)lastingDamage;
+		if(lastingDamage == 1)
+			lastingDamage = 0;
 
 		BuffIndicator.refreshHero();
 	}

@@ -70,7 +70,7 @@ public class ThunderCloud extends Blob implements Hero.Doom
 
                         if(items != null)
                             for(Item item : items.items)
-                                if(metallic(item) && item instanceof Wand)
+                                if(metallic(item) && item instanceof Wand && ((Wand)item).curCharges < ((Wand)item).maxCharges)
                                     ((Wand)item).curCharges++;
 
                         if (Dungeon.level.flamable[cell]) GameScene.add(Blob.seed(cell, 2, Fire.class));

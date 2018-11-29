@@ -133,11 +133,27 @@ public class ChangesScene extends PixelScene {
 		};
 		add( list );
 
+		ChangeInfo changes = new ChangeInfo("CPD v0.1 BETA 2", false, "");
+		changes.hardlight( Window.TITLE_COLOR );
+		infos.add(changes);
+
+		changes.addButton( new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
+				"_-_ Rotberry Core now has its own sprite, rather than the old placeholder from SproutedPD"));
+
+		changes.addButton( new ChangeButton(new Image(Assets.SPINNER, 144, 0, 16, 16), Messages.get(this, "bugfixes"),
+				"Fixed (Caused by BETA):\n" +
+				"_-_ The Welcome Scene's title not displaying properly\n" +
+				"_-_ Lightning from Thunder Clouds increasing wand charges above maximum limit\n" +
+				"_-_ Lasting Damage not decreasing if the player's health is full\n" +
+				"_-_ Lasting Damage decreasing in locked floors\n" +
+				"_-_ Starvation Recovery's icon rarely failing to update after the debuff is cleared\n" +
+				"_-_ Lasting damage always being caused by starvation, even if the player had only just began starving"));
+
 		//**********************
 		//    CPD v0.1 BETA
 		//**********************
 
-		ChangeInfo changes = new ChangeInfo("CPD v0.1 BETA", true, "");
+		changes = new ChangeInfo("CPD v0.1 BETA", true, "");
 		changes.hardlight( Window.TITLE_COLOR );
 		infos.add(changes);
 
@@ -210,7 +226,7 @@ public class ChangesScene extends PixelScene {
 
 		changes.addButton( new ChangeButton(new Image(Assets.SPINNER, 144, 0, 16, 16), Messages.get(this, "bugfixes"),
 				"Fixed:\n" +
-				"_-_ Variuos rare cases where item windows could stack\n" +
+				"_-_ Various rare cases where item windows could stack\n" +
 				"_-_ Wands never appearing in hero's remains\n" +
 				"_-_ 'Faith is my armor' deleting class armors\n" +
 				"_-_ Albino Rat's ears being crooked in a couple of its frames"));

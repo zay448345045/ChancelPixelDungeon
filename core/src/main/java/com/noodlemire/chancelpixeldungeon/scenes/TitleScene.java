@@ -34,7 +34,6 @@ import com.noodlemire.chancelpixeldungeon.ui.ExitButton;
 import com.noodlemire.chancelpixeldungeon.ui.LanguageButton;
 import com.noodlemire.chancelpixeldungeon.ui.PrefsButton;
 import com.noodlemire.chancelpixeldungeon.windows.WndStartGame;
-import com.watabou.glwrap.Blending;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
