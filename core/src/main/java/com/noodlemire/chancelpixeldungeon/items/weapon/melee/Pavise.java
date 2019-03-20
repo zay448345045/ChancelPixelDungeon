@@ -19,37 +19,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.noodlemire.chancelpixeldungeon.actors.buffs;
+package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
-import com.noodlemire.chancelpixeldungeon.messages.Messages;
-import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
+import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Bless extends FlavourBuff {
-	
-	public static final float DURATION	= 30f;
-	
-	{
-		type = buffType.POSITIVE;
-	}
+public class Greatshield extends MeleeWeapon
+{
 
-	@Override
-	public int icon() {
-		return BuffIndicator.BLESS;
-	}
-	
-	@Override
-	public void tintIcon(Image icon) {
-		greyIcon(icon, 5f, cooldown());
-	}
+    {
+        image = ItemSpriteSheet.GREATSHIELD;
 
-	@Override
-	public String toString() {
-		return Messages.get(this, "name");
-	}
+        tier = 5;
+    }
 
-	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns());
-	}
+    @Override
+    public int max(int lvl)
+    {
+        return Math.round(2.5f * (tier + 1)) +     //15 base, down from 30
+                lvl * (tier - 2);                   //+3 per level, down from +6
+    }
+
+    @Override
+    public int defenseFactor(Char owner)
+    {
+        return 10 + 3 * level();    //10 extra defence, plus 3 per level;
+    }
 }

@@ -19,48 +19,56 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.noodlemire.chancelpixeldungeon.items.scrolls;
+package com.noodlemire.chancelpixeldungeon.items.stones;
 
-import com.noodlemire.chancelpixeldungeon.Badges;
 import com.noodlemire.chancelpixeldungeon.effects.Enchanting;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.noodlemire.chancelpixeldungeon.windows.WndBag;
 
-public class ScrollOfMagicalInfusion extends InventoryScroll {
-	
-	{
-		initials = 2;
-		mode = WndBag.Mode.ENCHANTABLE;
-	}
-	
-	@Override
-	protected void onItemSelected( Item item ) {
+public class StoneOfEnchantment extends InventoryStone
+{
 
-		if (item instanceof Weapon)
-			((Weapon)item).upgrade(true);
-		else
-			((Armor)item).upgrade(true);
-		
-		GLog.p( Messages.get(this, "infuse", item.name()) );
-		
-		Badges.validateItemLevelAquired(item);
+    {
+        mode = WndBag.Mode.ENCHANTABLE;
+        image = ItemSpriteSheet.STONE_TIWAZ;
+    }
 
-		curUser.sprite.emitter().start(Speck.factory(Speck.UP), 0.2f, 3);
-		Enchanting.show(curUser, item);
-	}
-	
-	@Override
-	public void empoweredRead() {
-		//does nothing for now, this should never happen.
-	}
+    @Override
+    protected void onItemSelected(Item item)
+    {
 
-	@Override
-	public int price() {
-		return isKnown() ? 100 * quantity : super.price();
-	}
+        if (item instanceof Weapon)
+        {
+
+            ((Weapon) item).enchant();
+
+        }
+        else
+        {
+
+            ((Armor) item).inscribe();
+
+        }
+
+        curUser.sprite.emitter().start(Speck.factory(Speck.LIGHT), 0.1f, 5);
+        Enchanting.show(curUser, item);
+
+        if (item instanceof Weapon)
+        {
+            GLog.p(Messages.get(this, "weapon"));
+        }
+        else
+        {
+            GLog.p(Messages.get(this, "armor"));
+        }
+
+        useAnimation();
+
+    }
 }

@@ -28,6 +28,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Invisibility;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
+import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
@@ -50,9 +51,18 @@ public class ScrollOfPsionicBlast extends Scroll {
 		Sample.INSTANCE.play( Assets.SND_BLAST );
 		Invisibility.dispel();
 		
-		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-			if (Dungeon.level.heroFOV[mob.pos]) {
-				mob.damage(mob.HP, this);
+		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] ))
+		{
+			if (Dungeon.level.heroFOV[mob.pos])
+			{
+				Ballistica wallDetect = new Ballistica(curUser.pos, mob.pos, Ballistica.STOP_TARGET);
+				int terrainPassed = 1;
+
+				for(int p : wallDetect.path)
+					if (Dungeon.level.solid[p])
+						terrainPassed++;
+
+				mob.damage(mob.HP / terrainPassed, this);
 			}
 		}
 
@@ -82,7 +92,14 @@ public class ScrollOfPsionicBlast extends Scroll {
 		
 		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
 			if (Dungeon.level.heroFOV[mob.pos]) {
-				mob.damage(mob.HT, this );
+				Ballistica wallDetect = new Ballistica(curUser.pos, mob.pos, Ballistica.STOP_TARGET);
+				int terrainPassed = 1;
+
+				for(int p : wallDetect.path)
+					if (Dungeon.level.solid[p])
+						terrainPassed++;
+
+				mob.damage(mob.HP / terrainPassed, this);
 			}
 		}
 		

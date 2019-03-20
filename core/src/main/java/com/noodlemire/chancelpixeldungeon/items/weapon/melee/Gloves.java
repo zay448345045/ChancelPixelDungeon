@@ -23,12 +23,23 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Greatsword extends MeleeWeapon {
+public class Knuckles extends MeleeWeapon
+{
 
-	{
-		image = ItemSpriteSheet.GREATSWORD;
+    {
+        image = ItemSpriteSheet.GLOVES;
 
-		tier=5;
-	}
+        tier = 1;
+        DLY = 0.5f; //2x speed
+
+        bones = false;
+    }
+
+    @Override
+    public int max(int lvl)
+    {
+        return (int) (2.5f * (tier + 1)) +  //5 base, down from 10
+                lvl * tier;               //+1 per level, down from +2
+    }
 
 }
