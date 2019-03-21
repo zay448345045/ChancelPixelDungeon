@@ -38,7 +38,8 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class AlchemistsToolkit extends Artifact {
+public class AlchemistsToolkit extends Artifact
+{
 
 	{
 		image = ItemSpriteSheet.ARTIFACT_TOOLKIT;
@@ -61,66 +62,82 @@ public class AlchemistsToolkit extends Artifact {
 	protected String inventoryTitle = "Select a potion";
 	protected WndBag.Mode mode = WndBag.Mode.POTION;
 
-	public AlchemistsToolkit() {
+	public AlchemistsToolkit()
+	{
 		super();
 
 		Generator.Category cat = Generator.Category.POTION;
-		for (int i = 1; i <= 3; i++){
+		for(int i = 1; i <= 3; i++)
+		{
 			String potion;
-			do{
+			do
+			{
 				potion = convertName(cat.classes[Random.chances(cat.probs)].getSimpleName());
 				//forcing the player to use experience potions would be completely unfair.
-			} while (combination.contains(potion) || potion.equals("Experience"));
+			}
+			while(combination.contains(potion) || potion.equals("Experience"));
 			combination.add(potion);
 		}
 	}
 
 	@Override
-	public ArrayList<String> actions( Hero hero ) {
-		ArrayList<String> actions = super.actions( hero );
-		if (isEquipped( hero ) && level() < levelCap && !cursed)
+	public ArrayList<String> actions(Hero hero)
+	{
+		ArrayList<String> actions = super.actions(hero);
+		if(isEquipped(hero) && level() < levelCap && !cursed)
 			actions.add(AC_BREW);
 		return actions;
 	}
 
 	@Override
-	public void execute(Hero hero, String action ) {
+	public void execute(Hero hero, String action)
+	{
 
 		super.execute(hero, action);
 
-		if (action.equals(AC_BREW)){
+		if(action.equals(AC_BREW))
+		{
 			GameScene.selectItem(itemSelector, mode, inventoryTitle);
 		}
 	}
 
-	public void guessBrew() {
-		if (curGuess.size() != 3)
+	public void guessBrew()
+	{
+		if(curGuess.size() != 3)
 			return;
 
 		int numWrongPlace = 0;
 		int numRight = 0;
 
-		for (String potion : curGuess) {
-			if (combination.contains(potion)) {
-				if (curGuess.indexOf(potion) == combination.indexOf(potion)) {
+		for(String potion : curGuess)
+		{
+			if(combination.contains(potion))
+			{
+				if(curGuess.indexOf(potion) == combination.indexOf(potion))
+				{
 					numRight++;
-				} else {
+				}
+				else
+				{
 					numWrongPlace++;
 				}
 			}
 		}
 
-		int score = (numRight *3) + numWrongPlace;
+		int score = (numRight * 3) + numWrongPlace;
 
-		if (score == 9)
-			score ++;
+		if(score == 9)
+			score++;
 
-		if (score == 0){
+		if(score == 0)
+		{
 
 			GLog.i("Your mixture is complete, but none of the potions you used seem to react well. " +
-					"The brew is useless, you throw it away.");
+			       "The brew is useless, you throw it away.");
 
-		} else if (score > level()) {
+		}
+		else if(score > level())
+		{
 
 			level(score);
 			seedsToPotion = 0;
@@ -128,66 +145,83 @@ public class AlchemistsToolkit extends Artifact {
 			this.numRight = numRight;
 			this.numWrongPlace = numWrongPlace;
 
-			if (level() == 10){
+			if(level() == 10)
+			{
 				bstGuess = new ArrayList<String>();
 				GLog.p("The mixture you've created seems perfect, you don't think there is any way to improve it!");
-			} else {
+			}
+			else
+			{
 				GLog.w("you finish mixing potions, " + brewDesc(numWrongPlace, numRight) +
-						". This is your best brew yet!");
+				       ". This is your best brew yet!");
 			}
 
-		} else {
+		}
+		else
+		{
 
 			GLog.w("you finish mixing potions, " + brewDesc(numWrongPlace, numRight) +
-					". This brew isn't as good as the current one, you throw it away.");
+			       ". This brew isn't as good as the current one, you throw it away.");
 		}
 		curGuess = new ArrayList<String>();
 
 	}
 
-	private String brewDesc(int numWrongPlace, int numRight){
+	private String brewDesc(int numWrongPlace, int numRight)
+	{
 		String result = "";
-		if (numWrongPlace > 0){
+		if(numWrongPlace > 0)
+		{
 			result += numWrongPlace + " reacted well, but in the wrong order";
-			if (numRight > 0)
+			if(numRight > 0)
 				result += " and ";
 		}
-		if (numRight > 0){
+		if(numRight > 0)
+		{
 			result += numRight + " reacted perfectly";
 		}
 		return result;
 	}
 
 	@Override
-	protected ArtifactBuff passiveBuff() {
+	protected ArtifactBuff passiveBuff()
+	{
 		return new alchemy();
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		String result = "This toolkit contains a number of regents and herbs used to improve the process of " +
-				"cooking potions.\n\n";
+		                "cooking potions.\n\n";
 
-		if (isEquipped(Dungeon.hero))
-			if (cursed)
+		if(isEquipped(Dungeon.hero))
+			if(cursed)
 				result += "The cursed toolkit has bound itself to your side, and refuses to let you use alchemy.\n\n";
 			else
 				result += "The toolkit rests on your hip, the various tools inside make a light jingling sound as you move.\n\n";
 
-		if (level() == 0){
+		if(level() == 0)
+		{
 			result += "The toolkit seems to be missing a key tool, a catalyst mixture. You'll have to make your own " +
-					"out of three common potions to get the most out of the toolkit.";
-		} else if (level() == 10) {
+			          "out of three common potions to get the most out of the toolkit.";
+		}
+		else if(level() == 10)
+		{
 			result += "The mixture you have created seems perfect, and the toolkit is working at maximum efficiency.";
-		} else if (!bstGuess.isEmpty()) {
+		}
+		else if(!bstGuess.isEmpty())
+		{
 			result += "Your current best mixture is made from: " + bstGuess.get(0) + ", " + bstGuess.get(1) + ", "
-					+ bstGuess.get(2) + ", in that order.\n\n";
+			          + bstGuess.get(2) + ", in that order.\n\n";
 			result += "Of the potions in that mix, " + brewDesc(numWrongPlace, numRight) + ".";
 
-		//would only trigger if an upgraded toolkit was gained through transmutation or bones.
-		} else {
+			//would only trigger if an upgraded toolkit was gained through transmutation or bones.
+		}
+		else
+		{
 			result += "The toolkit seems to have a catalyst mixture already in it, but it isn't ideal. Unfortunately " +
-					"you have no idea what's in the mixture.";
+			          "you have no idea what's in the mixture.";
 		}
 		return result;
 	}
@@ -202,7 +236,8 @@ public class AlchemistsToolkit extends Artifact {
 	private static final String SEEDSTOPOTION = "seedstopotion";
 
 	@Override
-	public void storeInBundle(Bundle bundle){
+	public void storeInBundle(Bundle bundle)
+	{
 		super.storeInBundle(bundle);
 		bundle.put(NUMWRONGPLACE, numWrongPlace);
 		bundle.put(NUMRIGHT, numRight);
@@ -215,70 +250,91 @@ public class AlchemistsToolkit extends Artifact {
 	}
 
 	@Override
-	public void restoreFromBundle( Bundle bundle ) {
+	public void restoreFromBundle(Bundle bundle)
+	{
 		super.restoreFromBundle(bundle);
-		numWrongPlace = bundle.getInt( NUMWRONGPLACE );
-		numRight = bundle.getInt( NUMRIGHT );
+		numWrongPlace = bundle.getInt(NUMWRONGPLACE);
+		numRight = bundle.getInt(NUMRIGHT);
 
-		seedsToPotion = bundle.getInt( SEEDSTOPOTION );
+		seedsToPotion = bundle.getInt(SEEDSTOPOTION);
 
 		combination.clear();
-		Collections.addAll( combination, bundle.getStringArray( COMBINATION ));
-		Collections.addAll( curGuess, bundle.getStringArray( CURGUESS ));
-		Collections.addAll( bstGuess, bundle.getStringArray( BSTGUESS ));
+		Collections.addAll(combination, bundle.getStringArray(COMBINATION));
+		Collections.addAll(curGuess, bundle.getStringArray(CURGUESS));
+		Collections.addAll(bstGuess, bundle.getStringArray(BSTGUESS));
 	}
 
 
-	public class alchemy extends ArtifactBuff {
+	public class alchemy extends ArtifactBuff
+	{
 
-		public boolean tryCook(int count){
+		public boolean tryCook(int count)
+		{
 
 			//this logic is handled inside the class with a variable so that it may be stored.
 			//to prevent manipulation where a player could keep throwing in 1-2 seeds until they get lucky.
-			if (seedsToPotion == 0){
-				if (Random.Int(20) < 10+level()){
-					if (Random.Int(20) < level()){
+			if(seedsToPotion == 0)
+			{
+				if(Random.Int(20) < 10 + level())
+				{
+					if(Random.Int(20) < level())
+					{
 						seedsToPotion = 1;
-					} else
+					}
+					else
 						seedsToPotion = 2;
-				} else
+				}
+				else
 					seedsToPotion = 3;
 			}
 
-			if (count >= seedsToPotion){
+			if(count >= seedsToPotion)
+			{
 				seedsToPotion = 0;
 				return true;
-			} else
+			}
+			else
 				return false;
 
 		}
 
 	}
 
-	protected WndBag.Listener itemSelector = new WndBag.Listener() {
+	protected WndBag.Listener itemSelector = new WndBag.Listener()
+	{
 		@Override
-		public void onSelect(Item item) {
-			if (item != null && item instanceof Potion && item.isIdentified()){
-				if (!curGuess.contains(convertName(item.getClass().getSimpleName()))) {
+		public void onSelect(Item item)
+		{
+			if(item != null && item instanceof Potion && item.isIdentified())
+			{
+				if(!curGuess.contains(convertName(item.getClass().getSimpleName())))
+				{
 
 					Hero hero = Dungeon.hero;
-					hero.sprite.operate( hero.pos );
+					hero.sprite.operate(hero.pos);
 					hero.busy();
-					hero.spend( 2f );
+					hero.spend(2f);
 					Sample.INSTANCE.play(Assets.SND_DRINK);
 
 					item.detach(hero.belongings.backpack);
 
 					curGuess.add(convertName(item.getClass().getSimpleName()));
-					if (curGuess.size() == 3){
+					if(curGuess.size() == 3)
+					{
 						guessBrew();
-					} else {
+					}
+					else
+					{
 						GLog.i("You mix the " + item.name() + " into your current brew.");
 					}
-				} else {
+				}
+				else
+				{
 					GLog.w("Your current brew already contains that potion.");
 				}
-			} else if (item != null) {
+			}
+			else if(item != null)
+			{
 				GLog.w("You need to select an identified potion.");
 			}
 		}

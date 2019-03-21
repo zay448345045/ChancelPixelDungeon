@@ -37,74 +37,78 @@ import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
 
-public class PotionOfPurity extends Potion {
-	
-	private static final int DISTANCE	= 3;
-	
+public class PotionOfPurity extends Potion
+{
+	private static final int DISTANCE = 3;
+
 	private static ArrayList<Class> affectedBlobs;
 
+	static
 	{
-		initials = 9;
-		
 		affectedBlobs = new ArrayList<>(new BlobImmunity().immunities());
 	}
 
+	{
+		initials = 9;
+	}
+
 	@Override
-	public void shatter( int cell ) {
-		
-		PathFinder.buildDistanceMap( cell, BArray.not( Dungeon.level.solid, null ), DISTANCE );
-		
-		ArrayList<Blob> blobs = new ArrayList<>();
-		for (Class c : affectedBlobs){
-			Blob b = Dungeon.level.blobs.get(c);
-			if (b != null && b.volume > 0){
-				blobs.add(b);
-			}
+	public void shatter(int cell)
+	{
+		purifyBlobs(cell);
+
+		if(Dungeon.level.heroFOV[cell])
+		{
+			splash(cell);
+			Sample.INSTANCE.play(Assets.SND_SHATTER);
+
+			GLog.i(Messages.get(this, "freshness"));
 		}
-		
-		for (int i=0; i < Dungeon.level.length(); i++) {
-			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-				
-				for (Blob blob : blobs) {
-					
+	}
+
+	public static void purifyBlobs(int at)
+	{
+		PathFinder.buildDistanceMap(at, BArray.not(Dungeon.level.solid, null), DISTANCE);
+
+		ArrayList<Blob> blobs = new ArrayList<>();
+		for(Class c : affectedBlobs)
+		{
+			Blob b = Dungeon.level.blobs.get(c);
+			if(b != null && b.volume > 0)
+				blobs.add(b);
+		}
+
+		for(int i = 0; i < Dungeon.level.length(); i++)
+		{
+			if(PathFinder.distance[i] < Integer.MAX_VALUE)
+			{
+				for(Blob blob : blobs)
+				{
 					int value = blob.cur[i];
-					if (value > 0) {
-						
+					if(value > 0)
+					{
 						blob.clear(i);
 						blob.cur[i] = 0;
 						blob.volume -= value;
-						
 					}
-					
 				}
-				
-				if (Dungeon.level.heroFOV[i]) {
-					CellEmitter.get( i ).burst( Speck.factory( Speck.DISCOVER ), 2 );
-				}
-				
+
+				if(Dungeon.level.heroFOV[i])
+					CellEmitter.get(i).burst(Speck.factory(Speck.DISCOVER), 2);
 			}
 		}
-		
-		
-		if (Dungeon.level.heroFOV[cell]) {
-			splash(cell);
-			Sample.INSTANCE.play(Assets.SND_SHATTER);
-			
-			setKnown();
-			GLog.i(Messages.get(this, "freshness"));
-		}
-		
 	}
-	
+
 	@Override
-	public void apply( Hero hero ) {
-		GLog.w( Messages.get(this, "protected") );
-		Buff.prolong( hero, BlobImmunity.class, BlobImmunity.DURATION );
-		setKnown();
+	public void apply(Hero hero)
+	{
+		GLog.w(Messages.get(this, "protected"));
+		Buff.prolong(hero, BlobImmunity.class, BlobImmunity.DURATION);
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return isKnown() ? 40 * quantity : super.price();
 	}
 }

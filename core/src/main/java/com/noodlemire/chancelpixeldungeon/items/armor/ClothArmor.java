@@ -23,16 +23,18 @@ package com.noodlemire.chancelpixeldungeon.items.armor;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class ClothArmor extends Armor {
+public class ClothArmor extends Armor
+{
 
 	{
 		image = ItemSpriteSheet.ARMOR_CLOTH;
 
 		bones = false; //Finding them in bones would be semi-frequent and disappointing.
 	}
-	
-	public ClothArmor() {
-		super( 1 );
+
+	public ClothArmor()
+	{
+		super(1);
 	}
 
 }

@@ -23,7 +23,6 @@ package com.noodlemire.chancelpixeldungeon.actors.blobs;
 
 import com.noodlemire.chancelpixeldungeon.Badges;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
-import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.BlobEmitter;
@@ -32,53 +31,47 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.utils.Random;
 
-public class ToxicGas extends Blob implements Hero.Doom {
-
+public class ToxicGas extends GasBlob implements Hero.Doom
+{
 	@Override
-	protected void evolve() {
-		super.evolve();
-
+	void affect(Char ch, int cell)
+	{
 		int levelDamage = 5 + Dungeon.depth * 5;
 
-		Char ch;
-		int cell;
-
-		for (int i = area.left; i < area.right; i++){
-			for (int j = area.top; j < area.bottom; j++){
-				cell = i + j*Dungeon.level.width();
-				if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
-					if (!ch.isImmune(this.getClass())) {
-
-						int damage = (ch.HT + levelDamage) / 40;
-						if (Random.Int( 40 ) < (ch.HT + levelDamage) % 40) {
-							damage++;
-						}
-
-						ch.damage(damage, this);
-					}
-				}
-			}
+		int damage = (ch.HT() + levelDamage) / 40;
+		if(Random.Int(40) < (ch.HT() + levelDamage) % 40)
+		{
+			damage++;
 		}
-	}
-	
-	@Override
-	public void use( BlobEmitter emitter ) {
-		super.use( emitter );
 
-		emitter.pour( Speck.factory( Speck.TOXIC ), 0.4f );
+		ch.damage(damage, this);
 	}
-	
+
 	@Override
-	public String tileDesc() {
+	void affect(int cell)
+	{
+	}
+
+	@Override
+	public void use(BlobEmitter emitter)
+	{
+		super.use(emitter);
+
+		emitter.pour(Speck.factory(Speck.TOXIC), 0.4f);
+	}
+
+	@Override
+	public String tileDesc()
+	{
 		return Messages.get(this, "desc");
 	}
-	
+
 	@Override
-	public void onDeath() {
-		
+	public void onDeath()
+	{
 		Badges.validateDeathFromGas();
-		
-		Dungeon.fail( getClass() );
-		GLog.n( Messages.get(this, "ondeath") );
+
+		Dungeon.fail(getClass());
+		GLog.n(Messages.get(this, "ondeath"));
 	}
 }

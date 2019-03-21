@@ -27,27 +27,31 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 
-public class Elastic extends Weapon.Enchantment {
-	
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
-	
+public class Elastic extends Weapon.Enchantment
+{
+
+	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing(0x000000);
+
 	@Override
-	public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {
-		
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
+
 		int oppositeDefender = defender.pos + (defender.pos - attacker.pos);
 		Ballistica trajectory = new Ballistica(defender.pos, oppositeDefender, Ballistica.MAGIC_BOLT);
 		WandOfBlastWave.throwChar(defender, trajectory, 2);
-		
+
 		return 0;
 	}
-	
+
 	@Override
-	public boolean curse() {
+	public boolean curse()
+	{
 		return true;
 	}
-	
+
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return BLACK;
 	}
 

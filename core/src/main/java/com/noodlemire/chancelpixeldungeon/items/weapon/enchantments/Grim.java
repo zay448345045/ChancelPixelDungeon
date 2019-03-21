@@ -30,37 +30,37 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite.Glowing;
 import com.watabou.utils.Random;
 
-public class Grim extends Weapon.Enchantment {
-	
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
-	
+public class Grim extends Weapon.Enchantment
+{
+
+	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing(0x000000);
+
 	@Override
-	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
+		int level = Math.max(0, weapon.level());
 
-		int level = Math.max( 0, weapon.level() );
-
-		int enemyHealth = defender.HP - damage;
-		if (enemyHealth == 0) return damage; //no point in proccing if they're already dead.
+		int enemyHealth = defender.HP() - damage;
+		if(enemyHealth == 0) return damage; //no point in proccing if they're already dead.
 
 		//scales from 0 - 30% based on how low hp the enemy is, plus 1% per level
-		int chance = Math.round(((defender.HT - enemyHealth) / (float)defender.HT)*30 + level);
-		
-		if (Random.Int( 100 ) < chance) {
-			
-			defender.damage( defender.HP, this );
-			defender.sprite.emitter().burst( ShadowParticle.UP, 5 );
-			
-			if (!defender.isAlive() && attacker instanceof Hero) {
+		int chance = Math.round(((defender.HT() - enemyHealth) / (float) defender.HT()) * 30 + level);
+
+		if(Random.Int(100) < chance)
+		{
+			defender.damage(defender.HP(), this);
+			defender.sprite.emitter().burst(ShadowParticle.UP, 5);
+
+			if(!defender.isAlive() && attacker instanceof Hero)
 				Badges.validateGrimWeapon();
-			}
-			
 		}
 
 		return damage;
 	}
-	
+
 	@Override
-	public Glowing glowing() {
+	public Glowing glowing()
+	{
 		return BLACK;
 	}
 

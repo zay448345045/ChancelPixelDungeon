@@ -23,10 +23,8 @@ package com.noodlemire.chancelpixeldungeon.items;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
-import com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
-import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -35,15 +33,15 @@ import com.watabou.utils.GameMath;
 
 import java.util.ArrayList;
 
-public class DewVial extends Item {
+public class DewVial extends Item
+{
+	private static final int MAX_VOLUME = 20;
 
-	private static final int MAX_VOLUME	= 20;
-
-	private static final String AC_DRINK	= "DRINK";
+	private static final String AC_DRINK = "DRINK";
 
 	private static final float TIME_TO_DRINK = 1f;
 
-	private static final String TXT_STATUS	= "%d/%d";
+	private static final String TXT_STATUS = "%d/%d";
 
 	{
 		image = ItemSpriteSheet.VIAL;
@@ -55,109 +53,118 @@ public class DewVial extends Item {
 
 	private int volume = 0;
 
-	private static final String VOLUME	= "volume";
+	private static final String VOLUME = "volume";
 
 	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( VOLUME, volume );
+	public void storeInBundle(Bundle bundle)
+	{
+		super.storeInBundle(bundle);
+		bundle.put(VOLUME, volume);
 	}
 
 	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		volume	= bundle.getInt( VOLUME );
+	public void restoreFromBundle(Bundle bundle)
+	{
+		super.restoreFromBundle(bundle);
+		volume = bundle.getInt(VOLUME);
 	}
 
 	@Override
-	public ArrayList<String> actions( Hero hero ) {
-		ArrayList<String> actions = super.actions( hero );
-		if (volume > 0) {
-			actions.add( AC_DRINK );
-		}
+	public ArrayList<String> actions(Hero hero)
+	{
+		ArrayList<String> actions = super.actions(hero);
+		if(volume > 0)
+			actions.add(AC_DRINK);
 		return actions;
 	}
 
 	@Override
-	public void execute( final Hero hero, String action ) {
+	public void execute(final Hero hero, String action)
+	{
+		super.execute(hero, action);
 
-		super.execute( hero, action );
+		if(action.equals(AC_DRINK))
+		{
+			if(volume > 0)
+			{
+				//20 drops for a full heal
+				float dropHealPercent = 0.05f;
+				float missingHealthPercent = 1f - (hero.HP() / (float) hero.HT());
 
-		if (action.equals( AC_DRINK )) {
-
-			if (volume > 0) {
-				
-				//20 drops for a full heal normally, 15 for the warden
-				float dropHealPercent = hero.subClass == HeroSubClass.WARDEN ? 0.0667f : 0.05f;
-				float missingHealthPercent = 1f - (hero.HP / (float)hero.HT);
-				
 				//trimming off 0.01 drops helps with floating point errors
-				int dropsNeeded = (int)Math.ceil((missingHealthPercent / dropHealPercent) - 0.01f);
-				dropsNeeded = (int)GameMath.gate(1, dropsNeeded, volume);
-				
-				int heal = Math.round( hero.HT * dropHealPercent * dropsNeeded );
-				
-				int effect = Math.min( hero.HT - hero.HP, heal );
-				if (effect > 0) {
-					hero.HP += effect;
-					hero.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 + dropsNeeded/5 );
-					hero.sprite.showStatus( CharSprite.POSITIVE, Messages.get(this, "value", effect) );
+				int dropsNeeded = (int) Math.ceil((missingHealthPercent / dropHealPercent) - 0.01f);
+				dropsNeeded = (int) GameMath.gate(1, dropsNeeded, volume);
+
+				int heal = Math.round(hero.HT() * dropHealPercent * dropsNeeded);
+
+				int effect = Math.min(hero.HT() - hero.HP(), heal);
+				if(effect > 0)
+				{
+					hero.heal(effect);
+					hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1 + dropsNeeded / 5);
 				}
 
 				volume -= dropsNeeded;
 
-				hero.spend( TIME_TO_DRINK );
+				hero.spend(TIME_TO_DRINK);
 				hero.busy();
 
-				Sample.INSTANCE.play( Assets.SND_DRINK );
-				hero.sprite.operate( hero.pos );
+				Sample.INSTANCE.play(Assets.SND_DRINK);
+				hero.sprite.operate(hero.pos);
 
 				updateQuickslot();
-
-
-			} else {
-				GLog.w( Messages.get(this, "empty") );
 			}
-
+			else
+				GLog.w(Messages.get(this, "empty"));
 		}
 	}
 
-	public void empty() {volume = 0; updateQuickslot();}
+	public void empty()
+	{
+		volume = 0;
+		updateQuickslot();
+	}
 
 	@Override
-	public boolean isUpgradable() {
+	public boolean isUpgradable()
+	{
 		return false;
 	}
 
 	@Override
-	public boolean isIdentified() {
+	public boolean isIdentified()
+	{
 		return true;
 	}
 
-	public boolean isFull() {
+	public boolean isFull()
+	{
 		return volume >= MAX_VOLUME;
 	}
 
-	public void collectDew( Dewdrop dew ) {
+	void collectDew(Dewdrop dew)
+	{
 
-		GLog.i( Messages.get(this, "collected") );
+		GLog.i(Messages.get(this, "collected"));
 		volume += dew.quantity;
-		if (volume >= MAX_VOLUME) {
+		if(volume >= MAX_VOLUME)
+		{
 			volume = MAX_VOLUME;
-			GLog.p( Messages.get(this, "full") );
+			GLog.p(Messages.get(this, "full"));
 		}
 
 		updateQuickslot();
 	}
 
-	public void fill() {
+	public void fill()
+	{
 		volume = MAX_VOLUME;
 		updateQuickslot();
 	}
 
 	@Override
-	public String status() {
-		return Messages.format( TXT_STATUS, volume, MAX_VOLUME );
+	public String status()
+	{
+		return Messages.format(TXT_STATUS, volume, MAX_VOLUME);
 	}
-
 }

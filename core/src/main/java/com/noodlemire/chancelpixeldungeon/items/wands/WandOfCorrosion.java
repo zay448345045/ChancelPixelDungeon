@@ -42,7 +42,8 @@ import com.watabou.utils.ColorMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class WandOfCorrosion extends Wand {
+public class WandOfCorrosion extends Wand
+{
 
 	{
 		image = ItemSpriteSheet.WAND_CORROSION;
@@ -51,26 +52,31 @@ public class WandOfCorrosion extends Wand {
 	}
 
 	@Override
-	protected void onZap(Ballistica bolt) {
+	protected void onZap(Ballistica bolt)
+	{
 		Blob corrosiveGas = Blob.seed(bolt.collisionPos, 50 + 10 * level(), CorrosiveGas.class);
-		CellEmitter.center(bolt.collisionPos).burst( CorrosionParticle.SPLASH, 10 );
-		((CorrosiveGas)corrosiveGas).setStrength(level()+1);
+		CellEmitter.center(bolt.collisionPos).burst(CorrosionParticle.SPLASH, 10);
+		((CorrosiveGas) corrosiveGas).setStrength(level() + 1);
 		GameScene.add(corrosiveGas);
 
-		for (int i : PathFinder.NEIGHBOURS9) {
+		for(int i : PathFinder.NEIGHBOURS9)
+		{
 			Char ch = Actor.findChar(bolt.collisionPos + i);
-			if (ch != null) {
+			if(ch != null)
+			{
 				processSoulMark(ch, chargesPerCast());
 			}
 		}
-		
-		if (Actor.findChar(bolt.collisionPos) == null){
+
+		if(Actor.findChar(bolt.collisionPos) == null)
+		{
 			Dungeon.level.press(bolt.collisionPos, null, true);
 		}
 	}
 
 	@Override
-	protected void fx(Ballistica bolt, Callback callback) {
+	protected void fx(Ballistica bolt, Callback callback)
+	{
 		MagicMissile.boltFromChar(
 				curUser.sprite.parent,
 				MagicMissile.CORROSION,
@@ -81,26 +87,29 @@ public class WandOfCorrosion extends Wand {
 	}
 
 	@Override
-	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
+	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage)
+	{
 		// lvl 0 - 33%
 		// lvl 1 - 50%
 		// lvl 2 - 60%
-		if (Random.Int( level() + 3 ) >= 2) {
-			
-			Buff.affect( defender, Ooze.class );
-			CellEmitter.center(defender.pos).burst( CorrosionParticle.SPLASH, 5 );
-			
+		if(Random.Int(level() + 3) >= 2)
+		{
+
+			Buff.affect(defender, Ooze.class);
+			CellEmitter.center(defender.pos).burst(CorrosionParticle.SPLASH, 5);
+
 		}
 	}
 
 	@Override
-	public void staffFx(MagesStaff.StaffParticle particle) {
-		particle.color( ColorMath.random( 0xAAAAAA, 0xFF8800) );
+	public void staffFx(MagesStaff.StaffParticle particle)
+	{
+		particle.color(ColorMath.random(0xAAAAAA, 0xFF8800));
 		particle.am = 0.6f;
-		particle.setLifespan( 1f );
+		particle.setLifespan(1f);
 		particle.acc.set(0, 20);
-		particle.setSize( 0.5f, 3f );
-		particle.shuffleXY( 1f );
+		particle.setSize(0.5f, 3f);
+		particle.shuffleXY(1f);
 	}
 
 }

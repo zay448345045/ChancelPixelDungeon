@@ -23,109 +23,114 @@ package com.noodlemire.chancelpixeldungeon.actors.mobs;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Amok;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Terror;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Balance;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.npcs.Imp;
 import com.noodlemire.chancelpixeldungeon.items.KindOfWeapon;
-import com.noodlemire.chancelpixeldungeon.items.food.Food;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Gauntlet;
-import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Knuckles;
+import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Gloves;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.MonkSprite;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
-public class Monk extends Mob {
-	
+public class Monk extends Mob
+{
 	{
 		spriteClass = MonkSprite.class;
-		
-		HP = HT = 70;
+
+		setHT(86, true);
 		defenseSkill = 30;
-		
+
 		EXP = 11;
 		maxLvl = 21;
-		
+
 		//loot = new Food(); //New loot coming soon.
 		//lootChance = 0.083f;
 
 		properties.add(Property.UNDEAD);
 	}
-	
+
 	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 12, 25 );
+	public int damageRoll()
+	{
+		return Random.NormalIntRange(12, 25);
 	}
-	
+
 	@Override
-	public int attackSkill( Char target ) {
+	public int attackSkill(Char target)
+	{
 		return 30;
 	}
-	
+
 	@Override
-	protected float attackDelay() {
+	protected float attackDelay()
+	{
 		return 0.5f;
 	}
-	
+
 	@Override
-	public int drRoll() {
+	public int drRoll()
+	{
 		return Random.NormalIntRange(0, 2);
 	}
-	
+
 	@Override
-	public void rollToDropLoot() {
-		Imp.Quest.process( this );
-		
+	public void rollToDropLoot()
+	{
+		Imp.Quest.process(this);
+
 		super.rollToDropLoot();
 	}
 
 	private int hitsToDisarm = 0;
-	
+
 	@Override
-	public int attackProc( Char enemy, int damage ) {
-		damage = super.attackProc( enemy, damage );
-		
-		if (enemy == Dungeon.hero) {
-			
+	public int attackProc(Char enemy, int damage)
+	{
+		damage = super.attackProc(enemy, damage);
+
+		if(enemy == Dungeon.hero)
+		{
+
 			Hero hero = Dungeon.hero;
 			KindOfWeapon weapon = hero.belongings.weapon;
-			
-			if (weapon != null
-					&& !(weapon instanceof Knuckles)
-					&& !(weapon instanceof Gauntlet)
-					&& !weapon.cursed) {
-				if (hitsToDisarm == 0) hitsToDisarm = Random.NormalIntRange(4, 8);
 
-				if (--hitsToDisarm == 0) {
+			if(weapon != null
+			   && !(weapon instanceof Gloves)
+			   && !(weapon instanceof Gauntlet)
+			   && !weapon.cursed)
+			{
+				if(hitsToDisarm == 0) hitsToDisarm = Random.NormalIntRange(4, 8);
+
+				if(--hitsToDisarm == 0)
+				{
 					hero.belongings.weapon = null;
 					Dungeon.quickslot.convertToPlaceholder(weapon);
 					weapon.updateQuickslot();
 					Dungeon.level.drop(weapon, hero.pos).sprite.drop();
+					Balance.update();
 					GLog.w(Messages.get(this, "disarm", weapon.name()));
 				}
 			}
 		}
-		
+
 		return damage;
-	}
-	
-	{
-		immunities.add( Amok.class );
-		immunities.add( Terror.class );
 	}
 
 	private static String DISARMHITS = "hitsToDisarm";
 
 	@Override
-	public void storeInBundle(Bundle bundle) {
+	public void storeInBundle(Bundle bundle)
+	{
 		super.storeInBundle(bundle);
 		bundle.put(DISARMHITS, hitsToDisarm);
 	}
 
 	@Override
-	public void restoreFromBundle(Bundle bundle) {
+	public void restoreFromBundle(Bundle bundle)
+	{
 		super.restoreFromBundle(bundle);
 		hitsToDisarm = bundle.getInt(DISARMHITS);
 	}

@@ -29,7 +29,8 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.ui.Component;
 
-public class BossHealthBar extends Component {
+public class BossHealthBar extends Component
+{
 
 	private Image bar;
 	private Image hp;
@@ -44,14 +45,16 @@ public class BossHealthBar extends Component {
 	private static BossHealthBar instance;
 	private static boolean bleeding;
 
-	BossHealthBar() {
+	BossHealthBar()
+	{
 		super();
 		visible = active = (boss != null);
 		instance = this;
 	}
 
 	@Override
-	protected void createChildren() {
+	protected void createChildren()
+	{
 		bar = new Image(asset, 0, 0, 64, 16);
 		add(bar);
 
@@ -69,50 +72,60 @@ public class BossHealthBar extends Component {
 		blood.pour(BloodParticle.FACTORY, 0.3f);
 		blood.autoKill = false;
 		blood.on = false;
-		add( blood );
+		add(blood);
 	}
 
 	@Override
-	protected void layout() {
+	protected void layout()
+	{
 		bar.x = x;
 		bar.y = y;
 
-		hp.x = bar.x+15;
-		hp.y = bar.y+6;
+		hp.x = bar.x + 15;
+		hp.y = bar.y + 6;
 
-		skull.x = bar.x+5;
-		skull.y = bar.y+5;
+		skull.x = bar.x + 5;
+		skull.y = bar.y + 5;
 	}
 
 	@Override
-	public void update() {
+	public void update()
+	{
 		super.update();
-		if (boss != null){
-			if (!boss.isAlive() || !Dungeon.level.mobs.contains(boss)){
+		if(boss != null)
+		{
+			if(!boss.isAlive() || !Dungeon.level.mobs.contains(boss))
+			{
 				boss = null;
 				visible = active = false;
-			} else {
-				hp.scale.x = (float)boss.HP/boss.HT;
-				if (hp.scale.x < 0.25f) bleed( true );
+			}
+			else
+			{
+				hp.scale.x = (float) boss.HP() / boss.HT();
+				if(hp.scale.x < 0.25f) bleed(true);
 
-				if (bleeding != blood.on){
-					if (bleeding)   skull.tint( 0xcc0000, 0.6f );
-					else            skull.resetColor();
+				if(bleeding != blood.on)
+				{
+					if(bleeding) skull.tint(0xcc0000, 0.6f);
+					else skull.resetColor();
 					blood.on = bleeding;
 				}
 			}
 		}
 	}
 
-	public static void assignBoss(Mob boss){
+	public static void assignBoss(Mob boss)
+	{
 		BossHealthBar.boss = boss;
 		bleed(false);
-		if (instance != null) {
+		if(instance != null)
+		{
 			instance.visible = instance.active = true;
 		}
 	}
 
-	public static void bleed(boolean value){
+	public static void bleed(boolean value)
+	{
 		bleeding = value;
 	}
 

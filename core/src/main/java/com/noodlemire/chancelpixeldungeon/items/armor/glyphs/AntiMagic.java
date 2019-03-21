@@ -35,32 +35,37 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 
 import java.util.HashSet;
 
-public class AntiMagic extends Armor.Glyph {
+public class AntiMagic extends Armor.Glyph
+{
 
-	private static ItemSprite.Glowing TEAL = new ItemSprite.Glowing( 0x88EEFF );
-	
+	private static ItemSprite.Glowing TEAL = new ItemSprite.Glowing(0x88EEFF);
+
 	public static final HashSet<Class> RESISTS = new HashSet<>();
-	static {
-		RESISTS.add( Charm.class );
-		RESISTS.add( Weakness.class );
-		
-		RESISTS.add( DisintegrationTrap.class );
-		RESISTS.add( GrimTrap.class );
-		
-		RESISTS.add( Shaman.class );
-		RESISTS.add( Warlock.class );
-		RESISTS.add( Eye.class );
-		RESISTS.add( Yog.BurningFist.class );
+
+	static
+	{
+		RESISTS.add(Charm.class);
+		RESISTS.add(Weakness.class);
+
+		RESISTS.add(DisintegrationTrap.class);
+		RESISTS.add(GrimTrap.class);
+
+		RESISTS.add(Shaman.class);
+		RESISTS.add(Warlock.class);
+		RESISTS.add(Eye.class);
+		RESISTS.add(Yog.BurningFist.class);
 	}
-	
+
 	@Override
-	public int proc(Armor armor, Char attacker, Char defender, int damage) {
+	public int proc(Armor armor, Char attacker, Char defender, int damage)
+	{
 		//no proc effect, see Hero.damage
 		return damage;
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return TEAL;
 	}
 

@@ -22,31 +22,37 @@
 package com.noodlemire.chancelpixeldungeon.plants;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
+import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Fire;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.FireImbue;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.particles.FlameParticle;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfHydrocombustion;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Firebloom extends Plant {
-	
+public class Firebloom extends Plant
+{
 	{
 		image = 0;
 	}
-	
+
 	@Override
-	public void activate() {
-		
-		GameScene.add( Blob.seed( pos, 2, Fire.class ) );
-		
-		if (Dungeon.level.heroFOV[pos]) {
-			CellEmitter.get( pos ).burst( FlameParticle.FACTORY, 5 );
-		}
+	public void activate(Char ch, boolean doWardenBonus)
+	{
+		if(doWardenBonus)
+			Buff.affect(ch, FireImbue.class).set(15f);
+
+		GameScene.add(Blob.seed(pos, 2, Fire.class));
+
+		if(Dungeon.level.heroFOV[pos])
+			CellEmitter.get(pos).burst(FlameParticle.FACTORY, 5);
 	}
-	
-	public static class Seed extends Plant.Seed {
+
+	public static class Seed extends Plant.Seed
+	{
 		{
 			image = ItemSpriteSheet.SEED_FIREBLOOM;
 

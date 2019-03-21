@@ -23,19 +23,17 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Crossbow extends MeleeWeapon {
-	
+public class Crossbow extends MeleeWeapon
+{
 	{
-		image = ItemSpriteSheet.CROSSBOW;
-		
 		//check Dart.class for additional properties
-		
+		image = ItemSpriteSheet.CROSSBOW;
 		tier = 4;
 	}
-	
+
 	@Override
-	public int max(int lvl) {
-		return  4*(tier+1) +    //20 base, down from 25
-				lvl*(tier);     //+4 per level, down from +5
+	public int max(int lvl)
+	{
+		return Math.round(super.max(lvl) * 0.8f); //20 base, down from 25, and +4 per level, down from +5
 	}
 }

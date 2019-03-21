@@ -23,7 +23,7 @@ package com.noodlemire.chancelpixeldungeon.scenes;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Badges;
-import com.noodlemire.chancelpixeldungeon.SPDSettings;
+import com.noodlemire.chancelpixeldungeon.CPDSettings;
 import com.noodlemire.chancelpixeldungeon.effects.BadgeBanner;
 import com.noodlemire.chancelpixeldungeon.ui.RenderedTextMultiline;
 import com.watabou.glwrap.Blending;
@@ -40,15 +40,15 @@ import com.watabou.noosa.Visual;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.BitmapCache;
 
-public class PixelScene extends Scene {
-
+public class PixelScene extends Scene
+{
 	// Minimum virtual display size for portrait orientation
-	public static final float MIN_WIDTH_P        = 135;
-	public static final float MIN_HEIGHT_P        = 225;
+	public static final float MIN_WIDTH_P = 135;
+	public static final float MIN_HEIGHT_P = 225;
 
 	// Minimum virtual display size for landscape orientation
-	public static final float MIN_WIDTH_L        = 240;
-	public static final float MIN_HEIGHT_L        = 160;
+	public static final float MIN_WIDTH_L = 240;
+	public static final float MIN_HEIGHT_L = 160;
 
 	public static int defaultZoom = 0;
 	public static int maxDefaultZoom = 0;
@@ -65,31 +65,36 @@ public class PixelScene extends Scene {
 	public static BitmapText.Font font2x;
 
 	@Override
-	public void create() {
-
+	public void create()
+	{
 		super.create();
 
 		GameScene.scene = null;
 
 		float minWidth, minHeight;
-		if (SPDSettings.landscape()) {
+		if(CPDSettings.landscape())
+		{
 			minWidth = MIN_WIDTH_L;
 			minHeight = MIN_HEIGHT_L;
-		} else {
+		}
+		else
+		{
 			minWidth = MIN_WIDTH_P;
 			minHeight = MIN_HEIGHT_P;
 		}
 
-		maxDefaultZoom = (int)Math.min(Game.width/minWidth, Game.height/minHeight);
-		maxScreenZoom = (int)Math.min(Game.dispWidth/minWidth, Game.dispHeight/minHeight);
-		defaultZoom = SPDSettings.scale();
+		maxDefaultZoom = (int) Math.min(Game.width / minWidth, Game.height / minHeight);
+		maxScreenZoom = (int) Math.min(Game.dispWidth / minWidth, Game.dispHeight / minHeight);
+		defaultZoom = CPDSettings.scale();
 
-		if (defaultZoom < Math.ceil( Game.density * 2 ) || defaultZoom > maxDefaultZoom){
-			defaultZoom = (int)Math.ceil( Game.density * 2.5 );
-			while ((
-				Game.width / defaultZoom < minWidth ||
-				Game.height / defaultZoom < minHeight
-			) && defaultZoom > 1) {
+		if(defaultZoom < Math.ceil(Game.density * 2) || defaultZoom > maxDefaultZoom)
+		{
+			defaultZoom = (int) Math.ceil(Game.density * 2.5);
+			while((
+					      Game.width / defaultZoom < minWidth ||
+					      Game.height / defaultZoom < minHeight
+			      ) && defaultZoom > 1)
+			{
 				defaultZoom--;
 			}
 		}
@@ -97,23 +102,23 @@ public class PixelScene extends Scene {
 		minZoom = 1;
 		maxZoom = defaultZoom * 2;
 
-		Camera.reset( new PixelCamera( defaultZoom ) );
+		Camera.reset(new PixelCamera(defaultZoom));
 
 		float uiZoom = defaultZoom;
-		uiCamera = Camera.createFullscreen( uiZoom );
-		Camera.add( uiCamera );
+		uiCamera = Camera.createFullscreen(uiZoom);
+		Camera.add(uiCamera);
 
-		if (pixelFont == null) {
-
+		if(pixelFont == null)
+		{
 			// 3x5 (6)
 			pixelFont = Font.colorMarked(
-				BitmapCache.get( Assets.PIXELFONT), 0x00000000, BitmapText.Font.LATIN_FULL );
+					BitmapCache.get(Assets.PIXELFONT), 0x00000000, BitmapText.Font.LATIN_FULL);
 			pixelFont.baseLine = 6;
 			pixelFont.tracking = -1;
 
 			//Fonts disabled to save memory (~1mb of texture data just sitting there unused)
 			//uncomment if you wish to enable these again.
-			
+
 			// 9x15 (18)
 			/*font1x = Font.colorMarked(
 					BitmapCache.get( Assets.FONT1X), 22, 0x00000000, BitmapText.Font.LATIN_FULL );
@@ -131,7 +136,8 @@ public class PixelScene extends Scene {
 	}
 
 	@Override
-	public void destroy() {
+	public void destroy()
+	{
 		super.destroy();
 		Touchscreen.event.removeAll();
 	}
@@ -139,77 +145,86 @@ public class PixelScene extends Scene {
 	public static BitmapText.Font font;
 	public static float scale;
 
-	public static void chooseFont( float size ) {
-		chooseFont( size, defaultZoom );
+	public static void chooseFont(float size)
+	{
+		chooseFont(size, defaultZoom);
 	}
 
-	public static void chooseFont( float size, float zoom ) {
-
+	public static void chooseFont(float size, float zoom)
+	{
 		float pt = size * zoom;
 
-		if (pt >= 25) {
-
+		if(pt >= 25)
+		{
 			font = font2x;
 			scale = pt / 38f;
-
-		} else if (pt >= 12) {
-
+		}
+		else if(pt >= 12)
+		{
 			font = font1x;
 			scale = pt / 19f;
-
-		} else {
+		}
+		else
+		{
 			font = pixelFont;
 			scale = 1f;
 		}
 
 		scale /= zoom;
 	}
-	
-	public static BitmapText createText( float size ) {
-		return createText( null, size );
+
+	public static BitmapText createText(float size)
+	{
+		return createText(null, size);
 	}
-	
-	public static BitmapText createText( String text, float size ) {
-		
-		chooseFont( size );
-		
-		BitmapText result = new BitmapText( text, font );
-		result.scale.set( scale );
-		
-		return result;
-	}
-	
-	public static BitmapTextMultiline createMultiline( float size ) {
-		return createMultiline( null, size );
-	}
-	
-	public static BitmapTextMultiline createMultiline( String text, float size ) {
-		
-		chooseFont( size );
-		
-		BitmapTextMultiline result = new BitmapTextMultiline( text, font );
-		result.scale.set( scale );
-		
+
+	public static BitmapText createText(String text, float size)
+	{
+		chooseFont(size);
+
+		BitmapText result = new BitmapText(text, font);
+		result.scale.set(scale);
+
 		return result;
 	}
 
-	public static RenderedText renderText( int size ) {
+	public static BitmapTextMultiline createMultiline(float size)
+	{
+		return createMultiline(null, size);
+	}
+
+	public static BitmapTextMultiline createMultiline(String text, float size)
+	{
+
+		chooseFont(size);
+
+		BitmapTextMultiline result = new BitmapTextMultiline(text, font);
+		result.scale.set(scale);
+
+		return result;
+	}
+
+	public static RenderedText renderText(int size)
+	{
 		return renderText("", size);
 	}
 
-	public static RenderedText renderText( String text, int size ) {
-		RenderedText result = new RenderedText( text, size*defaultZoom);
-		result.scale.set(1/(float)defaultZoom);
+	public static RenderedText renderText(String text, int size)
+	{
+		RenderedText result = new RenderedText(text, size * defaultZoom);
+		result.scale.set(1 / (float) defaultZoom);
 		return result;
 	}
 
-	public static RenderedTextMultiline renderMultiline( int size ){
+	public static RenderedTextMultiline renderMultiline(int size)
+	{
 		return renderMultiline("", size);
 	}
 
-	public static RenderedTextMultiline renderMultiline( String text, int size ){
-		RenderedTextMultiline result = new RenderedTextMultiline( text, size*defaultZoom);
-		result.zoom(1/(float)defaultZoom);
+	public static RenderedTextMultiline renderMultiline(String text, int size)
+	{
+		RenderedTextMultiline result = new RenderedTextMultiline(text, size * defaultZoom);
+		result.zoom(1 / (float) defaultZoom);
 		return result;
 	}
 
@@ -218,110 +233,124 @@ public class PixelScene extends Scene {
 	 * e.g. if we have a scale of 3x then valid positions are #.0, #.33, #.67
 	 */
 
-	public static float align( float pos ) {
-		return Math.round(pos * defaultZoom) / (float)defaultZoom;
+	public static float align(float pos)
+	{
+		return Math.round(pos * defaultZoom) / (float) defaultZoom;
 	}
 
-	public static float align( Camera camera, float pos ) {
+	public static float align(Camera camera, float pos)
+	{
 		return Math.round(pos * camera.zoom) / camera.zoom;
 	}
 
-	public static void align( Visual v ) {
-		v.x = align( v.x );
-		v.y = align( v.y );
+	public static void align(Visual v)
+	{
+		v.x = align(v.x);
+		v.y = align(v.y);
 	}
 
-	public static void align( Component c ){
+	public static void align(Component c)
+	{
 		c.setPos(align(c.left()), align(c.top()));
 	}
 
 	public static boolean noFade = false;
-	protected void fadeIn() {
-		if (noFade) {
+
+	protected void fadeIn()
+	{
+		if(noFade)
 			noFade = false;
-		} else {
-			fadeIn( 0xFF000000, false );
-		}
+		else
+			fadeIn(0xFF000000, false);
 	}
-	
-	protected void fadeIn( int color, boolean light ) {
-		add( new Fader( color, light ) );
+
+	protected void fadeIn(int color, boolean light)
+	{
+		add(new Fader(color, light));
 	}
-	
-	public static void showBadge( Badges.Badge badge ) {
-		BadgeBanner banner = BadgeBanner.show( badge.image );
+
+	public static void showBadge(Badges.Badge badge)
+	{
+		BadgeBanner banner = BadgeBanner.show(badge.image);
 		banner.camera = uiCamera;
-		banner.x = align( banner.camera, (banner.camera.width - banner.width) / 2 );
-		banner.y = align( banner.camera, (banner.camera.height - banner.height) / 3 );
-		Game.scene().add( banner );
+		banner.x = align(banner.camera, (banner.camera.width - banner.width) / 2);
+		banner.y = align(banner.camera, (banner.camera.height - banner.height) / 3);
+		Game.scene().add(banner);
 	}
-	
-	protected static class Fader extends ColorBlock {
-		
+
+	protected static class Fader extends ColorBlock
+	{
 		private static float FADE_TIME = 1f;
-		
+
 		private boolean light;
-		
+
 		private float time;
-		
-		public Fader( int color, boolean light ) {
-			super( uiCamera.width, uiCamera.height, color );
-			
+
+		public Fader(int color, boolean light)
+		{
+			super(uiCamera.width, uiCamera.height, color);
+
 			this.light = light;
-			
+
 			camera = uiCamera;
-			
-			alpha( 1f );
+
+			alpha(1f);
 			time = FADE_TIME;
 		}
-		
+
 		@Override
-		public void update() {
-			
+		public void update()
+		{
 			super.update();
-			
-			if ((time -= Game.elapsed) <= 0) {
-				alpha( 0f );
-				parent.remove( this );
-			} else {
-				alpha( time / FADE_TIME );
+
+			if((time -= Game.elapsed) <= 0)
+			{
+				alpha(0f);
+				parent.remove(this);
+			}
+			else
+			{
+				alpha(time / FADE_TIME);
 			}
 		}
-		
+
 		@Override
-		public void draw() {
-			if (light) {
+		public void draw()
+		{
+			if(light)
+			{
 				Blending.setLightMode();
 				super.draw();
 				Blending.setNormalMode();
-			} else {
-				super.draw();
 			}
+			else
+				super.draw();
 		}
 	}
-	
-	private static class PixelCamera extends Camera {
-		
-		public PixelCamera( float zoom ) {
+
+	private static class PixelCamera extends Camera
+	{
+		public PixelCamera(float zoom)
+		{
 			super(
-				(int)(Game.width - Math.ceil( Game.width / zoom ) * zoom) / 2,
-				(int)(Game.height - Math.ceil( Game.height / zoom ) * zoom) / 2,
-				(int)Math.ceil( Game.width / zoom ),
-				(int)Math.ceil( Game.height / zoom ), zoom );
+					(int) (Game.width - Math.ceil(Game.width / zoom) * zoom) / 2,
+					(int) (Game.height - Math.ceil(Game.height / zoom) * zoom) / 2,
+					(int) Math.ceil(Game.width / zoom),
+					(int) Math.ceil(Game.height / zoom), zoom);
 			fullScreen = true;
 		}
-		
+
 		@Override
-		protected void updateMatrix() {
-			float sx = align( this, scroll.x + shakeX );
-			float sy = align( this, scroll.y + shakeY );
-			
+		protected void updateMatrix()
+		{
+			float sx = align(this, scroll.x + shakeX);
+			float sy = align(this, scroll.y + shakeY);
+
 			matrix[0] = +zoom * invW2;
 			matrix[5] = -zoom * invH2;
-			
+
 			matrix[12] = -1 + x * invW2 - sx * matrix[0];
 			matrix[13] = +1 - y * invH2 - sy * matrix[5];
-			
 		}
 	}
 }

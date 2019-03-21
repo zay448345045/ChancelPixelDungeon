@@ -25,19 +25,22 @@ import com.noodlemire.chancelpixeldungeon.journal.Document;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class GuidePage extends DocumentPage {
-	
+public class GuidePage extends DocumentPage
+{
+
 	{
 		image = ItemSpriteSheet.GUIDE_PAGE;
 	}
-	
+
 	@Override
-	public Document document() {
+	public Document document()
+	{
 		return Document.ADVENTURERS_GUIDE;
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc", document().pageTitle(page()));
 	}
 }

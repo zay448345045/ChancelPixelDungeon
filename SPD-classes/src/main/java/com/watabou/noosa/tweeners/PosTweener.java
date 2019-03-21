@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,23 +27,25 @@ package com.watabou.noosa.tweeners;
 import com.watabou.noosa.Visual;
 import com.watabou.utils.PointF;
 
-public class PosTweener extends Tweener {
-
+public class PosTweener extends Tweener
+{
 	public Visual visual;
-	
+
 	public PointF start;
 	public PointF end;
-	
-	public PosTweener( Visual visual, PointF pos, float time ) {
-		super( visual, time );
-		
+
+	public PosTweener(Visual visual, PointF pos, float time)
+	{
+		super(visual, time);
+
 		this.visual = visual;
 		start = visual.point();
 		end = pos;
 	}
 
 	@Override
-	protected void updateValues( float progress ) {
-		visual.point( PointF.inter( start, end, progress ) );
+	protected void updateValues(float progress)
+	{
+		visual.point(PointF.inter(start, end, progress));
 	}
 }

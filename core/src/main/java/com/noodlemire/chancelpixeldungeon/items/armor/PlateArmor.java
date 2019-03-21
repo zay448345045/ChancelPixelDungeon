@@ -23,14 +23,16 @@ package com.noodlemire.chancelpixeldungeon.items.armor;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class PlateArmor extends Armor {
+public class PlateArmor extends Armor
+{
 
 	{
 		image = ItemSpriteSheet.ARMOR_PLATE;
 	}
-	
-	public PlateArmor() {
-		super( 5 );
+
+	public PlateArmor()
+	{
+		super(5);
 	}
 
 }

@@ -27,24 +27,30 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.FlavourBuff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Sleep;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class SleepDart extends TippedDart {
-	
+public class SleepDart extends TippedDart
+{
 	{
 		image = ItemSpriteSheet.SLEEP_DART;
 	}
-	
+
 	@Override
-	public int proc(Char attacker, final Char defender, int damage) {
-		
+	public int proc(Char attacker, final Char defender, int damage)
+	{
+
 		//need to delay this so damage from the dart doesn't break the sleep
-		new FlavourBuff(){
-			{actPriority = VFX_PRIO;}
-			public boolean act() {
-				Buff.affect( defender, Sleep.class );
+		new FlavourBuff()
+		{
+			{
+				actPriority = VFX_PRIO;
+			}
+
+			public boolean act()
+			{
+				Buff.affect(defender, Sleep.class);
 				return super.act();
 			}
 		}.attachTo(defender);
-		
+
 		return super.proc(attacker, defender, damage);
 	}
 }

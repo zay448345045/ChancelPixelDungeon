@@ -24,68 +24,91 @@ package com.noodlemire.chancelpixeldungeon.actors.hero;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.npcs.NPC;
 
-public class HeroAction {
-	
+public class HeroAction
+{
+
 	public int dst;
-	
-	public static class Move extends HeroAction {
-		public Move( int dst ) {
+
+	public static class Move extends HeroAction
+	{
+		public Move(int dst)
+		{
 			this.dst = dst;
 		}
 	}
-	
-	public static class PickUp extends HeroAction {
-		public PickUp( int dst ) {
+
+	public static class PickUp extends HeroAction
+	{
+		public PickUp(int dst)
+		{
 			this.dst = dst;
 		}
 	}
-	
-	public static class OpenChest extends HeroAction {
-		public OpenChest( int dst ) {
+
+	public static class OpenChest extends HeroAction
+	{
+		public OpenChest(int dst)
+		{
 			this.dst = dst;
 		}
 	}
-	
-	public static class Buy extends HeroAction {
-		public Buy( int dst ) {
+
+	public static class Buy extends HeroAction
+	{
+		public Buy(int dst)
+		{
 			this.dst = dst;
 		}
 	}
-	
-	public static class Interact extends HeroAction {
+
+	public static class Interact extends HeroAction
+	{
 		public NPC npc;
-		public Interact( NPC npc ) {
+
+		public Interact(NPC npc)
+		{
 			this.npc = npc;
 		}
 	}
-	
-	public static class Unlock extends HeroAction {
-		public Unlock( int door ) {
+
+	public static class Unlock extends HeroAction
+	{
+		public Unlock(int door)
+		{
 			this.dst = door;
 		}
 	}
-	
-	public static class Descend extends HeroAction {
-		public Descend( int stairs ) {
+
+	public static class Descend extends HeroAction
+	{
+		public Descend(int stairs)
+		{
 			this.dst = stairs;
 		}
 	}
-	
-	public static class Ascend extends HeroAction {
-		public Ascend( int stairs ) {
+
+	public static class Ascend extends HeroAction
+	{
+		public Ascend(int stairs)
+		{
 			this.dst = stairs;
 		}
 	}
-	
-	public static class Alchemy extends HeroAction {
-		public Alchemy( int pot ) {
+
+	public static class Alchemy extends HeroAction
+	{
+		public Alchemy(int pot)
+		{
 			this.dst = pot;
 		}
 	}
-	
-	public static class Attack extends HeroAction {
+
+	public static class Attack extends HeroAction
+	{
 		public Char target;
-		public Attack( Char target ) {
+
+		public Attack(Char target)
+		{
 			this.target = target;
 		}
 	}

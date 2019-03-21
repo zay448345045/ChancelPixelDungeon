@@ -32,33 +32,35 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
-public class PotionOfHealing extends Potion {
-
+public class PotionOfHealing extends Potion
+{
 	{
 		initials = 2;
 
 		bones = true;
 	}
-	
+
 	@Override
-	public void apply( Hero hero ) {
-		setKnown();
+	public void apply(Hero hero)
+	{
 		//starts out healing 30 hp, equalizes with hero health total at level 11
-		Buff.affect( hero, Healing.class ).setHeal((int)(0.8f*hero.HT + 14), 0.333f, 0);
-		cure( hero );
-		GLog.p( Messages.get(this, "heal") );
+		Buff.affect(hero, Healing.class).setHeal((int) (0.8f * hero.HT() + 14), 0.333f, 0);
+		cure(hero);
+		GLog.p(Messages.get(this, "heal"));
 	}
-	
-	public static void cure( Char ch ) {
-		Buff.detach( ch, Poison.class );
-		Buff.detach( ch, Cripple.class );
-		Buff.detach( ch, Weakness.class );
-		Buff.detach( ch, Bleeding.class );
-		
+
+	public static void cure(Char ch)
+	{
+		Buff.detach(ch, Poison.class);
+		Buff.detach(ch, Cripple.class);
+		Buff.detach(ch, Weakness.class);
+		Buff.detach(ch, Bleeding.class);
+
 	}
 
 	@Override
-	public int price() {
+	public int price()
+	{
 		return isKnown() ? 30 * quantity : super.price();
 	}
 }

@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,42 +26,47 @@ package com.watabou.glwrap;
 
 import android.opengl.GLES20;
 
-public class Shader {
+public class Shader
+{
+	public static final int VERTEX = GLES20.GL_VERTEX_SHADER;
+	public static final int FRAGMENT = GLES20.GL_FRAGMENT_SHADER;
 
-	public static final int VERTEX		= GLES20.GL_VERTEX_SHADER;
-	public static final int FRAGMENT	= GLES20.GL_FRAGMENT_SHADER;
-	
 	private int handle;
-	
-	public Shader( int type ) {
-		handle = GLES20.glCreateShader( type );
+
+	public Shader(int type)
+	{
+		handle = GLES20.glCreateShader(type);
 	}
-	
-	public int handle() {
+
+	public int handle()
+	{
 		return handle;
 	}
-	
-	public void source( String src ) {
-		GLES20.glShaderSource( handle, src );
+
+	public void source(String src)
+	{
+		GLES20.glShaderSource(handle, src);
 	}
-	
-	public void compile() {
-		GLES20.glCompileShader( handle );
+
+	public void compile()
+	{
+		GLES20.glCompileShader(handle);
 
 		int[] status = new int[1];
-		GLES20.glGetShaderiv( handle, GLES20.GL_COMPILE_STATUS, status, 0 );
-		if (status[0] == GLES20.GL_FALSE) {
-			throw new Error( GLES20.glGetShaderInfoLog( handle ) );
-		}
+		GLES20.glGetShaderiv(handle, GLES20.GL_COMPILE_STATUS, status, 0);
+		if(status[0] == GLES20.GL_FALSE)
+			throw new Error(GLES20.glGetShaderInfoLog(handle));
 	}
-	
-	public void delete() {
-		GLES20.glDeleteShader( handle );
+
+	public void delete()
+	{
+		GLES20.glDeleteShader(handle);
 	}
-	
-	public static Shader createCompiled( int type, String src ) {
-		Shader shader = new Shader( type );
-		shader.source( src );
+
+	public static Shader createCompiled(int type, String src)
+	{
+		Shader shader = new Shader(type);
+		shader.source(src);
 		shader.compile();
 		return shader;
 	}

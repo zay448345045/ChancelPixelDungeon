@@ -21,78 +21,73 @@
 
 package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
-import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Regrowth;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 
-public class Healing extends Buff {
-
-	private int healingLeft;
-	
+public class Healing extends DurationBuff implements Expulsion
+{
 	private float percentHealPerTick;
 	private int flatHealPerTick;
-	
+
 	{
 		//unlike other buffs, this one acts after the hero and takes priority against other effects
 		//healing is much more useful if you get some of it off before taking damage
 		actPriority = HERO_PRIO - 1;
 	}
-	
+
 	@Override
-	public boolean act(){
-		
-		int healingThisTick = Math.round(healingLeft * percentHealPerTick) + flatHealPerTick;
-		
-		healingThisTick = (int)GameMath.gate(1, healingThisTick, healingLeft);
-		
-		target.HP = Math.min(target.HT, target.HP + healingThisTick);
-		
-		target.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "value", healingThisTick));
-		
-		healingLeft -= healingThisTick;
-		
-		if (healingLeft <= 0){
-			detach();
-		}
-		
-		spend( TICK );
-		
+	public boolean act()
+	{
+		int healingThisTick = Math.round(left() * percentHealPerTick) + flatHealPerTick;
+
+		healingThisTick = (int) GameMath.gate(1, healingThisTick, left());
+
+		target.heal(healingThisTick);
+
+		shorten(healingThisTick);
+		spend(TICK);
+
 		return true;
 	}
-	
-	public void setHeal(int amount, float percentPerTick, int flatPerTick){
-		healingLeft = amount;
+
+	public void setHeal(int amount, float percentPerTick, int flatPerTick)
+	{
+		set(amount);
 		percentHealPerTick = percentPerTick;
 		flatHealPerTick = flatPerTick;
 	}
-	
-	public void increaseHeal( int amount ){
-		healingLeft += amount;
-	}
-	
+
 	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add( CharSprite.State.HEALING );
-		else    target.sprite.remove( CharSprite.State.HEALING );
+	public Class<? extends Blob> expulse()
+	{
+		return Regrowth.class;
 	}
-	
-	private static final String LEFT = "left";
+
+	@Override
+	public void fx(boolean on)
+	{
+		if(on) target.sprite.add(CharSprite.State.HEALING);
+		else target.sprite.remove(CharSprite.State.HEALING);
+	}
+
 	private static final String PERCENT = "percent";
 	private static final String FLAT = "flat";
-	
+
 	@Override
-	public void storeInBundle(Bundle bundle) {
+	public void storeInBundle(Bundle bundle)
+	{
 		super.storeInBundle(bundle);
-		bundle.put(LEFT, healingLeft);
 		bundle.put(PERCENT, percentHealPerTick);
 		bundle.put(FLAT, flatHealPerTick);
 	}
-	
+
 	@Override
-	public void restoreFromBundle(Bundle bundle) {
+	public void restoreFromBundle(Bundle bundle)
+	{
 		super.restoreFromBundle(bundle);
-		healingLeft = bundle.getInt(LEFT);
 		percentHealPerTick = bundle.getFloat(PERCENT);
 		flatHealPerTick = bundle.getInt(FLAT);
 	}

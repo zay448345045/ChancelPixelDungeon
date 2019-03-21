@@ -21,8 +21,8 @@
 
 package com.noodlemire.chancelpixeldungeon.windows;
 
+import com.noodlemire.chancelpixeldungeon.CPDSettings;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
-import com.noodlemire.chancelpixeldungeon.SPDSettings;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.PixelScene;
@@ -35,23 +35,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class WndItem extends Window {
+public class WndItem extends Window
+{
 
-	private static final float BUTTON_HEIGHT	= 16;
-	
-	private static final float GAP	= 2;
-	
+	private static final float BUTTON_HEIGHT = 16;
+
+	private static final float GAP = 2;
+
 	private static final int WIDTH_MIN = 120;
 	private static final int WIDTH_MAX = 220;
 
 	private static WndItem INSTANCE;
 
-	public WndItem( final WndBag owner, final Item item ){
-		this( owner, item, owner != null );
+	public WndItem(final WndBag owner, final Item item)
+	{
+		this(owner, item, owner != null);
 	}
-	
-	public WndItem( final WndBag owner, final Item item , final boolean options ) {
-		
+
+	public WndItem(final WndBag owner, final Item item, final boolean options)
+	{
+
 		super();
 
 		if(INSTANCE != null)
@@ -60,67 +63,73 @@ public class WndItem extends Window {
 		INSTANCE = this;
 
 		int width = WIDTH_MIN;
-		
-		RenderedTextMultiline info = PixelScene.renderMultiline( item.info(), 6 );
+
+		RenderedTextMultiline info = PixelScene.renderMultiline(item.info(), 6);
 		info.maxWidth(width);
-		
+
 		//info box can go out of the screen on landscape, so widen it
-		while (SPDSettings.landscape()
-				&& info.height() > 100
-				&& width < WIDTH_MAX){
+		while(CPDSettings.landscape()
+		      && info.height() > 100
+		      && width < WIDTH_MAX)
+		{
 			width += 20;
 			info.maxWidth(width);
 		}
-		
-		IconTitle titlebar = new IconTitle( item );
-		titlebar.setRect( 0, 0, width, 0 );
-		add( titlebar );
 
-		if (item.levelKnown && item.level() > 0) {
-			titlebar.color( ItemSlot.UPGRADED );
-		} else if (item.levelKnown && item.level() < 0) {
-			titlebar.color( ItemSlot.DEGRADED );
+		IconTitle titlebar = new IconTitle(item);
+		titlebar.setRect(0, 0, width, 0);
+		add(titlebar);
+
+		if(item.visiblyUpgraded() > 0)
+		{
+			titlebar.color(ItemSlot.UPGRADED);
 		}
-		
+
 		info.setPos(titlebar.left(), titlebar.bottom() + GAP);
-		add( info );
-	
+		add(info);
+
 		float y = info.top() + info.height() + GAP;
 		float x = 0;
-		
-		if (Dungeon.hero.isAlive() && options) {
+
+		if(Dungeon.hero.isAlive() && options)
+		{
 			ArrayList<RedButton> line = new ArrayList<>();
-			for (final String action:item.actions( Dungeon.hero )) {
-				
-				RedButton btn = new RedButton( Messages.get(item, "ac_" + action), 8 ) {
+			for(final String action : item.actions(Dungeon.hero))
+			{
+
+				RedButton btn = new RedButton(Messages.get(item, "ac_" + action), 8)
+				{
 					@Override
-					protected void onClick() {
+					protected void onClick()
+					{
 						hide();
-						if (owner != null && owner.parent != null) owner.hide();
-						item.execute( Dungeon.hero, action );
+						if(owner != null && owner.parent != null) owner.hide();
+						item.execute(Dungeon.hero, action);
 					}
-                };
-				btn.setSize( btn.reqWidth(), BUTTON_HEIGHT );
-				if (x + btn.width() > width || line.size() == 3) {
+				};
+				btn.setSize(btn.reqWidth(), BUTTON_HEIGHT);
+				if(x + btn.width() > width || line.size() == 3)
+				{
 					layoutButtons(line, width - x, y);
 					x = 0;
 					y += BUTTON_HEIGHT + 1;
 					line = new ArrayList<>();
 				}
 				x++;
-				add( btn );
-				line.add( btn );
+				add(btn);
+				line.add(btn);
 
-				if (action.equals(item.defaultAction)) {
-					btn.textColor( TITLE_COLOR );
+				if(action.equals(item.defaultAction))
+				{
+					btn.textColor(TITLE_COLOR);
 				}
 
 				x += btn.width();
 			}
 			layoutButtons(line, width - x, y);
 		}
-		
-		resize( width, (int)(y + (x > 0 ? BUTTON_HEIGHT : 0)) );
+
+		resize(width, (int) (y + (x > 0 ? BUTTON_HEIGHT : 0)));
 	}
 
 	@Override
@@ -134,11 +143,13 @@ public class WndItem extends Window {
 
 	//this method assumes a max of 3 buttons per line
 	//FIXME: this is really messy for just trying to make buttons fill the window. Gotta be a cleaner way.
-	private static void layoutButtons(ArrayList<RedButton> line, float extraWidth, float y){
-		if (line == null || line.size() == 0 || extraWidth == 0) return;
-		if (line.size() == 1){
-			line.get(0).setSize(line.get(0).width()+extraWidth, BUTTON_HEIGHT);
-			line.get(0).setPos( 0 , y );
+	private static void layoutButtons(ArrayList<RedButton> line, float extraWidth, float y)
+	{
+		if(line == null || line.size() == 0 || extraWidth == 0) return;
+		if(line.size() == 1)
+		{
+			line.get(0).setSize(line.get(0).width() + extraWidth, BUTTON_HEIGHT);
+			line.get(0).setPos(0, y);
 			return;
 		}
 		ArrayList<RedButton> lineByWidths = new ArrayList<>(line);
@@ -147,23 +158,29 @@ public class WndItem extends Window {
 		smallest = lineByWidths.get(0);
 		middle = lineByWidths.get(1);
 		largest = null;
-		if (lineByWidths.size() == 3) {
+		if(lineByWidths.size() == 3)
+		{
 			largest = lineByWidths.get(2);
 		}
 
 		float btnDiff = middle.width() - smallest.width();
 		smallest.setSize(smallest.width() + Math.min(btnDiff, extraWidth), BUTTON_HEIGHT);
 		extraWidth -= btnDiff;
-		if (extraWidth > 0) {
-			if (largest == null) {
+		if(extraWidth > 0)
+		{
+			if(largest == null)
+			{
 				smallest.setSize(smallest.width() + extraWidth / 2, BUTTON_HEIGHT);
 				middle.setSize(middle.width() + extraWidth / 2, BUTTON_HEIGHT);
-			} else {
+			}
+			else
+			{
 				btnDiff = largest.width() - smallest.width();
-				smallest.setSize(smallest.width() + Math.min(btnDiff, extraWidth/2), BUTTON_HEIGHT);
-				middle.setSize(middle.width() + Math.min(btnDiff, extraWidth/2), BUTTON_HEIGHT);
-				extraWidth -= btnDiff*2;
-				if (extraWidth > 0){
+				smallest.setSize(smallest.width() + Math.min(btnDiff, extraWidth / 2), BUTTON_HEIGHT);
+				middle.setSize(middle.width() + Math.min(btnDiff, extraWidth / 2), BUTTON_HEIGHT);
+				extraWidth -= btnDiff * 2;
+				if(extraWidth > 0)
+				{
 					smallest.setSize(smallest.width() + extraWidth / 3, BUTTON_HEIGHT);
 					middle.setSize(middle.width() + extraWidth / 3, BUTTON_HEIGHT);
 					largest.setSize(largest.width() + extraWidth / 3, BUTTON_HEIGHT);
@@ -172,20 +189,28 @@ public class WndItem extends Window {
 		}
 
 		float x = 0;
-		for (RedButton btn : line){
-			btn.setPos( x , y );
-			x += btn.width()+1;
+		for(RedButton btn : line)
+		{
+			btn.setPos(x, y);
+			x += btn.width() + 1;
 		}
 	}
 
-	private static Comparator<RedButton> widthComparator = new Comparator<RedButton>() {
+	private static Comparator<RedButton> widthComparator = new Comparator<RedButton>()
+	{
 		@Override
-		public int compare(RedButton lhs, RedButton rhs) {
-			if (lhs.width() < rhs.width()){
+		public int compare(RedButton lhs, RedButton rhs)
+		{
+			if(lhs.width() < rhs.width())
+			{
 				return -1;
-			} else if (lhs.width() == rhs.width()){
+			}
+			else if(lhs.width() == rhs.width())
+			{
 				return 0;
-			} else {
+			}
+			else
+			{
 				return 1;
 			}
 		}

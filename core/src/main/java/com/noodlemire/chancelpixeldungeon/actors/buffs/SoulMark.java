@@ -25,32 +25,37 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 
-public class SoulMark extends FlavourBuff {
+public class SoulMark extends FlavourBuff
+{
 
-	public static final float DURATION	= 10f;
+	public static final float DURATION = 10f;
 
 	{
 		type = buffType.NEGATIVE;
 	}
 
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.CORRUPT;
 	}
 
 	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add(CharSprite.State.MARKED);
+	public void fx(boolean on)
+	{
+		if(on) target.sprite.add(CharSprite.State.MARKED);
 		else target.sprite.remove(CharSprite.State.MARKED);
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc", dispTurns());
 	}
 }

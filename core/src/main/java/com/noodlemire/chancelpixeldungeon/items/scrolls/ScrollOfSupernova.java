@@ -25,7 +25,6 @@ import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Blindness;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Invisibility;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
@@ -35,81 +34,68 @@ import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
-public class ScrollOfPsionicBlast extends Scroll {
-
+public class ScrollOfSupernova extends Scroll
+{
 	{
 		initials = 5;
 
 		bones = true;
 	}
-	
+
 	@Override
-	public void doRead() {
-		
-		GameScene.flash( 0xFFFFFF );
-		
-		Sample.INSTANCE.play( Assets.SND_BLAST );
-		Invisibility.dispel();
-		
-		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] ))
+	public void doRead()
+	{
+		//Normal read is the same as empowered read, but with self-damage
+		empoweredRead();
+
+		curUser.damage(Math.max(curUser.HT() / 5, curUser.HP() / 2), this);
+		if(curUser.isAlive())
 		{
-			if (Dungeon.level.heroFOV[mob.pos])
-			{
-				Ballistica wallDetect = new Ballistica(curUser.pos, mob.pos, Ballistica.STOP_TARGET);
-				int terrainPassed = 1;
-
-				for(int p : wallDetect.path)
-					if (Dungeon.level.solid[p])
-						terrainPassed++;
-
-				mob.damage(mob.HP / terrainPassed, this);
-			}
-		}
-
-		curUser.damage(Math.max(curUser.HT/5, curUser.HP/2), this);
-		if (curUser.isAlive()) {
 			Buff.prolong(curUser, Paralysis.class, Random.Int(4, 6));
 			Buff.prolong(curUser, Blindness.class, Random.Int(6, 9));
 			Dungeon.observe();
 		}
-		
-		setKnown();
-		
-		readAnimation();
 
-		if (!curUser.isAlive()) {
-			Dungeon.fail( getClass() );
-			GLog.n( Messages.get(this, "ondeath") );
+		if(!curUser.isAlive())
+		{
+			Dungeon.fail(getClass());
+			GLog.n(Messages.get(this, "ondeath"));
 		}
 	}
-	
+
 	@Override
-	public void empoweredRead() {
-		GameScene.flash( 0xFFFFFF );
-		
-		Sample.INSTANCE.play( Assets.SND_BLAST );
-		Invisibility.dispel();
-		
-		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-			if (Dungeon.level.heroFOV[mob.pos]) {
+	public void empoweredRead()
+	{
+		GameScene.flash(0xFFFFFF);
+
+		Sample.INSTANCE.play(Assets.SND_BLAST);
+
+		for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
+		{
+			if(Dungeon.level.heroFOV[mob.pos])
+			{
 				Ballistica wallDetect = new Ballistica(curUser.pos, mob.pos, Ballistica.STOP_TARGET);
 				int terrainPassed = 1;
 
-				for(int p : wallDetect.path)
-					if (Dungeon.level.solid[p])
+				for(int p : wallDetect.subPath(1, wallDetect.dist))
+					if(Dungeon.level.solid[p])
 						terrainPassed++;
 
-				mob.damage(mob.HP / terrainPassed, this);
+				mob.damage(mob.HP() / terrainPassed, this);
+				if(mob.isAlive())
+				{
+					Buff.prolong(mob, Paralysis.class, Paralysis.DURATION * (float) Math.pow(0.9, terrainPassed));
+					Buff.prolong(mob, Blindness.class, 2 * Paralysis.DURATION * (float) Math.pow(0.95, terrainPassed));
+				}
 			}
 		}
-		
-		setKnown();
-		
+
 		readAnimation();
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return isKnown() ? 50 * quantity : super.price();
 	}
 }

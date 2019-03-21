@@ -33,16 +33,19 @@ import com.noodlemire.chancelpixeldungeon.levels.Level;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.watabou.noosa.audio.Sample;
 
-public class GrippingTrap extends Trap {
+public class GrippingTrap extends Trap
+{
 
 	{
 		color = GREY;
 		shape = DOTS;
 	}
-	
+
 	@Override
-	public void trigger() {
-		if (Dungeon.level.heroFOV[pos]){
+	public void trigger()
+	{
+		if(Dungeon.level.heroFOV[pos])
+		{
 			Sample.INSTANCE.play(Assets.SND_TRAP);
 		}
 		//this trap is not disarmed by being triggered
@@ -52,17 +55,21 @@ public class GrippingTrap extends Trap {
 	}
 
 	@Override
-	public void activate() {
+	public void activate()
+	{
 
-		Char c = Actor.findChar( pos );
+		Char c = Actor.findChar(pos);
 
-		if (c != null) {
-			int damage = Math.max( 0,  (2 + Dungeon.depth) - c.drRoll() );
-			Buff.affect( c, Bleeding.class ).set( damage );
-			Buff.prolong( c, Cripple.class, Cripple.DURATION);
-			Wound.hit( c );
-		} else {
-			Wound.hit( pos );
+		if(c != null)
+		{
+			int damage = Math.max(0, (2 + Dungeon.depth) - c.drRoll());
+			Buff.affect(c, Bleeding.class).set(damage);
+			Buff.prolong(c, Cripple.class, Cripple.DURATION);
+			Wound.hit(c);
+		}
+		else
+		{
+			Wound.hit(pos);
 		}
 
 	}

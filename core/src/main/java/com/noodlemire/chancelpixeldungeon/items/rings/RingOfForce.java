@@ -21,76 +21,60 @@
 
 package com.noodlemire.chancelpixeldungeon.items.rings;
 
-import com.noodlemire.chancelpixeldungeon.Dungeon;
-import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
-import com.watabou.utils.Random;
 
-public class RingOfForce extends Ring {
-
+public class RingOfForce extends Ring
+{
 	@Override
-	protected RingBuff buff( ) {
+	protected RingBuff buff()
+	{
 		return new Force();
 	}
-	
-	public static int armedDamageBonus( Char ch ){
-		return getBonus( ch, Force.class);
-	}
-	
-	
-	// *** Weapon-like properties ***
 
-	private static float tier(int str){
-		float tier = Math.max(1, (str - 8)/2f);
-		//each str point after 18 is half as effective
-		if (tier > 5){
-			tier = 5 + (tier - 5) / 2f;
-		}
-		return tier;
+	public static int dynamicBonus(Hero target)
+	{
+		return Math.round(getBonus(target, Force.class) * target.dynamax() * 0.25f);
 	}
 
-	public static int damageRoll( Hero hero ){
-		if (hero.buff(Force.class) != null) {
-			int level = getBonus(hero, Force.class);
-			float tier = tier(hero.STR());
-			return Random.NormalIntRange(min(level, tier), max(level, tier));
-		} else {
-			//attack without any ring of force influence
-			return Random.NormalIntRange(1, Math.max(hero.STR()-8, 1));
-		}
-	}
+	public static int dynamicExtension(Hero target)
+	{
+		int level = 0;
 
-	//same as equivalent tier weapon
-	private static int min(int lvl, float tier){
-		return Math.round(
-				tier +  //base
-				lvl     //level scaling
-		);
-	}
+		for(Buff b : target.buffs())
+			if(b instanceof Force)
+				level += ((Force) b).level();
 
-	//same as equivalent tier weapon
-	private static int max(int lvl, float tier){
-		return Math.round(
-				5*(tier+1) +    //base
-				lvl*(tier+1)    //level scaling
-		);
+		if(level > 0)
+			return Math.round((target.dynamax() + dynamicBonus(target)) * 0.3f);
+		else if(level < 0)
+			return -Math.round((target.dynamax() + dynamicBonus(target)) * 0.3f);
+		else
+			return 0;
 	}
 
 	@Override
-	public String desc() {
-		String desc = super.desc();
-		float tier = tier(Dungeon.hero.STR());
-		if (levelKnown) {
-			desc += "\n\n" + Messages.get(this, "avg_dmg", min(level(), tier), max(level(), tier));
-		} else {
-			desc += "\n\n" + Messages.get(this, "typical_avg_dmg", min(1, tier), max(1, tier));
+	public boolean doUnequip(Hero hero, boolean collect, boolean single)
+	{
+		if(super.doUnequip(hero, collect, single))
+		{
+			hero.dynamic(0);
+			return true;
 		}
-
-		return desc;
+		else
+			return false;
 	}
 
-	public class Force extends RingBuff {
+	@Override
+	public String statsInfo()
+	{
+		if(isIdentified())
+			return Messages.get(this, "stats", soloBonus() * 25);
+		else
+			return Messages.get(this, "avg_stats", 25);
 	}
+
+	public class Force extends RingBuff {}
 }
 

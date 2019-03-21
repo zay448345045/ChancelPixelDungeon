@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,37 +30,39 @@ import com.watabou.utils.Signal;
 
 import java.util.ArrayList;
 
-public class Keys {
-	
-	public static final int BACK		= KeyEvent.KEYCODE_BACK;
-	public static final int MENU		= KeyEvent.KEYCODE_MENU;
+public class Keys
+{
+	public static final int BACK = KeyEvent.KEYCODE_BACK;
+	public static final int MENU = KeyEvent.KEYCODE_MENU;
 
-	public static Signal<Key> event = new Signal<Key>( true );
-	
-	public static void processTouchEvents( ArrayList<KeyEvent> events ) {
-		
+	public static Signal<Key> event = new Signal<Key>(true);
+
+	public static void processTouchEvents(ArrayList<KeyEvent> events)
+	{
 		int size = events.size();
-		for (int i=0; i < size; i++) {
-			
-			KeyEvent e = events.get( i );
-			
-			switch (e.getAction()) {
-			case KeyEvent.ACTION_DOWN:
-				event.dispatch( new Key( e.getKeyCode(), true ) );
-				break;
-			case KeyEvent.ACTION_UP:
-				event.dispatch( new Key( e.getKeyCode(), false ) );
-				break;
+		for(int i = 0; i < size; i++)
+		{
+			KeyEvent e = events.get(i);
+
+			switch(e.getAction())
+			{
+				case KeyEvent.ACTION_DOWN:
+					event.dispatch(new Key(e.getKeyCode(), true));
+					break;
+				case KeyEvent.ACTION_UP:
+					event.dispatch(new Key(e.getKeyCode(), false));
+					break;
 			}
 		}
 	}
-	
-	public static class Key {
-		
+
+	public static class Key
+	{
 		public int code;
 		public boolean pressed;
-		
-		public Key( int code, boolean pressed ) {
+
+		public Key(int code, boolean pressed)
+		{
 			this.code = code;
 			this.pressed = pressed;
 		}

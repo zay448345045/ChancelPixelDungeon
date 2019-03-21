@@ -24,42 +24,49 @@ package com.noodlemire.chancelpixeldungeon.actors.buffs;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 
-public class Fury extends Buff {
-	
-	public static float LEVEL	= 0.5f;
+public class Fury extends Buff
+{
+
+	public static float LEVEL = 0.5f;
 
 	{
 		type = buffType.POSITIVE;
 	}
-	
+
 	@Override
-	public boolean act() {
-		if (target.HP > target.HT * LEVEL) {
+	public boolean act()
+	{
+		if(target.HP() > target.HT() * LEVEL)
+		{
 			detach();
 		}
-		
-		spend( TICK );
-		
+
+		spend(TICK);
+
 		return true;
 	}
-	
+
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.FURY;
 	}
-	
+
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String heroMessage() {
+	public String heroMessage()
+	{
 		return Messages.get(this, "heromsg");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc");
 	}
 }

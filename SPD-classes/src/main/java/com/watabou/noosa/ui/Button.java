@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,77 +28,87 @@ import com.watabou.input.Touchscreen.Touch;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.TouchArea;
 
-public class Button extends Component {
-
+public class Button extends Component
+{
 	public static float longClick = 1f;
-	
+
 	protected TouchArea hotArea;
-	
+
 	protected boolean pressed;
 	protected float pressTime;
-	
+
 	protected boolean processed;
-	
+
 	@Override
-	protected void createChildren() {
-		hotArea = new TouchArea( 0, 0, 0, 0 ) {
+	protected void createChildren()
+	{
+		hotArea = new TouchArea(0, 0, 0, 0)
+		{
 			@Override
-			protected void onTouchDown(Touch touch) {
+			protected void onTouchDown(Touch touch)
+			{
 				pressed = true;
 				pressTime = 0;
 				processed = false;
 				Button.this.onTouchDown();
 			}
 
-            @Override
-			protected void onTouchUp(Touch touch) {
+			@Override
+			protected void onTouchUp(Touch touch)
+			{
 				pressed = false;
 				Button.this.onTouchUp();
 			}
 
-            @Override
-			protected void onClick( Touch touch ) {
-				if (!processed) {
+			@Override
+			protected void onClick(Touch touch)
+			{
+				if(!processed)
 					Button.this.onClick();
-				}
 			}
-        };
-		add( hotArea );
-	}
-	
-	@Override
-	public void update() {
-		super.update();
-		
-		hotArea.active = visible;
-		
-		if (pressed) {
-			if ((pressTime += Game.elapsed) >= longClick) {
-				pressed = false;
-				if (onLongClick()) {
+		};
 
+		add(hotArea);
+	}
+
+	@Override
+	public void update()
+	{
+		super.update();
+
+		hotArea.active = visible;
+
+		if(pressed)
+		{
+			if((pressTime += Game.elapsed) >= longClick)
+			{
+				pressed = false;
+				if(onLongClick())
+				{
 					hotArea.reset();
 					processed = true;
 					onTouchUp();
-					
-					Game.vibrate( 50 );
+
+					Game.vibrate(50);
 				}
 			}
 		}
 	}
-	
+
 	protected void onTouchDown() {}
 
-    protected void onTouchUp() {}
+	protected void onTouchUp() {}
 
-    protected void onClick() {}
+	protected void onClick() {}
 
-    protected boolean onLongClick() {
+	protected boolean onLongClick()
+	{
 		return false;
 	}
 
-    @Override
-	protected void layout() {
+	@Override
+	protected void layout()
+	{
 		hotArea.x = x;
 		hotArea.y = y;
 		hotArea.width = width;

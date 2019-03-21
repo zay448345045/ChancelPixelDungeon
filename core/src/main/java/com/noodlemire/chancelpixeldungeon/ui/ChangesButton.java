@@ -28,11 +28,13 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
 
-public class ChangesButton extends Button {
+public class ChangesButton extends Button
+{
 
 	protected Image image;
 
-	public ChangesButton() {
+	public ChangesButton()
+	{
 		super();
 
 		width = image.width;
@@ -40,15 +42,17 @@ public class ChangesButton extends Button {
 	}
 
 	@Override
-	protected void createChildren() {
+	protected void createChildren()
+	{
 		super.createChildren();
 
 		image = Icons.NOTES.get();
-		add( image );
+		add(image);
 	}
 
 	@Override
-	protected void layout() {
+	protected void layout()
+	{
 		super.layout();
 
 		image.x = x;
@@ -56,18 +60,21 @@ public class ChangesButton extends Button {
 	}
 
 	@Override
-	protected void onTouchDown() {
-		image.brightness( 1.5f );
-		Sample.INSTANCE.play( Assets.SND_CLICK );
+	protected void onTouchDown()
+	{
+		image.brightness(1.5f);
+		Sample.INSTANCE.play(Assets.SND_CLICK);
 	}
 
 	@Override
-	protected void onTouchUp() {
+	protected void onTouchUp()
+	{
 		image.resetColor();
 	}
 
 	@Override
-	protected void onClick() {
+	protected void onClick()
+	{
 		ChancelPixelDungeon.switchNoFade(ChangesScene.class);
 	}
 }

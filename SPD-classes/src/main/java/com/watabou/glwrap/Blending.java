@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,29 +28,33 @@ import android.opengl.GLES20;
 
 import javax.microedition.khronos.opengles.GL10;
 
-public class Blending {
-	
-	public static void useDefault(){
+public class Blending
+{
+	public static void useDefault()
+	{
 		enable();
 		setNormalMode();
 	}
-	
-	public static void enable(){
-		GLES20.glEnable( GL10.GL_BLEND );
+
+	public static void enable()
+	{
+		GLES20.glEnable(GL10.GL_BLEND);
 	}
-	
-	public static void disable(){
-		GLES20.glDisable( GL10.GL_BLEND );
+
+	public static void disable()
+	{
+		GLES20.glDisable(GL10.GL_BLEND);
 	}
-	
+
 	//in this mode colors overwrite eachother, based on alpha value
-	public static void setNormalMode(){
-		GLES20.glBlendFunc( GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA );
+	public static void setNormalMode()
+	{
+		GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 	}
-	
+
 	//in this mode colors add to eachother, eventually reaching pure white
-	public static void setLightMode(){
-		GLES20.glBlendFunc( GL10.GL_SRC_ALPHA, GL10.GL_ONE );
+	public static void setLightMode()
+	{
+		GLES20.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
 	}
-	
 }

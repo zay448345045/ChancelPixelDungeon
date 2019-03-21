@@ -25,48 +25,55 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.scenes.PixelScene;
 import com.watabou.noosa.Image;
 
-public class ResumeIndicator extends Tag {
+public class ResumeIndicator extends Tag
+{
 
 	private Image icon;
 
-	public ResumeIndicator() {
+	public ResumeIndicator()
+	{
 		super(0xCDD5C0);
 
-		setSize( 24, 24 );
+		setSize(24, 24);
 
 		visible = false;
 
 	}
 
 	@Override
-	protected void createChildren() {
+	protected void createChildren()
+	{
 		super.createChildren();
 
-		icon = Icons.get( Icons.RESUME );
-		add( icon );
+		icon = Icons.get(Icons.RESUME);
+		add(icon);
 	}
 
 	@Override
-	protected void layout() {
+	protected void layout()
+	{
 		super.layout();
 
-		icon.x = x+1 + (width - icon.width) / 2f;
+		icon.x = x + 1 + (width - icon.width) / 2f;
 		icon.y = y + (height - icon.height) / 2f;
 		PixelScene.align(icon);
 	}
 
 	@Override
-	protected void onClick() {
+	protected void onClick()
+	{
 		Dungeon.hero.resume();
 	}
 
 	@Override
-	public void update() {
-		if (!Dungeon.hero.isAlive())
+	public void update()
+	{
+		if(!Dungeon.hero.isAlive())
 			visible = false;
-		else if (visible != (Dungeon.hero.lastAction != null)){
+		else if(visible != (Dungeon.hero.lastAction != null))
+		{
 			visible = Dungeon.hero.lastAction != null;
-			if (visible)
+			if(visible)
 				flash();
 		}
 		super.update();

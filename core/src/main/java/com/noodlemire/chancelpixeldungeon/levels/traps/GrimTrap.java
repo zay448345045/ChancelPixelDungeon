@@ -35,7 +35,8 @@ import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
-public class GrimTrap extends Trap {
+public class GrimTrap extends Trap
+{
 
 	{
 		color = GREY;
@@ -43,66 +44,78 @@ public class GrimTrap extends Trap {
 	}
 
 	@Override
-	public Trap hide() {
+	public Trap hide()
+	{
 		//cannot hide this trap
 		return reveal();
 	}
 
 	@Override
-	public void activate() {
+	public void activate()
+	{
 		Char target = Actor.findChar(pos);
 
 		//find the closest char that can be aimed at
-		if (target == null){
-			for (Char ch : Actor.chars()){
+		if(target == null)
+		{
+			for(Char ch : Actor.chars())
+			{
 				Ballistica bolt = new Ballistica(pos, ch.pos, Ballistica.PROJECTILE);
-				if (bolt.collisionPos == ch.pos &&
-						(target == null || Dungeon.level.trueDistance(pos, ch.pos) < Dungeon.level.trueDistance(pos, target.pos))){
+				if(bolt.collisionPos == ch.pos &&
+				   (target == null || Dungeon.level.trueDistance(pos, ch.pos) < Dungeon.level.trueDistance(pos, target.pos)))
+				{
 					target = ch;
 				}
 			}
 		}
 
-		if (target != null){
+		if(target != null)
+		{
 			final Char finalTarget = target;
 			final GrimTrap trap = this;
 			int damage;
-			
+
 			//almost kill the player
-			if (finalTarget == Dungeon.hero && ((float)finalTarget.HP/finalTarget.HT) >= 0.9f){
-				damage = finalTarget.HP-1;
-			//kill 'em
-			} else {
-				damage = finalTarget.HP;
-			}
-			
+			if(finalTarget == Dungeon.hero && ((float) finalTarget.HP() / finalTarget.HT()) >= 0.9f)
+				damage = finalTarget.HP() - 1;
+				//kill 'em
+			else
+				damage = finalTarget.HP();
+
 			final int finalDmg = damage;
-			
-			Actor.add(new Actor() {
-				
+
+			Actor.add(new Actor()
+			{
 				{
 					//it's a visual effect, gets priority no matter what
 					actPriority = VFX_PRIO;
 				}
-				
+
 				@Override
-				protected boolean act() {
+				protected boolean act()
+				{
 					final Actor toRemove = this;
-					((MagicMissile)finalTarget.sprite.parent.recycle(MagicMissile.class)).reset(
+					((MagicMissile) finalTarget.sprite.parent.recycle(MagicMissile.class)).reset(
 							MagicMissile.SHADOW,
 							DungeonTilemap.tileCenterToWorld(pos),
 							finalTarget.sprite.center(),
-							new Callback() {
+							new Callback()
+							{
 								@Override
-								public void call() {
+								public void call()
+								{
 									finalTarget.damage(finalDmg, trap);
-									if (finalTarget == Dungeon.hero) {
+									if(finalTarget == Dungeon.hero)
+									{
 										Sample.INSTANCE.play(Assets.SND_CURSED);
-										if (!finalTarget.isAlive()) {
-											Dungeon.fail( GrimTrap.class );
-											GLog.n( Messages.get(GrimTrap.class, "ondeath") );
+										if(!finalTarget.isAlive())
+										{
+											Dungeon.fail(GrimTrap.class);
+											GLog.n(Messages.get(GrimTrap.class, "ondeath"));
 										}
-									} else {
+									}
+									else
+									{
 										Sample.INSTANCE.play(Assets.SND_BURNING);
 									}
 									finalTarget.sprite.emitter().burst(ShadowParticle.UP, 10);
@@ -113,7 +126,9 @@ public class GrimTrap extends Trap {
 					return false;
 				}
 			});
-		} else {
+		}
+		else
+		{
 			CellEmitter.get(pos).burst(ShadowParticle.UP, 10);
 			Sample.INSTANCE.play(Assets.SND_BURNING);
 		}

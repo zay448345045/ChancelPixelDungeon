@@ -28,18 +28,19 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Corrosion;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 
-public class RotDart extends TippedDart {
-	
+public class RotDart extends TippedDart
+{
+
 	{
 		image = ItemSpriteSheet.ROT_DART;
 	}
-	
+
 	@Override
 	public int proc(Char attacker, Char defender, int damage)
 	{
-		Buff.affect(defender, Corrosion.class).set(5f, 2 + Dungeon.depth/5);
-		
+		Buff.affect(defender, Corrosion.class).set(5f, 2 + Dungeon.depth / 5);
+
 		return super.proc(attacker, defender, damage);
 	}
-	
+
 }

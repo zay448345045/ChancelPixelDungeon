@@ -29,9 +29,10 @@ import com.watabou.noosa.NoosaScriptNoLighting;
 import com.watabou.noosa.SkinnedBlock;
 import com.watabou.noosa.ui.Component;
 
-public class Archs extends Component {
+public class Archs extends Component
+{
 
-	private static final float SCROLL_SPEED	= 20f;
+	private static final float SCROLL_SPEED = 20f;
 
 	private SkinnedBlock arcsBg;
 	private SkinnedBlock arcsFg;
@@ -42,15 +43,19 @@ public class Archs extends Component {
 	public boolean reversed = false;
 
 	@Override
-	protected void createChildren() {
-		arcsBg = new SkinnedBlock( 1, 1, Assets.ARCS_BG ){
+	protected void createChildren()
+	{
+		arcsBg = new SkinnedBlock(1, 1, Assets.ARCS_BG)
+		{
 			@Override
-			protected NoosaScript script() {
+			protected NoosaScript script()
+			{
 				return NoosaScriptNoLighting.get();
 			}
 
 			@Override
-			public void draw() {
+			public void draw()
+			{
 				//arch bg has no alpha component, this improves performance
 				Blending.disable();
 				super.draw();
@@ -58,41 +63,46 @@ public class Archs extends Component {
 			}
 		};
 		arcsBg.autoAdjust = true;
-		arcsBg.offsetTo( 0,  offsB );
-		add( arcsBg );
+		arcsBg.offsetTo(0, offsB);
+		add(arcsBg);
 
-		arcsFg = new SkinnedBlock( 1, 1, Assets.ARCS_FG ){
+		arcsFg = new SkinnedBlock(1, 1, Assets.ARCS_FG)
+		{
 			@Override
-			protected NoosaScript script() {
+			protected NoosaScript script()
+			{
 				return NoosaScriptNoLighting.get();
 			}
 		};
 		arcsFg.autoAdjust = true;
-		arcsFg.offsetTo( 0,  offsF );
-		add( arcsFg );
+		arcsFg.offsetTo(0, offsF);
+		add(arcsFg);
 	}
 
 	@Override
-	protected void layout() {
-		arcsBg.size( width, height );
-		arcsBg.offset( arcsBg.texture.width / 4 - (width % arcsBg.texture.width) / 2, 0 );
+	protected void layout()
+	{
+		arcsBg.size(width, height);
+		arcsBg.offset(arcsBg.texture.width / 4 - (width % arcsBg.texture.width) / 2, 0);
 
-		arcsFg.size( width, height );
-		arcsFg.offset( arcsFg.texture.width / 4 - (width % arcsFg.texture.width) / 2, 0 );
+		arcsFg.size(width, height);
+		arcsFg.offset(arcsFg.texture.width / 4 - (width % arcsFg.texture.width) / 2, 0);
 	}
 
 	@Override
-	public void update() {
+	public void update()
+	{
 
 		super.update();
 
 		float shift = Game.elapsed * SCROLL_SPEED;
-		if (reversed) {
+		if(reversed)
+		{
 			shift = -shift;
 		}
 
-		arcsBg.offset( 0, shift );
-		arcsFg.offset( 0, shift * 2 );
+		arcsBg.offset(0, shift);
+		arcsFg.offset(0, shift * 2);
 
 		offsB = arcsBg.offsetY();
 		offsF = arcsFg.offsetY();

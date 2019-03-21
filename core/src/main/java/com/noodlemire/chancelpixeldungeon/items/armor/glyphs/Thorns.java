@@ -28,18 +28,21 @@ import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.Random;
 
-public class Thorns extends Armor.Glyph {
+public class Thorns extends Armor.Glyph
+{
 
-	private static ItemSprite.Glowing RED = new ItemSprite.Glowing( 0x660022 );
+	private static ItemSprite.Glowing RED = new ItemSprite.Glowing(0x660022);
 
 	@Override
-	public int proc(Armor armor, Char attacker, Char defender, int damage) {
+	public int proc(Armor armor, Char attacker, Char defender, int damage)
+	{
 
 		int level = Math.max(0, armor.level());
 
-		if ( Random.Int( level/2 + 5) >= 4) {
+		if(Random.Int(level / 2 + 5) >= 4)
+		{
 
-			Buff.affect( attacker, Bleeding.class).set( Math.max( level/2, damage));
+			Buff.affect(attacker, Bleeding.class).set(Math.max(level / 2, damage));
 
 		}
 
@@ -47,7 +50,8 @@ public class Thorns extends Armor.Glyph {
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return RED;
 	}
 }

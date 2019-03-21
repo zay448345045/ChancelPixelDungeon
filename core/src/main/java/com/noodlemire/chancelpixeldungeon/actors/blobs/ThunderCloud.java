@@ -2,7 +2,6 @@ package com.noodlemire.chancelpixeldungeon.actors.blobs;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
-import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
@@ -37,128 +36,121 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Random;
 
-public class ThunderCloud extends Blob implements Hero.Doom
+public class ThunderCloud extends GasBlob implements Hero.Doom
 {
-    @Override
-    protected void evolve()
-    {
-        super.evolve();
+	@Override
+	void affect(Char ch, int cell)
+	{
+		Heap items = Dungeon.level.heaps.get(cell);
 
-        for (int i = area.left; i < area.right; i++)
-        {
-            for (int j = area.top; j < area.bottom; j++)
-            {
-                int cell = i + j * Dungeon.level.width();
+		if(((metallic(items) || metallic(ch)) && Random.Int(2) == 0) || Random.Int(100) == 0)
+		{
+			if(ch != null && ch.isAlive() && !ch.isImmune(this.getClass()))
+			{
+				int levelDamage = 5 + Dungeon.depth * 5;
+				int damage = (ch.HT() + levelDamage) / 20;
 
-                if(cur[cell] > 0)
-                {
-                    Heap items = Dungeon.level.heaps.get(cell);
-                    Char ch = Actor.findChar(cell);
+				if(Random.Int(20) < (ch.HT() + levelDamage) % 20) damage++;
 
-                    if (((metallic(items) || metallic(ch)) && Random.Int(2) == 0) || Random.Int(100) == 0)
-                    {
-                        if (ch != null && ch.isAlive() && !ch.isImmune(this.getClass()))
-                        {
-                            int levelDamage = 5 + Dungeon.depth * 5;
-                            int damage = (ch.HT + levelDamage) / 20;
+				Buff.prolong(ch, Paralysis.class, 1);
+				ch.damage(damage, this);
+			}
 
-                            if (Random.Int(20) < (ch.HT + levelDamage) % 20) damage++;
+			if(items != null)
+				for(Item item : items.items)
+					if(item instanceof Wand)
+						((Wand) item).gainCharge(1);
+					else if(item instanceof MagesStaff)
+						((MagesStaff) item).gainCharge(1);
 
-                            Buff.prolong( ch, Paralysis.class, 1 );
-                            ch.damage(damage, this);
-                        }
+			if(Dungeon.level.flamable[cell]) GameScene.add(Blob.seed(cell, 2, Fire.class));
+			if(Dungeon.level.water[cell]) GameScene.ripple(cell);
 
-                        if(items != null)
-                            for(Item item : items.items)
-                                if(metallic(item) && item instanceof Wand && ((Wand)item).curCharges < ((Wand)item).maxCharges)
-                                    ((Wand)item).curCharges++;
+			Emitter emitter = CellEmitter.get(cell);
 
-                        if (Dungeon.level.flamable[cell]) GameScene.add(Blob.seed(cell, 2, Fire.class));
-                        if (Dungeon.level.water[cell]) GameScene.ripple(cell);
+			if(Dungeon.level.heroFOV[cell])
+			{
+				emitter.parent.add(new Lightning(cell + Dungeon.level.width(), cell - Dungeon.level.width(), null));
+				emitter.parent.add(new Lightning(cell - 1, cell + 1, null));
+			}
 
-                        Emitter emitter = CellEmitter.get( cell );
+			Sample.INSTANCE.play(Assets.SND_ROCKS);
+		}
 
-                        if( Dungeon.level.heroFOV[ cell ] )
-                        {
-                            emitter.parent.add(new Lightning(cell + Dungeon.level.width(), cell - Dungeon.level.width(), null));
-                            emitter.parent.add(new Lightning(cell - 1, cell + 1, null));
-                        }
+		if(Random.Int(30) == 0 && (Dungeon.level.map[cell] == Terrain.EMPTY
+		                           || Dungeon.level.map[cell] == Terrain.EMPTY_DECO))
+		{
+			Level.set(cell, Terrain.WATER);
+			GameScene.updateMap(cell);
+		}
+	}
 
-                        Sample.INSTANCE.play( Assets.SND_ROCKS );
-                    }
+	@Override
+	void affect(int cell)
+	{
+		affect(null, cell);
+	}
 
-                    if (Random.Int(30) == 0 && (Dungeon.level.map[cell] == Terrain.EMPTY
-                            || Dungeon.level.map[cell] == Terrain.EMPTY_DECO))
-                    {
-                        Level.set(cell, Terrain.WATER);
-                        GameScene.updateMap(cell);
-                    }
-                }
-            }
-        }
-    }
+	private static boolean metallic(Char ch)
+	{
+		return //Char exists and
+				ch != null &&
 
-    private static boolean metallic(Char ch)
-    {
-        return //Char exists and
-                ch != null &&
+				//Char is a statue holding a metal weapon
+				((ch instanceof Statue && metallic(((Statue) ch).getWeapon()))
 
-                //Char is a statue holding a metal weapon
-                ((ch instanceof Statue && metallic(((Statue)ch).getWeapon()))
+				 //Or char is a hero with something metal equipped
+				 || ((ch instanceof Hero) && (metallic(((Hero) ch).belongings.weapon) || metallic(((Hero) ch).belongings.armor)
+				                              || metallic(((Hero) ch).belongings.misc1) || metallic(((Hero) ch).belongings.misc2))));
+	}
 
-                //Or char is a hero with something metal equipped
-                || ((ch instanceof Hero) && (metallic(((Hero)ch).belongings.weapon) || metallic(((Hero)ch).belongings.armor)
-                || metallic(((Hero)ch).belongings.misc1) || metallic(((Hero)ch).belongings.misc2))));
-    }
+	private static boolean metallic(Heap heap)
+	{
+		if(heap != null)
+			for(Item item : heap.items)
+				if(metallic(item)) return true;
 
-    private static boolean metallic(Heap heap)
-    {
-        if(heap != null)
-            for(Item item : heap.items)
-                if(metallic(item)) return true;
+		return false;
+	}
 
-        return false;
-    }
+	private static boolean metallic(Item item)
+	{
+		return  //Item exists and
+				item != null &&
 
-    private static boolean metallic(Item item)
-    {
-        return  //Item exists and
-                item != null &&
+				//Item is a metallic weapon
+				((item instanceof Weapon && !(item instanceof Whip) && !(item instanceof AssassinsBlade) && !(item instanceof Gauntlet)
+				  && !(item instanceof Boomerang) && !(item instanceof ThrowingStone) && !(item instanceof Bolas))
 
-                //Item is a metallic weapon
-                ((item instanceof Weapon && !(item instanceof MagesStaff) && !(item instanceof Whip)
-                && !(item instanceof AssassinsBlade) && !(item instanceof Gauntlet) && !(item instanceof Boomerang)
-                && !(item instanceof ThrowingStone) && !(item instanceof Bolas))
+				 //Or item is a metallic armor
+				 || item instanceof MailArmor || item instanceof ScaleArmor
+				 || item instanceof PlateArmor || item instanceof WarriorArmor
 
-                //Or item is a metallic armor
-                || item instanceof MailArmor || item instanceof ScaleArmor
-                || item instanceof PlateArmor || item instanceof WarriorArmor
+				 //Even though most wands aren't metal, they still attract lightning due to being charged by electricity
+				 || item instanceof Wand
 
-                //Even though most wands aren't metal, they still attract lightning due to being charged by electricity
-                || item instanceof Wand
+				 //Or item is a ring
+				 || item instanceof Ring);
+	}
 
-                //Or item is a ring
-                || item instanceof Ring);
-    }
+	@Override
+	public void use(BlobEmitter emitter)
+	{
+		super.use(emitter);
 
-    @Override
-    public void use( BlobEmitter emitter )
-    {
-        super.use( emitter );
+		emitter.pour(Speck.factory(Speck.STORMCLOUD), 0.4f);
+	}
 
-        emitter.pour( Speck.factory( Speck.STORMCLOUD ), 0.4f );
-    }
+	@Override
+	public String tileDesc()
+	{
+		return Messages.get(this, "desc");
+	}
 
-    @Override
-    public String tileDesc()
-    {
-        return Messages.get(this, "desc");
-    }
-
-    @Override
-    public void onDeath()
-    {
-        Dungeon.fail( getClass() );
-        GLog.n( Messages.get(this, "ondeath") );
-    }
+	@Override
+	public void onDeath()
+	{
+		Dungeon.fail(getClass());
+		GLog.n(Messages.get(this, "ondeath"));
+	}
 }

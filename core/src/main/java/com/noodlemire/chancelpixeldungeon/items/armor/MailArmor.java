@@ -23,14 +23,16 @@ package com.noodlemire.chancelpixeldungeon.items.armor;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class MailArmor extends Armor {
+public class MailArmor extends Armor
+{
 
 	{
 		image = ItemSpriteSheet.ARMOR_MAIL;
 	}
-	
-	public MailArmor() {
-		super( 3 );
+
+	public MailArmor()
+	{
+		super(3);
 	}
 
 }

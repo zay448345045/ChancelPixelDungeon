@@ -36,88 +36,103 @@ import com.watabou.noosa.Camera;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
-public class Entanglement extends Glyph {
-	
-	private static ItemSprite.Glowing BROWN = new ItemSprite.Glowing( 0x663300 );
-	
-	@Override
-	public int proc(Armor armor, Char attacker, final Char defender, final int damage ) {
+public class Entanglement extends Glyph
+{
 
-		final int level = Math.max( 0, armor.level() );
-		
+	private static ItemSprite.Glowing BROWN = new ItemSprite.Glowing(0x663300);
+
+	@Override
+	public int proc(Armor armor, Char attacker, final Char defender, final int damage)
+	{
+
+		final int level = Math.max(0, armor.level());
+
 		final int pos = defender.pos;
-		
-		if (Random.Int( 4 ) == 0) {
-			
-			Actor delay = new Actor() {
-				
+
+		if(Random.Int(4) == 0)
+		{
+
+			Actor delay = new Actor()
+			{
+
 				{
-					actPriority = HERO_PRIO+1;
+					actPriority = HERO_PRIO + 1;
 				}
-				
+
 				@Override
-				protected boolean act() {
-					
-					Buff.affect( defender, Earthroot.Armor.class ).level( 4 * (level + 1) );
-					CellEmitter.bottom( defender.pos ).start( EarthParticle.FACTORY, 0.05f, 8 );
-					Camera.main.shake( 1, 0.4f );
-					
-					if (defender.buff(Roots.class) != null){
+				protected boolean act()
+				{
+
+					Buff.affect(defender, Earthroot.Armor.class).level(4 * (level + 1));
+					CellEmitter.bottom(defender.pos).start(EarthParticle.FACTORY, 0.05f, 8);
+					Camera.main.shake(1, 0.4f);
+
+					if(defender.buff(Roots.class) != null)
+					{
 						Buff.prolong(defender, Roots.class, 5);
-					} else {
+					}
+					else
+					{
 						DelayedRoot root = Buff.append(defender, DelayedRoot.class);
 						root.setup(pos);
 					}
-					
+
 					Actor.remove(this);
 					return true;
 				}
 			};
 			Actor.addDelayed(delay, defender.cooldown());
-			
+
 		}
 
 		return damage;
 	}
 
 	@Override
-	public Glowing glowing() {
+	public Glowing glowing()
+	{
 		return BROWN;
 	}
-	
-	public static class DelayedRoot extends Buff{
-		
+
+	public static class DelayedRoot extends Buff
+	{
+
 		{
-			actPriority = HERO_PRIO-1;
+			actPriority = HERO_PRIO - 1;
 		}
-		
+
 		private int pos;
-		
+
 		@Override
-		public boolean act() {
-			
-			if (target.pos == pos){
-				Buff.prolong( target, Roots.class, 5 );
+		public boolean act()
+		{
+
+			if(target.pos == pos)
+			{
+				Buff.prolong(target, Roots.class, 5);
 			}
-			
+
 			detach();
 			return true;
 		}
-		
-		private void setup( int pos ){
+
+		private void setup(int pos)
+		{
 			this.pos = pos;
 		}
-		
+
 		private static final String POS = "pos";
-		
+
 		@Override
-		public void restoreFromBundle(Bundle bundle) {
+		public void restoreFromBundle(Bundle bundle)
+		{
 			super.restoreFromBundle(bundle);
 			pos = bundle.getInt(POS);
 		}
-		
+
 		@Override
-		public void storeInBundle(Bundle bundle) {
+		public void storeInBundle(Bundle bundle)
+		{
 			super.storeInBundle(bundle);
 			bundle.put(POS, pos);
 		}

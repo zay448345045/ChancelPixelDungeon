@@ -26,15 +26,18 @@ import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.levels.painters.Painter;
 
 //other rooms should only extend emptyRoom if they do not add significant terrain
-public class EmptyRoom extends StandardRoom {
-	
+public class EmptyRoom extends StandardRoom
+{
+
 	@Override
-	public void paint(Level level) {
-		Painter.fill( level, this, Terrain.WALL );
-		Painter.fill( level, this, 1 , Terrain.EMPTY );
-		
-		for (Door door : connected.values()) {
-			door.set( Door.Type.REGULAR );
+	public void paint(Level level)
+	{
+		Painter.fill(level, this, Terrain.WALL);
+		Painter.fill(level, this, 1, Terrain.EMPTY);
+
+		for(Door door : connected.values())
+		{
+			door.set(Door.Type.REGULAR);
 		}
 	}
 }

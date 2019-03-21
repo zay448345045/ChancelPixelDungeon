@@ -29,62 +29,68 @@ import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfHealing;
 import com.noodlemire.chancelpixeldungeon.sprites.BatSprite;
 import com.watabou.utils.Random;
 
-public class Bat extends Mob {
-
+public class Bat extends Mob
+{
 	{
 		spriteClass = BatSprite.class;
-		
-		HP = HT = 30;
+
+		setHT(39, true);
 		defenseSkill = 15;
 		baseSpeed = 2f;
-		
+
 		EXP = 7;
 		maxLvl = 15;
-		
+
 		flying = true;
-		
+
 		loot = new PotionOfHealing();
-		lootChance = 0.1667f; //by default, see rollToDropLoot()
+		lootChance = 0.5f;
 	}
-	
+
 	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 5, 18 );
+	public int damageRoll()
+	{
+		return Random.NormalIntRange(5, 18);
 	}
-	
+
 	@Override
-	public int attackSkill( Char target ) {
+	public int attackSkill(Char target)
+	{
 		return 16;
 	}
-	
+
 	@Override
-	public int drRoll() {
+	public int drRoll()
+	{
 		return Random.NormalIntRange(0, 4);
 	}
-	
+
 	@Override
-	public int attackProc( Char enemy, int damage ) {
-		damage = super.attackProc( enemy, damage );
-		int reg = Math.min( damage, HT - HP );
-		
-		if (reg > 0) {
-			HP += reg;
-			sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
+	public int attackProc(Char enemy, int damage)
+	{
+		damage = super.attackProc(enemy, damage);
+		int reg = damage;
+
+		if(reg > 0)
+		{
+			heal(reg);
+			sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
 		}
-		
+
 		return damage;
 	}
-	
+
 	@Override
-	public void rollToDropLoot() {
-		lootChance *= ((7f - Dungeon.LimitedDrops.BAT_HP.count) / 7f);
+	public void rollToDropLoot()
+	{
+		lootChance *= ((4 - Dungeon.LimitedDrops.BAT_HP.count) / 4f);
 		super.rollToDropLoot();
 	}
-	
+
 	@Override
-	protected Item createLoot(){
+	protected Item createLoot()
+	{
 		Dungeon.LimitedDrops.BAT_HP.count++;
 		return super.createLoot();
 	}
-	
 }

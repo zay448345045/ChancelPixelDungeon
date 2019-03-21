@@ -21,27 +21,29 @@
 
 package com.noodlemire.chancelpixeldungeon.items.bags;
 
+import com.noodlemire.chancelpixeldungeon.items.GrassSeed;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.stones.Runestone;
 import com.noodlemire.chancelpixeldungeon.plants.Plant;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class VelvetPouch extends Bag {
-
+public class VelvetPouch extends Bag
+{
 	{
 		image = ItemSpriteSheet.POUCH;
-		
+
 		size = 20;
 	}
-	
+
 	@Override
-	public boolean grab( Item item ) {
-		return item instanceof Plant.Seed || item instanceof Runestone;
-	}
-	
-	@Override
-	public int price() {
-		return 30;
+	public boolean grab(Item item)
+	{
+		return item instanceof Plant.Seed || item instanceof GrassSeed || item instanceof Runestone;
 	}
 
+	@Override
+	public int price()
+	{
+		return 30;
+	}
 }

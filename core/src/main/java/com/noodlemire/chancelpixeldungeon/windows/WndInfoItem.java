@@ -21,7 +21,7 @@
 
 package com.noodlemire.chancelpixeldungeon.windows;
 
-import com.noodlemire.chancelpixeldungeon.SPDSettings;
+import com.noodlemire.chancelpixeldungeon.CPDSettings;
 import com.noodlemire.chancelpixeldungeon.items.Heap;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
@@ -31,65 +31,61 @@ import com.noodlemire.chancelpixeldungeon.ui.ItemSlot;
 import com.noodlemire.chancelpixeldungeon.ui.RenderedTextMultiline;
 import com.noodlemire.chancelpixeldungeon.ui.Window;
 
-public class WndInfoItem extends Window {
-	
-	private static final float GAP	= 2;
-	
+public class WndInfoItem extends Window
+{
+
+	private static final float GAP = 2;
+
 	private static final int WIDTH_P = 120;
 	private static final int WIDTH_L = 144;
-	
-	public WndInfoItem( Heap heap ) {
-		
+
+	public WndInfoItem(Heap heap)
+	{
 		super();
-		
-		if (heap.type == Heap.Type.HEAP || heap.type == Heap.Type.FOR_SALE) {
-			
+
+		if(heap.type == Heap.Type.HEAP || heap.type == Heap.Type.FOR_SALE)
+		{
 			Item item = heap.peek();
-			
+
 			int color = TITLE_COLOR;
-			if (item.levelKnown && item.level() > 0) {
+
+			if(item.visiblyUpgraded() > 0)
 				color = ItemSlot.UPGRADED;
-			} else if (item.levelKnown && item.level() < 0) {
-				color = ItemSlot.DEGRADED;
-			}
-			fillFields( item.image(), item.glowing(), color, item.toString(), item.info() );
-			
-		} else {
 
-			fillFields( heap.image(), heap.glowing(), TITLE_COLOR, heap.toString(), heap.info() );
-			
+			fillFields(item.image(), item.glowing(), color, item.toString(), item.info());
 		}
+		else
+			fillFields(heap.image(), heap.glowing(), TITLE_COLOR, heap.toString(), heap.info());
 	}
-	
-	public WndInfoItem( Item item ) {
-		
+
+	public WndInfoItem(Item item)
+	{
 		super();
-		
-		int color = TITLE_COLOR;
-		if (item.levelKnown && item.level() > 0) {
-			color = ItemSlot.UPGRADED;
-		} else if (item.levelKnown && item.level() < 0) {
-			color = ItemSlot.DEGRADED;
-		}
-		
-		fillFields( item.image(), item.glowing(), color, item.toString(), item.info() );
-	}
-	
-	private void fillFields( int image, ItemSprite.Glowing glowing, int titleColor, String title, String info ) {
 
-		int width = SPDSettings.landscape() ? WIDTH_L : WIDTH_P;
+		int color = TITLE_COLOR;
+
+		if(item.visiblyUpgraded() > 0)
+			color = ItemSlot.UPGRADED;
+
+		fillFields(item.image(), item.glowing(), color, item.toString(), item.info());
+	}
+
+	private void fillFields(int image, ItemSprite.Glowing glowing, int titleColor, String title, String info)
+	{
+
+		int width = CPDSettings.landscape() ? WIDTH_L : WIDTH_P;
 
 		IconTitle titlebar = new IconTitle();
-		titlebar.icon( new ItemSprite( image, glowing ) );
-		titlebar.label( Messages.titleCase( title ), titleColor );
-		titlebar.setRect( 0, 0, width, 0 );
-		add( titlebar );
-		
-		RenderedTextMultiline txtInfo = PixelScene.renderMultiline( info, 6 );
+		titlebar.icon(new ItemSprite(image, glowing));
+		titlebar.label(Messages.titleCase(title), titleColor);
+		titlebar.setRect(0, 0, width, 0);
+		add(titlebar);
+
+		RenderedTextMultiline txtInfo = PixelScene.renderMultiline(info, 6);
 		txtInfo.maxWidth(width);
 		txtInfo.setPos(titlebar.left(), titlebar.bottom() + GAP);
-		add( txtInfo );
-		
-		resize( width, (int)(txtInfo.top() + txtInfo.height()) );
+		add(txtInfo);
+
+		resize(width, (int) (txtInfo.top() + txtInfo.height()));
 	}
 }

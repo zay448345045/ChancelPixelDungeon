@@ -44,126 +44,144 @@ import com.watabou.noosa.ui.Component;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class WndHero extends WndTabbed {
-	
-	private static final int WIDTH		= 115;
-	private static final int HEIGHT		= 100;
-	
+public class WndHero extends WndTabbed
+{
+
+	private static final int WIDTH = 115;
+	private static final int HEIGHT = 100;
+
 	private StatsTab stats;
 	private BuffsTab buffs;
-	
+
 	private SmartTexture icons;
 	private TextureFilm film;
-	
-	public WndHero() {
-		
+
+	public WndHero()
+	{
+
 		super();
-		
-		resize( WIDTH, HEIGHT );
-		
-		icons = TextureCache.get( Assets.BUFFS_LARGE );
-		film = new TextureFilm( icons, 16, 16 );
-		
+
+		resize(WIDTH, HEIGHT);
+
+		icons = TextureCache.get(Assets.BUFFS_LARGE);
+		film = new TextureFilm(icons, 16, 16);
+
 		stats = new StatsTab();
-		add( stats );
-		
+		add(stats);
+
 		buffs = new BuffsTab();
-		add( buffs );
+		add(buffs);
 		buffs.setRect(0, 0, WIDTH, HEIGHT);
 		buffs.setupList();
-		
-		add( new LabeledTab( Messages.get(this, "stats") ) {
-			protected void select( boolean value ) {
-				super.select( value );
+
+		add(new LabeledTab(Messages.get(this, "stats"))
+		{
+			protected void select(boolean value)
+			{
+				super.select(value);
 				stats.visible = stats.active = selected;
 			}
-        } );
-		add( new LabeledTab( Messages.get(this, "buffs") ) {
-			protected void select( boolean value ) {
-				super.select( value );
+		});
+		add(new LabeledTab(Messages.get(this, "buffs"))
+		{
+			protected void select(boolean value)
+			{
+				super.select(value);
 				buffs.visible = buffs.active = selected;
 			}
-        } );
+		});
 
 		layoutTabs();
-		
-		select( 0 );
+
+		select(0);
 	}
-	
-	private class StatsTab extends Group {
-		
+
+	private class StatsTab extends Group
+	{
+
 		private static final int GAP = 5;
-		
+
 		private float pos;
-		
-		public StatsTab() {
-			
+
+		public StatsTab()
+		{
+
 			Hero hero = Dungeon.hero;
 
 			IconTitle title = new IconTitle();
-			title.icon( HeroSprite.avatar(hero.heroClass, hero.tier()) );
-			if (hero.givenName().equals(hero.className()))
-				title.label( Messages.get(this, "title", hero.lvl, hero.className() ).toUpperCase( Locale.ENGLISH ) );
+			title.icon(HeroSprite.avatar(hero.heroClass, hero.tier()));
+			if(hero.givenName().equals(hero.className()))
+				title.label(Messages.get(this, "title", hero.lvl, hero.className()).toUpperCase(Locale.ENGLISH));
 			else
 				title.label((hero.givenName() + "\n" + Messages.get(this, "title", hero.lvl, hero.className())).toUpperCase(Locale.ENGLISH));
 			title.color(Window.SHPX_COLOR);
-			title.setRect( 0, 0, WIDTH, 0 );
+			title.setRect(0, 0, WIDTH, 0);
 			add(title);
 
-			pos = title.bottom() + 2*GAP;
+			pos = title.bottom() + 2 * GAP;
 
-			statSlot( Messages.get(this, "str"), hero.STR() );
-			if (hero.SHLD > 0) statSlot( Messages.get(this, "health"), hero.HP + "+" + hero.SHLD + "/" + hero.HT );
-			else statSlot( Messages.get(this, "health"), (hero.HP) + "/" + hero.HT );
-			statSlot( Messages.get(this, "exp"), hero.exp + "/" + hero.maxExp() );
+			statSlot(Messages.get(this, "str"), hero.STR());
+			if(hero.SHLD() > 0)
+				statSlot(Messages.get(this, "health"), hero.HP() + "+" + hero.SHLD() + "/" + hero.HT());
+			else statSlot(Messages.get(this, "health"), (hero.HP()) + "/" + hero.HT());
+			statSlot(Messages.get(this, "exp"), hero.exp + "/" + hero.maxExp());
 
 			pos += GAP;
 
-			statSlot( Messages.get(this, "gold"), Statistics.goldCollected );
-			statSlot( Messages.get(this, "depth"), Statistics.deepestFloor );
+			statSlot(Messages.get(this, "gold"), Statistics.goldCollected);
+			statSlot(Messages.get(this, "depth"), Statistics.deepestFloor);
 
 			pos += GAP;
 		}
 
-		private void statSlot( String label, String value ) {
+		private void statSlot(String label, String value)
+		{
 
-			RenderedText txt = PixelScene.renderText( label, 8 );
+			RenderedText txt = PixelScene.renderText(label, 8);
 			txt.y = pos;
-			add( txt );
+			add(txt);
 
-			txt = PixelScene.renderText( value, 8 );
+			txt = PixelScene.renderText(value, 8);
 			txt.x = WIDTH * 0.6f;
 			txt.y = pos;
 			PixelScene.align(txt);
-			add( txt );
-			
+			add(txt);
+
 			pos += GAP + txt.baseLine();
 		}
-		
-		private void statSlot( String label, int value ) {
-			statSlot( label, Integer.toString( value ) );
+
+		private void statSlot(String label, int value)
+		{
+			statSlot(label, Integer.toString(value));
 		}
-		
-		public float height() {
+
+		public float height()
+		{
 			return pos;
 		}
 	}
-	
-	private class BuffsTab extends Component {
-		
+
+	private class BuffsTab extends Component
+	{
+
 		private static final int GAP = 2;
-		
+
 		private float pos;
 		private ScrollPane buffList;
 		private ArrayList<BuffSlot> slots = new ArrayList<>();
-		
-		public BuffsTab() {
-			buffList = new ScrollPane( new Component() ){
+
+		public BuffsTab()
+		{
+			buffList = new ScrollPane(new Component())
+			{
 				@Override
-				public void onClick( float x, float y ) {
+				public void onClick(float x, float y)
+				{
 					int size = slots.size();
-					for (int i=0; i < size; i++) {
-						if (slots.get( i ).onClick( x, y )) {
+					for(int i = 0; i < size; i++)
+					{
+						if(slots.get(i).onClick(x, y))
+						{
 							break;
 						}
 					}
@@ -171,17 +189,21 @@ public class WndHero extends WndTabbed {
 			};
 			add(buffList);
 		}
-		
+
 		@Override
-		protected void layout() {
+		protected void layout()
+		{
 			super.layout();
 			buffList.setRect(0, 0, width, height);
 		}
-		
-		private void setupList() {
+
+		private void setupList()
+		{
 			Component content = buffList.content();
-			for (Buff buff : Dungeon.hero.buffs()) {
-				if (buff.icon() != BuffIndicator.NONE) {
+			for(Buff buff : Dungeon.hero.buffs())
+			{
+				if(buff.icon() != BuffIndicator.NONE)
+				{
 					BuffSlot slot = new BuffSlot(buff);
 					slot.setRect(0, pos, WIDTH, slot.icon.height());
 					content.add(slot);
@@ -193,44 +215,51 @@ public class WndHero extends WndTabbed {
 			buffList.setSize(buffList.width(), buffList.height());
 		}
 
-		private class BuffSlot extends Component {
+		private class BuffSlot extends Component
+		{
 
 			private Buff buff;
 
 			Image icon;
 			RenderedText txt;
 
-			public BuffSlot( Buff buff ){
+			public BuffSlot(Buff buff)
+			{
 				super();
 				this.buff = buff;
 				int index = buff.icon();
 
-				icon = new Image( icons );
-				icon.frame( film.get( index ) );
+				icon = new Image(icons);
+				icon.frame(film.get(index));
 				buff.tintIcon(icon);
 				icon.y = this.y;
-				add( icon );
+				add(icon);
 
-				txt = PixelScene.renderText( buff.toString(), 8 );
+				txt = PixelScene.renderText(buff.toString(), 8);
 				txt.x = icon.width + GAP;
-				txt.y = this.y + (int)(icon.height - txt.baseLine()) / 2;
-				add( txt );
+				txt.y = this.y + (int) (icon.height - txt.baseLine()) / 2;
+				add(txt);
 
 			}
 
 			@Override
-			protected void layout() {
+			protected void layout()
+			{
 				super.layout();
 				icon.y = this.y;
 				txt.x = icon.width + GAP;
-				txt.y = pos + (int)(icon.height - txt.baseLine()) / 2;
+				txt.y = pos + (int) (icon.height - txt.baseLine()) / 2;
 			}
-			
-			protected boolean onClick ( float x, float y ) {
-				if (inside( x, y )) {
+
+			protected boolean onClick(float x, float y)
+			{
+				if(inside(x, y))
+				{
 					GameScene.show(new WndInfoBuff(buff));
 					return true;
-				} else {
+				}
+				else
+				{
 					return false;
 				}
 			}

@@ -22,6 +22,7 @@
 package com.noodlemire.chancelpixeldungeon.items.artifacts;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
+import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Blindness;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
@@ -30,9 +31,9 @@ import com.noodlemire.chancelpixeldungeon.effects.particles.ElmoParticle;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.Scroll;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfBlessing;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfCleansing;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfIdentify;
-import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfMagicMapping;
-import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
@@ -46,199 +47,239 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class UnstableSpellbook extends Artifact {
-
+public class UnstableSpellbook extends Artifact
+{
 	{
 		image = ItemSpriteSheet.ARTIFACT_SPELLBOOK;
 
 		levelCap = 10;
 
-		charge = (int)(level()*0.4f)+2;
+		charge = (int) (level() * 0.4f) + 2;
 		partialCharge = 0;
-		chargeCap = (int)(level()*0.4f)+2;
+		chargeCap = (int) (level() * 0.4f) + 2;
 
 		defaultAction = AC_READ;
 	}
 
-	public static final String AC_READ = "READ";
-	public static final String AC_ADD = "ADD";
+	private static final String AC_READ = "READ";
+	private static final String AC_ADD = "ADD";
 
 	private final ArrayList<Class> scrolls = new ArrayList<>();
 
 	protected WndBag.Mode mode = WndBag.Mode.SCROLL;
 
-	public UnstableSpellbook() {
+	public UnstableSpellbook()
+	{
 		super();
 
 		Class<?>[] scrollClasses = Generator.Category.SCROLL.classes;
 		float[] probs = Generator.Category.SCROLL.probs.clone(); //array of primitives, clone gives deep copy.
+
+		for(int i = 0; i < probs.length; i++)
+			try
+			{
+				//Don't include scrolls of blessing or non-existent scrolls in this list
+				if(scrollClasses[i] == ScrollOfBlessing.class
+				   || ((Scroll) scrollClasses[i].newInstance()).image == ItemSpriteSheet.SCROLL_MYSTERY)
+					probs[i] = 0;
+			}
+			catch(Exception e)
+			{
+				ChancelPixelDungeon.reportException(e);
+				probs[i] = 0;
+			}
+
 		int i = Random.chances(probs);
 
-		while (i != -1){
+		while(i != -1)
+		{
 			scrolls.add(scrollClasses[i]);
 			probs[i] = 0;
 
 			i = Random.chances(probs);
 		}
-    }
+	}
 
 	@Override
-	public ArrayList<String> actions( Hero hero ) {
-		ArrayList<String> actions = super.actions( hero );
-		if (isEquipped( hero ) && charge > 0 && !cursed)
+	public ArrayList<String> actions(Hero hero)
+	{
+		ArrayList<String> actions = super.actions(hero);
+		if(isEquipped(hero) && charge > 0 && (!cursed || isBound()))
 			actions.add(AC_READ);
-		if (isEquipped( hero ) && level() < levelCap && !cursed)
+		if(isEquipped(hero) && level() < levelCap && (!cursed || isBound()))
 			actions.add(AC_ADD);
 		return actions;
 	}
 
 	@Override
-	public void execute( Hero hero, String action ) {
+	public void execute(Hero hero, String action)
+	{
+		super.execute(hero, action);
 
-		super.execute( hero, action );
-
-		if (action.equals( AC_READ )) {
-
-			if (hero.buff( Blindness.class ) != null) GLog.w( Messages.get(this, "blinded") );
-			else if (!isEquipped( hero ))             GLog.i( Messages.get(Artifact.class, "need_to_equip") );
-			else if (charge == 0)                     GLog.i( Messages.get(this, "no_charge") );
-			else if (cursed)                          GLog.i( Messages.get(this, "cursed") );
-			else {
+		if(action.equals(AC_READ))
+		{
+			if(hero.buff(Blindness.class) != null) GLog.w(Messages.get(this, "blinded"));
+			else if(!isEquipped(hero)) GLog.i(Messages.get(Artifact.class, "need_to_equip"));
+			else if(charge == 0) GLog.i(Messages.get(this, "no_charge"));
+			else if(cursed && !isBound()) GLog.i(Messages.get(this, "cursed"));
+			else
+			{
+				unBind();
 				charge--;
 
 				Scroll scroll;
-				do {
+				do
+				{
 					scroll = (Scroll) Generator.random(Generator.Category.SCROLL);
-				} while (scroll == null
-						//reduce the frequency of these scrolls by half
-						||((scroll instanceof ScrollOfIdentify ||
-							scroll instanceof ScrollOfRemoveCurse ||
-							scroll instanceof ScrollOfMagicMapping) && Random.Int(2) == 0)
-						//don't roll teleportation scrolls on boss floors
-						|| (scroll instanceof ScrollOfTeleportation && Dungeon.bossLevel()));
-				
+				}
+				while(scroll == null
+				      //reduce the frequency of these scrolls by half
+				      || ((scroll instanceof ScrollOfIdentify ||
+				           scroll instanceof ScrollOfCleansing) && Random.Int(2) == 0)
+				      //don't roll teleportation scrolls on boss floors
+				      || (scroll instanceof ScrollOfTeleportation && Dungeon.bossLevel()));
+
 				scroll.ownedByBook = true;
 				curItem = scroll;
 				curUser = hero;
-				
+
 				//if this scroll hasn't been given to the book
-				if (scrolls.contains(scroll.getClass())) {
+				if(scrolls.contains(scroll.getClass()))
 					scroll.doRead();
-				} else {
+				else
 					scroll.empoweredRead();
-				}
+
 				updateQuickslot();
 			}
-
-		} else if (action.equals( AC_ADD )) {
-			GameScene.selectItem(itemSelector, mode, Messages.get(this, "prompt"));
 		}
+		else if(action.equals(AC_ADD))
+			GameScene.selectItem(itemSelector, mode, Messages.get(this, "prompt"));
 	}
 
 	@Override
-	protected ArtifactBuff passiveBuff() {
+	protected ArtifactBuff passiveBuff()
+	{
 		return new bookRecharge();
 	}
 
 	@Override
-	public Item upgrade() {
-		chargeCap = (int)((level()+1)*0.4f)+2;
+	public void charge(Hero target, float amount)
+	{
+		super.charge(target, amount * 0.1f);
+	}
+
+	@Override
+	public Item upgrade()
+	{
+		chargeCap = (int) ((level() + 1) * 0.4f) + 2;
 
 		//for artifact transmutation.
-		while (scrolls.size() > (levelCap-1-level()))
+		while(scrolls.size() > (levelCap - 1 - level()))
 			scrolls.remove(0);
 
 		return super.upgrade();
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		String desc = super.desc();
 
-		if (isEquipped(Dungeon.hero)) {
-			if (cursed) {
+		if(isEquipped(Dungeon.hero))
+		{
+			if(cursed)
 				desc += "\n\n" + Messages.get(this, "desc_cursed");
-			}
-			
-			if (level() < levelCap && scrolls.size() > 0) {
+
+			if(level() < levelCap && scrolls.size() > 0)
+			{
 				desc += "\n\n" + Messages.get(this, "desc_index");
 				desc += "\n" + "_" + Messages.get(scrolls.get(0), "name") + "_";
-				if (scrolls.size() > 1)
+				if(scrolls.size() > 1)
 					desc += "\n" + "_" + Messages.get(scrolls.get(1), "name") + "_";
 			}
 		}
-		
-		if (level() > 0) {
+
+		if(level() > 0)
 			desc += "\n\n" + Messages.get(this, "desc_empowered");
-		}
 
 		return desc;
 	}
 
-	private static final String SCROLLS =   "scrolls";
+	private static final String SCROLLS = "scrolls";
 
 	@Override
-	public void storeInBundle( Bundle bundle ) {
+	public void storeInBundle(Bundle bundle)
+	{
 		super.storeInBundle(bundle);
-		bundle.put( SCROLLS, scrolls.toArray(new Class[scrolls.size()]) );
+		bundle.put(SCROLLS, scrolls.toArray(new Class[scrolls.size()]));
 	}
 
 	@Override
-	public void restoreFromBundle( Bundle bundle ) {
+	public void restoreFromBundle(Bundle bundle)
+	{
 		super.restoreFromBundle(bundle);
 		scrolls.clear();
 		Collections.addAll(scrolls, bundle.getClassArray(SCROLLS));
 	}
 
-	public class bookRecharge extends ArtifactBuff{
+	public class bookRecharge extends ArtifactBuff
+	{
 		@Override
-		public boolean act() {
+		public boolean act()
+		{
 			LockedFloor lock = target.buff(LockedFloor.class);
-			if (charge < chargeCap && !cursed && (lock == null || lock.regenOn())) {
-				partialCharge += 1 / (160f - (chargeCap - charge)*15f);
+			if(charge < chargeCap && (!cursed || isBound()) && (lock == null || lock.regenOn()))
+			{
+				partialCharge += 1 / (160f - (chargeCap - charge) * 15f);
 
-				if (partialCharge >= 1) {
-					partialCharge --;
-					charge ++;
+				if(partialCharge >= 1)
+				{
+					partialCharge--;
+					charge++;
 
-					if (charge == chargeCap){
+					if(charge == chargeCap)
 						partialCharge = 0;
-					}
 				}
 			}
 
 			updateQuickslot();
 
-			spend( TICK );
+			spend(TICK);
 
 			return true;
 		}
 	}
 
-	protected WndBag.Listener itemSelector = new WndBag.Listener() {
+	protected WndBag.Listener itemSelector = new WndBag.Listener()
+	{
 		@Override
-		public void onSelect(Item item) {
-			if (item != null && item instanceof Scroll && item.isIdentified()){
+		public void onSelect(Item item)
+		{
+			if(item != null && item instanceof Scroll && item.isIdentified())
+			{
 				Hero hero = Dungeon.hero;
-				for (int i = 0; ( i <= 1 && i < scrolls.size() ); i++){
-					if (scrolls.get(i).equals(item.getClass())){
-						hero.sprite.operate( hero.pos );
+				for(int i = 0; (i <= 1 && i < scrolls.size()); i++)
+				{
+					if(scrolls.get(i).equals(item.getClass()))
+					{
+						hero.sprite.operate(hero.pos);
 						hero.busy();
-						hero.spend( 2f );
+						hero.spend(2f);
 						Sample.INSTANCE.play(Assets.SND_BURNING);
-						hero.sprite.emitter().burst( ElmoParticle.FACTORY, 12 );
+						hero.sprite.emitter().burst(ElmoParticle.FACTORY, 12);
 
 						scrolls.remove(i);
 						item.detach(hero.belongings.backpack);
 
 						upgrade();
-						GLog.i( Messages.get(UnstableSpellbook.class, "infuse_scroll") );
+						GLog.i(Messages.get(UnstableSpellbook.class, "infuse_scroll"));
 						return;
 					}
 				}
-				GLog.w( Messages.get(UnstableSpellbook.class, "unable_scroll") );
-			} else if (item instanceof Scroll && !item.isIdentified())
-				GLog.w( Messages.get(UnstableSpellbook.class, "unknown_scroll") );
+				GLog.w(Messages.get(UnstableSpellbook.class, "unable_scroll"));
+			}
+			else if(item instanceof Scroll && !item.isIdentified())
+				GLog.w(Messages.get(UnstableSpellbook.class, "unknown_scroll"));
 		}
 	};
 }

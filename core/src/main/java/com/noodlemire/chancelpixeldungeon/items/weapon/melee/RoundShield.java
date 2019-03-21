@@ -24,22 +24,23 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class RoundShield extends MeleeWeapon {
-
+public class RoundShield extends MeleeWeapon
+{
 	{
 		image = ItemSpriteSheet.ROUND_SHIELD;
-
 		tier = 3;
 	}
 
 	@Override
-	public int max(int lvl) {
-		return  3*(tier+1) +    //12 base, down from 20
-				lvl*(tier-1);   //+2 per level, down from +4
+	public int max(int lvl)
+	{
+		return 3 * (tier + 1) +    //12 base, down from 20
+				lvl * (tier - 1);   //+2 per level, down from +4
 	}
 
 	@Override
-	public int defenseFactor( Char owner ) {
-		return 5+2*level();     //5 extra defence, plus 2 per level;
+	public int defenseFactor(Char owner)
+	{
+		return 5 + 2 * level();     //5 extra defence, plus 2 per level;
 	}
 }

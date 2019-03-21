@@ -29,74 +29,91 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Crossbow;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Dart extends MissileWeapon {
-
+public class Dart extends MissileWeapon
+{
 	{
 		image = ItemSpriteSheet.DART;
 	}
 
 	@Override
-	public int min(int lvl) {
+	public int min(int lvl)
+	{
 		return bow != null ? 4 + bow.level() : 1;
 	}
 
 	@Override
-	public int max(int lvl) {
-		return bow != null ? 12 + 3*bow.level() : 2;
+	public int max(int lvl)
+	{
+		return bow != null ? 12 + 3 * bow.level() : 2;
 	}
 
 	@Override
-	public int STRReq(int lvl) {
+	public int STRReq(int lvl)
+	{
 		return 9;
 	}
-	
+
 	@Override
-	protected float durabilityPerUse() {
+	protected float durabilityPerUse()
+	{
 		return 0;
 	}
-	
+
 	private static Crossbow bow;
-	
-	private void updateCrossbow(){
-		if (Dungeon.hero.belongings.weapon instanceof Crossbow){
+
+	private void updateCrossbow()
+	{
+		if(Dungeon.hero.belongings.weapon instanceof Crossbow)
+		{
 			bow = (Crossbow) Dungeon.hero.belongings.weapon;
-		} else {
+		}
+		else
+		{
 			bow = null;
 		}
 	}
-	
+
 	@Override
-	public int throwPos(Hero user, int dst) {
-		if (bow != null && bow.hasEnchant(Projecting.class)
-				&& !Dungeon.level.solid[dst] && Dungeon.level.distance(user.pos, dst) <= 4){
+	public int throwPos(Hero user, int dst)
+	{
+		if(bow != null && bow.hasEnchant(Projecting.class)
+		   && !Dungeon.level.solid[dst] && Dungeon.level.distance(user.pos, dst) <= 4)
+		{
 			return dst;
-		} else {
+		}
+		else
+		{
 			return super.throwPos(user, dst);
 		}
 	}
-	
+
 	@Override
-	public int proc(Char attacker, Char defender, int damage) {
-		if (bow != null && bow.enchantment != null){
+	public int proc(Char attacker, Char defender, int damage)
+	{
+		if(bow != null && bow.enchantment != null)
+		{
 			damage = bow.enchantment.proc(bow, attacker, defender, damage);
 		}
 		return super.proc(attacker, defender, damage);
 	}
-	
+
 	@Override
-	protected void onThrow(int cell) {
+	protected void onThrow(int cell)
+	{
 		updateCrossbow();
 		super.onThrow(cell);
 	}
-	
+
 	@Override
-	public String info() {
+	public String info()
+	{
 		updateCrossbow();
 		return super.info();
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return 4 * quantity;
 	}
 }

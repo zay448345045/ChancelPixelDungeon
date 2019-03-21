@@ -29,50 +29,55 @@ import com.noodlemire.chancelpixeldungeon.actors.mobs.npcs.Imp;
 import com.noodlemire.chancelpixeldungeon.sprites.GolemSprite;
 import com.watabou.utils.Random;
 
-public class Golem extends Mob {
-	
+public class Golem extends Mob
+{
 	{
 		spriteClass = GolemSprite.class;
-		
-		HP = HT = 85;
+
+		setHT(101, true);
 		defenseSkill = 18;
-		
+
 		EXP = 12;
 		maxLvl = 22;
-		
+
 		properties.add(Property.INORGANIC);
 	}
-	
+
 	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 25, 40 );
+	public int damageRoll()
+	{
+		return Random.NormalIntRange(25, 40);
 	}
-	
+
 	@Override
-	public int attackSkill( Char target ) {
+	public int attackSkill(Char target)
+	{
 		return 28;
 	}
-	
+
 	@Override
-	protected float attackDelay() {
+	protected float attackDelay()
+	{
 		return 1.5f;
 	}
-	
+
 	@Override
-	public int drRoll() {
+	public int drRoll()
+	{
 		return Random.NormalIntRange(0, 12);
 	}
-	
+
 	@Override
-	public void rollToDropLoot() {
-		Imp.Quest.process( this );
-		
+	public void rollToDropLoot()
+	{
+		Imp.Quest.process(this);
+
 		super.rollToDropLoot();
 	}
-	
+
 	{
-		immunities.add( Amok.class );
-		immunities.add( Terror.class );
-		immunities.add( Sleep.class );
+		immunities.add(Amok.class);
+		immunities.add(Terror.class);
+		immunities.add(Sleep.class);
 	}
 }

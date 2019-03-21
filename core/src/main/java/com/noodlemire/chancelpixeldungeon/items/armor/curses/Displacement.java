@@ -28,15 +28,17 @@ import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.Random;
 
-public class Displacement extends Armor.Glyph {
-
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
+public class Displacement extends Armor.Glyph
+{
+	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing(0x000000);
 
 	@Override
-	public int proc(Armor armor, Char attacker, Char defender, int damage ) {
+	public int proc(Armor armor, Char attacker, Char defender, int damage)
+	{
 
-		if (defender == Dungeon.hero && Random.Int(20) == 0){
-			ScrollOfTeleportation.teleportHero(Dungeon.hero);
+		if(defender == Dungeon.hero && Random.Int(20) == 0)
+		{
+			ScrollOfTeleportation.randomTeleport(Dungeon.hero);
 			return 0;
 		}
 
@@ -44,12 +46,14 @@ public class Displacement extends Armor.Glyph {
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return BLACK;
 	}
 
 	@Override
-	public boolean curse() {
+	public boolean curse()
+	{
 		return true;
 	}
 }

@@ -32,7 +32,8 @@ import com.noodlemire.chancelpixeldungeon.utils.BArray;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 
-public class BlazingTrap extends Trap {
+public class BlazingTrap extends Trap
+{
 
 	{
 		color = ORANGE;
@@ -41,11 +42,14 @@ public class BlazingTrap extends Trap {
 
 
 	@Override
-	public void activate() {
-		PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.solid, null ), 2 );
-		for (int i = 0; i < PathFinder.distance.length; i++) {
-			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-				if (Dungeon.level.pit[i] || Dungeon.level.water[i])
+	public void activate()
+	{
+		PathFinder.buildDistanceMap(pos, BArray.not(Dungeon.level.solid, null), 2);
+		for(int i = 0; i < PathFinder.distance.length; i++)
+		{
+			if(PathFinder.distance[i] < Integer.MAX_VALUE)
+			{
+				if(Dungeon.level.pit[i] || Dungeon.level.water[i])
 					GameScene.add(Blob.seed(i, 1, Fire.class));
 				else
 					GameScene.add(Blob.seed(i, 5, Fire.class));

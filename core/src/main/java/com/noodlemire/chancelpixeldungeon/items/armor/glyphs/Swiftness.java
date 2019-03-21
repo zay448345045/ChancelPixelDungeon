@@ -25,18 +25,21 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 
-public class Swiftness extends Armor.Glyph {
+public class Swiftness extends Armor.Glyph
+{
 
-	private static ItemSprite.Glowing YELLOW = new ItemSprite.Glowing( 0xFFFF00 );
+	private static ItemSprite.Glowing YELLOW = new ItemSprite.Glowing(0xFFFF00);
 
 	@Override
-	public int proc(Armor armor, Char attacker, Char defender, int damage) {
+	public int proc(Armor armor, Char attacker, Char defender, int damage)
+	{
 		//no proc effect, see hero.defenseskill and armor.speedfactor for effect.
 		return damage;
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return YELLOW;
 	}
 

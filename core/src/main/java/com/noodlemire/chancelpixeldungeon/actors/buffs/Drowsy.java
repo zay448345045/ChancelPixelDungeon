@@ -22,24 +22,30 @@
 package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfExpulsion;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Random;
 
-public class Drowsy extends Buff {
-
+public class Drowsy extends Buff implements Expulsion
+{
 	{
 		type = buffType.NEUTRAL;
 	}
 
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.DROWSY;
 	}
 
-	public boolean attachTo( Char target ) {
-		if (!target.isImmune(Sleep.class) && super.attachTo(target)) {
-			if (cooldown() == 0)
+	public boolean attachTo(Char target)
+	{
+		if(!target.isImmune(Sleep.class) && super.attachTo(target))
+		{
+			if(cooldown() == 0)
 				spend(Random.Int(3, 6));
 			return true;
 		}
@@ -47,7 +53,8 @@ public class Drowsy extends Buff {
 	}
 
 	@Override
-	public boolean act(){
+	public boolean act()
+	{
 		Buff.affect(target, MagicalSleep.class);
 
 		detach();
@@ -55,12 +62,21 @@ public class Drowsy extends Buff {
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns(cooldown()+1));
+	public String desc()
+	{
+		return Messages.get(this, "desc", dispTurns(cooldown() + 1));
+	}
+
+	@Override
+	public Class<? extends Blob> expulse()
+	{
+		ScrollOfLullaby.singasong(PotionOfExpulsion.MAX_RANGE, false);
+		return null;
 	}
 }

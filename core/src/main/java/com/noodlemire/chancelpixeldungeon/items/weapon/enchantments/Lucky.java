@@ -23,82 +23,96 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.enchantments;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite.Glowing;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
-public class Lucky extends Weapon.Enchantment {
+public class Lucky extends Weapon.Enchantment
+{
+	private static ItemSprite.Glowing GREEN = new ItemSprite.Glowing(0x00FF00);
 
-	private static ItemSprite.Glowing GREEN = new ItemSprite.Glowing( 0x00FF00 );
-	
 	@Override
-	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
-		int level = Math.max( 0, weapon.level() );
-		
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
+		//Does nothing as a proc, rather it uses luckFactor as a "pre-proc" to work better with dynamic strength
+		//See kindofweapon.damageroll
+		return damage;
+	}
+
+	public int luckFactor(Weapon weapon, Char attacker)
+	{
+		if(weapon.isBound())
+			return 1;
+
+		int level = Math.max(0, weapon.level());
+
 		float zeroChance = 0.5f;
-		
+
 		Luck buff = attacker.buff(Luck.class);
-		if (buff != null){
+		if(buff != null)
 			zeroChance = buff.zeroChance;
-		}
-		
-		if (Random.Float() >= zeroChance){
-			
-			if (buff != null) {
+
+		if(Random.Float() >= zeroChance)
+		{
+			if(buff != null)
 				buff.detach();
-			}
-			
-			return 2*damage;
-		} else {
-			
+
+			return 2;
+		}
+		else
+		{
 			buff = Buff.affect(attacker, Luck.class);
-			buff.zeroChance = zeroChance * (0.5f - 0.001f*level);
-			
+			buff.zeroChance = zeroChance * (0.5f - 0.001f * level);
+
+			//If 0 is chosen due to lucky, act as if the player waited.
+			if(attacker instanceof Hero)
+				((Hero)attacker).dynamic(weapon.speedFactor(attacker));
+
 			return 0;
 		}
-
 	}
 
 	@Override
-	public Glowing glowing() {
+	public Glowing glowing()
+	{
 		return GREEN;
 	}
-	
-	
-	public static class Luck extends Buff {
-		
+
+
+	public static class Luck extends Buff
+	{
 		float zeroChance;
-		
+
 		@Override
-		public boolean act() {
-			
+		public boolean act()
+		{
 			zeroChance += 0.01f;
-			
-			if (zeroChance >= 0.5f){
+
+			if(zeroChance >= 0.5f)
 				detach();
-			} else {
+			else
 				spend(TICK);
-			}
-			
+
 			return true;
 		}
-		
+
 		private static final String CHANCE = "chance";
-		
+
 		@Override
-		public void restoreFromBundle(Bundle bundle) {
+		public void restoreFromBundle(Bundle bundle)
+		{
 			super.restoreFromBundle(bundle);
 			zeroChance = bundle.getFloat(CHANCE);
 		}
-		
+
 		@Override
-		public void storeInBundle(Bundle bundle) {
+		public void storeInBundle(Bundle bundle)
+		{
 			super.storeInBundle(bundle);
 			bundle.put(CHANCE, zeroChance);
 		}
-		
 	}
-	
 }

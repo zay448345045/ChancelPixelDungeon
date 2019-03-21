@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,26 +26,30 @@ package com.watabou.noosa;
 
 import com.watabou.gltextures.TextureCache;
 
-public class ColorBlock extends Image implements Resizable {
-	
-	public ColorBlock( float width, float height, int color ) {
-		super( TextureCache.createSolid( color ) );
-		scale.set( width, height );
-		origin.set( 0, 0 );
+public class ColorBlock extends Image implements Resizable
+{
+	public ColorBlock(float width, float height, int color)
+	{
+		super(TextureCache.createSolid(color));
+		scale.set(width, height);
+		origin.set(0, 0);
 	}
 
 	@Override
-	public void size( float width, float height ) {
-		scale.set( width, height );
+	public void size(float width, float height)
+	{
+		scale.set(width, height);
 	}
-	
+
 	@Override
-	public float width() {
+	public float width()
+	{
 		return scale.x;
 	}
-	
+
 	@Override
-	public float height() {
+	public float height()
+	{
 		return scale.y;
 	}
 }

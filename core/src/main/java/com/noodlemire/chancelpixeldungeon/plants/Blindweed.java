@@ -22,11 +22,11 @@
 package com.noodlemire.chancelpixeldungeon.plants;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
-import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Blindness;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Cripple;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Invisibility;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
@@ -34,32 +34,39 @@ import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfInvisibility;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
 
-public class Blindweed extends Plant {
-	
+public class Blindweed extends Plant
+{
 	{
 		image = 3;
 	}
-	
+
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
-		
-		if (ch != null) {
-			int len = Random.Int( 5, 10 );
-			Buff.prolong( ch, Blindness.class, len );
-			Buff.prolong( ch, Cripple.class, len );
-			if (ch instanceof Mob) {
-				if (((Mob)ch).state == ((Mob)ch).HUNTING) ((Mob)ch).state = ((Mob)ch).WANDERING;
-				((Mob)ch).beckon( Dungeon.level.randomDestination() );
+	public void activate(Char ch, boolean doWardenBonus)
+	{
+		if(ch != null)
+		{
+			if(doWardenBonus)
+				Buff.affect(ch, Invisibility.class, 10f);
+			else
+			{
+				int len = Random.Int(5, 10);
+				Buff.prolong(ch, Blindness.class, len);
+				Buff.prolong(ch, Cripple.class, len);
+				if(ch instanceof Mob)
+				{
+					if(((Mob) ch).state == ((Mob) ch).HUNTING)
+						((Mob) ch).state = ((Mob) ch).WANDERING;
+					((Mob) ch).beckon(Dungeon.level.randomDestination());
+				}
 			}
 		}
-		
-		if (Dungeon.level.heroFOV[pos]) {
-			CellEmitter.get( pos ).burst( Speck.factory( Speck.LIGHT ), 4 );
-		}
+
+		if(Dungeon.level.heroFOV[pos])
+			CellEmitter.get(pos).burst(Speck.factory(Speck.LIGHT), 4);
 	}
-	
-	public static class Seed extends Plant.Seed {
+
+	public static class Seed extends Plant.Seed
+	{
 		{
 			image = ItemSpriteSheet.SEED_BLINDWEED;
 

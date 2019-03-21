@@ -34,115 +34,128 @@ import com.noodlemire.chancelpixeldungeon.levels.rooms.special.PoolRoom;
 import com.noodlemire.chancelpixeldungeon.sprites.PiranhaSprite;
 import com.watabou.utils.Random;
 
-public class Piranha extends Mob {
-	
+public class Piranha extends Mob
+{
+
 	{
 		spriteClass = PiranhaSprite.class;
 
 		baseSpeed = 2f;
-		
+
 		EXP = 0;
-		
+
 		loot = MysteryMeat.class;
 		lootChance = 1f;
-		
+
 		HUNTING = new Hunting();
-		
+
 		properties.add(Property.BLOB_IMMUNE);
 	}
-	
-	public Piranha() {
+
+	public Piranha()
+	{
 		super();
-		
-		HP = HT = 10 + Dungeon.depth * 5;
+
+		setHT(15 + Dungeon.depth * 5, true);
 		defenseSkill = 10 + Dungeon.depth * 2;
 	}
-	
+
 	@Override
-	protected boolean act() {
-		
-		if (!Dungeon.level.water[pos]) {
-			die( null );
+	protected boolean act()
+	{
+		if(!Dungeon.level.water[pos])
+		{
+			die(null);
 			sprite.killAndErase();
 			return true;
-		} else {
-			return super.act();
 		}
+		else
+			return super.act();
 	}
-	
+
 	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( Dungeon.depth, 4 + Dungeon.depth * 2 );
+	public int damageRoll()
+	{
+		return Random.NormalIntRange(Dungeon.depth, 4 + Dungeon.depth * 2);
 	}
-	
+
 	@Override
-	public int attackSkill( Char target ) {
+	public int attackSkill(Char target)
+	{
 		return 20 + Dungeon.depth * 2;
 	}
-	
+
 	@Override
-	public int drRoll() {
+	public int drRoll()
+	{
 		return Random.NormalIntRange(0, Dungeon.depth);
 	}
-	
+
 	@Override
-	public void die( Object cause ) {
-		super.die( cause );
-		
+	public void die(Object cause)
+	{
+		super.die(cause);
+
 		Statistics.piranhasKilled++;
 		Badges.validatePiranhasKilled();
 	}
-	
+
 	@Override
-	public boolean reset() {
+	public boolean reset()
+	{
 		return true;
 	}
-	
+
 	@Override
-	protected boolean getCloser( int target ) {
-		
-		if (rooted) {
-			return false;
-		}
-		
-		int step = Dungeon.findStep( this, pos, target,
-			Dungeon.level.water,
-			fieldOfView );
-		if (step != -1) {
-			move( step );
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	@Override
-	protected boolean getFurther( int target ) {
-		int step = Dungeon.flee( this, pos, target,
-			Dungeon.level.water,
-			fieldOfView );
-		if (step != -1) {
-			move( step );
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
+	protected boolean getCloser(int target)
 	{
-		immunities.add( Burning.class );
-		immunities.add( Vertigo.class );
+		if(rooted)
+			return false;
+
+		int step = Dungeon.findStep(this, pos, target,
+				Dungeon.level.water,
+				fieldOfView);
+		if(step != -1)
+		{
+			move(step);
+			return true;
+		}
+		else
+			return false;
 	}
-	
-	private class Hunting extends Mob.Hunting{
-		
+
+	@Override
+	protected boolean getFurther(int target)
+	{
+		int step = Dungeon.flee(this, pos, target,
+				Dungeon.level.water,
+				fieldOfView);
+		if(step != -1)
+		{
+			move(step);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	{
+		immunities.add(Burning.class);
+		immunities.add(Vertigo.class);
+	}
+
+	private class Hunting extends Mob.Hunting
+	{
 		@Override
-		public boolean act(boolean enemyInFOV, boolean justAlerted) {
+		public boolean act(boolean enemyInFOV, boolean justAlerted)
+		{
 			boolean result = super.act(enemyInFOV, justAlerted);
 			//this causes piranha to move away when a door is closed on them in a pool room.
-			if (state == WANDERING && Dungeon.level instanceof RegularLevel){
-				Room curRoom = ((RegularLevel)Dungeon.level).room(pos);
-				if (curRoom instanceof PoolRoom) {
+			if(state == WANDERING && Dungeon.level instanceof RegularLevel)
+			{
+				Room curRoom = ((RegularLevel) Dungeon.level).room(pos);
+				if(curRoom instanceof PoolRoom)
+				{
 					target = Dungeon.level.pointToCell(curRoom.random(1));
 				}
 			}

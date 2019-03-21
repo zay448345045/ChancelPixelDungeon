@@ -25,21 +25,24 @@ import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.Scroll;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class ScrollHolder extends Bag {
+public class ScrollHolder extends Bag
+{
 
 	{
 		image = ItemSpriteSheet.HOLDER;
-		
+
 		size = 20;
 	}
-	
+
 	@Override
-	public boolean grab( Item item ) {
+	public boolean grab(Item item)
+	{
 		return item instanceof Scroll;
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return 40;
 	}
 

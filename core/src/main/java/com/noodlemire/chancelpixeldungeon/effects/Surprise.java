@@ -29,18 +29,21 @@ import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.Visual;
 
-public class Surprise extends Image {
+public class Surprise extends Image
+{
 
 	private static final float TIME_TO_FADE = 0.8f;
 
 	private float time;
 
-	public Surprise() {
+	public Surprise()
+	{
 		super(Effects.get(Effects.Type.EXCLAMATION));
 		origin.set(width / 2, height / 2);
 	}
 
-	public void reset(int p) {
+	public void reset(int p)
+	{
 		revive();
 
 		x = (p % Dungeon.level.width()) * DungeonTilemap.SIZE + (DungeonTilemap.SIZE - width) / 2;
@@ -49,7 +52,8 @@ public class Surprise extends Image {
 		time = TIME_TO_FADE;
 	}
 
-	public void reset(Visual v) {
+	public void reset(Visual v)
+	{
 		revive();
 
 		point(v.center(this));
@@ -58,24 +62,31 @@ public class Surprise extends Image {
 	}
 
 	@Override
-	public void update() {
+	public void update()
+	{
 		super.update();
 
-		if ((time -= Game.elapsed) <= 0) {
+		if((time -= Game.elapsed) <= 0)
+		{
 			kill();
-		} else {
+		}
+		else
+		{
 			float p = time / TIME_TO_FADE;
 			alpha(p);
-			scale.y = 1 + p/2;
+			scale.y = 1 + p / 2;
 		}
 	}
 
-	public static void hit(Char ch) {
+	public static void hit(Char ch)
+	{
 		hit(ch, 0);
 	}
 
-	public static void hit(Char ch, float angle) {
-		if (ch.sprite.parent != null) {
+	public static void hit(Char ch, float angle)
+	{
+		if(ch.sprite.parent != null)
+		{
 			Surprise s = (Surprise) ch.sprite.parent.recycle(Surprise.class);
 			ch.sprite.parent.bringToFront(s);
 			s.reset(ch.sprite);
@@ -83,11 +94,13 @@ public class Surprise extends Image {
 		}
 	}
 
-	public static void hit(int pos) {
+	public static void hit(int pos)
+	{
 		hit(pos, 0);
 	}
 
-	public static void hit(int pos, float angle) {
+	public static void hit(int pos, float angle)
+	{
 		Group parent = Dungeon.hero.sprite.parent;
 		Surprise s = (Surprise) parent.recycle(Surprise.class);
 		parent.bringToFront(s);

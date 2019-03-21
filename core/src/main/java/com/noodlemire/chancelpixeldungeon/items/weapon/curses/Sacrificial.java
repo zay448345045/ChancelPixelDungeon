@@ -28,27 +28,32 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.Random;
 
-public class Sacrificial extends Weapon.Enchantment {
+public class Sacrificial extends Weapon.Enchantment
+{
 
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
+	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing(0x000000);
 
 	@Override
-	public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
 
-		if (Random.Int(12) == 0){
-			Buff.affect(attacker, Bleeding.class).set(Math.max(1, attacker.HP/6));
+		if(Random.Int(12) == 0)
+		{
+			Buff.affect(attacker, Bleeding.class).set(Math.max(1, attacker.HP() / 6));
 		}
 
 		return damage;
 	}
 
 	@Override
-	public boolean curse() {
+	public boolean curse()
+	{
 		return true;
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return BLACK;
 	}
 

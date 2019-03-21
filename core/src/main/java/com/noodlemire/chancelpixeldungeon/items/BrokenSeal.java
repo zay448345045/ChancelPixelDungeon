@@ -36,7 +36,8 @@ import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
 
-public class BrokenSeal extends Item {
+public class BrokenSeal extends Item
+{
 
 	public static final String AC_AFFIX = "AFFIX";
 
@@ -54,77 +55,94 @@ public class BrokenSeal extends Item {
 	}
 
 	@Override
-	public ArrayList<String> actions(Hero hero) {
-		ArrayList<String> actions =  super.actions(hero);
+	public ArrayList<String> actions(Hero hero)
+	{
+		ArrayList<String> actions = super.actions(hero);
 		actions.add(AC_AFFIX);
 		return actions;
 	}
 
 	@Override
-	public void execute(Hero hero, String action) {
+	public void execute(Hero hero, String action)
+	{
 
 		super.execute(hero, action);
 
-		if (action.equals(AC_AFFIX)){
+		if(action.equals(AC_AFFIX))
+		{
 			curItem = this;
 			GameScene.selectItem(armorSelector, WndBag.Mode.ARMOR, Messages.get(this, "prompt"));
-		} else if (action.equals(AC_INFO)) {
+		}
+		else if(action.equals(AC_INFO))
+		{
 			GameScene.show(new WndItem(null, this, true));
 		}
 	}
 
 	@Override
 	//scroll of upgrade can be used directly once, same as upgrading armor the seal is affixed to then removing it.
-	public boolean isUpgradable() {
+	public boolean isUpgradable()
+	{
 		return level() == 0;
 	}
 
-	protected static WndBag.Listener armorSelector = new WndBag.Listener() {
+	protected static WndBag.Listener armorSelector = new WndBag.Listener()
+	{
 		@Override
-		public void onSelect( Item item ) {
-			if (item != null && item instanceof Armor) {
-				Armor armor = (Armor)item;
-				if (!armor.levelKnown){
+		public void onSelect(Item item)
+		{
+			if(item != null && item instanceof Armor)
+			{
+				Armor armor = (Armor) item;
+				if(!armor.levelKnown)
+				{
 					GLog.w(Messages.get(BrokenSeal.class, "unknown_armor"));
-				} else if (armor.cursed || armor.level() < 0){
+				}
+				else if(armor.cursed || armor.level() < 0)
+				{
 					GLog.w(Messages.get(BrokenSeal.class, "degraded_armor"));
-				} else {
+				}
+				else
+				{
 					GLog.p(Messages.get(BrokenSeal.class, "affix"));
 					Dungeon.hero.sprite.operate(Dungeon.hero.pos);
 					Sample.INSTANCE.play(Assets.SND_UNLOCK);
-					armor.affixSeal((BrokenSeal)curItem);
+					armor.affixSeal((BrokenSeal) curItem);
 					curItem.detach(Dungeon.hero.belongings.backpack);
 				}
 			}
 		}
 	};
 
-	public static class WarriorShield extends Buff {
+	public static class WarriorShield extends Buff
+	{
 
 		private Armor armor;
 		private float partialShield;
 
 		@Override
-		public synchronized boolean act() {
-			if (armor == null) detach();
-			else if (armor.isEquipped((Hero)target)) {
-				if (target.SHLD < maxShield()){
-					partialShield += 1/(35*Math.pow(0.885f, (maxShield() - target.SHLD - 1)));
-				}
-			}
-			while (partialShield >= 1){
-				target.SHLD++;
+		public synchronized boolean act()
+		{
+			if(armor == null) detach();
+			else if(armor.isEquipped((Hero) target) && target.SHLD() < maxShield())
+				partialShield += 1 / (35 * Math.pow(0.885f, (maxShield() - target.SHLD() - 1)));
+
+			while(partialShield >= 1)
+			{
+				target.SHLD(1);
 				partialShield--;
 			}
 			spend(TICK);
 			return true;
 		}
 
-		public synchronized void setArmor(Armor arm){
+		public synchronized void setArmor(Armor arm)
+		{
 			armor = arm;
 		}
 
-		public synchronized int maxShield() {
+		public synchronized int maxShield()
+		{
 			return 1 + armor.tier + armor.level();
 		}
 	}

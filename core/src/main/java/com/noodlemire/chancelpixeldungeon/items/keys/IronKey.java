@@ -23,17 +23,20 @@ package com.noodlemire.chancelpixeldungeon.items.keys;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class IronKey extends Key {
-	
+public class IronKey extends Key
+{
+
 	{
 		image = ItemSpriteSheet.IRON_KEY;
 	}
 
-	public IronKey() {
-		this( 0 );
+	public IronKey()
+	{
+		this(0);
 	}
-	
-	public IronKey( int depth ) {
+
+	public IronKey(int depth)
+	{
 		super();
 		this.depth = depth;
 	}

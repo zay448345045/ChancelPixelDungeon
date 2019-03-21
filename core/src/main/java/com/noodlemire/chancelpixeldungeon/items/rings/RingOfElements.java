@@ -39,53 +39,65 @@ import com.noodlemire.chancelpixeldungeon.actors.mobs.Warlock;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Yog;
 import com.noodlemire.chancelpixeldungeon.levels.traps.DisintegrationTrap;
 import com.noodlemire.chancelpixeldungeon.levels.traps.GrimTrap;
+import com.noodlemire.chancelpixeldungeon.messages.Messages;
 
+import java.text.DecimalFormat;
 import java.util.HashSet;
 
-public class RingOfElements extends Ring {
-	
+public class RingOfElements extends Ring
+{
+
 	@Override
-	protected RingBuff buff( ) {
+	protected RingBuff buff()
+	{
 		return new Resistance();
 	}
-	
+
 	public static final HashSet<Class> RESISTS = new HashSet<>();
-	static {
-		RESISTS.add( Burning.class );
-		RESISTS.add( Charm.class );
-		RESISTS.add( Chill.class );
-		RESISTS.add( Frost.class );
-		RESISTS.add( Ooze.class );
-		RESISTS.add( Paralysis.class );
-		RESISTS.add( Poison.class );
-		RESISTS.add( Corrosion.class );
-		RESISTS.add( Weakness.class );
-		
-		RESISTS.add( DisintegrationTrap.class );
-		RESISTS.add( GrimTrap.class );
-		
-		RESISTS.add( ToxicGas.class );
-		RESISTS.add( Electricity.class );
-		
-		RESISTS.add( Shaman.class );
-		RESISTS.add( Warlock.class );
-		RESISTS.add( Eye.class );
-		RESISTS.add( Yog.BurningFist.class );
+
+	static
+	{
+		RESISTS.add(Burning.class);
+		RESISTS.add(Charm.class);
+		RESISTS.add(Chill.class);
+		RESISTS.add(Frost.class);
+		RESISTS.add(Ooze.class);
+		RESISTS.add(Paralysis.class);
+		RESISTS.add(Poison.class);
+		RESISTS.add(Corrosion.class);
+		RESISTS.add(Weakness.class);
+
+		RESISTS.add(DisintegrationTrap.class);
+		RESISTS.add(GrimTrap.class);
+
+		RESISTS.add(ToxicGas.class);
+		RESISTS.add(Electricity.class);
+
+		//FIXME currently this affects all attacks, not just longranged magic
+		RESISTS.add(Shaman.class);
+		RESISTS.add(Warlock.class);
+		RESISTS.add(Eye.class);
+		RESISTS.add(Yog.BurningFist.class);
 	}
-	
-	public static float resist( Char target, Class effect ){
-		if (getBonus(target, Resistance.class) == 0) return 1f;
-		
-		for (Class c : RESISTS){
-			if (c.isAssignableFrom(effect)){
-				return (float)Math.pow(0.875, getBonus(target, Resistance.class));
-			}
-		}
-		
+
+	public static float resist(Char target, Class effect)
+	{
+		if(getBonus(target, Resistance.class) == 0) return 1f;
+
+		for(Class c : RESISTS)
+			if(c.isAssignableFrom(effect))
+				return (float) Math.pow(0.875, getBonus(target, Resistance.class));
+
 		return 1f;
 	}
-	
-	public class Resistance extends RingBuff {
-	
+
+	public String statsInfo()
+	{
+		if(isIdentified())
+			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (1f - Math.pow(0.84f, soloBonus()))));
+		else
+			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(16f));
 	}
+
+	private class Resistance extends RingBuff {}
 }

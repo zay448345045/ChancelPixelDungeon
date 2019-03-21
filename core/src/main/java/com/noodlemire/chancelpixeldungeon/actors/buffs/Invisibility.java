@@ -23,87 +23,101 @@ package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Darkness;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.CloakOfShadows;
-import com.noodlemire.chancelpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 
-public class Invisibility extends FlavourBuff {
+public class Invisibility extends FlavourBuff implements Expulsion
+{
 
-	public static final float DURATION	= 20f;
+	public static final float DURATION = 20f;
 
 	{
 		type = buffType.POSITIVE;
 	}
-	
+
 	@Override
-	public boolean attachTo( Char target ) {
-		if (super.attachTo( target )) {
+	public boolean attachTo(Char target)
+	{
+		if(super.attachTo(target))
+		{
 			target.invisible++;
-			if (target instanceof Hero && ((Hero) target).subClass == HeroSubClass.ASSASSIN){
+			if(target instanceof Hero && ((Hero) target).subClass == HeroSubClass.ASSASSIN)
 				Buff.affect(target, Preparation.class);
-			}
+
 			return true;
-		} else {
-			return false;
 		}
+		else
+			return false;
 	}
-	
+
 	@Override
-	public void detach() {
-		if (target.invisible > 0)
+	public void detach()
+	{
+		if(target.invisible > 0)
 			target.invisible--;
 		super.detach();
 	}
-	
+
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.INVISIBLE;
 	}
-	
+
 	@Override
-	public void tintIcon(Image icon) {
+	public void tintIcon(Image icon)
+	{
 		greyIcon(icon, 5f, cooldown());
 	}
 
 	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add( CharSprite.State.INVISIBLE );
-		else if (target.invisible == 0) target.sprite.remove( CharSprite.State.INVISIBLE );
+	public void fx(boolean on)
+	{
+		if(on) target.sprite.add(CharSprite.State.INVISIBLE);
+		else if(target.invisible == 0) target.sprite.remove(CharSprite.State.INVISIBLE);
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc", dispTurns());
+	}
+
+	@Override
+	public Class<? extends Blob> expulse()
+	{
+		return Darkness.class;
 	}
 
 	public static void dispel()
 	{
 		dispel(Dungeon.hero);
 
-		CloakOfShadows.cloakStealth cloakBuff = Dungeon.hero.buff( CloakOfShadows.cloakStealth.class );
-		if (cloakBuff != null)
-			cloakBuff.dispel();
+		CloakOfShadows.cloakStealth cloakBuff = Dungeon.hero.buff(CloakOfShadows.cloakStealth.class);
+		if(cloakBuff != null)
+			cloakBuff.detach();
 
 		//this isn't a form of invisibilty, but it is meant to dispel at the same time as it.
-		TimekeepersHourglass.timeFreeze timeFreeze = Dungeon.hero.buff( TimekeepersHourglass.timeFreeze.class );
-		if (timeFreeze != null)
-			timeFreeze.detach();
+		Hero.detachTimeFreeze();
 	}
 
 	public static void dispel(Char c)
 	{
-		Invisibility buff = c.buff( Invisibility.class );
-		if (buff != null)
+		Invisibility buff = c.buff(Invisibility.class);
+		if(buff != null)
 			buff.detach();
 	}
 }

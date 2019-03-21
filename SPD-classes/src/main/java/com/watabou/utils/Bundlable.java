@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +24,8 @@
 
 package com.watabou.utils;
 
-public interface Bundlable {
-
-	void restoreFromBundle( Bundle bundle );
-	void storeInBundle( Bundle bundle );
-	
+public interface Bundlable
+{
+	void restoreFromBundle(Bundle bundle);
+	void storeInBundle(Bundle bundle);
 }

@@ -27,59 +27,62 @@ import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.items.Gold;
 import com.noodlemire.chancelpixeldungeon.items.Honeypot;
 import com.noodlemire.chancelpixeldungeon.items.Item;
+import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.watabou.utils.Random;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class RingOfWealth extends Ring {
-	
+public class RingOfWealth extends Ring
+{
 	private float triesToDrop = 0;
-	
+
 	@Override
-	protected RingBuff buff( ) {
+	protected RingBuff buff()
+	{
 		return new Wealth();
 	}
-	
-	public static float dropChanceMultiplier( Char target ){
-		return (float)Math.pow(1.15, getBonus(target, Wealth.class));
+
+	public static float dropChanceMultiplier(Char target)
+	{
+		return (float) Math.pow(1.15, getBonus(target, Wealth.class));
 	}
-	
-	public static ArrayList<Item> tryRareDrop(Char target, int tries ){
-		if (getBonus(target, Wealth.class) <= 0) return null;
-		
+
+	public static ArrayList<Item> tryRareDrop(Char target, int tries)
+	{
+		if(getBonus(target, Wealth.class) <= 0) return null;
+
 		HashSet<Wealth> buffs = target.buffs(Wealth.class);
 		float triesToDrop = -1;
-		
+
 		//find the largest count (if they aren't synced yet)
-		for (Wealth w : buffs){
-			if (w.triesToDrop() > triesToDrop){
+		for(Wealth w : buffs)
+			if(w.triesToDrop() > triesToDrop)
 				triesToDrop = w.triesToDrop();
-			}
-		}
-		
+
 		//reset (if needed), decrement, and store counts
-		if (triesToDrop <= 0) triesToDrop += Random.NormalIntRange(15, 60);
-		triesToDrop -= dropProgression( target, tries );
-		for (Wealth w : buffs){
+		if(triesToDrop <= 0) triesToDrop += Random.NormalIntRange(15, 60);
+		triesToDrop -= dropProgression(target, tries);
+		for(Wealth w : buffs)
 			w.triesToDrop(triesToDrop);
-		}
-		
+
 		//now handle reward logic
-		if (triesToDrop <= 0){
+		if(triesToDrop <= 0)
 			return generateRareDrop();
-		} else {
+		else
 			return null;
-		}
-		
 	}
-	
+
 	//TODO this is a start, but i'm sure this could be made more interesting...
-	private static ArrayList<Item> generateRareDrop(){
+	private static ArrayList<Item> generateRareDrop()
+	{
 		float roll = Random.Float();
 		ArrayList<Item> items = new ArrayList<>();
-		if (roll < 0.6f){
-			switch (Random.Int(3)){
+		if(roll < 0.6f)
+		{
+			switch(Random.Int(3))
+			{
 				case 0:
 					items.add(new Gold().random());
 					break;
@@ -90,8 +93,11 @@ public class RingOfWealth extends Ring {
 					items.add(Generator.random(Generator.Category.SCROLL));
 					break;
 			}
-		} else if (roll < 0.9f){
-			switch (Random.Int(3)){
+		}
+		else if(roll < 0.9f)
+		{
+			switch(Random.Int(3))
+			{
 				case 0:
 					items.add(Generator.random(Generator.Category.SEED));
 					items.add(Generator.random(Generator.Category.SEED));
@@ -100,38 +106,50 @@ public class RingOfWealth extends Ring {
 					items.add(Generator.random(Generator.Category.SEED));
 					break;
 				case 1:
-					items.add(Generator.random(Random.Int(2) == 0 ? Generator.Category.POTION : Generator.Category.SCROLL ));
-					items.add(Generator.random(Random.Int(2) == 0 ? Generator.Category.POTION : Generator.Category.SCROLL ));
-					items.add(Generator.random(Random.Int(2) == 0 ? Generator.Category.POTION : Generator.Category.SCROLL ));
+					items.add(Generator.random(Random.Int(2) == 0 ? Generator.Category.POTION : Generator.Category.SCROLL));
+					items.add(Generator.random(Random.Int(2) == 0 ? Generator.Category.POTION : Generator.Category.SCROLL));
+					items.add(Generator.random(Random.Int(2) == 0 ? Generator.Category.POTION : Generator.Category.SCROLL));
 					break;
 				case 2:
 					items.add(new Bomb().random());
 					items.add(new Honeypot());
 					break;
 			}
-		} else {
+		}
+		else
+		{
 			Gold g = new Gold();
 			g.random();
-			g.quantity(g.quantity()*5);
+			g.quantity(g.quantity() * 5);
 			items.add(g);
 		}
+
 		return items;
 	}
-	
-	private static float dropProgression( Char target, int tries ){
-		return tries * (float)Math.pow(1.2f, getBonus(target, Wealth.class) -1 );
+
+	private static float dropProgression(Char target, int tries)
+	{
+		return tries * (float) Math.pow(1.2f, getBonus(target, Wealth.class) - 1);
 	}
 
-	public class Wealth extends RingBuff {
-		
-		private void triesToDrop( float val){
+	public String statsInfo()
+	{
+		if(isIdentified())
+			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (Math.pow(1.2f, soloBonus()) - 1f)));
+		else
+			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(20f));
+	}
+
+	public class Wealth extends RingBuff
+	{
+		private void triesToDrop(float val)
+		{
 			triesToDrop = val;
 		}
-		
-		private float triesToDrop(){
+
+		private float triesToDrop()
+		{
 			return triesToDrop;
 		}
-		
-		
 	}
 }

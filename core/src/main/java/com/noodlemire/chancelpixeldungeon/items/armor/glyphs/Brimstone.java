@@ -29,68 +29,83 @@ import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.Bundle;
 
-public class Brimstone extends Armor.Glyph {
+public class Brimstone extends Armor.Glyph
+{
 
-	private static ItemSprite.Glowing ORANGE = new ItemSprite.Glowing( 0xFF4400 );
+	private static ItemSprite.Glowing ORANGE = new ItemSprite.Glowing(0xFF4400);
 
 	@Override
-	public int proc(Armor armor, Char attacker, Char defender, int damage) {
+	public int proc(Armor armor, Char attacker, Char defender, int damage)
+	{
 		//no proc effect, see Burning.act
 		return damage;
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return ORANGE;
 	}
 
-	public static class BrimstoneShield extends Buff {
+	public static class BrimstoneShield extends Buff
+	{
 
 		private int shieldAdded;
 		private int lastShield = -1;
 
 		@Override
-		public boolean act() {
-			Hero hero = (Hero)target;
+		public boolean act()
+		{
+			Hero hero = (Hero) target;
 
 			//make sure any shielding lost through combat is accounted for
-			if (lastShield != -1 && lastShield > hero.SHLD)
-				shieldAdded = Math.max(0, shieldAdded - (lastShield - hero.SHLD));
+			if(lastShield != -1 && lastShield > hero.SHLD())
+				shieldAdded = Math.max(0, shieldAdded - (lastShield - hero.SHLD()));
 
-			lastShield = hero.SHLD;
+			lastShield = hero.SHLD();
 
-			if (hero.belongings.armor == null || !hero.belongings.armor.hasGlyph(Brimstone.class)) {
-				hero.SHLD -= shieldAdded;
+			if(hero.belongings.armor == null || !hero.belongings.armor.hasGlyph(Brimstone.class))
+			{
+				hero.SHLD(-shieldAdded);
 				detach();
 				return true;
 			}
 
 			int level = hero.belongings.armor.level();
 
-			if (hero.buff(Burning.class) != null){
+			if(hero.buff(Burning.class) != null)
+			{
 				//max shielding equal to the armors level (this does mean no shield at lvl 0)
-				if (hero.SHLD < level) {
+				if(hero.SHLD() < level)
+				{
 					shieldAdded++;
-					hero.SHLD++;
+					hero.SHLD(1);
 					lastShield++;
 
 					//generates 0.2 + 0.1*lvl shield per turn
-					spend( 10f / (2f + level));
-				} else {
+					spend(10f / (2f + level));
+				}
+				else
+				{
 
 					//if shield is maxed, don't wait longer than 1 turn to try again
-					spend( Math.min( TICK, 10f / (2f + level)));
+					spend(Math.min(TICK, 10f / (2f + level)));
 				}
 
-			} else if (hero.buff(Burning.class) == null){
-				if (shieldAdded > 0 && hero.SHLD > 0){
+			}
+			else if(hero.buff(Burning.class) == null)
+			{
+				if(shieldAdded > 0 && hero.SHLD() > 0)
+				{
 					shieldAdded--;
-					hero.SHLD--;
+					hero.SHLD(-1);
 					lastShield--;
 
 					//shield decays at a rate of 1 per turn.
 					spend(TICK);
-				} else {
+				}
+				else
+				{
 					detach();
 				}
 			}
@@ -98,26 +113,29 @@ public class Brimstone extends Armor.Glyph {
 			return true;
 		}
 
-		public void startDecay(){
+		public void startDecay()
+		{
 			//sets the buff to start acting next turn. Invoked by Burning when it expires.
-			spend(-cooldown()+2);
+			spend(-cooldown() + 2);
 		}
 
 		private static String ADDED = "added";
-		private static String LAST  = "last";
+		private static String LAST = "last";
 
 		@Override
-		public void storeInBundle(Bundle bundle) {
+		public void storeInBundle(Bundle bundle)
+		{
 			super.storeInBundle(bundle);
-			bundle.put( ADDED, shieldAdded );
-			bundle.put( LAST, lastShield );
+			bundle.put(ADDED, shieldAdded);
+			bundle.put(LAST, lastShield);
 		}
 
 		@Override
-		public void restoreFromBundle(Bundle bundle) {
+		public void restoreFromBundle(Bundle bundle)
+		{
 			super.restoreFromBundle(bundle);
-			shieldAdded = bundle.getInt( ADDED );
-			lastShield = bundle.getInt( LAST );
+			shieldAdded = bundle.getInt(ADDED);
+			lastShield = bundle.getInt(LAST);
 		}
 	}
 

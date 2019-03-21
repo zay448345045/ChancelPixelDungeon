@@ -27,11 +27,12 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.Random;
 
-public class Unstable extends Weapon.Enchantment {
+public class Unstable extends Weapon.Enchantment
+{
 
-	private static ItemSprite.Glowing WHITE = new ItemSprite.Glowing( 0xFFFFFF );
+	private static ItemSprite.Glowing WHITE = new ItemSprite.Glowing(0xFFFFFF);
 
-	private static Class<?extends Weapon.Enchantment>[] randomEnchants = new Class[]{
+	private static Class<? extends Weapon.Enchantment>[] randomEnchants = new Class[]{
 			Blazing.class,
 			Chilling.class,
 			Dazzling.class,
@@ -47,17 +48,22 @@ public class Unstable extends Weapon.Enchantment {
 	};
 
 	@Override
-	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
-		try {
-			return Random.oneOf(randomEnchants).newInstance().proc( weapon, attacker, defender, damage );
-		} catch (Exception e) {
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
+		try
+		{
+			return Random.oneOf(randomEnchants).newInstance().proc(weapon, attacker, defender, damage);
+		}
+		catch(Exception e)
+		{
 			ChancelPixelDungeon.reportException(e);
 			return damage;
 		}
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return WHITE;
 	}
 }

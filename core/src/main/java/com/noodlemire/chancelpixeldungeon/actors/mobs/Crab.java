@@ -21,39 +21,58 @@
 
 package com.noodlemire.chancelpixeldungeon.actors.mobs;
 
+import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.food.MysteryMeat;
 import com.noodlemire.chancelpixeldungeon.sprites.CrabSprite;
 import com.watabou.utils.Random;
 
-public class Crab extends Mob {
-
+public class Crab extends Mob
+{
 	{
 		spriteClass = CrabSprite.class;
-		
-		HP = HT = 15;
+
+		setHT(16, true);
 		defenseSkill = 5;
 		baseSpeed = 2f;
-		
+
 		EXP = 4;
 		maxLvl = 9;
-		
+
 		loot = new MysteryMeat();
-		lootChance = 0.167f;
+		lootChance = 0.75f; //by default, see rollToDropLoot()
 	}
-	
+
 	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 1, 8 );
+	public int damageRoll()
+	{
+		return Random.NormalIntRange(1, 8);
 	}
-	
+
 	@Override
-	public int attackSkill( Char target ) {
+	public int attackSkill(Char target)
+	{
 		return 12;
 	}
-	
+
 	@Override
-	public int drRoll() {
+	public int drRoll()
+	{
 		return Random.NormalIntRange(0, 4);
+	}
+
+	@Override
+	public void rollToDropLoot()
+	{
+		lootChance *= ((5 - Dungeon.LimitedDrops.CRAB_MEAT.count) / 5f);
+		super.rollToDropLoot();
+	}
+
+	@Override
+	protected Item createLoot()
+	{
+		Dungeon.LimitedDrops.CRAB_MEAT.count++;
+		return super.createLoot();
 	}
 }

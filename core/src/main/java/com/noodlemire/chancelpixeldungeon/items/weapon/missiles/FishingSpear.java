@@ -25,38 +25,18 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Piranha;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class FishingSpear extends MissileWeapon {
-	
+public class FishingSpear extends MissileWeapon
+{
 	{
 		image = ItemSpriteSheet.FISHING_SPEAR;
+		tier = 2;
 	}
-	
+
 	@Override
-	public int min(int lvl) {
-		return 4;
-	}
-	
-	@Override
-	public int max(int lvl) {
-		return 10;
-	}
-	
-	@Override
-	public int STRReq(int lvl) {
-		return 11;
-	}
-	
-	@Override
-	public int proc(Char attacker, Char defender, int damage) {
-		if (defender instanceof Piranha){
-			damage = Math.max(damage, defender.HP/2);
-		}
+	public int proc(Char attacker, Char defender, int damage)
+	{
+		if(defender instanceof Piranha)
+			damage = Math.max(damage, defender.HP() / 2);
 		return super.proc(attacker, defender, damage);
 	}
-	
-	@Override
-	public int price() {
-		return 12 * quantity;
-	}
-	
 }

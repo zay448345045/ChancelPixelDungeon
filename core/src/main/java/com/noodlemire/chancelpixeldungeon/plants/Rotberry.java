@@ -21,29 +21,38 @@
 
 package com.noodlemire.chancelpixeldungeon.plants;
 
+import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.CorrosiveGas;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.EnticementGas;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.CorrosionImbue;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfCorrosivity;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfEnticement;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfHydrocombustion;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Rotberry extends Plant {
-
+public class Rotberry extends Plant
+{
 	{
 		image = 7;
 	}
 
 	@Override
-	public void activate()
+	public void activate(Char ch, boolean doWardenBonus)
 	{
-		GameScene.add(Blob.seed(pos, 40, CorrosiveGas.class));
-		GameScene.add(Blob.seed(pos, 40, EnticementGas.class));
+		if(doWardenBonus)
+			Buff.affect(ch, CorrosionImbue.class).set(10f);
+		else
+		{
+			GameScene.add(Blob.seed(pos, 40, CorrosiveGas.class));
+			GameScene.add(Blob.seed(pos, 40, EnticementGas.class));
+		}
 	}
 
-	public static class Seed extends Plant.Seed {
+	public static class Seed extends Plant.Seed
+	{
 		{
 			image = ItemSpriteSheet.SEED_ROTBERRY;
 

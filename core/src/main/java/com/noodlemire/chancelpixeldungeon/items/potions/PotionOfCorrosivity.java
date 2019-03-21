@@ -7,35 +7,37 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.CorrosiveGas;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.audio.Sample;
 
-public class PotionOfCorrosivity extends Potion {
-    {
-        initials = 15;
+public class PotionOfCorrosivity extends Potion
+{
+	{
+		initials = 15;
 
-        if(isIdentified()) defaultAction = AC_THROW;
-    }
+		if(isIdentified()) defaultAction = AC_THROW;
+	}
 
-    @Override
-    public void shatter( int cell ) {
+	@Override
+	public void shatter(int cell)
+	{
 
-        if (Dungeon.level.heroFOV[cell]) {
-            setKnown();
+		if(Dungeon.level.heroFOV[cell])
+		{
+			splash(cell);
+			Sample.INSTANCE.play(Assets.SND_SHATTER);
+		}
 
-            splash( cell );
-            Sample.INSTANCE.play( Assets.SND_SHATTER );
-        }
+		GameScene.add(Blob.seed(cell, 500, CorrosiveGas.class));
+	}
 
-        GameScene.add( Blob.seed( cell, 500, CorrosiveGas.class ) );
-    }
+	@Override
+	public void setKnown()
+	{
+		super.setKnown();
+		if(isIdentified()) defaultAction = AC_THROW;
+	}
 
-    @Override
-    public void setKnown()
-    {
-        defaultAction = AC_THROW;
-        super.setKnown();
-    }
-
-    @Override
-    public int price() {
-        return isKnown() ? 30 * quantity : super.price();
-    }
+	@Override
+	public int price()
+	{
+		return isKnown() ? 30 * quantity : super.price();
+	}
 }

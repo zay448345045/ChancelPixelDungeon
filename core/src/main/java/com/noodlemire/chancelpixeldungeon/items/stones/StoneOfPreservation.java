@@ -24,51 +24,28 @@ package com.noodlemire.chancelpixeldungeon.items.stones;
 import com.noodlemire.chancelpixeldungeon.effects.Enchanting;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.items.Item;
-import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
-import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.noodlemire.chancelpixeldungeon.windows.WndBag;
 
-public class StoneOfEnchantment extends InventoryStone
+public class StoneOfPreservation extends InventoryStone
 {
+	{
+		mode = WndBag.Mode.ENCHANTED;
+		image = ItemSpriteSheet.STONE_TIWAZ;
+	}
 
-    {
-        mode = WndBag.Mode.ENCHANTABLE;
-        image = ItemSpriteSheet.STONE_TIWAZ;
-    }
+	@Override
+	protected void onItemSelected(Item item)
+	{
+		item.preserve();
 
-    @Override
-    protected void onItemSelected(Item item)
-    {
+		curUser.sprite.emitter().start(Speck.factory(Speck.LIGHT), 0.1f, 5);
+		Enchanting.show(curUser, item);
 
-        if (item instanceof Weapon)
-        {
+		GLog.p(Messages.get(this, "preserved", item.name()));
 
-            ((Weapon) item).enchant();
-
-        }
-        else
-        {
-
-            ((Armor) item).inscribe();
-
-        }
-
-        curUser.sprite.emitter().start(Speck.factory(Speck.LIGHT), 0.1f, 5);
-        Enchanting.show(curUser, item);
-
-        if (item instanceof Weapon)
-        {
-            GLog.p(Messages.get(this, "weapon"));
-        }
-        else
-        {
-            GLog.p(Messages.get(this, "armor"));
-        }
-
-        useAnimation();
-
-    }
+		useAnimation();
+	}
 }

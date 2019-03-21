@@ -22,8 +22,8 @@
 package com.noodlemire.chancelpixeldungeon.levels.rooms.special;
 
 import com.noodlemire.chancelpixeldungeon.actors.blobs.WaterOfAwareness;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.WaterOfExchange;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.WaterOfHealth;
-import com.noodlemire.chancelpixeldungeon.actors.blobs.WaterOfTransmutation;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.WellWater;
 import com.noodlemire.chancelpixeldungeon.levels.Level;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
@@ -31,33 +31,36 @@ import com.noodlemire.chancelpixeldungeon.levels.painters.Painter;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
-public class MagicWellRoom extends SpecialRoom {
+public class MagicWellRoom extends SpecialRoom
+{
 
 	private static final Class<?>[] WATERS =
-		{WaterOfAwareness.class, WaterOfHealth.class, WaterOfTransmutation.class};
-	
-	public Class<?extends WellWater> overrideWater = null;
-	
-	public void paint( Level level ) {
+			{WaterOfAwareness.class, WaterOfHealth.class, WaterOfExchange.class};
 
-		Painter.fill( level, this, Terrain.WALL );
-		Painter.fill( level, this, 1, Terrain.EMPTY );
-		
+	public Class<? extends WellWater> overrideWater = null;
+
+	public void paint(Level level)
+	{
+
+		Painter.fill(level, this, Terrain.WALL);
+		Painter.fill(level, this, 1, Terrain.EMPTY);
+
 		Point c = center();
-		Painter.set( level, c.x, c.y, Terrain.WELL );
-		
+		Painter.set(level, c.x, c.y, Terrain.WELL);
+
 		@SuppressWarnings("unchecked")
 		Class<? extends WellWater> waterClass =
-			overrideWater != null ?
-			overrideWater :
-			(Class<? extends WellWater>)Random.element( WATERS );
-			
-		if (waterClass == WaterOfTransmutation.class) {
+				overrideWater != null ?
+						overrideWater :
+						(Class<? extends WellWater>) Random.element(WATERS);
+
+		if(waterClass == WaterOfExchange.class)
+		{
 			SpecialRoom.disableGuaranteedWell();
 		}
-		
+
 		WellWater.seed(c.x + level.width() * c.y, 1, waterClass, level);
-		
-		entrance().set( Door.Type.REGULAR );
+
+		entrance().set(Door.Type.REGULAR);
 	}
 }

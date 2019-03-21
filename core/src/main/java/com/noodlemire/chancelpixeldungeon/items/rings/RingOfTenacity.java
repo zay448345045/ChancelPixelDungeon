@@ -22,20 +22,32 @@
 package com.noodlemire.chancelpixeldungeon.items.rings;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.messages.Messages;
 
-public class RingOfTenacity extends Ring {
+import java.text.DecimalFormat;
 
+public class RingOfTenacity extends Ring
+{
 	@Override
-	protected RingBuff buff( ) {
+	protected RingBuff buff()
+	{
 		return new Tenacity();
 	}
-	
-	public static float damageMultiplier( Char t ){
+
+	public static float damageMultiplier(Char t)
+	{
 		//(HT - HP)/HT = heroes current % missing health.
-		return (float)Math.pow(0.85, getBonus( t, Tenacity.class)*((float)(t.HT - t.HP)/t.HT));
+		return (float) Math.pow(0.85, getBonus(t, Tenacity.class) * ((float) (t.HT() - t.HP()) / t.HT()));
 	}
 
-	public class Tenacity extends RingBuff {
+	public String statsInfo()
+	{
+		if(isIdentified())
+			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (1f - Math.pow(0.85f, soloBonus()))));
+		else
+			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(15f));
 	}
+
+	private class Tenacity extends RingBuff {}
 }
 

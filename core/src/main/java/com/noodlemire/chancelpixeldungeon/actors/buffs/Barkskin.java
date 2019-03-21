@@ -24,50 +24,37 @@ package com.noodlemire.chancelpixeldungeon.actors.buffs;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 
-public class Barkskin extends Buff {
-
-	private int level = 0;
-	
+public class Barkskin extends DurationBuff
+{
 	@Override
-	public boolean act() {
-		if (target.isAlive()) {
-
-			spend( TICK );
-			if (--level <= 0) {
-				detach();
-			}
-			
-		} else {
-			
-			detach();
-			
+	public boolean act()
+	{
+		if(target.isAlive())
+		{
+			spend(TICK);
+			shorten(TICK);
 		}
-		
+		else
+			detach();
+
 		return true;
 	}
-	
-	public int level() {
-		return level;
-	}
-	
-	public void level( int value ) {
-		if (level < value) {
-			level = value;
-		}
-	}
-	
+
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.BARKSKIN;
 	}
-	
+
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String desc() {
-		return Messages.get(this, "desc", level);
+	public String desc()
+	{
+		return Messages.get(this, "desc", (int) left());
 	}
 }

@@ -30,8 +30,8 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Charm;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Light;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Sleep;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
-import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfHypnotism;
 import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.sprites.SuccubusSprite;
 import com.watabou.noosa.audio.Sample;
@@ -40,103 +40,117 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class Succubus extends Mob {
-	
-	private static final int BLINK_DELAY	= 5;
-	
+public class Succubus extends Mob
+{
+	private static final int BLINK_DELAY = 5;
+
 	private int delay = 0;
-	
+
 	{
 		spriteClass = SuccubusSprite.class;
-		
-		HP = HT = 80;
+
+		setHT(105, true);
 		defenseSkill = 25;
 		viewDistance = Light.DISTANCE;
-		
+
 		EXP = 12;
 		maxLvl = 25;
-		
-		loot = new ScrollOfLullaby();
-		lootChance = 0.05f;
+
+		loot = new StoneOfHypnotism();
+		lootChance = 0.15f;
 
 		properties.add(Property.DEMONIC);
 	}
-	
+
 	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 22, 30 );
+	public int damageRoll()
+	{
+		return Random.NormalIntRange(22, 30);
 	}
-	
+
 	@Override
-	public int attackProc( Char enemy, int damage ) {
-		damage = super.attackProc( enemy, damage );
-		
-		if (Random.Int( 3 ) == 0) {
-			Buff.affect( enemy, Charm.class, Random.IntRange( 3, 7 ) ).object = id();
-			enemy.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
-			Sample.INSTANCE.play( Assets.SND_CHARMS );
+	public int attackProc(Char enemy, int damage)
+	{
+		damage = super.attackProc(enemy, damage);
+
+		if(Random.Int(3) == 0)
+		{
+			Buff.affect(enemy, Charm.class, Random.IntRange(3, 7)).object = id();
+			enemy.sprite.centerEmitter().start(Speck.factory(Speck.HEART), 0.2f, 5);
+			Sample.INSTANCE.play(Assets.SND_CHARMS);
 		}
-		
+
 		return damage;
 	}
-	
+
 	@Override
-	protected boolean getCloser( int target ) {
-		if (fieldOfView[target] && Dungeon.level.distance( pos, target ) > 2 && delay <= 0) {
-			
-			blink( target );
-			spend( -1 / speed() );
+	protected boolean getCloser(int target)
+	{
+		if(fieldOfView[target] && Dungeon.level.distance(pos, target) > 2 && delay <= 0)
+		{
+
+			blink(target);
+			spend(-1 / speed());
 			return true;
-			
-		} else {
-			
+
+		}
+		else
+		{
+
 			delay--;
-			return super.getCloser( target );
-			
+			return super.getCloser(target);
+
 		}
 	}
-	
-	private void blink( int target ) {
-		
-		Ballistica route = new Ballistica( pos, target, Ballistica.PROJECTILE);
+
+	private void blink(int target)
+	{
+
+		Ballistica route = new Ballistica(pos, target, Ballistica.PROJECTILE);
 		int cell = route.collisionPos;
 
 		//can't occupy the same cell as another char, so move back one.
-		if (Actor.findChar( cell ) != null && cell != this.pos)
-			cell = route.path.get(route.dist-1);
+		if(Actor.findChar(cell) != null && cell != this.pos)
+			cell = route.path.get(route.dist - 1);
 
-		if (Dungeon.level.avoid[ cell ]){
+		if(Dungeon.level.avoid[cell])
+		{
 			ArrayList<Integer> candidates = new ArrayList<>();
-			for (int n : PathFinder.NEIGHBOURS8) {
+			for(int n : PathFinder.NEIGHBOURS8)
+			{
 				cell = route.collisionPos + n;
-				if (Dungeon.level.passable[cell] && Actor.findChar( cell ) == null) {
-					candidates.add( cell );
+				if(Dungeon.level.passable[cell] && Actor.findChar(cell) == null)
+				{
+					candidates.add(cell);
 				}
 			}
-			if (candidates.size() > 0)
+			if(candidates.size() > 0)
 				cell = Random.element(candidates);
-			else {
+			else
+			{
 				delay = BLINK_DELAY;
 				return;
 			}
 		}
-		
-		ScrollOfTeleportation.appear( this, cell );
-		
+
+		ScrollOfTeleportation.appear(this, cell);
+
 		delay = BLINK_DELAY;
 	}
-	
+
 	@Override
-	public int attackSkill( Char target ) {
+	public int attackSkill(Char target)
+	{
 		return 40;
 	}
-	
+
 	@Override
-	public int drRoll() {
+	public int drRoll()
+	{
 		return Random.NormalIntRange(0, 10);
 	}
-	
+
 	{
-		immunities.add( Sleep.class );
+		immunities.add(Sleep.class);
 	}
 }

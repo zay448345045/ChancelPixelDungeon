@@ -21,13 +21,25 @@
 
 package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
-public class Sleep extends FlavourBuff {
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfExpulsion;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfLullaby;
+
+public class Sleep extends FlavourBuff implements Expulsion
+{
+	public static final float SWS = 1.5f;
 
 	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.idle();
+	public void fx(boolean on)
+	{
+		if(on) target.sprite.idle();
 	}
 
-	public static final float SWS	= 1.5f;
-	
+	@Override
+	public Class<? extends Blob> expulse()
+	{
+		//If anyone finds a way to somehow drink a potion in their sleep, I'd love to know. 
+		ScrollOfLullaby.singasong(PotionOfExpulsion.MAX_RANGE, false);
+		return null;
+	}
 }

@@ -21,8 +21,8 @@
 
 package com.noodlemire.chancelpixeldungeon.levels.rooms.secret;
 
-import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
+import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.items.Gold;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.levels.Level;
@@ -35,55 +35,71 @@ import com.noodlemire.chancelpixeldungeon.levels.traps.Trap;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
 
-public class SecretHoardRoom extends SecretRoom {
-	
+public class SecretHoardRoom extends SecretRoom
+{
+
 	@Override
-	public void paint(Level level) {
+	public void paint(Level level)
+	{
 		super.paint(level);
-		
+
 		Painter.fill(level, this, Terrain.WALL);
 		Painter.fill(level, this, 1, Terrain.EMPTY);
-		
+
 		Class<? extends Trap> trapClass;
-		if (Random.Int(2) == 0){
+		if(Random.Int(2) == 0)
+		{
 			trapClass = RockfallTrap.class;
-		} else if (Dungeon.depth >= 10){
+		}
+		else if(Dungeon.depth >= 10)
+		{
 			trapClass = DisintegrationTrap.class;
-		} else {
+		}
+		else
+		{
 			trapClass = PoisonDartTrap.class;
 		}
-		
+
 		int goldPos;
 		//half of the internal space of the room
-		int totalGold = ((width()-2)*(height()-2))/2;
-		
+		int totalGold = ((width() - 2) * (height() - 2)) / 2;
+
 		//no matter how much gold it drops, roughly equals 8 gold stacks.
-		float goldRatio = 8 / (float)totalGold;
-		for (int i = 0; i < totalGold; i++) {
-			do {
+		float goldRatio = 8 / (float) totalGold;
+		for(int i = 0; i < totalGold; i++)
+		{
+			do
+			{
 				goldPos = level.pointToCell(random());
-			} while (level.heaps.get(goldPos) != null);
+			}
+			while(level.heaps.get(goldPos) != null);
 			Item gold = new Gold().random();
 			gold.quantity(Math.round(gold.quantity() * goldRatio));
 			level.drop(gold, goldPos);
 		}
-		
-		for (Point p : getPoints()){
-			if (Random.Int(2) == 0 && level.map[level.pointToCell(p)] == Terrain.EMPTY){
-				try {
+
+		for(Point p : getPoints())
+		{
+			if(Random.Int(2) == 0 && level.map[level.pointToCell(p)] == Terrain.EMPTY)
+			{
+				try
+				{
 					level.setTrap(trapClass.newInstance().reveal(), level.pointToCell(p));
 					Painter.set(level, p, Terrain.TRAP);
-				} catch (Exception e) {
+				}
+				catch(Exception e)
+				{
 					ChancelPixelDungeon.reportException(e);
 				}
 			}
 		}
-		
+
 		entrance().set(Door.Type.HIDDEN);
 	}
-	
+
 	@Override
-	public boolean canPlaceTrap(Point p) {
+	public boolean canPlaceTrap(Point p)
+	{
 		return false;
 	}
 }

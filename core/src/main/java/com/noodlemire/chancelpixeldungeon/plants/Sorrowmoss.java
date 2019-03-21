@@ -22,10 +22,10 @@
 package com.noodlemire.chancelpixeldungeon.plants;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
-import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Poison;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.ToxicImbue;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.particles.PoisonParticle;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfHydrocombustion;
@@ -33,26 +33,27 @@ import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfShockwave;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfToxicity;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Sorrowmoss extends Plant {
-
+public class Sorrowmoss extends Plant
+{
 	{
 		image = 2;
 	}
-	
+
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
-		
-		if (ch != null) {
-			Buff.affect( ch, Poison.class ).set( 4 + Dungeon.depth / 2 );
-		}
-		
-		if (Dungeon.level.heroFOV[pos]) {
-			CellEmitter.center( pos ).burst( PoisonParticle.SPLASH, 3 );
-		}
+	public void activate(Char ch, boolean doWardenBonus)
+	{
+		if(ch != null)
+			if(doWardenBonus)
+				Buff.affect(ch, ToxicImbue.class).set(15f);
+			else
+				Buff.affect(ch, Poison.class).set(4 + Dungeon.depth / 2f);
+
+		if(Dungeon.level.heroFOV[pos])
+			CellEmitter.center(pos).burst(PoisonParticle.SPLASH, 3);
 	}
-	
-	public static class Seed extends Plant.Seed {
+
+	public static class Seed extends Plant.Seed
+	{
 		{
 			image = ItemSpriteSheet.SEED_SORROWMOSS;
 

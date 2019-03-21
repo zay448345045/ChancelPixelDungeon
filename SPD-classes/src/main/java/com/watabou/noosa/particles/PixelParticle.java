@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,45 +27,49 @@ package com.watabou.noosa.particles;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.PseudoPixel;
 
-public class PixelParticle extends PseudoPixel {
-
+public class PixelParticle extends PseudoPixel
+{
 	protected float size;
-	
+
 	protected float lifespan;
 	protected float left;
-	
-	public PixelParticle() {
+
+	public PixelParticle()
+	{
 		super();
-		
-		origin.set( +0.5f );
+
+		origin.set(+0.5f);
 	}
-	
-	public void reset( float x, float y, int color, float size, float lifespan ) {
+
+	public void reset(float x, float y, int color, float size, float lifespan)
+	{
 		revive();
-		
+
 		this.x = x;
 		this.y = y;
-		
-		color( color );
-		size( this.size = size );
-			
+
+		color(color);
+		size(this.size = size);
+
 		this.left = this.lifespan = lifespan;
 	}
-	
+
 	@Override
-	public void update() {
+	public void update()
+	{
 		super.update();
 
-		if ((left -= Game.elapsed) <= 0) {
+		if((left -= Game.elapsed) <= 0)
 			kill();
-		}
 	}
-	
-	public static class Shrinking extends PixelParticle {
+
+	public static class Shrinking extends PixelParticle
+	{
 		@Override
-		public void update() {
+		public void update()
+		{
 			super.update();
-			size( size * left / lifespan );
+			size(size * left / lifespan);
 		}
 	}
 }

@@ -31,72 +31,78 @@ import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.levels.painters.Painter;
 import com.watabou.utils.Point;
 
-public class SecretChestChasmRoom extends SecretRoom {
-	
+public class SecretChestChasmRoom extends SecretRoom
+{
+
 	//width and height are controlled here so that this room always requires 2 levitation potions
-	
+
 	@Override
-	public int minWidth() {
+	public int minWidth()
+	{
 		return 8;
 	}
-	
+
 	@Override
-	public int maxWidth() {
+	public int maxWidth()
+	{
 		return 9;
 	}
-	
+
 	@Override
-	public int minHeight() {
+	public int minHeight()
+	{
 		return 8;
 	}
-	
+
 	@Override
-	public int maxHeight() {
+	public int maxHeight()
+	{
 		return 9;
 	}
-	
+
 	@Override
-	public void paint(Level level) {
+	public void paint(Level level)
+	{
 		super.paint(level);
-		
+
 		Painter.fill(level, this, Terrain.WALL);
 		Painter.fill(level, this, 1, Terrain.CHASM);
-		
-		Point p = new Point(left+1, top+1);
+
+		Point p = new Point(left + 1, top + 1);
 		Painter.set(level, p, Terrain.EMPTY_SP);
 		level.drop(new GoldenKey(Dungeon.depth), level.pointToCell(p));
-		
-		p.x = right-1;
+
+		p.x = right - 1;
 		Painter.set(level, p, Terrain.EMPTY_SP);
 		level.drop(new GoldenKey(Dungeon.depth), level.pointToCell(p));
-		
-		p.y = bottom-1;
+
+		p.y = bottom - 1;
 		Painter.set(level, p, Terrain.EMPTY_SP);
 		level.drop(new GoldenKey(Dungeon.depth), level.pointToCell(p));
-		
-		p.x = left+1;
+
+		p.x = left + 1;
 		Painter.set(level, p, Terrain.EMPTY_SP);
 		level.drop(new GoldenKey(Dungeon.depth), level.pointToCell(p));
-		
-		
-		p = new Point(left+3, top+3);
+
+
+		p = new Point(left + 3, top + 3);
 		Painter.set(level, p, Terrain.EMPTY_SP);
 		level.drop(Generator.random(), level.pointToCell(p)).type = Heap.Type.LOCKED_CHEST;
-		
-		p.x = right-3;
+
+		p.x = right - 3;
 		Painter.set(level, p, Terrain.EMPTY_SP);
 		level.drop(Generator.random(), level.pointToCell(p)).type = Heap.Type.LOCKED_CHEST;
-		
-		p.y = bottom-3;
+
+		p.y = bottom - 3;
 		Painter.set(level, p, Terrain.EMPTY_SP);
 		level.drop(Generator.random(), level.pointToCell(p)).type = Heap.Type.LOCKED_CHEST;
-		
-		p.x = left+3;
+
+		p.x = left + 3;
 		Painter.set(level, p, Terrain.EMPTY_SP);
 		level.drop(Generator.random(), level.pointToCell(p)).type = Heap.Type.LOCKED_CHEST;
-		
+
 		level.addItemToSpawn(new PotionOfLevitation());
-		
+
 		entrance().set(Door.Type.HIDDEN);
 	}
 }

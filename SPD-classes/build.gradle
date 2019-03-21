@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.3"
 
     task ndkBuild(type: Exec){
         description "builds JNI libs from source. " +
@@ -28,5 +27,8 @@ android {
                     "NDK_LIBS_OUT=$root/src/main/jniLibs"
 
         }
+    }
+    defaultConfig {
+        minSdkVersion 8
     }
 }

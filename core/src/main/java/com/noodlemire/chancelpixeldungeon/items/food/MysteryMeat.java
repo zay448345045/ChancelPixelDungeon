@@ -34,44 +34,50 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.utils.Random;
 
-public class MysteryMeat extends Food {
+public class MysteryMeat extends Food
+{
 
 	{
 		image = ItemSpriteSheet.MEAT;
-		energy = Hunger.HUNGRY/2f;
+		energy = Hunger.HUNGRY / 2f;
 	}
-	
+
 	@Override
-	public void execute( Hero hero, String action ) {
-		
-		super.execute( hero, action );
-		
-		if (action.equals( AC_EAT )) {
+	public void execute(Hero hero, String action)
+	{
+
+		super.execute(hero, action);
+
+		if(action.equals(AC_EAT))
+		{
 			effect(hero);
 		}
 	}
 
-	public int price() {
+	public int price()
+	{
 		return 5 * quantity;
 	}
 
-	public static void effect(Hero hero){
-		switch (Random.Int( 5 )) {
+	public static void effect(Hero hero)
+	{
+		switch(Random.Int(5))
+		{
 			case 0:
-				GLog.w( Messages.get(MysteryMeat.class, "hot") );
-				Buff.affect( hero, Burning.class ).reignite( hero );
+				GLog.w(Messages.get(MysteryMeat.class, "hot"));
+				Buff.affect(hero, Burning.class).reignite();
 				break;
 			case 1:
-				GLog.w( Messages.get(MysteryMeat.class, "legs") );
-				Buff.prolong( hero, Roots.class, Paralysis.DURATION );
+				GLog.w(Messages.get(MysteryMeat.class, "legs"));
+				Buff.prolong(hero, Roots.class, Paralysis.DURATION);
 				break;
 			case 2:
-				GLog.w( Messages.get(MysteryMeat.class, "not_well") );
-				Buff.affect( hero, Poison.class ).set( hero.HT / 5 );
+				GLog.w(Messages.get(MysteryMeat.class, "not_well"));
+				Buff.affect(hero, Poison.class).set(hero.HT() / 5.0f);
 				break;
 			case 3:
-				GLog.w( Messages.get(MysteryMeat.class, "stuffed") );
-				Buff.prolong( hero, Slow.class, Slow.DURATION );
+				GLog.w(Messages.get(MysteryMeat.class, "stuffed"));
+				Buff.prolong(hero, Slow.class, Slow.DURATION);
 				break;
 		}
 	}

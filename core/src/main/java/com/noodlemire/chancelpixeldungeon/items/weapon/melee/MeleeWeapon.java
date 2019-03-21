@@ -21,111 +21,155 @@
 
 package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
+import com.noodlemire.chancelpixeldungeon.Challenges;
+import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
-import com.noodlemire.chancelpixeldungeon.actors.Char;
-import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
+import com.noodlemire.chancelpixeldungeon.items.Generator;
+import com.noodlemire.chancelpixeldungeon.items.Item;
+import com.noodlemire.chancelpixeldungeon.items.Transmutable;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.watabou.utils.Random;
 
-public class MeleeWeapon extends Weapon {
-	
+public class MeleeWeapon extends Weapon implements Transmutable
+{
 	public int tier;
 
 	@Override
-	public int min(int lvl) {
-		return  tier +  //base
+	public int min(int lvl)
+	{
+		return tier +  //base
 				lvl;    //level scaling
 	}
 
 	@Override
-	public int max(int lvl) {
-		return  5*(tier+1) +    //base
-				lvl*(tier+1);   //level scaling
+	public int max(int lvl)
+	{
+		return 5 * (tier + 1) +    //base
+				lvl * (tier + 1);   //level scaling
 	}
 
-	public int STRReq(int lvl){
-		lvl = Math.max(0, lvl);
+	private int dispMin()
+	{
+		return isIdentified() ? augment.damageFactor(min(level())) : min(0);
+	}
+
+	private int dispMax()
+	{
+		return isIdentified() ? augment.damageFactor(max(level())) : max(0);
+	}
+
+	public int STRReq(int lvl)
+	{
 		//strength req decreases at +1,+3,+6,+10,etc.
-		return (8 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
+		return (8 + tier * 2) - (int) (Math.sqrt(8 * lvl + 1) - 1) / 2;
 	}
-	
-	@Override
-	public int damageRoll(Char owner) {
-		int damage = augment.damageFactor(super.damageRoll( owner ));
 
-		if (owner instanceof Hero) {
-			int exStr = ((Hero)owner).STR() - STRReq();
-			if (exStr > 0) {
-				damage += Random.IntRange( 0, exStr );
-			}
+	@Override
+	public String info()
+	{
+		String info = super.info();
+
+		if(levelKnown)
+		{
+			info += "\n\n" + Messages.get(this, "stats_known", tier, dispMin(), dispMax(), STRReq());
+			if(STRReq() > Dungeon.hero.STR())
+				info += " " + Messages.get(this, "too_heavy");
 		}
-		
-		return damage;
-	}
-	
-	@Override
-	public String info() {
-
-		String info = desc();
-
-		if (levelKnown) {
-			info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_known", tier, augment.damageFactor(min()), augment.damageFactor(max()), STRReq());
-			if (STRReq() > Dungeon.hero.STR()) {
-				info += " " + Messages.get(Weapon.class, "too_heavy");
-			} else if (Dungeon.hero.STR() > STRReq()){
-				info += " " + Messages.get(Weapon.class, "excess_str", Dungeon.hero.STR() - STRReq());
-			}
-		} else {
-			info += "\n\n" + Messages.get(MeleeWeapon.class, "stats_unknown", tier, min(0), max(0), STRReq(0));
-			if (STRReq(0) > Dungeon.hero.STR()) {
-				info += " " + Messages.get(MeleeWeapon.class, "probably_too_heavy");
-			}
+		else
+		{
+			info += "\n\n" + Messages.get(this, "stats_unknown", tier, dispMin(), dispMax(), STRReq(0));
+			if(STRReq(0) > Dungeon.hero.STR())
+				info += " " + Messages.get(this, "probably_too_heavy");
 		}
 
 		String stats_desc = Messages.get(this, "stats_desc");
-		if (!stats_desc.equals("")) info+= "\n\n" + stats_desc;
+		if(!stats_desc.equals("")) info += "\n\n" + stats_desc;
 
-		switch (augment) {
-			case SPEED:
-				info += "\n\n" + Messages.get(Weapon.class, "faster");
-				break;
-			case DAMAGE:
-				info += "\n\n" + Messages.get(Weapon.class, "stronger");
-				break;
-			case NONE:
-		}
+		if(isIdentified())
+			switch(augment)
+			{
+				case SPEED:
+					info += "\n\n" + Messages.get(this, "faster");
+					break;
+				case DAMAGE:
+					info += "\n\n" + Messages.get(this, "stronger");
+					break;
+				case NONE:
+			}
 
-		if (enchantment != null && (cursedKnown || !enchantment.curse())){
-			info += "\n\n" + Messages.get(Weapon.class, "enchanted", enchantment.name());
+		if(enchantment != null && cursedKnown)
+		{
+			info += "\n\n" + Messages.get(this, "enchanted", enchantment.name());
 			info += " " + Messages.get(enchantment, "desc");
 		}
 
-		if (cursed && isEquipped( Dungeon.hero )) {
-			info += "\n\n" + Messages.get(Weapon.class, "cursed_worn");
-		} else if (cursedKnown && cursed) {
-			info += "\n\n" + Messages.get(Weapon.class, "cursed");
-		}
-		
+		if(cursed && isEquipped(Dungeon.hero))
+			info += "\n\n" + Messages.get(this, "cursed_worn");
+		else if(cursedKnown && cursed)
+			info += "\n\n" + Messages.get(this, "cursed");
+		else if(cursedKnown && !isIdentified())
+			info += "\n\n" + Messages.get(this, "uncursed");
+
+		if(preservations() > 0)
+			info += "\n\n" + Messages.get(this, "preserved", preservations());
+
 		return info;
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		int price = 20 * tier;
-		if (hasGoodEnchant()) {
+
+		if(hasGoodEnchant())
 			price *= 1.5;
-		}
-		if (cursedKnown && (cursed || hasCurseEnchant())) {
+		if(cursedKnown && (cursed || hasCurseEnchant()))
 			price /= 2;
-		}
-		if (levelKnown && level() > 0) {
+		if(levelKnown && level() > 0)
 			price *= (level() + 1);
-		}
-		if (price < 1) {
+		if(price < 1)
 			price = 1;
-		}
+
 		return price;
 	}
 
+	@Override
+	public Item transmute()
+	{
+		Weapon n;
+		Generator.Category c = Generator.wepTiers[tier - 1];
+
+		do
+		{
+			try
+			{
+				n = (MeleeWeapon) c.classes[Random.chances(c.probs)].newInstance();
+			}
+			catch(Exception e)
+			{
+				ChancelPixelDungeon.reportException(e);
+				return null;
+			}
+		}
+		while(Challenges.isItemBlocked(n) || n.getClass() == getClass());
+
+		int level = level();
+
+		if(level > 0)
+			n.upgrade(level);
+		else if(level < 0)
+			n.degrade(-level);
+
+		n.enchantment = enchantment;
+		n.levelKnown = levelKnown;
+		n.cursedKnown = cursedKnown;
+		n.cursed = cursed;
+		n.augment = augment;
+		n.preserve(preservations());
+		if(isBound())
+			n.bind();
+
+		return n;
+	}
 }

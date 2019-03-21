@@ -37,54 +37,59 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
-public class WaterOfHealth extends WellWater {
-	
+public class WaterOfHealth extends WellWater
+{
 	@Override
-	protected boolean affectHero( Hero hero ) {
-		
-		if (!hero.isAlive()) return false;
-		
-		Sample.INSTANCE.play( Assets.SND_DRINK );
+	protected boolean affectHero(Hero hero)
+	{
+		if(!hero.isAlive()) return false;
 
-		hero.HP = hero.HT;
-		hero.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.4f, 4 );
+		Sample.INSTANCE.play(Assets.SND_DRINK);
 
-		PotionOfHealing.cure( hero );
+		hero.heal(hero.HT());
+		hero.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 4);
+
+		PotionOfHealing.cure(hero);
 		hero.belongings.uncurseEquipped();
-		hero.buff( Hunger.class ).satisfy( Hunger.STARVING );
-		
-		CellEmitter.get( pos ).start( ShaftParticle.FACTORY, 0.2f, 3 );
+		hero.buff(Hunger.class).satisfy(Hunger.STARVING);
+
+		CellEmitter.get(pos).start(ShaftParticle.FACTORY, 0.2f, 3);
 
 		Dungeon.hero.interrupt();
-	
-		GLog.p( Messages.get(this, "procced") );
-		
+
+		GLog.p(Messages.get(this, "procced"));
+
 		return true;
 	}
-	
+
 	@Override
-	protected Item affectItem( Item item ) {
-		if (item instanceof DewVial && !((DewVial)item).isFull()) {
-			((DewVial)item).fill();
+	protected Item affectItem(Item item)
+	{
+		if(item instanceof DewVial && !((DewVial) item).isFull())
+		{
+			((DewVial) item).fill();
 			return item;
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
-	protected Landmark record() {
+	protected Landmark record()
+	{
 		return Landmark.WELL_OF_HEALTH;
 	}
-	
+
 	@Override
-	public void use( BlobEmitter emitter ) {
-		super.use( emitter );
-		emitter.start( Speck.factory( Speck.HEALING ), 0.5f, 0 );
+	public void use(BlobEmitter emitter)
+	{
+		super.use(emitter);
+		emitter.start(Speck.factory(Speck.HEALING), 0.5f, 0);
 	}
-	
+
 	@Override
-	public String tileDesc() {
+	public String tileDesc()
+	{
 		return Messages.get(this, "desc");
 	}
 }

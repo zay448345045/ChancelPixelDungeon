@@ -22,10 +22,14 @@
 package com.noodlemire.chancelpixeldungeon.plants;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
-import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Regrowth;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.DurationBuff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Expulsion;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.FlavourBuff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Healing;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
@@ -37,26 +41,27 @@ import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class Sungrass extends Plant {
-	
+public class Sungrass extends Plant
+{
 	{
 		image = 4;
 	}
-	
+
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
-		
-		if (ch == Dungeon.hero) {
-			Buff.affect( ch, Health.class ).boost(ch.HT);
-		}
-		
-		if (Dungeon.level.heroFOV[pos]) {
-			CellEmitter.get( pos ).start( ShaftParticle.FACTORY, 0.2f, 3 );
-		}
+	public void activate(Char ch, boolean doWardenBonus)
+	{
+		if(ch == Dungeon.hero)
+			if(doWardenBonus)
+				Buff.affect(ch, Healing.class).setHeal(ch.HT(), 0, 1);
+			else
+				Buff.affect(ch, Health.class).boost(ch.HT());
+
+		if(Dungeon.level.heroFOV[pos])
+			CellEmitter.get(pos).start(ShaftParticle.FACTORY, 0.2f, 3);
 	}
-	
-	public static class Seed extends Plant.Seed {
+
+	public static class Seed extends Plant.Seed
+	{
 		{
 			image = ItemSpriteSheet.SEED_SUNGRASS;
 
@@ -66,95 +71,98 @@ public class Sungrass extends Plant {
 			bones = true;
 		}
 	}
-	
-	public static class Health extends Buff {
-		
+
+	public static class Health extends DurationBuff implements Expulsion
+	{
 		private static final float STEP = 1f;
-		
+
 		private int pos;
 		private float partialHeal;
-		private int level;
 
 		{
 			type = buffType.POSITIVE;
 		}
-		
+
 		@Override
-		public boolean act() {
-			if (target.pos != pos) {
+		public boolean act()
+		{
+			if(target.pos != pos)
+			{
 				detach();
 			}
-			
+
 			//for the hero, full heal takes ~50/93/111/120 turns at levels 1/10/20/30
-			partialHeal += (40 + target.HT)/150f;
-			
-			if (partialHeal > 1){
-				target.HP += (int)partialHeal;
-				level -= (int)partialHeal;
-				partialHeal -= (int)partialHeal;
+			partialHeal += (40 + target.HT()) / 150f;
+
+			if(partialHeal > 1)
+			{
+				target.heal((int) partialHeal);
+				shorten((int) partialHeal);
+				partialHeal -= (int) partialHeal;
 				target.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
-				
-				if (target.HP >= target.HT) {
-					target.HP = target.HT;
-					if (target instanceof Hero){
-						((Hero)target).resting = false;
-					}
-				}
+
+				if(target instanceof Hero && target.HP() == target.HT())
+					((Hero) target).resting = false;
 			}
-			
-			if (level <= 0) {
-				detach();
-			} else {
-				BuffIndicator.refreshHero();
-			}
-			spend( STEP );
+
+			BuffIndicator.refreshHero();
+			spend(STEP);
 			return true;
 		}
 
-		public void boost( int amount ){
-			level += amount;
+		public void boost(int amount)
+		{
+			extend(amount);
 			pos = target.pos;
 		}
-		
+
 		@Override
-		public int icon() {
+		public int icon()
+		{
 			return BuffIndicator.HEALING;
 		}
-		
+
 		@Override
-		public void tintIcon(Image icon) {
-			FlavourBuff.greyIcon(icon, target.HT/4f, level);
+		public void tintIcon(Image icon)
+		{
+			FlavourBuff.greyIcon(icon, target.HT() / 4f, left());
 		}
-		
+
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return Messages.get(this, "name");
 		}
 
 		@Override
-		public String desc() {
-			return Messages.get(this, "desc", level);
+		public String desc()
+		{
+			return Messages.get(this, "desc", (int) left());
 		}
 
-		private static final String POS	= "pos";
+		@Override
+		public Class<? extends Blob> expulse()
+		{
+			return Regrowth.class;
+		}
+
+		private static final String POS = "pos";
 		private static final String PARTIAL = "partial_heal";
-		private static final String LEVEL = "level";
 
 		@Override
-		public void storeInBundle( Bundle bundle ) {
-			super.storeInBundle( bundle );
-			bundle.put( POS, pos );
-			bundle.put( PARTIAL, partialHeal);
-			bundle.put( LEVEL, level);
+		public void storeInBundle(Bundle bundle)
+		{
+			super.storeInBundle(bundle);
+			bundle.put(POS, pos);
+			bundle.put(PARTIAL, partialHeal);
 		}
-		
-		@Override
-		public void restoreFromBundle( Bundle bundle ) {
-			super.restoreFromBundle( bundle );
-			pos = bundle.getInt( POS );
-			partialHeal = bundle.getFloat( PARTIAL );
-			level = bundle.getInt( LEVEL );
 
+		@Override
+		public void restoreFromBundle(Bundle bundle)
+		{
+			super.restoreFromBundle(bundle);
+			pos = bundle.getInt(POS);
+			partialHeal = bundle.getFloat(PARTIAL);
 		}
 	}
 }

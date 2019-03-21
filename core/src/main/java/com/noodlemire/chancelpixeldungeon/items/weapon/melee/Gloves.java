@@ -23,23 +23,18 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Knuckles extends MeleeWeapon
+public class Gloves extends MeleeWeapon
 {
+	{
+		image = ItemSpriteSheet.GLOVES;
+		tier = 1;
+		DLY = 0.5f; //2x speed
+		bones = false;
+	}
 
-    {
-        image = ItemSpriteSheet.GLOVES;
-
-        tier = 1;
-        DLY = 0.5f; //2x speed
-
-        bones = false;
-    }
-
-    @Override
-    public int max(int lvl)
-    {
-        return (int) (2.5f * (tier + 1)) +  //5 base, down from 10
-                lvl * tier;               //+1 per level, down from +2
-    }
-
+	@Override
+	public int max(int lvl)
+	{
+		return Math.round(super.max(lvl) * 0.5f); //5 base, down from 10, and +1 per level, down from +2
+	}
 }

@@ -21,9 +21,9 @@
 
 package com.noodlemire.chancelpixeldungeon.plants;
 
-import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Bleeding;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.BlobImmunity;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Cripple;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Drowsy;
@@ -34,45 +34,50 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Vertigo;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Weakness;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
+import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfExpulsion;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfHealing;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfPurity;
-import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfRefreshment;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
-public class Dreamfoil extends Plant {
-
+public class Dreamfoil extends Plant
+{
 	{
 		image = 10;
 	}
 
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
-
-		if (ch != null) {
-			if (ch instanceof Mob)
+	public void activate(Char ch, boolean doWardenBonus)
+	{
+		if(ch != null)
+		{
+			if(ch instanceof Mob)
 				Buff.affect(ch, MagicalSleep.class);
-			else if (ch instanceof Hero){
-				GLog.i( Messages.get(this, "refreshed") );
-				Buff.detach( ch, Poison.class );
-				Buff.detach( ch, Cripple.class );
-				Buff.detach( ch, Weakness.class );
-				Buff.detach( ch, Bleeding.class );
-				Buff.detach( ch, Drowsy.class );
-				Buff.detach( ch, Slow.class );
-				Buff.detach( ch, Vertigo.class);
+			else if(ch instanceof Hero)
+			{
+				GLog.i(Messages.get(this, "refreshed"));
+				Buff.detach(ch, Poison.class);
+				Buff.detach(ch, Cripple.class);
+				Buff.detach(ch, Weakness.class);
+				Buff.detach(ch, Bleeding.class);
+				Buff.detach(ch, Drowsy.class);
+				Buff.detach(ch, Slow.class);
+				Buff.detach(ch, Vertigo.class);
+
+				if(doWardenBonus)
+					Buff.affect(ch, BlobImmunity.class, 10f);
 			}
 		}
 	}
 
-	public static class Seed extends Plant.Seed {
+	public static class Seed extends Plant.Seed
+	{
 		{
 			image = ItemSpriteSheet.SEED_DREAMFOIL;
 
 			plantClass = Dreamfoil.class;
-			alchemyClass = PotionOfRefreshment.class;
+			alchemyClass = PotionOfExpulsion.class;
 			alchemyClassSecondary = PotionOfPurity.class;
 			alchemyClassFinal = PotionOfHealing.class;
 		}

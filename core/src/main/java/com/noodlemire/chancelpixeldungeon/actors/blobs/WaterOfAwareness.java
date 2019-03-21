@@ -35,70 +35,83 @@ import com.noodlemire.chancelpixeldungeon.journal.Notes.Landmark;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.tiles.DungeonTilemap;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
-public class WaterOfAwareness extends WellWater {
+public class WaterOfAwareness extends WellWater
+{
 
 	@Override
-	protected boolean affectHero( Hero hero ) {
-		
-		Sample.INSTANCE.play( Assets.SND_DRINK );
-		emitter.parent.add( new Identification( hero.sprite.center() ) );
-		
+	protected boolean affectHero(Hero hero)
+	{
+
+		Sample.INSTANCE.play(Assets.SND_DRINK);
+		emitter.parent.add(new Identification(hero.sprite.center()));
+
 		hero.belongings.observe();
-		
-		for (int i=0; i < Dungeon.level.length(); i++) {
-			
+
+		for(int i = 0; i < Dungeon.level.length(); i++)
+		{
+
 			int terr = Dungeon.level.map[i];
-			if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
-				
-				Dungeon.level.discover( i );
-				
-				if (Dungeon.level.heroFOV[i]) {
-					GameScene.discoverTile( i, terr );
+			if((Terrain.flags[terr] & Terrain.SECRET) != 0)
+			{
+
+				Dungeon.level.discover(i);
+
+				if(Dungeon.level.heroFOV[i])
+				{
+					GameScene.discoverTile(i, terr);
 				}
 			}
 		}
-		
-		Buff.affect( hero, Awareness.class, Awareness.DURATION );
+
+		Buff.affect(hero, Awareness.class, Awareness.DURATION);
 		Dungeon.observe();
 
 		Dungeon.hero.interrupt();
-	
-		GLog.p( Messages.get(this, "procced") );
-		
+
+		GLog.p(Messages.get(this, "procced"));
+
 		return true;
 	}
-	
+
 	@Override
-	protected Item affectItem( Item item ) {
-		if (item.isIdentified()) {
+	protected Item affectItem(Item item)
+	{
+		if(item.isIdentified() || item.image == ItemSpriteSheet.POTION_UNSTABLE || item.image == ItemSpriteSheet.SCROLL_MYSTERY)
+		{
 			return null;
-		} else {
+		}
+		else
+		{
 			item.identify();
-			Badges.validateItemLevelAquired( item );
-			
-			emitter.parent.add( new Identification( DungeonTilemap.tileCenterToWorld( pos ) ) );
-			
+			Badges.validateItemLevelAquired(item);
+
+			emitter.parent.add(new Identification(DungeonTilemap.tileCenterToWorld(pos)));
+
 			return item;
 		}
 	}
-	
+
 	@Override
-	protected Landmark record() {
+	protected Landmark record()
+	{
 		return Landmark.WELL_OF_AWARENESS;
 	}
-	
+
 	@Override
-	public void use( BlobEmitter emitter ) {
-		super.use( emitter );
-		emitter.pour( Speck.factory( Speck.QUESTION ), 0.3f );
+	public void use(BlobEmitter emitter)
+	{
+		super.use(emitter);
+		emitter.pour(Speck.factory(Speck.QUESTION), 0.3f);
 	}
-	
+
 	@Override
-	public String tileDesc() {
+	public String tileDesc()
+	{
 		return Messages.get(this, "desc");
 	}
 }

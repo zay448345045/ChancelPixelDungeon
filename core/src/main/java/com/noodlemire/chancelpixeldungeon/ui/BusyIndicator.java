@@ -24,18 +24,21 @@ package com.noodlemire.chancelpixeldungeon.ui;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.watabou.noosa.Image;
 
-public class BusyIndicator extends Image {
-	
-	public BusyIndicator() {
+public class BusyIndicator extends Image
+{
+
+	public BusyIndicator()
+	{
 		super();
-		copy( Icons.BUSY.get() );
-		
-		origin.set( width / 2, height / 2 );
+		copy(Icons.BUSY.get());
+
+		origin.set(width / 2, height / 2);
 		angularSpeed = 720;
 	}
-	
+
 	@Override
-	public void update() {
+	public void update()
+	{
 		super.update();
 		visible = Dungeon.hero.isAlive() && !Dungeon.hero.ready;
 	}

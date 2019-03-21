@@ -22,8 +22,8 @@
 package com.noodlemire.chancelpixeldungeon.windows;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
-import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
+import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.items.Item;
@@ -49,51 +49,57 @@ import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 
-public class WndAlchemy extends Window {
-	
+public class WndAlchemy extends Window
+{
 	private static WndBlacksmith.ItemButton[] inputs = new WndBlacksmith.ItemButton[3];
 	private ItemSlot output;
-	
+
 	private Emitter smokeEmitter;
 	private Emitter bubbleEmitter;
-	
+
 	private RedButton btnCombine;
-	
+
 	private static final int WIDTH_P = 116;
 	private static final int WIDTH_L = 160;
-	
-	private static final int BTN_SIZE	= 28;
-	
-	public WndAlchemy(){
-		
+
+	private static final int BTN_SIZE = 28;
+
+	public WndAlchemy()
+	{
 		int w = WIDTH_P;
-		
+
 		int h = 0;
-		
+
 		IconTitle titlebar = new IconTitle();
 		titlebar.icon(DungeonTerrainTilemap.tile(0, Terrain.ALCHEMY));
-		titlebar.label( Messages.get(this, "title") );
-		titlebar.setRect( 0, 0, w, 0 );
-		add( titlebar );
-		
+		titlebar.label(Messages.get(this, "title"));
+		titlebar.setRect(0, 0, w, 0);
+		add(titlebar);
+
 		h += titlebar.height() + 2;
-		
+
 		RenderedTextMultiline desc = PixelScene.renderMultiline(6);
-		desc.text( Messages.get(this, "text") );
+		desc.text(Messages.get(this, "text"));
 		desc.setPos(0, h);
 		desc.maxWidth(w);
 		add(desc);
-		
+
 		h += desc.height() + 6;
 
-		synchronized (inputs) {
-			for (int i = 0; i < inputs.length; i++) {
-				inputs[i] = new WndBlacksmith.ItemButton() {
+		synchronized(inputs)
+		{
+			for(int i = 0; i < inputs.length; i++)
+			{
+				inputs[i] = new WndBlacksmith.ItemButton()
+				{
 					@Override
-					protected void onClick() {
+					protected void onClick()
+					{
 						super.onClick();
-						if (item != null) {
-							if (!item.collect()) {
+						if(item != null)
+						{
+							if(!item.collect())
+							{
 								Dungeon.level.drop(item, Dungeon.hero.pos);
 							}
 							item = null;
@@ -107,85 +113,98 @@ public class WndAlchemy extends Window {
 				h += BTN_SIZE + 2;
 			}
 		}
-		
-		btnCombine = new RedButton(""){
+
+		btnCombine = new RedButton("")
+		{
 			Image arrow;
-			
+
 			@Override
-			protected void createChildren() {
+			protected void createChildren()
+			{
 				super.createChildren();
-				
+
 				arrow = Icons.get(Icons.RESUME);
 				add(arrow);
 			}
-			
+
 			@Override
-			protected void layout() {
+			protected void layout()
+			{
 				super.layout();
-				arrow.x = x + (width - arrow.width)/2f;
-				arrow.y = y + (height - arrow.height)/2f;
+				arrow.x = x + (width - arrow.width) / 2f;
+				arrow.y = y + (height - arrow.height) / 2f;
 				PixelScene.align(arrow);
 			}
-			
+
 			@Override
-			public void enable(boolean value) {
+			public void enable(boolean value)
+			{
 				super.enable(value);
-				if (value){
+				if(value)
+				{
 					arrow.tint(1, 1, 0, 1);
 					arrow.alpha(1f);
 					bg.alpha(1f);
-				} else {
+				}
+				else
+				{
 					arrow.color(0, 0, 0);
 					arrow.alpha(0.6f);
 					bg.alpha(0.6f);
 				}
 			}
-			
+
 			@Override
-			protected void onClick() {
+			protected void onClick()
+			{
 				super.onClick();
 				combine();
 			}
 		};
 		btnCombine.enable(false);
-		btnCombine.setRect((w-30)/2f, inputs[1].top()+5, 30, inputs[1].height()-10);
+		btnCombine.setRect((w - 30) / 2f, inputs[1].top() + 5, 30, inputs[1].height() - 10);
 		add(btnCombine);
-		
-		output = new ItemSlot(){
+
+		output = new ItemSlot()
+		{
 			@Override
-			protected void onClick() {
+			protected void onClick()
+			{
 				super.onClick();
-				if (visible && item.trueName() != null){
+				if(visible && item.trueName() != null)
+				{
 					GameScene.show(new WndInfoItem(item));
 				}
 			}
 		};
 		output.setRect(w - BTN_SIZE - 10, inputs[1].top(), BTN_SIZE, BTN_SIZE);
-		
+
 		ColorBlock outputBG = new ColorBlock(output.width(), output.height(), 0x9991938C);
 		outputBG.x = output.left();
 		outputBG.y = output.top();
 		add(outputBG);
-		
+
 		add(output);
 		output.visible = false;
-		
+
 		bubbleEmitter = new Emitter();
 		smokeEmitter = new Emitter();
-		bubbleEmitter.pos(outputBG.x + (BTN_SIZE-16)/2f, outputBG.y + (BTN_SIZE-16)/2f, 16, 16);
+		bubbleEmitter.pos(outputBG.x + (BTN_SIZE - 16) / 2f, outputBG.y + (BTN_SIZE - 16) / 2f, 16, 16);
 		smokeEmitter.pos(bubbleEmitter.x, bubbleEmitter.y, bubbleEmitter.width, bubbleEmitter.height);
 		bubbleEmitter.autoKill = false;
 		smokeEmitter.autoKill = false;
 		add(bubbleEmitter);
 		add(smokeEmitter);
-		
+
 		h += 4;
-		
-		float btnWidth = (w-14)/2f;
-		
-		RedButton btnRecipes = new RedButton(Messages.get(this, "recipes_title")){
+
+		float btnWidth = (w - 14) / 2f;
+
+		RedButton btnRecipes = new RedButton(Messages.get(this, "recipes_title"))
+		{
 			@Override
-			protected void onClick() {
+			protected void onClick()
+			{
 				super.onClick();
 				ChancelPixelDungeon.scene().addToFront(new WndMessage(Messages.get(WndAlchemy.class, "recipes_text")));
 			}
@@ -193,10 +212,12 @@ public class WndAlchemy extends Window {
 		btnRecipes.setRect(5, h, btnWidth, 18);
 		PixelScene.align(btnRecipes);
 		add(btnRecipes);
-		
-		RedButton btnClose = new RedButton(Messages.get(this, "close")){
+
+		RedButton btnClose = new RedButton(Messages.get(this, "close"))
+		{
 			@Override
-			protected void onClick() {
+			protected void onClick()
+			{
 				super.onClick();
 				onBackPressed();
 			}
@@ -204,22 +225,31 @@ public class WndAlchemy extends Window {
 		btnClose.setRect(w - 5 - btnWidth, h, btnWidth, 18);
 		PixelScene.align(btnClose);
 		add(btnClose);
-		
+
 		h += btnClose.height();
-		
+
 		resize(w, h);
 	}
-	
-	protected WndBag.Listener itemSelector = new WndBag.Listener() {
+
+	protected WndBag.Listener itemSelector = new WndBag.Listener()
+	{
 		@Override
-		public void onSelect( Item item ) {
-			synchronized (inputs) {
-				if (item != null && inputs[0] != null) {
-					for (int i = 0; i < inputs.length; i++) {
-						if (inputs[i].item == null) {
-							if (item instanceof Dart) {
+		public void onSelect(Item item)
+		{
+			synchronized(inputs)
+			{
+				if(item != null && inputs[0] != null)
+				{
+					for(int i = 0; i < inputs.length; i++)
+					{
+						if(inputs[i].item == null)
+						{
+							if(item instanceof Dart)
+							{
 								inputs[i].item(item.detachAll(Dungeon.hero.belongings.backpack));
-							} else {
+							}
+							else
+							{
 								inputs[i].item(item.detach(Dungeon.hero.belongings.backpack));
 							}
 							break;
@@ -230,80 +260,102 @@ public class WndAlchemy extends Window {
 			}
 		}
 	};
-	
-	private<T extends Item> ArrayList<T> filterInput(Class<? extends T> itemClass){
+
+	private <T extends Item> ArrayList<T> filterInput(Class<? extends T> itemClass)
+	{
 		ArrayList<T> filtered = new ArrayList<>();
-		for (int i = 0; i < inputs.length; i++){
+		for(int i = 0; i < inputs.length; i++)
+		{
 			Item item = inputs[i].item;
-			if (item != null && itemClass.isInstance(item)){
-				filtered.add((T)item);
+			if(item != null && itemClass.isInstance(item))
+			{
+				filtered.add((T) item);
 			}
 		}
 		return filtered;
 	}
-	
-	private void updateState(){
-		
+
+	private void updateState()
+	{
+
 		ArrayList<Item> ingredients = filterInput(Item.class);
 		Recipe recipe = Recipe.findRecipe(ingredients);
-		
-		if (recipe != null){
+
+		if(recipe != null)
+		{
 			output.item(recipe.sampleOutput(ingredients));
 			output.visible = true;
 			btnCombine.enable(true);
-			
-		} else {
+
+		}
+		else
+		{
 			btnCombine.enable(false);
 			output.visible = false;
 		}
-		
+
 	}
 
-	private void combine(){
-		
+	private void combine()
+	{
+
 		ArrayList<Item> ingredients = filterInput(Item.class);
 		Recipe recipe = Recipe.findRecipe(ingredients);
-		
+
 		Item result = null;
-		
-		if (recipe != null){
+
+		if(recipe != null)
+		{
 			result = recipe.brew(ingredients);
 		}
-		
-		if (result != null){
-			bubbleEmitter.start(Speck.factory( Speck.BUBBLE ), 0.2f, 10 );
-			smokeEmitter.burst(Speck.factory( Speck.WOOL ), 10 );
-			Sample.INSTANCE.play( Assets.SND_PUFF );
-			
+
+		if(result != null)
+		{
+			bubbleEmitter.start(Speck.factory(Speck.BUBBLE), 0.2f, 10);
+			smokeEmitter.burst(Speck.factory(Speck.WOOL), 10);
+			Sample.INSTANCE.play(Assets.SND_PUFF);
+
 			output.item(result);
-			if (!result.collect()){
+			if(!result.collect())
+			{
 				Dungeon.level.drop(result, Dungeon.hero.pos);
 			}
 
-			synchronized (inputs) {
-				for (int i = 0; i < inputs.length; i++) {
-					if (inputs[i] != null && inputs[i].item != null) {
-						if (inputs[i].item.quantity() <= 0) {
+			synchronized(inputs)
+			{
+				for(int i = 0; i < inputs.length; i++)
+				{
+					if(inputs[i] != null && inputs[i].item != null)
+					{
+						if(inputs[i].item.quantity() <= 0)
+						{
 							inputs[i].slot.item(new WndBag.Placeholder(ItemSpriteSheet.SOMETHING));
 							inputs[i].item = null;
-						} else {
+						}
+						else
+						{
 							inputs[i].slot.item(inputs[i].item);
 						}
 					}
 				}
 			}
-			
+
 			btnCombine.enable(false);
 		}
-		
+
 	}
-	
+
 	@Override
-	public void destroy() {
-		synchronized ( inputs ) {
-			for (int i = 0; i < inputs.length; i++) {
-				if (inputs[i] != null && inputs[i].item != null) {
-					if (!inputs[i].item.collect()) {
+	public void destroy()
+	{
+		synchronized(inputs)
+		{
+			for(int i = 0; i < inputs.length; i++)
+			{
+				if(inputs[i] != null && inputs[i].item != null)
+				{
+					if(!inputs[i].item.collect())
+					{
 						Dungeon.level.drop(inputs[i].item, Dungeon.hero.pos);
 					}
 				}
@@ -315,28 +367,37 @@ public class WndAlchemy extends Window {
 
 	private static final String ALCHEMY_INPUTS = "alchemy_inputs";
 
-	public static void storeInBundle( Bundle b ){
-		synchronized ( inputs ){
+	public static void storeInBundle(Bundle b)
+	{
+		synchronized(inputs)
+		{
 			ArrayList<Item> items = new ArrayList<>();
-			for (WndBlacksmith.ItemButton i : inputs){
-				if (i != null && i.item != null){
+			for(WndBlacksmith.ItemButton i : inputs)
+			{
+				if(i != null && i.item != null)
+				{
 					items.add(i.item);
 				}
 			}
-			if (!items.isEmpty()){
-				b.put( ALCHEMY_INPUTS, items );
+			if(!items.isEmpty())
+			{
+				b.put(ALCHEMY_INPUTS, items);
 			}
 		}
 	}
 
-	public static void restoreFromBundle( Bundle b, Hero h ){
+	public static void restoreFromBundle(Bundle b, Hero h)
+	{
 
-		if (b.contains(ALCHEMY_INPUTS)){
-			for (Bundlable item : b.getCollection(ALCHEMY_INPUTS)){
+		if(b.contains(ALCHEMY_INPUTS))
+		{
+			for(Bundlable item : b.getCollection(ALCHEMY_INPUTS))
+			{
 
 				//try to add normally, force-add otherwise.
-				if (!((Item)item).collect(h.belongings.backpack)){
-					h.belongings.backpack.items.add((Item)item);
+				if(!((Item) item).collect(h.belongings.backpack))
+				{
+					h.belongings.backpack.items.add((Item) item);
 				}
 			}
 		}

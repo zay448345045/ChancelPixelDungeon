@@ -21,49 +21,63 @@
 
 package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.EnticementGas;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
 
-public class Charm extends FlavourBuff {
-
+public class Charm extends FlavourBuff implements Expulsion
+{
 	public int object = 0;
 
-	private static final String OBJECT    = "object";
+	private static final String OBJECT = "object";
 
 	{
 		type = buffType.NEGATIVE;
 	}
 
 	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( OBJECT, object );
+	public void storeInBundle(Bundle bundle)
+	{
+		super.storeInBundle(bundle);
+		bundle.put(OBJECT, object);
 	}
 
 	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		object = bundle.getInt( OBJECT );
+	public void restoreFromBundle(Bundle bundle)
+	{
+		super.restoreFromBundle(bundle);
+		object = bundle.getInt(OBJECT);
 	}
 
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.HEART;
 	}
-	
+
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String heroMessage() {
+	public String heroMessage()
+	{
 		return Messages.get(this, "heromsg");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc", dispTurns());
+	}
+
+	@Override
+	public Class<? extends Blob> expulse()
+	{
+		return EnticementGas.class;
 	}
 }

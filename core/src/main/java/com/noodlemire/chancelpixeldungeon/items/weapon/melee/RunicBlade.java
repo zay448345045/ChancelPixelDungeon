@@ -23,11 +23,10 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class RunicBlade extends MeleeWeapon {
-
+public class RunicBlade extends MeleeWeapon
+{
 	{
 		image = ItemSpriteSheet.RUNIC_BLADE;
-
 		tier = 4;
 	}
 
@@ -35,8 +34,9 @@ public class RunicBlade extends MeleeWeapon {
 	//equal to tier 4 in damage at +5
 
 	@Override
-	public int max(int lvl) {
-		return  5*(tier) +                	//20 base, down from 25
-				Math.round(lvl*(tier+2));	//+6 per level, up from +5
+	public int max(int lvl)
+	{
+		return 5 * (tier) +                    //20 base, down from 25
+				Math.round(lvl * (tier + 2));    //+6 per level, up from +5
 	}
 }

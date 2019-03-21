@@ -5,9 +5,10 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Invisibility;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Doom;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Might;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Weakness;
+import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.levels.Level;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
@@ -16,12 +17,12 @@ import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
-public class ScrollOfRot extends EnvironmentScroll
+public class ScrollOfDecay extends EnvironmentScroll
 {
 	{
 		initials = 12;
 
-		bones = true;
+		if(isIdentified()) defaultAction = AC_SHOUT;
 	}
 
 	@Override
@@ -48,7 +49,6 @@ public class ScrollOfRot extends EnvironmentScroll
 		GameScene.flash(0xFF0000);
 
 		Sample.INSTANCE.play(Assets.SND_BLAST);
-		Invisibility.dispel();
 
 		boolean[] aoe = EnvironmentScroll.fovAt(pos, curUser.viewDistance);
 
@@ -58,19 +58,25 @@ public class ScrollOfRot extends EnvironmentScroll
 			{
 				Char ch = Actor.findChar(i);
 
-				if(ch != null && ch.properties().contains(Char.Property.UNDEAD))
-					Buff.affect(ch, Might.class, Weakness.DURATION);
-				else if(ch != null && !ch.isImmune(getClass()))
+				if(ch != null)
 				{
-					Ballistica wallDetect = new Ballistica(curUser.pos, ch.pos, Ballistica.STOP_TARGET);
-					int terrainPassed = 1;
+					if(ch.properties().contains(Char.Property.UNDEAD))
+						Buff.affect(ch, Might.class, Weakness.DURATION);
+					else if(!ch.isImmune(getClass()))
+					{
+						Ballistica wallDetect = new Ballistica(curUser.pos, ch.pos, Ballistica.STOP_TARGET);
+						int terrainPassed = 1;
 
-					for(int p : wallDetect.subPath(1, wallDetect.dist))
-						if(Dungeon.level.solid[p])
-							terrainPassed++;
+						for(int p : wallDetect.subPath(1, wallDetect.dist))
+							if(Dungeon.level.solid[p])
+								terrainPassed++;
 
-					ch.damage(Math.round(0.75f * ch.HP() / terrainPassed), this);
-					Buff.affect(ch, Weakness.class, Weakness.DURATION);
+						ch.damage(Math.round(0.75f * ch.HP() / terrainPassed), this);
+						Buff.affect(ch, Weakness.class, Weakness.DURATION);
+
+						if(i == pos && !(ch instanceof Hero))
+							Buff.affect(ch, Doom.class);
+					}
 				}
 
 				if(Dungeon.level.flamable[i])
@@ -84,7 +90,6 @@ public class ScrollOfRot extends EnvironmentScroll
 		if(curUser.isAlive())
 			Dungeon.observe();
 
-		setKnown();
 		readAnimation();
 
 		if(!curUser.isAlive())
@@ -92,5 +97,12 @@ public class ScrollOfRot extends EnvironmentScroll
 			Dungeon.fail(getClass());
 			GLog.n(Messages.get(this, "ondeath"));
 		}
+	}
+
+	@Override
+	public void setKnown()
+	{
+		super.setKnown();
+		if(isIdentified()) defaultAction = AC_SHOUT;
 	}
 }

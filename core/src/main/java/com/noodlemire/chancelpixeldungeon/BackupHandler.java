@@ -34,27 +34,34 @@ import com.watabou.utils.FileUtils;
 import java.io.File;
 
 //a handler for android backup requests
-public class BackupHandler extends BackupAgent {
-	
+public class BackupHandler extends BackupAgent
+{
+
 	//Both of these do nothing. This handler is here to support use of android 4.0+ ADB backup
 	//and android 6.0+ auto-backup. It does not support android 2.2+ key-value backup
-	public void onBackup(ParcelFileDescriptor oldState, BackupDataOutput data, ParcelFileDescriptor newState) {}
-	public void onRestore(BackupDataInput data, int appVersionCode, ParcelFileDescriptor newState) {}
-	
+	public void onBackup(ParcelFileDescriptor oldState, BackupDataOutput data, ParcelFileDescriptor newState)
+	{
+	}
+
+	public void onRestore(BackupDataInput data, int appVersionCode, ParcelFileDescriptor newState)
+	{
+	}
+
 	@Override
 	@TargetApi(14)
-	public void onFullBackup(FullBackupDataOutput data) {
+	public void onFullBackup(FullBackupDataOutput data)
+	{
 		//fully overrides super.onFullBackup, meaning only files specified here are backed up
-		
+
 		//does not backup runs in progress, to prevent cheating.
-		
+
 		//store shared preferences
-		fullBackupFile(new File(getFilesDir().getParent() + "/shared_prefs/"+ ChancelPixelDungeon.class.getCanonicalName() + ".xml"), data);
-		
+		fullBackupFile(new File(getFilesDir().getParent() + "/shared_prefs/" + ChancelPixelDungeon.class.getCanonicalName() + ".xml"), data);
+
 		//store game data
-		fullBackupFile(FileUtils.getFile( getFilesDir(), Rankings.RANKINGS_FILE ), data);
-		fullBackupFile(FileUtils.getFile( getFilesDir(), Badges.BADGES_FILE ), data);
-		fullBackupFile(FileUtils.getFile( getFilesDir(), Journal.JOURNAL_FILE ), data);
+		fullBackupFile(FileUtils.getFile(getFilesDir(), Rankings.RANKINGS_FILE), data);
+		fullBackupFile(FileUtils.getFile(getFilesDir(), Badges.BADGES_FILE), data);
+		fullBackupFile(FileUtils.getFile(getFilesDir(), Journal.JOURNAL_FILE), data);
 	}
-	
+
 }

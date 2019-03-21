@@ -39,142 +39,169 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class SewerBossLevel extends SewerLevel {
+public class SewerBossLevel extends SewerLevel
+{
 
 	{
 		color1 = 0x48763c;
 		color2 = 0x59994a;
 	}
-	
+
 	private int stairs = 0;
-	
+
 	@Override
-	protected ArrayList<Room> initRooms() {
+	protected ArrayList<Room> initRooms()
+	{
 		ArrayList<Room> initRooms = new ArrayList<>();
-		initRooms.add ( roomEntrance = roomExit = new SewerBossEntranceRoom());
-		
+		initRooms.add(roomEntrance = roomExit = new SewerBossEntranceRoom());
+
 		int standards = standardRooms();
-		for (int i = 0; i < standards; i++) {
+		for(int i = 0; i < standards; i++)
+		{
 			initRooms.add(new EmptyRoom());
 		}
-		
+
 		initRooms.add(new RatKingRoom());
 		return initRooms;
 	}
-	
+
 	@Override
-	protected int standardRooms() {
+	protected int standardRooms()
+	{
 		//2 to 4, average 3
-		return 2+Random.chances(new float[]{1, 1, 1});
+		return 2 + Random.chances(new float[]{1, 1, 1});
 	}
-	
-	protected Builder builder(){
+
+	protected Builder builder()
+	{
 		return new LoopBuilder()
 				.setPathLength(1f, new float[]{1})
 				.setTunnelLength(new float[]{0, 3, 1}, new float[]{1});
 	}
-	
+
 	@Override
-	protected float waterFill(){
+	protected float waterFill()
+	{
 		return 0.50f;
 	}
-	
+
 	@Override
-	protected int waterSmoothing(){
+	protected int waterSmoothing()
+	{
 		return 5;
 	}
-	
+
 	@Override
-	protected float grassFill() {
+	protected float grassFill()
+	{
 		return 0.20f;
 	}
-	
+
 	@Override
-	protected int grassSmoothing() {
+	protected int grassSmoothing()
+	{
 		return 4;
 	}
-	
-	protected int nTraps() {
+
+	protected int nTraps()
+	{
 		return 0;
 	}
 
 	@Override
-	protected void createMobs() {
+	protected void createMobs()
+	{
 		Goo boss = new Goo();
 		Room room;
-		do {
+		do
+		{
 			room = randomRoom(StandardRoom.class);
-		} while (room == roomEntrance);
+		}
+		while(room == roomEntrance);
 		boss.pos = pointToCell(room.random());
-		mobs.add( boss );
+		mobs.add(boss);
 	}
-	
-	public Actor respawner() {
+
+	public Actor respawner()
+	{
 		return null;
 	}
-	
+
 	@Override
-	protected void createItems() {
+	protected void createItems()
+	{
 		Item item = Bones.get();
-		if (item != null) {
+		if(item != null)
+		{
 			int pos;
-			do {
+			do
+			{
 				pos = pointToCell(roomEntrance.random());
-			} while (pos == entrance || solid[pos]);
-			drop( item, pos ).type = Heap.Type.REMAINS;
+			}
+			while(pos == entrance || solid[pos]);
+			drop(item, pos).type = Heap.Type.REMAINS;
 		}
 	}
 
 	@Override
-	public int randomRespawnCell() {
+	public int randomRespawnCell()
+	{
 		int pos;
-		do {
+		do
+		{
 			pos = pointToCell(roomEntrance.random());
-		} while (pos == entrance || solid[pos]);
+		}
+		while(pos == entrance || solid[pos]);
 		return pos;
 	}
 
-	
-	public void seal() {
-		if (entrance != 0) {
+
+	public void seal()
+	{
+		if(entrance != 0)
+		{
 
 			super.seal();
-			
-			set( entrance, Terrain.WATER );
-			GameScene.updateMap( entrance );
-			GameScene.ripple( entrance );
-			
+
+			set(entrance, Terrain.WATER);
+			GameScene.updateMap(entrance);
+			GameScene.ripple(entrance);
+
 			stairs = entrance;
 			entrance = 0;
 		}
 	}
-	
-	public void unseal() {
-		if (stairs != 0) {
+
+	public void unseal()
+	{
+		if(stairs != 0)
+		{
 
 			super.unseal();
-			
+
 			entrance = stairs;
 			stairs = 0;
-			
-			set( entrance, Terrain.ENTRANCE );
-			GameScene.updateMap( entrance );
+
+			set(entrance, Terrain.ENTRANCE);
+			GameScene.updateMap(entrance);
 
 		}
 	}
-	
-	private static final String STAIRS	= "stairs";
-	
+
+	private static final String STAIRS = "stairs";
+
 	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( STAIRS, stairs );
+	public void storeInBundle(Bundle bundle)
+	{
+		super.storeInBundle(bundle);
+		bundle.put(STAIRS, stairs);
 	}
-	
+
 	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		stairs = bundle.getInt( STAIRS );
+	public void restoreFromBundle(Bundle bundle)
+	{
+		super.restoreFromBundle(bundle);
+		stairs = bundle.getInt(STAIRS);
 		roomExit = roomEntrance;
 	}
 }

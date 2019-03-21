@@ -23,22 +23,23 @@ package com.noodlemire.chancelpixeldungeon.items.potions;
 
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 
-public class PotionOfExperience extends Potion {
-
+public class PotionOfExperience extends Potion
+{
 	{
 		initials = 0;
 
 		bones = true;
 	}
-	
+
 	@Override
-	public void apply( Hero hero ) {
-		setKnown();
-		hero.earnExp( hero.maxExp() );
+	public void apply(Hero hero)
+	{
+		hero.earnExp(hero.maxExp());
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return isKnown() ? 50 * quantity : super.price();
 	}
 }

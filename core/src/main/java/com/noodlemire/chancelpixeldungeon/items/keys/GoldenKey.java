@@ -23,17 +23,20 @@ package com.noodlemire.chancelpixeldungeon.items.keys;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class GoldenKey extends Key {
-	
+public class GoldenKey extends Key
+{
+
 	{
 		image = ItemSpriteSheet.GOLDEN_KEY;
 	}
 
-	public GoldenKey() {
-		this( 0 );
+	public GoldenKey()
+	{
+		this(0);
 	}
-	
-	public GoldenKey( int depth ) {
+
+	public GoldenKey(int depth)
+	{
 		super();
 		this.depth = depth;
 	}

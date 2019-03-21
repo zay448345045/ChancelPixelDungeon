@@ -28,13 +28,13 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Frost;
 import com.noodlemire.chancelpixeldungeon.items.quest.Embers;
 import com.noodlemire.chancelpixeldungeon.sprites.NewbornElementalSprite;
 
-public class NewbornElemental extends Elemental {
-
+public class NewbornElemental extends Elemental
+{
 	{
 		spriteClass = NewbornElementalSprite.class;
 
-		HT = 65;
-		HP = HT/2; //32
+		setHT(81, false);
+		setHP(HT() / 2); //40
 
 		defenseSkill = 12;
 
@@ -44,17 +44,22 @@ public class NewbornElemental extends Elemental {
 	}
 
 	@Override
-	public void add(Buff buff) {
-		if (buff instanceof Frost || buff instanceof Chill) {
+	public void add(Buff buff)
+	{
+		if(buff instanceof Frost || buff instanceof Chill)
+		{
 			die(buff);
-		} else {
+		}
+		else
+		{
 			super.add(buff);
 		}
 	}
 
 	@Override
-	public void die(Object cause) {
+	public void die(Object cause)
+	{
 		super.die(cause);
-		Dungeon.level.drop( new Embers(), pos ).sprite.drop();
+		Dungeon.level.drop(new Embers(), pos).sprite.drop();
 	}
 }

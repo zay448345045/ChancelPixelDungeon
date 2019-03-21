@@ -24,19 +24,22 @@ package com.noodlemire.chancelpixeldungeon.items.food;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Hunger;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class ChargrilledMeat extends Food {
+public class ChargrilledMeat extends Food
+{
 
 	{
 		image = ItemSpriteSheet.STEAK;
-		energy = Hunger.HUNGRY/2f;
+		energy = Hunger.HUNGRY / 2f;
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return 8 * quantity;
 	}
-	
-	public static Food cook( MysteryMeat ingredient ) {
+
+	public static Food cook(MysteryMeat ingredient)
+	{
 		ChargrilledMeat result = new ChargrilledMeat();
 		result.quantity = ingredient.quantity();
 		return result;

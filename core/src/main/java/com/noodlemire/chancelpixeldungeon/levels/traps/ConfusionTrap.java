@@ -26,7 +26,8 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.ConfusionGas;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 
-public class ConfusionTrap extends Trap {
+public class ConfusionTrap extends Trap
+{
 
 	{
 		color = TEAL;
@@ -34,7 +35,8 @@ public class ConfusionTrap extends Trap {
 	}
 
 	@Override
-	public void activate() {
+	public void activate()
+	{
 
 		GameScene.add(Blob.seed(pos, 300 + 20 * Dungeon.depth, ConfusionGas.class));
 

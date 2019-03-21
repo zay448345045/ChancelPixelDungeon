@@ -21,7 +21,8 @@
 
 package com.noodlemire.chancelpixeldungeon.items;
 
-import com.watabou.noosa.Game;
+import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -33,7 +34,7 @@ import java.util.List;
 
 public class ItemExistenceHandler<T extends Item>
 {
-	private Class<? extends T>[] items, constantItems, allItems;
+	private Class<? extends T>[] items, constantItems;
 	private HashMap<Class<? extends T>, String> itemLabels;
 	private HashMap<String, Integer> labelImages;
 	private HashSet<Class<? extends T>> known;
@@ -43,28 +44,47 @@ public class ItemExistenceHandler<T extends Item>
 	{
 		this.items = items;
 		this.constantItems = constantItems;
-		allItems = System.arrayCopy(items);
-		for(Class<? extends T> c : constantItems)
-			allItems.add(c);
+
+		imageLabels.remove(defaultLabel);
 
 		itemLabels = new HashMap<>();
 		labelImages = new HashMap<>(imageLabels);
 		known = new HashSet<>();
 
 		ArrayList<String> labelsLeft = new ArrayList<>(imageLabels.keySet());
+		ArrayList<Class<? extends T>> constantsLeft = new ArrayList<>(Arrays.asList(constantItems));
 		ArrayList<Class<? extends T>> itemsLeft = new ArrayList<>(Arrays.asList(items));
 
-		for(Class<? extends T> item : constantItems)
-		{
-			System.out.println("Constant considered: " + item.getSimpleName());
-			int index = Random.Int(labelsLeft.size());
+		System.out.print("Initializing constants in this list: ");
+		for(Class<? extends T> thing : constantItems)
+			System.out.print(thing.getSimpleName() + " ");
 
-			itemLabels.put(item, labelsLeft.get(index));
-			labelsLeft.remove(index);
+		System.out.println("\n");
+
+		for(int i = 0; i < constantItems.length; i++)
+		{
+			int index = Random.Int(constantsLeft.size());
+			System.out.println("Selected random index: " + index);
+
+			Class<? extends T> item = constantsLeft.get(index);
+			System.out.println("It is a " + item.getSimpleName());
+			constantsLeft.remove(index);
+
+			int randI = Random.Int(labelsLeft.size());
+			System.out.println("Selected randI: " + randI);
+
+			itemLabels.put(item, labelsLeft.get(randI));
+			System.out.println("It is " + labelsLeft.get(randI));
+			labelsLeft.remove(randI);
+
+			System.out.print("Constants left in this list: ");
+			for(Class<? extends T> thing : constantsLeft)
+				System.out.print(thing.getSimpleName() + " ");
+
+			System.out.println("\n");
 		}
 
-		for(Class<? extends T> thing : itemLabels.keySet())
-			System.out.println("Constant put: " + thing.getSimpleName());
+		labelImages.put(defaultLabel, defaultImage);
 
 		for(int i = 0; i < items.length; i++)
 		{
@@ -74,16 +94,32 @@ public class ItemExistenceHandler<T extends Item>
 			itemsLeft.remove(index);
 
 			if(labelsLeft.isEmpty())
-			{
-				labelImages.put(defaultLabel, defaultImage);
 				itemLabels.put(item, defaultLabel);
-			}
 			else
 			{
 				int randi = Random.Int(labelsLeft.size());
 
 				itemLabels.put(item, labelsLeft.get(randi));
 				labelsLeft.remove(randi);
+			}
+		}
+
+		for(Class<?> cl : constantItems)
+		{
+			try
+			{
+				T newinstance = (T) cl.newInstance();
+				if(newinstance.image == ItemSpriteSheet.POTION_UNSTABLE ||
+				   newinstance.image == ItemSpriteSheet.SCROLL_MYSTERY)
+				{
+					System.out.println(cl.getSimpleName() + " was found to not exist!");
+					System.out.println("After all, it is a " + newinstance.name());
+					for(; ; ) ;
+				}
+			}
+			catch(Exception e)
+			{
+				ChancelPixelDungeon.reportException(e);
 			}
 		}
 	}
@@ -93,15 +129,12 @@ public class ItemExistenceHandler<T extends Item>
 	{
 		this.items = items;
 		this.constantItems = constantItems;
-		allItems = System.arrayCopy(items);
-		for(Class<? extends T> thing : constantItems)
-			allItems.add(thing);
 
 		itemLabels = new HashMap<>();
 		this.labelImages = new HashMap<>(labelImages);
 		known = new HashSet<>();
 
-		ArrayList<String> allLabels = new ArrayList<String>(labelImages.keySet());
+		ArrayList<String> allLabels = new ArrayList<>(labelImages.keySet());
 
 		if(labelImages.size() < this.items.length)
 			for(int i = 0; i < this.items.length - labelImages.size(); i++)
@@ -118,7 +151,13 @@ public class ItemExistenceHandler<T extends Item>
 
 	public void save(Bundle bundle)
 	{
-		for(Class<? extends T> item : allItems)
+		for(Class<? extends T> item : items)
+		{
+			String itemName = item.toString();
+			bundle.put(itemName + PFX_LABEL, itemLabels.get(item));
+			bundle.put(itemName + PFX_KNOWN, known.contains(item));
+		}
+		for(Class<? extends T> item : constantItems)
 		{
 			String itemName = item.toString();
 			bundle.put(itemName + PFX_LABEL, itemLabels.get(item));
@@ -128,40 +167,35 @@ public class ItemExistenceHandler<T extends Item>
 
 	public void saveSelectively(Bundle bundle, ArrayList<Item> itemsToSave)
 	{
-		List<Class<? extends T>> items = Arrays.asList(allItems);
+		List<Class<? extends T>> items = Arrays.asList(this.items);
+		List<Class<? extends T>> constants = Arrays.asList(this.constantItems);
 
 		for(Item item : itemsToSave)
 		{
 			if(items.contains(item.getClass()))
-			{
-				Class<? extends T> cls = items.get(items.indexOf(item.getClass()));
-				String itemName = cls.toString();
-				bundle.put(itemName + PFX_LABEL, itemLabels.get(cls));
-				bundle.put(itemName + PFX_KNOWN, known.contains(cls));
-			}
+				doSelectiveSave(bundle, items, item);
+			else if(constants.contains(items.getClass()))
+				doSelectiveSave(bundle, constants, item);
 		}
+	}
+
+	private void doSelectiveSave(Bundle bundle, List<Class<? extends T>> items, Item item)
+	{
+		Class<? extends T> cls = items.get(items.indexOf(item.getClass()));
+		String itemName = cls.toString();
+		bundle.put(itemName + PFX_LABEL, itemLabels.get(cls));
+		bundle.put(itemName + PFX_KNOWN, known.contains(cls));
 	}
 
 	private void restore(Bundle bundle, ArrayList<String> labelsLeft, String defaultLabel, int defaultImage)
 	{
 		ArrayList<Class<? extends T>> unlabelled = new ArrayList<>();
 
-		for(Class<? extends T> item : allItems)
-		{
-			String itemName = item.toString();
+		for(Class<? extends T> item : items)
+			getKnownOrUnknown(bundle, item, labelsLeft, unlabelled);
 
-			if(bundle.contains(itemName + PFX_LABEL))
-			{
-				String label = bundle.getString(itemName + PFX_LABEL);
-				itemLabels.put(item, label);
-				labelsLeft.remove(label);
-
-				if(bundle.getBoolean(itemName + PFX_KNOWN))
-					known.add(item);
-			}
-			else
-				unlabelled.add(item);
-		}
+		for(Class<? extends T> item : constantItems)
+			getKnownOrUnknown(bundle, item, labelsLeft, unlabelled);
 
 		for(Class<? extends T> item : unlabelled)
 		{
@@ -183,6 +217,24 @@ public class ItemExistenceHandler<T extends Item>
 			if(bundle.contains(itemName + PFX_KNOWN) && bundle.getBoolean(itemName + PFX_KNOWN))
 				known.add(item);
 		}
+	}
+
+	private void getKnownOrUnknown(Bundle bundle, Class<? extends T> item, ArrayList<String> labelsLeft,
+	                               ArrayList<Class<? extends T>> unlabelled)
+	{
+		String itemName = item.toString();
+
+		if(bundle.contains(itemName + PFX_LABEL))
+		{
+			String label = bundle.getString(itemName + PFX_LABEL);
+			itemLabels.put(item, label);
+			labelsLeft.remove(label);
+
+			if(bundle.getBoolean(itemName + PFX_KNOWN))
+				known.add(item);
+		}
+		else
+			unlabelled.add(item);
 	}
 
 	public int image(T item)
@@ -213,7 +265,10 @@ public class ItemExistenceHandler<T extends Item>
 	public HashSet<Class<? extends T>> unknown()
 	{
 		HashSet<Class<? extends T>> result = new HashSet<Class<? extends T>>();
-		for(Class<? extends T> i : allItems)
+		for(Class<? extends T> i : items)
+			if(!known.contains(i))
+				result.add(i);
+		for(Class<? extends T> i : constantItems)
 			if(!known.contains(i))
 				result.add(i);
 

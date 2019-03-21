@@ -28,8 +28,8 @@ import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.SheepSprite;
 import com.watabou.utils.Random;
 
-public class Sheep extends NPC {
-
+public class Sheep extends NPC
+{
 	private static final String[] LINE_KEYS = {"Baa!", "Baa?", "Baa.", "Baa..."};
 
 	{
@@ -41,31 +41,35 @@ public class Sheep extends NPC {
 	private boolean initialized = false;
 
 	@Override
-	protected boolean act() {
-		if (initialized) {
-			HP = 0;
-
+	protected boolean act()
+	{
+		if(initialized)
+		{
 			destroy();
 			sprite.die();
-
-		} else {
+		}
+		else
+		{
 			initialized = true;
-			spend( lifespan + Random.Float(2) );
+			spend(lifespan + Random.Float(2));
 		}
 		return true;
 	}
 
 	@Override
-	public void damage( int dmg, Object src ) {
+	public void damage(int dmg, Object src)
+	{
 	}
 
 	@Override
-	public void add( Buff buff ) {
+	public void add(Buff buff)
+	{
 	}
 
 	@Override
-	public boolean interact() {
-		sprite.showStatus( CharSprite.NEUTRAL, Messages.get(this, Random.element( LINE_KEYS )) );
+	public boolean interact()
+	{
+		sprite.showStatus(CharSprite.NEUTRAL, Messages.get(this, Random.element(LINE_KEYS)));
 		Dungeon.hero.spendAndNext(1f);
 		return false;
 	}

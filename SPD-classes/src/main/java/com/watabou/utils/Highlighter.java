@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,59 +27,61 @@ package com.watabou.utils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Highlighter {
-
-	private static final Pattern HIGHLIGHTER	= Pattern.compile( "_(.*?)_" );
-	private static final Pattern STRIPPER		= Pattern.compile( "[ \n]" );
+public class Highlighter
+{
+	private static final Pattern HIGHLIGHTER = Pattern.compile("_(.*?)_");
+	private static final Pattern STRIPPER = Pattern.compile("[ \n]");
 
 	public String text;
 
 	public boolean[] mask;
 
-	public Highlighter( String text ) {
-
-		String stripped = STRIPPER.matcher( text ).replaceAll( "" );
+	public Highlighter(String text)
+	{
+		String stripped = STRIPPER.matcher(text).replaceAll("");
 		mask = new boolean[stripped.length()];
 
-		Matcher m = HIGHLIGHTER.matcher( stripped );
+		Matcher m = HIGHLIGHTER.matcher(stripped);
 
 		int pos = 0;
 		int lastMatch = 0;
 
-		while (m.find()) {
+		while(m.find())
+		{
 			pos += (m.start() - lastMatch);
-			int groupLen = m.group( 1 ).length();
-			for (int i=pos; i < pos + groupLen; i++) {
+			int groupLen = m.group(1).length();
+			for(int i = pos; i < pos + groupLen; i++)
 				mask[i] = true;
-			}
+
 			pos += groupLen;
 			lastMatch = m.end();
 		}
 
-		m.reset( text );
+		m.reset(text);
 		StringBuffer sb = new StringBuffer();
-		while (m.find()) {
-			m.appendReplacement( sb, m.group( 1 ) );
-		}
-		m.appendTail( sb );
+		while(m.find())
+			m.appendReplacement(sb, m.group(1));
+
+		m.appendTail(sb);
 
 		this.text = sb.toString();
 	}
 
-	public boolean[] inverted() {
+	public boolean[] inverted()
+	{
 		boolean[] result = new boolean[mask.length];
-		for (int i=0; i < result.length; i++) {
+		for(int i = 0; i < result.length; i++)
 			result[i] = !mask[i];
-		}
+
 		return result;
 	}
 
-	public boolean isHighlighted() {
-		for (int i=0; i < mask.length; i++) {
-			if (mask[i]) {
+	public boolean isHighlighted()
+	{
+		for(int i = 0; i < mask.length; i++)
+			if(mask[i])
 				return true;
-			}
-		}
+
 		return false;
 	}
 }

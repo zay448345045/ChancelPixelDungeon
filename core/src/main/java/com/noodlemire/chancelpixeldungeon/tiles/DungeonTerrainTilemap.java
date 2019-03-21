@@ -26,24 +26,28 @@ import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.watabou.noosa.Image;
 import com.watabou.utils.PathFinder;
 
-public class DungeonTerrainTilemap extends DungeonTilemap {
+public class DungeonTerrainTilemap extends DungeonTilemap
+{
 
 	static DungeonTerrainTilemap instance;
 
-	public DungeonTerrainTilemap(){
+	public DungeonTerrainTilemap()
+	{
 		super(Dungeon.level.tilesTex());
 
-		map( Dungeon.level.map, Dungeon.level.width() );
+		map(Dungeon.level.map, Dungeon.level.width());
 
 		instance = this;
 	}
 
 	@Override
-	protected int getTileVisual(int pos, int tile, boolean flat) {
+	protected int getTileVisual(int pos, int tile, boolean flat)
+	{
 		int visual = DungeonTileSheet.directVisuals.get(tile, -1);
-		if (visual != -1) return DungeonTileSheet.getVisualWithAlts(visual, pos);
+		if(visual != -1) return DungeonTileSheet.getVisualWithAlts(visual, pos);
 
-		if (tile == Terrain.WATER) {
+		if(tile == Terrain.WATER)
+		{
 			return DungeonTileSheet.stitchWaterTile(
 					map[pos + PathFinder.CIRCLE4[0]],
 					map[pos + PathFinder.CIRCLE4[1]],
@@ -51,39 +55,61 @@ public class DungeonTerrainTilemap extends DungeonTilemap {
 					map[pos + PathFinder.CIRCLE4[3]]
 			);
 
-		} else if (tile == Terrain.CHASM) {
-			return DungeonTileSheet.stitchChasmTile( pos > mapWidth ? map[pos - mapWidth] : -1);
+		}
+		else if(tile == Terrain.CHASM)
+		{
+			return DungeonTileSheet.stitchChasmTile(pos > mapWidth ? map[pos - mapWidth] : -1);
 		}
 
-		if (!flat) {
-			if ((DungeonTileSheet.doorTile(tile))) {
+		if(!flat)
+		{
+			if((DungeonTileSheet.doorTile(tile)))
+			{
 				return DungeonTileSheet.getRaisedDoorTile(tile, map[pos - mapWidth]);
-			} else if (DungeonTileSheet.wallStitcheable(tile)){
+			}
+			else if(DungeonTileSheet.wallStitcheable(tile))
+			{
 				return DungeonTileSheet.getRaisedWallTile(
 						tile,
 						pos,
-						(pos+1) % mapWidth != 0 ?   map[pos + 1] : -1,
-						pos + mapWidth < size ?     map[pos + mapWidth] : -1,
-						pos % mapWidth != 0 ?       map[pos - 1] : -1
-						);
-			} else if (tile == Terrain.SIGN) {
+						(pos + 1) % mapWidth != 0 ? map[pos + 1] : -1,
+						pos + mapWidth < size ? map[pos + mapWidth] : -1,
+						pos % mapWidth != 0 ? map[pos - 1] : -1
+				);
+			}
+			else if(tile == Terrain.SIGN)
+			{
 				return DungeonTileSheet.RAISED_SIGN;
-			} else if (tile == Terrain.STATUE) {
+			}
+			else if(tile == Terrain.STATUE)
+			{
 				return DungeonTileSheet.RAISED_STATUE;
-			} else if (tile == Terrain.STATUE_SP) {
+			}
+			else if(tile == Terrain.STATUE_SP)
+			{
 				return DungeonTileSheet.RAISED_STATUE_SP;
-			} else if (tile == Terrain.ALCHEMY) {
+			}
+			else if(tile == Terrain.ALCHEMY)
+			{
 				return DungeonTileSheet.RAISED_ALCHEMY_POT;
-			} else if (tile == Terrain.BARRICADE) {
+			}
+			else if(tile == Terrain.BARRICADE)
+			{
 				return DungeonTileSheet.RAISED_BARRICADE;
-			} else if (tile == Terrain.HIGH_GRASS) {
+			}
+			else if(tile == Terrain.HIGH_GRASS)
+			{
 				return DungeonTileSheet.getVisualWithAlts(
 						DungeonTileSheet.RAISED_HIGH_GRASS,
 						pos);
-			} else {
+			}
+			else
+			{
 				return DungeonTileSheet.NULL_TILE;
 			}
-		} else {
+		}
+		else
+		{
 			return DungeonTileSheet.getVisualWithAlts(
 					DungeonTileSheet.directFlatVisuals.get(tile),
 					pos);
@@ -91,14 +117,16 @@ public class DungeonTerrainTilemap extends DungeonTilemap {
 
 	}
 
-	public static Image tile(int pos, int tile ) {
-		Image img = new Image( instance.texture );
-		img.frame( instance.tileset.get( instance.getTileVisual( pos, tile, true ) ) );
+	public static Image tile(int pos, int tile)
+	{
+		Image img = new Image(instance.texture);
+		img.frame(instance.tileset.get(instance.getTileVisual(pos, tile, true)));
 		return img;
 	}
 
 	@Override
-	protected boolean needsRender(int pos) {
+	protected boolean needsRender(int pos)
+	{
 		return data[pos] >= 0 && data[pos] != DungeonTileSheet.WATER;
 	}
 }

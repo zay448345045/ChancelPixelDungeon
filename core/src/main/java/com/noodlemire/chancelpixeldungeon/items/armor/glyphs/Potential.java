@@ -29,27 +29,32 @@ import com.noodlemire.chancelpixeldungeon.items.armor.Armor.Glyph;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite.Glowing;
 
-public class Potential extends Glyph {
-	
-	private static ItemSprite.Glowing WHITE = new ItemSprite.Glowing( 0xFFFFFF, 0.6f );
-	
-	@Override
-	public int proc( Armor armor, Char attacker, Char defender, int damage) {
+public class Potential extends Glyph
+{
 
-		int level = Math.max( 0, armor.level() );
-		
-		if (defender instanceof Hero) {
-			int wands = ((Hero) defender).belongings.charge(0.1f + level*0.05f);
-			if (wands > 0) {
+	private static ItemSprite.Glowing WHITE = new ItemSprite.Glowing(0xFFFFFF, 0.6f);
+
+	@Override
+	public int proc(Armor armor, Char attacker, Char defender, int damage)
+	{
+
+		int level = Math.max(0, armor.level());
+
+		if(defender instanceof Hero)
+		{
+			int wands = ((Hero) defender).belongings.charge(0.1f + level * 0.05f);
+			if(wands > 0)
+			{
 				defender.sprite.centerEmitter().burst(EnergyParticle.FACTORY, wands * (level + 2));
 			}
 		}
-		
+
 		return damage;
 	}
 
 	@Override
-	public Glowing glowing() {
+	public Glowing glowing()
+	{
 		return WHITE;
 	}
 }

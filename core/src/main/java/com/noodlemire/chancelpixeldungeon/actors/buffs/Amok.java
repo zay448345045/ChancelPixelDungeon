@@ -25,31 +25,35 @@ import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 
-public class Amok extends FlavourBuff {
-
+public class Amok extends FlavourBuff
+{
 	{
 		type = buffType.NEGATIVE;
 	}
-	
+
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.AMOK;
 	}
 
 	@Override
-	public void detach() {
+	public void detach()
+	{
 		super.detach();
-		if (target instanceof Mob)
-			((Mob)target).aggro( null );
+		if(target instanceof Mob)
+			((Mob) target).aggro(null);
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc", dispTurns());
 	}
 }

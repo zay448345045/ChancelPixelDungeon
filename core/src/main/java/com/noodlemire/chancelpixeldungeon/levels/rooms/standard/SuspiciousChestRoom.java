@@ -29,25 +29,30 @@ import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.levels.painters.Painter;
 import com.watabou.utils.Random;
 
-public class SuspiciousChestRoom extends EmptyRoom {
+public class SuspiciousChestRoom extends EmptyRoom
+{
 
 	@Override
-	public int minWidth() {
+	public int minWidth()
+	{
 		return Math.max(5, super.minWidth());
 	}
 
 	@Override
-	public int minHeight() {
+	public int minHeight()
+	{
 		return Math.max(5, super.minHeight());
 	}
 
 	@Override
-	public void paint(Level level) {
+	public void paint(Level level)
+	{
 		super.paint(level);
 
 		Item i = level.findPrizeItem();
 
-		if ( i == null ){
+		if(i == null)
+		{
 			i = new Gold().random();
 		}
 
@@ -55,9 +60,12 @@ public class SuspiciousChestRoom extends EmptyRoom {
 
 		Painter.set(level, center, Terrain.PEDESTAL);
 
-		if (Random.Int(3) == 0) {
+		if(Random.Int(3) == 0)
+		{
 			level.drop(i, center).type = Heap.Type.MIMIC;
-		} else {
+		}
+		else
+		{
 			level.drop(i, center).type = Heap.Type.CHEST;
 		}
 	}

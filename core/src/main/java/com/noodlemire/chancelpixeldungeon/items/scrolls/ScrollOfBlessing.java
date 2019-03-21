@@ -21,7 +21,6 @@
 
 package com.noodlemire.chancelpixeldungeon.items.scrolls;
 
-import com.noodlemire.chancelpixeldungeon.Badges;
 import com.noodlemire.chancelpixeldungeon.effects.Enchanting;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
@@ -30,35 +29,38 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.noodlemire.chancelpixeldungeon.windows.WndBag;
 
-public class ScrollOfMagicalInfusion extends InventoryScroll
+public class ScrollOfBlessing extends InventoryScroll
 {
 	{
 		initials = 2;
 		mode = WndBag.Mode.ENCHANTABLE;
+		bones = false;
 	}
-	
+
 	@Override
-	protected void onItemSelected( Item item )
+	protected void onItemSelected(Item item)
 	{
-		if (item instanceof Weapon)
-			((Weapon)item).enchant();
+		if(item instanceof Weapon)
+			((Weapon) item).enchant();
 		else
-			((Armor)item).inscribe();
-		
-		GLog.p( Messages.get(this, "infuse", item.name()) );
-		
-		Badges.validateItemLevelAquired(item);
+			((Armor) item).inscribe();
+
+		GLog.p(Messages.get(this, "infuse", item.name()));
 
 		Enchanting.show(curUser, item);
+
+		updateQuickslot();
 	}
-	
+
 	@Override
-	public void empoweredRead() {
+	public void empoweredRead()
+	{
 		//does nothing for now, this should never happen.
 	}
 
 	@Override
-	public int price() {
+	public int price()
+	{
 		return isKnown() ? 100 * quantity : super.price();
 	}
 }

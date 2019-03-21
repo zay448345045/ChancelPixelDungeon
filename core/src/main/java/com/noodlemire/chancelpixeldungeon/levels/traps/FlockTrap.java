@@ -33,7 +33,8 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class FlockTrap extends Trap {
+public class FlockTrap extends Trap
+{
 
 	{
 		color = WHITE;
@@ -42,21 +43,29 @@ public class FlockTrap extends Trap {
 
 
 	@Override
-	public void activate() {
+	public void activate()
+	{
 		//use an actor as we want to put this on a slight delay so all chars get a chance to act this turn first.
-		Actor.add(new Actor() {
+		Actor.add(new Actor()
+		{
 
-			{ actPriority = BUFF_PRIO; }
+			{
+				actPriority = BUFF_PRIO;
+			}
 
-			protected boolean act() {
-				PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.solid, null ), 2 );
-				for (int i = 0; i < PathFinder.distance.length; i++) {
-					if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-						if (Dungeon.level.insideMap(i)
-								&& Actor.findChar(i) == null
-								&& !(Dungeon.level.pit[i])) {
+			protected boolean act()
+			{
+				PathFinder.buildDistanceMap(pos, BArray.not(Dungeon.level.solid, null), 2);
+				for(int i = 0; i < PathFinder.distance.length; i++)
+				{
+					if(PathFinder.distance[i] < Integer.MAX_VALUE)
+					{
+						if(Dungeon.level.insideMap(i)
+						   && Actor.findChar(i) == null
+						   && !(Dungeon.level.pit[i]))
+						{
 							Sheep sheep = new Sheep();
-							sheep.lifespan = Random.NormalIntRange(3 + Dungeon.depth/4, 6 + Dungeon.depth/2 );
+							sheep.lifespan = Random.NormalIntRange(3 + Dungeon.depth / 4, 6 + Dungeon.depth / 2);
 							sheep.pos = i;
 							Dungeon.level.press(sheep.pos, sheep);
 							GameScene.add(sheep);

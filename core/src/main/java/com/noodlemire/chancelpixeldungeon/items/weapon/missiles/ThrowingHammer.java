@@ -23,36 +23,29 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.missiles;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class ThrowingHammer extends MissileWeapon {
-	
+public class ThrowingHammer extends MissileWeapon
+{
 	{
 		image = ItemSpriteSheet.THROWING_HAMMER;
-		
+		tier = 5;
 		sticky = false;
 	}
-	
+
 	@Override
-	public int min(int lvl) {
-		return 8;
+	public int min(int lvl)
+	{
+		return Math.round(super.min(lvl) * 0.8f); //8, down from 10
 	}
-	
+
 	@Override
-	public int max(int lvl) {
-		return 20;
+	public int max(int lvl)
+	{
+		return Math.round(super.max(lvl) * 0.8f); //20, down from 25
 	}
-	
+
 	@Override
-	public int STRReq(int lvl) {
-		return 17;
-	}
-	
-	@Override
-	protected float durabilityPerUse() {
-		return super.durabilityPerUse()/1.5f;
-	}
-	
-	@Override
-	public int price() {
-		return 30 * quantity;
+	protected float durabilityPerUse()
+	{
+		return super.durabilityPerUse() / 1.5f;
 	}
 }

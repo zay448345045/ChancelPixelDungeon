@@ -21,8 +21,8 @@
 
 package com.noodlemire.chancelpixeldungeon.items.armor.curses;
 
-import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
+import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
@@ -41,63 +41,67 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class Multiplicity extends Armor.Glyph {
-
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
+public class Multiplicity extends Armor.Glyph
+{
+	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing(0x000000);
 
 	@Override
-	public int proc(Armor armor, Char attacker, Char defender, int damage) {
-
-		if (Random.Int(20) == 0){
+	public int proc(Armor armor, Char attacker, Char defender, int damage)
+	{
+		if(Random.Int(20) == 0)
+		{
 			ArrayList<Integer> spawnPoints = new ArrayList<>();
 
-			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+			for(int i = 0; i < PathFinder.NEIGHBOURS8.length; i++)
+			{
 				int p = defender.pos + PathFinder.NEIGHBOURS8[i];
-				if (Actor.findChar( p ) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
-					spawnPoints.add( p );
-				}
+				if(Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p]))
+					spawnPoints.add(p);
 			}
 
-			if (spawnPoints.size() > 0) {
-
-				Mob m = null;
-				if (Random.Int(2) == 0 && defender instanceof Hero){
+			if(spawnPoints.size() > 0)
+			{
+				Mob m;
+				if(Random.Int(2) == 0 && defender instanceof Hero)
+				{
 					m = new MirrorImage();
-					((MirrorImage)m).duplicate( (Hero)defender );
-
-				} else {
+					((MirrorImage) m).duplicateIndividual((Hero) defender);
+				}
+				else
+				{
 					//FIXME should probably have a mob property for this
-					if (attacker.properties().contains(Char.Property.BOSS) || attacker.properties().contains(Char.Property.MINIBOSS)
-							|| attacker instanceof Mimic || attacker instanceof Statue){
+					if(attacker.properties().contains(Char.Property.BOSS) || attacker.properties().contains(Char.Property.MINIBOSS)
+					   || attacker instanceof Mimic || attacker instanceof Statue)
 						m = Dungeon.level.createMob();
-					} else {
-						try {
+					else
+					{
+						try
+						{
 							Actor.fixTime();
-							
-							m = (Mob)attacker.getClass().newInstance();
+
+							m = (Mob) attacker.getClass().newInstance();
 							Bundle store = new Bundle();
 							attacker.storeInBundle(store);
 							m.restoreFromBundle(store);
-							m.HP = m.HT;
+							m.heal(m.HT());
 
 							//If a thief has stolen an item, that item is not duplicated.
-							if (m instanceof Thief){
+							if(m instanceof Thief)
 								((Thief) m).item = null;
-							}
-
-						} catch (Exception e) {
+						}
+						catch(Exception e)
+						{
 							ChancelPixelDungeon.reportException(e);
 							m = null;
 						}
 					}
-
 				}
 
-				if (m != null) {
+				if(m != null)
+				{
 					GameScene.add(m);
 					ScrollOfTeleportation.appear(m, Random.element(spawnPoints));
 				}
-
 			}
 		}
 
@@ -105,12 +109,14 @@ public class Multiplicity extends Armor.Glyph {
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return BLACK;
 	}
 
 	@Override
-	public boolean curse() {
+	public boolean curse()
+	{
 		return true;
 	}
 }

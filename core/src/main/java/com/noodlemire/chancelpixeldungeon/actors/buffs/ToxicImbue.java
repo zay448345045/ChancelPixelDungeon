@@ -27,71 +27,57 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
-import com.watabou.utils.Bundle;
 
-public class ToxicImbue extends Buff {
-
-	public static final float DURATION	= 30f;
-
-	protected float left;
-
-	private static final String LEFT	= "left";
+public class ToxicImbue extends DurationBuff implements Expulsion
+{
+	public static final float DURATION = 30f;
 
 	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( LEFT, left );
-
-	}
-
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		left = bundle.getFloat( LEFT );
-	}
-
-	public void set( float duration ) {
-		this.left = duration;
-	}
-
-
-    @Override
-	public boolean act() {
+	public boolean act()
+	{
 		GameScene.add(Blob.seed(target.pos, 50, ToxicGas.class));
 
 		spend(TICK);
-		left -= TICK;
-		if (left <= 0){
-			detach();
-		} else if (left < 5){
+		shorten(TICK);
+
+		if(left() < 5)
 			BuffIndicator.refreshHero();
-		}
 
 		return true;
 	}
 
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.IMMUNITY;
-	}
-	
-	@Override
-	public void tintIcon(Image icon) {
-		FlavourBuff.greyIcon(icon, 5f, left);
 	}
 
 	@Override
-	public String toString() {
+	public void tintIcon(Image icon)
+	{
+		FlavourBuff.greyIcon(icon, 5f, left());
+	}
+
+	@Override
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String desc() {
-		return Messages.get(this, "desc", dispTurns(left));
+	public String desc()
+	{
+		return Messages.get(this, "desc", dispTurns(left()));
+	}
+
+	@Override
+	public Class<? extends Blob> expulse()
+	{
+		return ToxicGas.class;
 	}
 
 	{
-		immunities.add( ToxicGas.class );
-		immunities.add( Poison.class );
+		immunities.add(ToxicGas.class);
+		immunities.add(Poison.class);
 	}
 }

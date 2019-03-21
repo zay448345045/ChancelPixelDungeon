@@ -31,44 +31,53 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.melee.MagesStaff;
 import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class WandOfMagicMissile extends DamageWand {
+public class WandOfMagicMissile extends DamageWand
+{
 
 	{
 		image = ItemSpriteSheet.WAND_MAGIC_MISSILE;
 	}
 
-	public int min(int lvl){
-		return 2+lvl;
+	public int min(int lvl)
+	{
+		return 2 + lvl;
 	}
 
-	public int max(int lvl){
-		return 8+2*lvl;
+	public int max(int lvl)
+	{
+		return 8 + 2 * lvl;
 	}
-	
+
 	@Override
-	protected void onZap( Ballistica bolt ) {
-				
-		Char ch = Actor.findChar( bolt.collisionPos );
-		if (ch != null) {
+	protected void onZap(Ballistica bolt)
+	{
+
+		Char ch = Actor.findChar(bolt.collisionPos);
+		if(ch != null)
+		{
 
 			processSoulMark(ch, chargesPerCast());
 			ch.damage(damageRoll(), this);
 
 			ch.sprite.burst(0xFFFFFFFF, level() / 2 + 2);
 
-		} else {
+		}
+		else
+		{
 			Dungeon.level.press(bolt.collisionPos, null, true);
 		}
 	}
 
 	@Override
-	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
-		Buff.prolong( attacker, Recharging.class, 1 + staff.level()/2f);
+	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage)
+	{
+		Buff.affect(attacker, Recharging.class).set(1 + staff.level() / 2f);
 		SpellSprite.show(attacker, SpellSprite.CHARGE);
 
 	}
-	
-	protected int initialCharges() {
+
+	protected int initialCharges()
+	{
 		return 3;
 	}
 

@@ -33,73 +33,90 @@ import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.sprites.ScorpioSprite;
 import com.watabou.utils.Random;
 
-public class Scorpio extends Mob {
-	
+public class Scorpio extends Mob
+{
 	{
 		spriteClass = ScorpioSprite.class;
-		
-		HP = HT = 95;
+
+		setHT(120, true);
 		defenseSkill = 24;
 		viewDistance = Light.DISTANCE;
-		
+
 		EXP = 14;
 		maxLvl = 25;
-		
-		loot = new PotionOfHealing();
-		lootChance = 0.2f;
+
+		loot = null; //See createLoot()
+		lootChance = 1f;
 
 		properties.add(Property.DEMONIC);
 	}
-	
+
 	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 26, 36 );
+	public int damageRoll()
+	{
+		return Random.NormalIntRange(26, 36);
 	}
-	
+
 	@Override
-	public int attackSkill( Char target ) {
+	public int attackSkill(Char target)
+	{
 		return 36;
 	}
-	
+
 	@Override
-	public int drRoll() {
+	public int drRoll()
+	{
 		return Random.NormalIntRange(0, 16);
 	}
-	
+
 	@Override
-	protected boolean canAttack( Char enemy ) {
-		Ballistica attack = new Ballistica( pos, enemy.pos, Ballistica.PROJECTILE);
-		return !Dungeon.level.adjacent( pos, enemy.pos ) && attack.collisionPos == enemy.pos;
+	protected boolean canAttack(Char enemy)
+	{
+		Ballistica attack = new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE);
+		return !Dungeon.level.adjacent(pos, enemy.pos) && attack.collisionPos == enemy.pos;
 	}
-	
+
 	@Override
-	public int attackProc( Char enemy, int damage ) {
-		damage = super.attackProc( enemy, damage );
-		if (Random.Int( 2 ) == 0) {
-			Buff.prolong( enemy, Cripple.class, Cripple.DURATION );
+	public int attackProc(Char enemy, int damage)
+	{
+		damage = super.attackProc(enemy, damage);
+		if(Random.Int(2) == 0)
+		{
+			Buff.prolong(enemy, Cripple.class, Cripple.DURATION);
 		}
-		
+
 		return damage;
 	}
-	
+
 	@Override
-	protected boolean getCloser( int target ) {
-		if (state == HUNTING) {
-			return enemySeen && getFurther( target );
-		} else {
-			return super.getCloser( target );
+	protected boolean getCloser(int target)
+	{
+		if(state == HUNTING)
+		{
+			return enemySeen && getFurther(target);
+		}
+		else
+		{
+			return super.getCloser(target);
 		}
 	}
-	
+
 	@Override
-	protected Item createLoot() {
-		//(9-count) / 9 chance of getting healing, otherwise mystery meat
-		if (Random.Float() < ((9f - Dungeon.LimitedDrops.SCORPIO_HP.count) / 9f)) {
+	protected Item createLoot()
+	{
+		//25% * (3-count) / 3 chance of getting healing, otherwise 25% * (3-count) / 3 chance of mystery meat
+		//In both cases, the base chance with no previous drops from this mob of 25%
+		if(Random.Float() < 0.25 * ((3 - Dungeon.LimitedDrops.SCORPIO_HP.count) / 3f))
+		{
 			Dungeon.LimitedDrops.SCORPIO_HP.count++;
-			return (Item)loot;
-		} else {
+			return new PotionOfHealing();
+		}
+		else if(Random.Float() < 0.25 * ((3 - Dungeon.LimitedDrops.SCORPIO_MEAT.count) / 3f))
+		{
+			Dungeon.LimitedDrops.SCORPIO_MEAT.count++;
 			return new MysteryMeat();
 		}
+
+		return null;
 	}
-	
 }

@@ -21,7 +21,6 @@
 
 package com.noodlemire.chancelpixeldungeon.plants;
 
-import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Invisibility;
@@ -32,23 +31,23 @@ import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfMight;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfTelepathy;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Deadnettle extends Plant {
-
+public class Deadnettle extends Plant
+{
 	{
 		image = 11;
 	}
 
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
-
-		if (ch != null)
+	public void activate(Char ch, boolean doWardenBonus)
+	{
+		if(ch != null)
 		{
-			int damage = ch.HP / 2;
+			int damage = ch.HP() / 2;
 
 			if(damage > 0)
 			{
-				ch.damage(damage, this);
+				if(!doWardenBonus)
+					ch.damage(damage, this);
 
 				Buff.prolong(ch, Might.class, damage).set(true);
 				Buff.prolong(ch, MindVision.class, damage);
@@ -57,8 +56,8 @@ public class Deadnettle extends Plant {
 		}
 	}
 
-	public static class Seed extends Plant.Seed{
-
+	public static class Seed extends Plant.Seed
+	{
 		{
 			image = ItemSpriteSheet.SEED_DEADNETTLE;
 

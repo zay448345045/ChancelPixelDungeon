@@ -27,31 +27,39 @@ import com.noodlemire.chancelpixeldungeon.levels.Level;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.levels.painters.Painter;
 
-public class SecretArtilleryRoom extends SecretRoom {
-	
+public class SecretArtilleryRoom extends SecretRoom
+{
+
 	@Override
-	public void paint(Level level) {
+	public void paint(Level level)
+	{
 		super.paint(level);
-		
+
 		Painter.fill(level, this, Terrain.WALL);
 		Painter.fill(level, this, 1, Terrain.EMPTY_SP);
-		
+
 		Painter.set(level, center(), Terrain.STATUE_SP);
-		
-		for (int i = 0; i < 3; i++){
+
+		for(int i = 0; i < 3; i++)
+		{
 			int itemPos;
-			do{
+			do
+			{
 				itemPos = level.pointToCell(random());
-			} while ( level.map[itemPos] != Terrain.EMPTY_SP
-					|| level.heaps.get(itemPos) != null);
-			
-			if( i == 0 ){
+			}
+			while(level.map[itemPos] != Terrain.EMPTY_SP
+			      || level.heaps.get(itemPos) != null);
+
+			if(i == 0)
+			{
 				level.drop(new Bomb.DoubleBomb(), itemPos);
-			} else {
+			}
+			else
+			{
 				level.drop(Generator.randomMissile(), itemPos);
 			}
 		}
-		
+
 		entrance().set(Door.Type.HIDDEN);
 	}
 }

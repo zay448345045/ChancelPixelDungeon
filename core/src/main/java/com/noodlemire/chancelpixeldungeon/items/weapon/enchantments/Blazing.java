@@ -30,34 +30,39 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite.Glowing;
 import com.watabou.utils.Random;
 
-public class Blazing extends Weapon.Enchantment {
+public class Blazing extends Weapon.Enchantment
+{
 
-	private static ItemSprite.Glowing ORANGE = new ItemSprite.Glowing( 0xFF4400 );
-	
+	private static ItemSprite.Glowing ORANGE = new ItemSprite.Glowing(0xFF4400);
+
 	@Override
-	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
 		// lvl 0 - 33%
 		// lvl 1 - 50%
 		// lvl 2 - 60%
-		int level = Math.max( 0, weapon.level() );
-		
-		if (Random.Int( level + 3 ) >= 2) {
-			
-			if (Random.Int( 2 ) == 0) {
-				Buff.affect( defender, Burning.class ).reignite( defender );
+		int level = Math.max(0, weapon.level());
+
+		if(Random.Int(level + 3) >= 2)
+		{
+
+			if(Random.Int(2) == 0)
+			{
+				Buff.affect(defender, Burning.class).reignite();
 			}
-			defender.damage( Random.Int( 1, level + 2 ), this );
-			
-			defender.sprite.emitter().burst( FlameParticle.FACTORY, level + 1 );
-			
+			defender.damage(Random.Int(1, level + 2), this);
+
+			defender.sprite.emitter().burst(FlameParticle.FACTORY, level + 1);
+
 		}
 
 		return damage;
 
 	}
-	
+
 	@Override
-	public Glowing glowing() {
+	public Glowing glowing()
+	{
 		return ORANGE;
 	}
 }

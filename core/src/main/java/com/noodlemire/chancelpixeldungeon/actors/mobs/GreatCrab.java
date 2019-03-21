@@ -31,12 +31,13 @@ import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.GreatCrabSprite;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
-public class GreatCrab extends Crab {
+public class GreatCrab extends Crab
+{
 
 	{
 		spriteClass = GreatCrabSprite.class;
 
-		HP = HT = 25;
+		setHT(26, true);
 		defenseSkill = 0; //see damage()
 		baseSpeed = 1f;
 
@@ -50,12 +51,16 @@ public class GreatCrab extends Crab {
 	private int moving = 0;
 
 	@Override
-	protected boolean getCloser( int target ) {
+	protected boolean getCloser(int target)
+	{
 		//this is used so that the crab remains slower, but still detects the player at the expected rate.
 		moving++;
-		if (moving < 3) {
-			return super.getCloser( target );
-		} else {
+		if(moving < 3)
+		{
+			return super.getCloser(target);
+		}
+		else
+		{
 			moving = 0;
 			return true;
 		}
@@ -63,25 +68,30 @@ public class GreatCrab extends Crab {
 	}
 
 	@Override
-	public void damage( int dmg, Object src ){
+	public void damage(int dmg, Object src)
+	{
 		//crab blocks all attacks originating from the hero or enemy characters or traps if it is alerted.
 		//All direct damage from these sources is negated, no exceptions. blob/debuff effects go through as normal.
-		if ((enemySeen && state != SLEEPING && paralysed == 0)
-				&& (src instanceof Wand || src instanceof Char)){
-			GLog.n( Messages.get(this, "noticed") );
-			sprite.showStatus( CharSprite.NEUTRAL, Messages.get(this, "blocked") );
-		} else {
-			super.damage( dmg, src );
+		if((enemySeen && state != SLEEPING && paralysed == 0)
+		   && (src instanceof Wand || src instanceof Char))
+		{
+			GLog.n(Messages.get(this, "noticed"));
+			sprite.showStatus(CharSprite.NEUTRAL, Messages.get(this, "blocked"));
+		}
+		else
+		{
+			super.damage(dmg, src);
 		}
 	}
 
 	@Override
-	public void die( Object cause ) {
-		super.die( cause );
+	public void die(Object cause)
+	{
+		super.die(cause);
 
 		Ghost.Quest.process();
 
-		Dungeon.level.drop( new MysteryMeat(), pos );
-		Dungeon.level.drop( new MysteryMeat(), pos ).sprite.drop();
+		Dungeon.level.drop(new MysteryMeat(), pos);
+		Dungeon.level.drop(new MysteryMeat(), pos).sprite.drop();
 	}
 }

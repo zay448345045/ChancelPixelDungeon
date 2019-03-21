@@ -36,12 +36,12 @@ import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.sprites.RotHeartSprite;
 import com.watabou.utils.Random;
 
-public class RotHeart extends Mob {
-
+public class RotHeart extends Mob
+{
 	{
 		spriteClass = RotHeartSprite.class;
 
-		HP = HT = 80;
+		setHT(84, true);
 		defenseSkill = 0;
 
 		EXP = 4;
@@ -53,76 +53,91 @@ public class RotHeart extends Mob {
 	}
 
 	@Override
-	public void damage(int dmg, Object src) {
+	public void damage(int dmg, Object src)
+	{
 		//TODO: when effect properties are done, change this to FIRE
-		if (src instanceof Burning) {
+		if(src instanceof Burning)
+		{
 			destroy();
 			sprite.die();
-		} else {
+		}
+		else
+		{
 			super.damage(dmg, src);
 		}
 	}
 
 	@Override
-	public int defenseProc(Char enemy, int damage) {
+	public int defenseProc(Char enemy, int damage)
+	{
 		GameScene.add(Blob.seed(pos, 20, ToxicGas.class));
 
 		return super.defenseProc(enemy, damage);
 	}
 
 	@Override
-	public void beckon(int cell) {
+	public void beckon(int cell)
+	{
 		//do nothing
 	}
 
 	@Override
-	protected boolean getCloser(int target) {
+	protected boolean getCloser(int target)
+	{
 		return false;
 	}
 
 	@Override
-	public void destroy() {
+	public void destroy()
+	{
 		super.destroy();
-		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[Dungeon.level.mobs.size()])){
-			if (mob instanceof RotLasher){
+		for(Mob mob : Dungeon.level.mobs.toArray(new Mob[Dungeon.level.mobs.size()]))
+		{
+			if(mob instanceof RotLasher)
+			{
 				mob.die(null);
 			}
 		}
 	}
 
 	@Override
-	public void die(Object cause) {
+	public void die(Object cause)
+	{
 		super.die(cause);
-		Dungeon.level.drop( new RotberryCore(), pos ).sprite.drop();
+		Dungeon.level.drop(new RotberryCore(), pos).sprite.drop();
 	}
 
 	@Override
-	public boolean reset() {
+	public boolean reset()
+	{
 		return true;
 	}
 
 	@Override
-	public int damageRoll() {
+	public int damageRoll()
+	{
 		return 0;
 	}
 
 	@Override
-	public int attackSkill( Char target ) {
+	public int attackSkill(Char target)
+	{
 		return 0;
 	}
 
 	@Override
-	public int drRoll() {
+	public int drRoll()
+	{
 		return Random.NormalIntRange(0, 5);
 	}
-	
+
 	{
-		immunities.add( Paralysis.class );
-		immunities.add( Amok.class );
-		immunities.add( Sleep.class );
-		immunities.add( ToxicGas.class );
-		immunities.add( Terror.class );
-		immunities.add( Vertigo.class );
+		immunities.add(Paralysis.class);
+		immunities.add(Amok.class);
+		immunities.add(Sleep.class);
+		immunities.add(ToxicGas.class);
+		immunities.add(Terror.class);
+		immunities.add(Vertigo.class);
 	}
 
 }

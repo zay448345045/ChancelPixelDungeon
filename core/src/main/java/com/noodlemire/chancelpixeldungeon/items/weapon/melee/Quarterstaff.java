@@ -24,22 +24,23 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Quarterstaff extends MeleeWeapon {
-
+public class Quarterstaff extends MeleeWeapon
+{
 	{
 		image = ItemSpriteSheet.QUARTERSTAFF;
-
 		tier = 2;
 	}
 
 	@Override
-	public int max(int lvl) {
-		return  4*(tier+1) +    //12 base, down from 15
-				lvl*(tier+1);   //scaling unchanged
+	public int max(int lvl)
+	{
+		//12 base, down from 15; scaling unchanged
+		return super.max(lvl) - 3;
 	}
 
 	@Override
-	public int defenseFactor( Char owner ) {
-		return 3;	//3 extra defence
+	public int defenseFactor(Char owner)
+	{
+		return 3;    //3 extra defence
 	}
 }

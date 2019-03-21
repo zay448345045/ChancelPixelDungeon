@@ -26,51 +26,52 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Hunger;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.items.armor.Armor.Glyph;
-import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite.Glowing;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Random;
 
-public class Metabolism extends Glyph {
+public class Metabolism extends Glyph
+{
 
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
-	
+	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing(0x000000);
+
 	@Override
-	public int proc( Armor armor, Char attacker, Char defender, int damage) {
-
-		if (Random.Int( 6 ) == 0) {
-
+	public int proc(Armor armor, Char attacker, Char defender, int damage)
+	{
+		if(Random.Int(6) == 0)
+		{
 			//assumes using up 10% of starving, and healing of 1 hp per 10 turns;
-			int healing = Math.min((int)Hunger.STARVING/100, defender.HT - defender.HP);
+			int healing = Math.min((int) Hunger.STARVING / 100, defender.HT() - defender.HP());
 
-			if (healing > 0) {
-				
-				Hunger hunger = defender.buff( Hunger.class );
-				
-				if (hunger != null && !hunger.isStarving()) {
-					
-					hunger.reduceHunger( healing * -10 );
+			if(healing > 0)
+			{
+				Hunger hunger = defender.buff(Hunger.class);
+
+				if(hunger != null && !hunger.isStarving())
+				{
+					hunger.reduceHunger(healing * -10);
 					BuffIndicator.refreshHero();
-					
-					defender.HP += healing;
-					defender.sprite.emitter().burst( Speck.factory( Speck.HEALING ), 1 );
-					defender.sprite.showStatus( CharSprite.POSITIVE, Integer.toString( healing ) );
+
+					defender.heal(healing);
+					defender.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
 				}
 			}
 
 		}
-		
+
 		return damage;
 	}
 
 	@Override
-	public Glowing glowing() {
+	public Glowing glowing()
+	{
 		return BLACK;
 	}
 
 	@Override
-	public boolean curse() {
+	public boolean curse()
+	{
 		return true;
 	}
 }

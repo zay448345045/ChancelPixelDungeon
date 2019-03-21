@@ -34,9 +34,9 @@ import com.watabou.utils.Bundle;
 
 import java.util.HashSet;
 
-public abstract class Actor implements Bundlable {
-	
-	public static final float TICK	= 1f;
+public abstract class Actor implements Bundlable
+{
+	public static final float TICK = 1f;
 
 	private float time;
 
@@ -45,67 +45,89 @@ public abstract class Actor implements Bundlable {
 	//default priority values for general actor categories
 	//note that some specific actors pick more specific values
 	//e.g. a buff acting after all normal buffs might have priority BUFF_PRIO + 1
-	protected static final int VFX_PRIO    = 100;   //visual effects take priority
-	protected static final int HERO_PRIO   = 0;     //positive is before hero, negative after
-	protected static final int BLOB_PRIO   = -10;   //blobs act after hero, before mobs
-	protected static final int MOB_PRIO    = -20;   //mobs act between buffs and blobd
-	protected static final int BUFF_PRIO   = -30;   //buffs act last in a turn
-	private static final int   DEFAULT     = -100;  //if no priority is given, act after all else
+	protected static final int VFX_PRIO = 100;   //visual effects take priority
+	protected static final int HERO_PRIO = 0;     //positive is before hero, negative after
+	protected static final int BLOB_PRIO = -10;   //blobs act after hero, before mobs
+	protected static final int MOB_PRIO = -20;   //mobs act between buffs and blobd
+	protected static final int BUFF_PRIO = -30;   //buffs act last in a turn
+	private static final int DEFAULT = -100;  //if no priority is given, act after all else
 
 	//used to determine what order actors act in if their time is equal. Higher values act earlier.
 	protected int actPriority = DEFAULT;
 
 	protected abstract boolean act();
-	
-	protected void spend( float time ) {
+
+	protected void spend(float time)
+	{
 		this.time += time;
+
+		roundTime();
 	}
-	
-	protected void postpone( float time ) {
-		if (this.time < now + time) {
+
+	protected void postpone(float time)
+	{
+		if(this.time < now + time)
 			this.time = now + time;
-		}
+
+		roundTime();
 	}
-	
-	public float cooldown() {
+
+	private void roundTime()
+	{
+		//if time is very close to a whole number, round to a whole number to fix errors
+		float ex = Math.abs(this.time % 1f);
+		if(ex < .001f)
+			this.time = Math.round(this.time);
+	}
+
+	public float cooldown()
+	{
 		return time - now;
 	}
-	
-	protected void diactivate() {
+
+	protected void deactivate()
+	{
 		time = Float.MAX_VALUE;
 	}
-	
-	protected void onAdd() {}
-	
-	protected void onRemove() {}
 
-	private static final String TIME    = "time";
-	private static final String ID      = "id";
+	protected void onAdd()
+	{
+	}
+
+	protected void onRemove()
+	{
+	}
+
+	private static final String TIME = "time";
+	private static final String ID = "id";
 
 	@Override
-	public void storeInBundle( Bundle bundle ) {
-		bundle.put( TIME, time );
-		bundle.put( ID, id );
+	public void storeInBundle(Bundle bundle)
+	{
+		bundle.put(TIME, time);
+		bundle.put(ID, id);
 	}
 
 	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		time = bundle.getFloat( TIME );
-		id = bundle.getInt( ID );
+	public void restoreFromBundle(Bundle bundle)
+	{
+		time = bundle.getFloat(TIME);
+		id = bundle.getInt(ID);
 	}
 
 	private static int nextID = 1;
-	public int id() {
-		if (id > 0) {
+
+	public int id()
+	{
+		if(id > 0)
 			return id;
-		} else {
+		else
 			return (id = nextID++);
-		}
 	}
 
 	// **********************
 	// *** Static members ***
-	
+
 	private static HashSet<Actor> all = new HashSet<>();
 	private static HashSet<Char> chars = new HashSet<>();
 	private static volatile Actor current;
@@ -113,9 +135,14 @@ public abstract class Actor implements Bundlable {
 	private static SparseArray<Actor> ids = new SparseArray<>();
 
 	private static float now = 0;
-	
-	public static synchronized void clear() {
-		
+
+	public static float now()
+	{
+		return now;
+	}
+
+	public static synchronized void clear()
+	{
 		now = 0;
 
 		all.clear();
@@ -123,205 +150,248 @@ public abstract class Actor implements Bundlable {
 
 		ids.clear();
 	}
-	
-	public static synchronized void fixTime() {
-		
-		if (Dungeon.hero != null && all.contains( Dungeon.hero )) {
-			Statistics.duration += now;
-		}
-		
+
+	public static synchronized void fixTime()
+	{
+		if(all.isEmpty()) return;
+
 		float min = Float.MAX_VALUE;
-		for (Actor a : all) {
-			if (a.time < min) {
+		for(Actor a : all)
+			if(a.time < min)
 				min = a.time;
-			}
-		}
-		for (Actor a : all) {
+
+		//Only pull everything back by whole numbers
+		//So that turns always align with a whole number
+		min = (int) min;
+		for(Actor a : all)
 			a.time -= min;
-		}
-		now = 0;
+
+		if(Dungeon.hero != null && all.contains(Dungeon.hero))
+			Statistics.duration += min;
+
+		now -= min;
 	}
-	
-	public static void init() {
-		
-		add( Dungeon.hero );
-		
-		for (Mob mob : Dungeon.level.mobs) {
-			add( mob );
-		}
-		
-		for (Blob blob : Dungeon.level.blobs.values()) {
-			add( blob );
-		}
-		
+
+	public static void init()
+	{
+		add(Dungeon.hero);
+
+		for(Mob mob : Dungeon.level.mobs)
+			add(mob);
+
+		for(Blob blob : Dungeon.level.blobs.values())
+			add(blob);
+
 		current = null;
 	}
 
 	private static final String NEXTID = "nextid";
 
-	public static void storeNextID( Bundle bundle){
-		bundle.put( NEXTID, nextID );
+	public static void storeNextID(Bundle bundle)
+	{
+		bundle.put(NEXTID, nextID);
 	}
 
-	public static void restoreNextID( Bundle bundle){
-		nextID = bundle.getInt( NEXTID );
+	public static void restoreNextID(Bundle bundle)
+	{
+		nextID = bundle.getInt(NEXTID);
 	}
 
-	public static void resetNextID(){
+	public static void resetNextID()
+	{
 		nextID = 1;
 	}
 
-	/*protected*/public void next() {
-		if (current == this) {
+	/*protected*/
+	public void next()
+	{
+		if(current == this)
 			current = null;
-		}
 	}
 
-	public static boolean processing(){
+	public static boolean processing()
+	{
 		return current != null;
 	}
-	
-	public static void process() {
-		
+
+	public static void process()
+	{
 		boolean doNext;
 		boolean interrupted = false;
 
-		do {
-			
+		do
+		{
 			current = null;
-			if (!interrupted) {
+			if(!interrupted)
+			{
 				now = Float.MAX_VALUE;
-				
-				for (Actor actor : all) {
-					
+
+				for(Actor actor : all)
+				{
+
 					//some actors will always go before others if time is equal.
-					if (actor.time < now ||
-							actor.time == now && (current == null || actor.actPriority > current.actPriority)) {
+					if(actor.time < now ||
+					   actor.time == now && (current == null || actor.actPriority > current.actPriority))
+					{
 						now = actor.time;
 						current = actor;
 					}
-					
+
 				}
 			}
 
-			if  (current != null) {
+			if(current != null)
+			{
 
 				Actor acting = current;
 
-				if (acting instanceof Char && ((Char) acting).sprite != null) {
+				if(acting instanceof Char && ((Char) acting).sprite != null)
+				{
 					// If it's character's turn to act, but its sprite
 					// is moving, wait till the movement is over
-					try {
-						synchronized (((Char)acting).sprite) {
-							if (((Char)acting).sprite.isMoving) {
+					try
+					{
+						synchronized(((Char) acting).sprite)
+						{
+							if(((Char) acting).sprite.isMoving)
+							{
 								((Char) acting).sprite.wait();
 							}
 						}
-					} catch (InterruptedException e) {
+					}
+					catch(InterruptedException e)
+					{
 						interrupted = true;
 					}
 				}
-				
+
 				interrupted = interrupted || Thread.interrupted();
-				
-				if (interrupted){
+
+				if(interrupted)
+				{
 					doNext = false;
 					current = null;
-				} else {
+				}
+				else
+				{
 					doNext = acting.act();
-					if (doNext && (Dungeon.hero == null || !Dungeon.hero.isAlive())) {
+					if(doNext && (Dungeon.hero == null || !Dungeon.hero.isAlive()))
+					{
 						doNext = false;
 						current = null;
 					}
 				}
-			} else {
+			}
+			else
+			{
 				doNext = false;
 			}
 
-			if (!doNext){
-				synchronized (Thread.currentThread()) {
-					
+			if(!doNext)
+			{
+				synchronized(Thread.currentThread())
+				{
+
 					interrupted = interrupted || Thread.interrupted();
-					
-					if (interrupted){
+
+					if(interrupted)
+					{
 						current = null;
 						interrupted = false;
 					}
-					
-					synchronized (GameScene.class){
+
+					synchronized(GameScene.class)
+					{
 						//signals to the gamescene that actor processing is finished for now
 						GameScene.class.notify();
 					}
-					
-					try {
+
+					try
+					{
 						Thread.currentThread().wait();
-					} catch (InterruptedException e) {
+					}
+					catch(InterruptedException e)
+					{
 						interrupted = true;
 					}
 				}
 			}
 
-		} while (true);
-	}
-	
-	public static void add( Actor actor ) {
-		add( actor, now );
-	}
-	
-	public static void addDelayed( Actor actor, float delay ) {
-		add( actor, now + delay );
-	}
-	
-	private static synchronized void add( Actor actor, float time ) {
-		
-		if (all.contains( actor )) {
-			return;
 		}
+		while(true);
+	}
 
-		ids.put( actor.id(),  actor );
+	public static void add(Actor actor)
+	{
+		add(actor, now);
+	}
 
-		all.add( actor );
+	public static void addDelayed(Actor actor, float delay)
+	{
+		add(actor, now + delay);
+	}
+
+	private static synchronized void add(Actor actor, float time)
+	{
+		if(all.contains(actor))
+			return;
+
+		ids.put(actor.id(), actor);
+
+		all.add(actor);
 		actor.time += time;
 		actor.onAdd();
-		
-		if (actor instanceof Char) {
-			Char ch = (Char)actor;
-			chars.add( ch );
-			for (Buff buff : ch.buffs()) {
-				all.add( buff );
+
+		if(actor instanceof Char)
+		{
+			Char ch = (Char) actor;
+			chars.add(ch);
+			for(Buff buff : ch.buffs())
+			{
+				all.add(buff);
 				buff.onAdd();
 			}
 		}
 	}
-	
-	public static synchronized void remove( Actor actor ) {
-		
-		if (actor != null) {
-			all.remove( actor );
-			chars.remove( actor );
+
+	public static synchronized void remove(Actor actor)
+	{
+
+		if(actor != null)
+		{
+			all.remove(actor);
+			chars.remove(actor);
 			actor.onRemove();
 
-			if (actor.id > 0) {
-				ids.remove( actor.id );
+			if(actor.id > 0)
+			{
+				ids.remove(actor.id);
 			}
 		}
 	}
-	
-	public static synchronized Char findChar( int pos ) {
-		for (Char ch : chars){
-			if (ch.pos == pos)
+
+	public static synchronized Char findChar(int pos)
+	{
+		for(Char ch : chars)
+		{
+			if(ch.pos == pos)
 				return ch;
 		}
 		return null;
 	}
 
-	public static synchronized Actor findById( int id ) {
-		return ids.get( id );
+	public static synchronized Actor findById(int id)
+	{
+		return ids.get(id);
 	}
 
-	public static synchronized HashSet<Actor> all() {
+	public static synchronized HashSet<Actor> all()
+	{
 		return new HashSet<Actor>(all);
 	}
 
-	public static synchronized HashSet<Char> chars() { return new HashSet<Char>(chars); }
+	public static synchronized HashSet<Char> chars()
+	{
+		return new HashSet<Char>(chars);
+	}
 }

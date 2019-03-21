@@ -24,12 +24,14 @@ package com.noodlemire.chancelpixeldungeon.actors.buffs;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 
-public class Awareness extends FlavourBuff {
+public class Awareness extends FlavourBuff
+{
 
 	public static final float DURATION = 2f;
 
 	@Override
-	public void detach() {
+	public void detach()
+	{
 		super.detach();
 		Dungeon.observe();
 		GameScene.updateFog();

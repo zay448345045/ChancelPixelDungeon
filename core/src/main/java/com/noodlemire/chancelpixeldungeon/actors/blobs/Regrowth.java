@@ -32,37 +32,43 @@ import com.noodlemire.chancelpixeldungeon.levels.Level;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 
-public class Regrowth extends Blob {
-	
+public class Regrowth extends Blob
+{
 	@Override
-	protected void evolve() {
+	protected void evolve()
+	{
 		super.evolve();
-		
-		if (volume > 0) {
+
+		if(volume > 0)
+		{
 			int cell;
-			for (int i = area.left; i < area.right; i++) {
-				for (int j = area.top; j < area.bottom; j++) {
-					cell = i + j*Dungeon.level.width();
-					if (off[cell] > 0) {
+			for(int i = area.left; i < area.right; i++)
+			{
+				for(int j = area.top; j < area.bottom; j++)
+				{
+					cell = i + j * Dungeon.level.width();
+					if(off[cell] > 0)
+					{
 						int c = Dungeon.level.map[cell];
 						int c1 = c;
-						if (c == Terrain.EMPTY || c == Terrain.EMBERS || c == Terrain.EMPTY_DECO) {
-							c1 = (cur[cell] > 9 && Actor.findChar( cell ) == null)
+						if(c == Terrain.EMPTY || c == Terrain.EMBERS || c == Terrain.EMPTY_DECO)
+							c1 = (cur[cell] > 9 && Actor.findChar(cell) == null)
 									? Terrain.HIGH_GRASS : Terrain.GRASS;
-						} else if (c == Terrain.GRASS && cur[cell] > 9 && Dungeon.level.plants.get(cell) == null && Actor.findChar( cell ) == null ) {
+						else if(c == Terrain.GRASS && cur[cell] > 9 && Dungeon.level.plants.get(cell) == null && Actor.findChar(cell) == null)
 							c1 = Terrain.HIGH_GRASS;
+
+						if(c1 != c)
+						{
+							Level.set(cell, c1);
+							GameScene.updateMap(cell);
 						}
 
-						if (c1 != c) {
-							Level.set( cell, c1 );
-							GameScene.updateMap( cell );
-						}
-
-						Char ch = Actor.findChar( cell );
-						if (ch != null
-								&& !ch.isImmune(this.getClass())
-								&& off[cell] > 1) {
-							Buff.prolong( ch, Roots.class, TICK );
+						Char ch = Actor.findChar(cell);
+						if(ch != null
+						   && !ch.isImmune(this.getClass())
+						   && off[cell] > 1)
+						{
+							Buff.prolong(ch, Roots.class, TICK);
 						}
 					}
 				}
@@ -70,11 +76,12 @@ public class Regrowth extends Blob {
 			Dungeon.observe();
 		}
 	}
-	
+
 	@Override
-	public void use( BlobEmitter emitter ) {
-		super.use( emitter );
-		
-		emitter.start( LeafParticle.LEVEL_SPECIFIC, 0.2f, 0 );
+	public void use(BlobEmitter emitter)
+	{
+		super.use(emitter);
+
+		emitter.start(LeafParticle.LEVEL_SPECIFIC, 0.2f, 0);
 	}
 }

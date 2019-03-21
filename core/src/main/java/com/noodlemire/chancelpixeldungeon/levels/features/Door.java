@@ -28,23 +28,28 @@ import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.audio.Sample;
 
-public class Door {
+public class Door
+{
 
-	public static void enter( int pos ) {
-		Level.set( pos, Terrain.OPEN_DOOR );
-		GameScene.updateMap( pos );
+	public static void enter(int pos)
+	{
+		Level.set(pos, Terrain.OPEN_DOOR);
+		GameScene.updateMap(pos);
 
-		if (Dungeon.level.heroFOV[pos]) {
+		if(Dungeon.level.heroFOV[pos])
+		{
 			Dungeon.observe();
-			Sample.INSTANCE.play( Assets.SND_OPEN );
+			Sample.INSTANCE.play(Assets.SND_OPEN);
 		}
 	}
 
-	public static void leave( int pos ) {
-		if (Dungeon.level.heaps.get( pos ) == null) {
-			Level.set( pos, Terrain.DOOR );
-			GameScene.updateMap( pos );
-			if (Dungeon.level.heroFOV[pos])
+	public static void leave(int pos)
+	{
+		if(Dungeon.level.heaps.get(pos) == null)
+		{
+			Level.set(pos, Terrain.DOOR);
+			GameScene.updateMap(pos);
+			if(Dungeon.level.heroFOV[pos])
 				Dungeon.observe();
 		}
 	}

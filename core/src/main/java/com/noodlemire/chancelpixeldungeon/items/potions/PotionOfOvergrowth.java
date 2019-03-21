@@ -7,35 +7,36 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Regrowth;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.audio.Sample;
 
-public class PotionOfOvergrowth extends Potion {
-    {
-        initials = 13;
+public class PotionOfOvergrowth extends Potion
+{
+	{
+		initials = 13;
 
-        if(isIdentified()) defaultAction = AC_THROW;
-    }
+		if(isIdentified()) defaultAction = AC_THROW;
+	}
 
-    @Override
-    public void shatter( int cell ) {
+	@Override
+	public void shatter(int cell)
+	{
+		if(Dungeon.level.heroFOV[cell])
+		{
+			splash(cell);
+			Sample.INSTANCE.play(Assets.SND_SHATTER);
+		}
 
-        if (Dungeon.level.heroFOV[cell]) {
-            setKnown();
+		GameScene.add(Blob.seed(cell, 400, Regrowth.class));
+	}
 
-            splash( cell );
-            Sample.INSTANCE.play( Assets.SND_SHATTER );
-        }
+	@Override
+	public void setKnown()
+	{
+		super.setKnown();
+		if(isIdentified()) defaultAction = AC_THROW;
+	}
 
-        GameScene.add( Blob.seed( cell, 400, Regrowth.class ) );
-    }
-
-    @Override
-    public void setKnown()
-    {
-        defaultAction = AC_THROW;
-        super.setKnown();
-    }
-
-    @Override
-    public int price() {
-        return isKnown() ? 30 * quantity : super.price();
-    }
+	@Override
+	public int price()
+	{
+		return isKnown() ? 30 * quantity : super.price();
+	}
 }

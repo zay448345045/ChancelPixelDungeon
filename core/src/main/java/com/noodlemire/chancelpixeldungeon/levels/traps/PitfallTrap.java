@@ -30,7 +30,8 @@ import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.levels.features.Chasm;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 
-public class PitfallTrap extends Trap {
+public class PitfallTrap extends Trap
+{
 
 	{
 		color = RED;
@@ -38,24 +39,30 @@ public class PitfallTrap extends Trap {
 	}
 
 	@Override
-	public void activate() {
-		Heap heap = Dungeon.level.heaps.get( pos );
+	public void activate()
+	{
+		Heap heap = Dungeon.level.heaps.get(pos);
 
-		if (heap != null){
-			for (Item item : heap.items){
+		if(heap != null)
+		{
+			for(Item item : heap.items)
+			{
 				Dungeon.dropToChasm(item);
 			}
 			heap.sprite.kill();
 			GameScene.discard(heap);
-			Dungeon.level.heaps.remove( pos );
+			Dungeon.level.heaps.remove(pos);
 		}
 
-		Char ch = Actor.findChar( pos );
+		Char ch = Actor.findChar(pos);
 
-		if (ch == Dungeon.hero){
-			Chasm.heroFall( pos );
-		} else if (ch != null){
-			Chasm.mobFall((Mob)ch);
+		if(ch == Dungeon.hero)
+		{
+			Chasm.heroFall(pos);
+		}
+		else if(ch != null)
+		{
+			Chasm.mobFall((Mob) ch);
 		}
 	}
 

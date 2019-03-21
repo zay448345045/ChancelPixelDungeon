@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,96 +32,107 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-public class BitmapCache {
+public class BitmapCache
+{
+	private static final String DEFAULT = "__default";
 
-	private static final String DEFAULT	= "__default";
-	
-	private static HashMap<String,Layer> layers = new HashMap<String, BitmapCache.Layer>();
-	
+	private static HashMap<String, Layer> layers = new HashMap<String, BitmapCache.Layer>();
+
 	private static BitmapFactory.Options opts = new BitmapFactory.Options();
-	static {
+
+	static
+	{
 		opts.inDither = false;
 	}
-	
+
 	public static Context context;
-	
-	public static Bitmap get( String assetName ) {
-		return get( DEFAULT, assetName );
+
+	public static Bitmap get(String assetName)
+	{
+		return get(DEFAULT, assetName);
 	}
-	
-	public static Bitmap get( String layerName, String assetName ) {
-		
+
+	public static Bitmap get(String layerName, String assetName)
+	{
 		Layer layer;
-		if (!layers.containsKey( layerName )) {
+		if(!layers.containsKey(layerName))
+		{
 			layer = new Layer();
-			layers.put( layerName, layer );
-		} else {
-			layer = layers.get( layerName );
+			layers.put(layerName, layer);
 		}
-		
-		if (layer.containsKey( assetName )) {
-			return layer.get( assetName );
-		} else {
-			
-			try {
-				InputStream stream = context.getResources().getAssets().open( assetName );
-				Bitmap bmp = BitmapFactory.decodeStream( stream, null, opts );
-				layer.put( assetName, bmp );
+		else
+			layer = layers.get(layerName);
+
+		if(layer.containsKey(assetName))
+			return layer.get(assetName);
+		else
+		{
+			try
+			{
+				InputStream stream = context.getResources().getAssets().open(assetName);
+				Bitmap bmp = BitmapFactory.decodeStream(stream, null, opts);
+				layer.put(assetName, bmp);
 				return bmp;
-			} catch (IOException e) {
+			}
+			catch(IOException e)
+			{
 				return null;
 			}
-			
 		}
 	}
-	
-	public static Bitmap get( int resID ) {
-		return get( DEFAULT, resID );
+
+	public static Bitmap get(int resID)
+	{
+		return get(DEFAULT, resID);
 	}
-	
-	public static Bitmap get( String layerName, int resID ) {
-		
+
+	public static Bitmap get(String layerName, int resID)
+	{
 		Layer layer;
-		if (!layers.containsKey( layerName )) {
+		if(!layers.containsKey(layerName))
+		{
 			layer = new Layer();
-			layers.put( layerName, layer );
-		} else {
-			layer = layers.get( layerName );
+			layers.put(layerName, layer);
 		}
-		
-		if (layer.containsKey( resID )) {
-			return layer.get( resID );
-		} else {
-			
-			Bitmap bmp = BitmapFactory.decodeResource( context.getResources(), resID );
-			layer.put( resID, bmp );
+		else
+			layer = layers.get(layerName);
+
+		if(layer.containsKey(resID))
+			return layer.get(resID);
+		else
+		{
+			Bitmap bmp = BitmapFactory.decodeResource(context.getResources(), resID);
+			layer.put(resID, bmp);
 			return bmp;
-			
 		}
 	}
-	
-	public static void clear( String layerName ) {
-		if (layers.containsKey( layerName )) {
-			layers.get( layerName ).clear();
-			layers.remove( layerName );
+
+	public static void clear(String layerName)
+	{
+		if(layers.containsKey(layerName))
+		{
+			layers.get(layerName).clear();
+			layers.remove(layerName);
 		}
 	}
-	
-	public static void clear() {
-		for (Layer layer:layers.values()) {
+
+	public static void clear()
+	{
+		for(Layer layer : layers.values())
 			layer.clear();
-		}
+
 		layers.clear();
 	}
-	
+
 	@SuppressWarnings("serial")
-	private static class Layer extends HashMap<Object,Bitmap> {
-		
+	private static class Layer extends HashMap<Object, Bitmap>
+	{
 		@Override
-		public void clear() {
-			for (Bitmap bmp:values()) {
+		public void clear()
+		{
+			for(Bitmap bmp : values())
 				bmp.recycle();
-			}
+
 			super.clear();
 		}
 	}

@@ -1,5 +1,6 @@
 package com.noodlemire.chancelpixeldungeon.items;
 
-public class Transmutable
+public interface Transmutable
 {
+	Item transmute();
 }

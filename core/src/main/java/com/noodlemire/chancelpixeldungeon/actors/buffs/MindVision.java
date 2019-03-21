@@ -27,40 +27,45 @@ import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 
-public class MindVision extends FlavourBuff {
+public class MindVision extends FlavourBuff
+{
 
 	public static final float DURATION = 20f;
-	
-	public int distance = 2;
+	public static final int DISTANCE = 2;
 
 	{
 		type = buffType.POSITIVE;
 	}
-	
+
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.MIND_VISION;
 	}
-	
+
 	@Override
-	public void tintIcon(Image icon) {
+	public void tintIcon(Image icon)
+	{
 		greyIcon(icon, 5f, cooldown());
 	}
-	
+
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public void detach() {
+	public void detach()
+	{
 		super.detach();
 		Dungeon.observe();
 		GameScene.updateFog();
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc", dispTurns());
 	}
 }

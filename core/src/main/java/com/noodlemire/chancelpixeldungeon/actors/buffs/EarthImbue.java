@@ -22,44 +22,58 @@
 package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.RootCloud;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.particles.EarthParticle;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 
-public class EarthImbue extends FlavourBuff {
+public class EarthImbue extends FlavourBuff implements Expulsion, MeleeProc
+{
+	public static final float DURATION = 30f;
 
-	public static final float DURATION	= 30f;
-
-	public void proc(Char enemy){
+	@Override
+	public void proc(Char enemy)
+	{
 		Buff.affect(enemy, Roots.class, 2);
 		CellEmitter.bottom(enemy.pos).start(EarthParticle.FACTORY, 0.05f, 8);
 	}
 
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.ROOTS;
 	}
-	
+
 	@Override
-	public void tintIcon(Image icon) {
+	public void tintIcon(Image icon)
+	{
 		greyIcon(icon, 5f, cooldown());
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc", dispTurns());
 	}
 
+	@Override
+	public Class<? extends Blob> expulse()
 	{
-		immunities.add( Paralysis.class );
-		immunities.add( Roots.class );
-		immunities.add( Slow.class );
+		return RootCloud.class;
+	}
+
+	{
+		immunities.add(Paralysis.class);
+		immunities.add(Roots.class);
+		immunities.add(Slow.class);
 	}
 }

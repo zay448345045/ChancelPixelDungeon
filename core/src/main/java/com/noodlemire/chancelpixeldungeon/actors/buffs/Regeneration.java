@@ -26,8 +26,8 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 
-public class Regeneration extends Buff {
-
+public class Regeneration extends Buff
+{
 	{
 		//unlike other buffs, this one acts after the hero and takes priority against other effects
 		//healing is much more useful if you get some of it off before taking damage
@@ -37,51 +37,56 @@ public class Regeneration extends Buff {
 	private static final float REGENERATION_DELAY = 10;
 
 	@Override
-	public boolean act() {
-		if (target.isAlive()) {
-
-			if (!((Hero)target).isStarving()) {
+	public boolean act()
+	{
+		if(target.isAlive())
+		{
+			if(!((Hero) target).isStarving())
+			{
 				LockedFloor lock = target.buff(LockedFloor.class);
 
 				if(lock == null || lock.regenOn())
 				{
-                    if ((int) target.buff(Hunger.class).lastingDamage > 0)
-                    {
-                        target.buff(Hunger.class).lastingDamage = Math.max(0, target.buff(Hunger.class).lastingDamage - 1);
+					if((int) target.buff(Hunger.class).lastingDamage > 0)
+					{
+						target.buff(Hunger.class).lastingDamage = Math.max(0, target.buff(Hunger.class).lastingDamage - 1);
 
-                        if (target.buff(Hunger.class).lastingDamage == 0)
-                            BuffIndicator.refreshHero();
-                    }
-                    else if (target.HP < regencap() && target.HP > 0)
-                    {
-                        target.HP++;
+						if(target.buff(Hunger.class).lastingDamage == 0)
+							BuffIndicator.refreshHero();
+					}
+					else if(target.HP() < regencap() && target.HP() > 0)
+					{
+						target.heal(1);
 
-                        if (target.HP == regencap())
-                            ((Hero) target).resting = false;
-                    }
-                }
+						if(target.HP() == regencap())
+							((Hero) target).resting = false;
+					}
+				}
 			}
 
-			ChaliceOfBlood.chaliceRegen regenBuff = Dungeon.hero.buff( ChaliceOfBlood.chaliceRegen.class);
+			ChaliceOfBlood.chaliceRegen regenBuff = Dungeon.hero.buff(ChaliceOfBlood.chaliceRegen.class);
 
-			if (regenBuff != null)
-				if (regenBuff.isCursed())
-					spend( REGENERATION_DELAY * 1.5f );
+			if(regenBuff != null)
+				if(regenBuff.isCursed())
+					spend(REGENERATION_DELAY * 1.5f);
 				else
-					spend( REGENERATION_DELAY - regenBuff.itemLevel()*0.9f );
+					spend(REGENERATION_DELAY - regenBuff.itemLevel() * 0.9f);
 			else
-				spend( REGENERATION_DELAY );
+				spend(REGENERATION_DELAY);
 
-		} else {
+		}
+		else
+		{
 
-			diactivate();
+			deactivate();
 
 		}
 
 		return true;
 	}
 
-	public int regencap(){
-		return target.HT;
+	public int regencap()
+	{
+		return target.HT();
 	}
 }

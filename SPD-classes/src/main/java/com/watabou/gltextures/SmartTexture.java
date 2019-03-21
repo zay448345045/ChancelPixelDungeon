@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,33 +29,37 @@ import android.graphics.Bitmap;
 import com.watabou.glwrap.Texture;
 import com.watabou.utils.RectF;
 
-public class SmartTexture extends Texture {
+public class SmartTexture extends Texture
+{
 
 	public int width;
 	public int height;
-	
+
 	public int fModeMin;
 	public int fModeMax;
-	
+
 	public int wModeH;
 	public int wModeV;
-	
+
 	public Bitmap bitmap;
-	
+
 	public Atlas atlas;
 
-	protected SmartTexture( ) {
+	protected SmartTexture()
+	{
 		//useful for subclasses which want to manage their own texture data
 		// in cases where android.graphics.bitmap isn't fast enough.
 
 		//subclasses which use this MUST also override some mix of reload/generate/bind
 	}
-	
-	public SmartTexture( Bitmap bitmap ) {
-		this( bitmap, NEAREST, CLAMP, false );
+
+	public SmartTexture(Bitmap bitmap)
+	{
+		this(bitmap, NEAREST, CLAMP, false);
 	}
 
-	public SmartTexture( Bitmap bitmap, int filtering, int wrapping, boolean premultiplied ) {
+	public SmartTexture(Bitmap bitmap, int filtering, int wrapping, boolean premultiplied)
+	{
 
 		this.bitmap = bitmap;
 		width = bitmap.getWidth();
@@ -64,66 +71,77 @@ public class SmartTexture extends Texture {
 	}
 
 	@Override
-	protected void generate() {
+	protected void generate()
+	{
 		super.generate();
-		bitmap( bitmap, premultiplied );
-		filter( fModeMin, fModeMax );
-		wrap( wModeH, wModeV );
+		bitmap(bitmap, premultiplied);
+		filter(fModeMin, fModeMax);
+		wrap(wModeH, wModeV);
 	}
 
 	@Override
-	public void filter(int minMode, int maxMode) {
+	public void filter(int minMode, int maxMode)
+	{
 		fModeMin = minMode;
 		fModeMax = maxMode;
-		if (id != -1)
-			super.filter( fModeMin, fModeMax );
+		if(id != -1)
+			super.filter(fModeMin, fModeMax);
 	}
 
 	@Override
-	public void wrap( int s, int t ) {
+	public void wrap(int s, int t)
+	{
 		wModeH = s;
 		wModeV = t;
-		if (id != -1)
-			super.wrap( wModeH, wModeV );
+		if(id != -1)
+			super.wrap(wModeH, wModeV);
 	}
-	
+
 	@Override
-	public void bitmap( Bitmap bitmap ) {
-		bitmap( bitmap, false );
+	public void bitmap(Bitmap bitmap)
+	{
+		bitmap(bitmap, false);
 	}
-	
-	public void bitmap( Bitmap bitmap, boolean premultiplied ) {
-		if (premultiplied) {
-			super.bitmap( bitmap );
-		} else {
-			handMade( bitmap, true );
+
+	public void bitmap(Bitmap bitmap, boolean premultiplied)
+	{
+		if(premultiplied)
+		{
+			super.bitmap(bitmap);
 		}
-		
+		else
+		{
+			handMade(bitmap, true);
+		}
+
 		this.bitmap = bitmap;
 		width = bitmap.getWidth();
 		height = bitmap.getHeight();
 	}
-	
-	public void reload() {
+
+	public void reload()
+	{
 		id = -1;
 		generate();
 	}
-	
+
 	@Override
-	public void delete() {
-		
+	public void delete()
+	{
+
 		super.delete();
 
-		if (bitmap != null)
+		if(bitmap != null)
 			bitmap.recycle();
 		bitmap = null;
 	}
-	
-	public RectF uvRect( float left, float top, float right, float bottom ) {
+
+	public RectF uvRect(float left, float top, float right, float bottom)
+	{
 		return new RectF(
-			left		/ width,
-			top		/ height,
-			right	/ width,
-			bottom	/ height );
+				left / width,
+				top / height,
+				right / width,
+				bottom / height);
 	}
 }

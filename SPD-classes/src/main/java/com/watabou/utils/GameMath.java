@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,24 +26,23 @@ package com.watabou.utils;
 
 import com.watabou.noosa.Game;
 
-public class GameMath {
-	
-	public static float speed( float speed, float acc ) {
-		
-		if (acc != 0) {
+public class GameMath
+{
+	public static float speed(float speed, float acc)
+	{
+		if(acc != 0)
 			speed += acc * Game.elapsed;
-		}
-		
+
 		return speed;
 	}
-	
-	public static float gate( float min, float value, float max ) {
-		if (value < min) {
+
+	public static float gate(float min, float value, float max)
+	{
+		if(value < min)
 			return min;
-		} else if (value > max) {
+		else if(value > max)
 			return max;
-		} else {
+		else
 			return value;
-		}
 	}
 }

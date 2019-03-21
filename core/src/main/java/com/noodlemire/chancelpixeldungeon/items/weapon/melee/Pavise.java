@@ -24,25 +24,22 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Greatshield extends MeleeWeapon
+public class Pavise extends MeleeWeapon
 {
+	{
+		image = ItemSpriteSheet.PAVISE;
+		tier = 5;
+	}
 
-    {
-        image = ItemSpriteSheet.GREATSHIELD;
+	@Override
+	public int max(int lvl)
+	{
+		return Math.round(super.max(lvl) * 0.5f); //15 base, down from 30, and +3 per level, down from +6
+	}
 
-        tier = 5;
-    }
-
-    @Override
-    public int max(int lvl)
-    {
-        return Math.round(2.5f * (tier + 1)) +     //15 base, down from 30
-                lvl * (tier - 2);                   //+3 per level, down from +6
-    }
-
-    @Override
-    public int defenseFactor(Char owner)
-    {
-        return 10 + 3 * level();    //10 extra defence, plus 3 per level;
-    }
+	@Override
+	public int defenseFactor(Char owner)
+	{
+		return 10 + 3 * level(); //10 extra defence, plus 3 per level;
+	}
 }

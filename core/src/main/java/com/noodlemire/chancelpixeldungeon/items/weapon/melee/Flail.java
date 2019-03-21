@@ -23,19 +23,19 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Flail extends MeleeWeapon {
-
+public class Flail extends MeleeWeapon
+{
 	{
 		image = ItemSpriteSheet.FLAIL;
-
 		tier = 4;
-		ACC = 0.9f; //0.9x accuracy
+		ACC = 0.9f; //90% accuracy
 		//also cannot surprise attack, see Hero.canSurpriseAttack
 	}
 
 	@Override
-	public int max(int lvl) {
-		return  Math.round(7*(tier+1)) +        //35 base, up from 25
-				lvl*Math.round(1.6f*(tier+1));  //+8 per level, up from +5
+	public int max(int lvl)
+	{
+		return Math.round(7 * (tier + 1)) +        //35 base, up from 25
+				lvl * Math.round(1.6f * (tier + 1));  //+8 per level, up from +5
 	}
 }

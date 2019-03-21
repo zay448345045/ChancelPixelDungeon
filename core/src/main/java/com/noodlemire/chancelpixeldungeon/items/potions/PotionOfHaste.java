@@ -27,21 +27,22 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
-public class PotionOfHaste extends Potion {
-
+public class PotionOfHaste extends Potion
+{
 	{
 		initials = 10;
 	}
-	
+
 	@Override
-	public void apply( Hero hero ) {
-		setKnown();
-		Buff.affect( hero, Haste.class, Haste.DURATION );
-		GLog.i( Messages.get(this, "msg_1") );
+	public void apply(Hero hero)
+	{
+		Buff.affect(hero, Haste.class, Haste.DURATION);
+		GLog.i(Messages.get(this, "msg_1"));
 	}
 
 	@Override
-	public int price() {
+	public int price()
+	{
 		return isKnown() ? 50 * quantity : super.price();
 	}
 }

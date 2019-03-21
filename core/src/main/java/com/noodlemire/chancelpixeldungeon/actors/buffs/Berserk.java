@@ -32,16 +32,18 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 
-public class Berserk extends Buff {
-
-	private enum State{
+public class Berserk extends Buff
+{
+	private enum State
+	{
 		NORMAL, BERSERK, RECOVERING
 	}
+
 	private State state = State.NORMAL;
 
 	private static final float LEVEL_RECOVER_START = 2f;
 	private float levelRecovery;
-	
+
 	private float power = 0;
 
 	private static final String STATE = "state";
@@ -49,94 +51,107 @@ public class Berserk extends Buff {
 	private static final String POWER = "power";
 
 	@Override
-	public void storeInBundle(Bundle bundle) {
+	public void storeInBundle(Bundle bundle)
+	{
 		super.storeInBundle(bundle);
 		bundle.put(STATE, state);
 		bundle.put(POWER, power);
-		if (state == State.RECOVERING) bundle.put(LEVEL_RECOVERY, levelRecovery);
+		if(state == State.RECOVERING) bundle.put(LEVEL_RECOVERY, levelRecovery);
 	}
 
 	@Override
-	public void restoreFromBundle(Bundle bundle) {
+	public void restoreFromBundle(Bundle bundle)
+	{
 		super.restoreFromBundle(bundle);
 		//pre-0.6.5 saves
-		if (bundle.contains("exhaustion")){
+		if(bundle.contains("exhaustion"))
 			state = State.RECOVERING;
-		} else {
+		else
 			state = bundle.getEnum(STATE, State.class);
-		}
-		if (bundle.contains(POWER)){
+		if(bundle.contains(POWER))
 			power = bundle.getFloat(POWER);
-		} else {
+		else
 			power = 1f;
-		}
-		if (state == State.RECOVERING) levelRecovery = bundle.getFloat(LEVEL_RECOVERY);
+		if(state == State.RECOVERING) levelRecovery = bundle.getFloat(LEVEL_RECOVERY);
 	}
 
 	@Override
-	public boolean act() {
-		if (berserking()){
-			if (target.HP <= 0) {
-				target.SHLD -=  1 + Math.ceil(target.SHLD * 0.1f);
-				if (target.SHLD <= 0) {
-					target.SHLD = 0;
+	public boolean act()
+	{
+		if(berserking())
+		{
+			if(target.HP() <= 0)
+			{
+				target.SHLD(-(int) (1 + Math.ceil(target.SHLD() * 0.1f)));
+				if(target.SHLD() == 0)
+				{
 					target.die(this);
-					if (!target.isAlive()) Dungeon.fail(this.getClass());
+					if(!target.isAlive()) Dungeon.fail(this.getClass());
 				}
-			} else {
+			}
+			else
+			{
 				state = State.RECOVERING;
 				levelRecovery = LEVEL_RECOVER_START;
 				BuffIndicator.refreshHero();
-				target.SHLD = 0;
+				target.SHLD(-target.SHLD());
 				power = 0f;
 			}
-		} else if (state == State.NORMAL) {
-			power -= Math.max(0.1f, power) * 0.1f * Math.pow((target.HP/(float)target.HT), 2);
-			
-			if (power <= 0){
+		}
+		else if(state == State.NORMAL)
+		{
+			power -= Math.max(0.1f, power) * 0.1f * Math.pow((target.HP() / (float) target.HT()), 2);
+
+			if(power <= 0)
 				detach();
-			}
 			BuffIndicator.refreshHero();
 		}
 		spend(TICK);
 		return true;
 	}
 
-	public int damageFactor(int dmg){
+	public int damageFactor(int dmg)
+	{
 		float bonus = Math.min(1.5f, 1f + (power / 2f));
 		return Math.round(dmg * bonus);
 	}
 
-	public boolean berserking(){
-		if (target.HP == 0 && state == State.NORMAL && power >= 1f){
+	public boolean berserking()
+	{
+		if(target.HP() == 0 && state == State.NORMAL && power >= 1f)
+		{
 
 			WarriorShield shield = target.buff(WarriorShield.class);
-			if (shield != null){
+			if(shield != null)
+			{
 				state = State.BERSERK;
 				BuffIndicator.refreshHero();
-				target.SHLD = shield.maxShield() * 10;
+				target.SHLD(shield.maxShield() * 10);
 
 				SpellSprite.show(target, SpellSprite.BERSERK);
-				Sample.INSTANCE.play( Assets.SND_CHALLENGE );
+				Sample.INSTANCE.play(Assets.SND_CHALLENGE);
 				GameScene.flash(0xFF0000);
 			}
-
 		}
 
-		return state == State.BERSERK && target.SHLD > 0;
+		return state == State.BERSERK && target.SHLD() > 0;
 	}
-	
-	public void damage(int damage){
-		if (state == State.RECOVERING) return;
-		power = Math.min(1.1f, power + (damage/(float)target.HT)/3f );
+
+	public void damage(int damage)
+	{
+		if(state == State.RECOVERING) return;
+		power = Math.min(1.1f, power + (damage / (float) target.HT()) / 3f);
 		BuffIndicator.refreshHero();
 	}
 
-	public void recover(float percent){
-		if (levelRecovery > 0){
+	public void recover(float percent)
+	{
+		if(levelRecovery > 0)
+		{
 			levelRecovery -= percent;
 			BuffIndicator.refreshHero();
-			if (levelRecovery <= 0) {
+			if(levelRecovery <= 0)
+			{
 				state = State.NORMAL;
 				levelRecovery = 0;
 			}
@@ -144,31 +159,38 @@ public class Berserk extends Buff {
 	}
 
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.BERSERK;
 	}
-	
+
 	@Override
-	public void tintIcon(Image icon) {
-		switch (state){
-			case NORMAL: default:
-				if (power < 0.5f)       icon.hardlight(1f, 1f, 0.5f - (power));
-				else if (power < 1f)    icon.hardlight(1f, 1.5f - power, 0f);
-				else                    icon.hardlight(1f, 0f, 0f);
+	public void tintIcon(Image icon)
+	{
+		switch(state)
+		{
+			case NORMAL:
+			default:
+				if(power < 0.5f) icon.hardlight(1f, 1f, 0.5f - (power));
+				else if(power < 1f) icon.hardlight(1f, 1.5f - power, 0f);
+				else icon.hardlight(1f, 0f, 0f);
 				break;
 			case BERSERK:
 				icon.hardlight(1f, 0f, 0f);
 				break;
 			case RECOVERING:
-				icon.hardlight(1f - (levelRecovery*0.5f), 1f - (levelRecovery*0.3f), 1f);
+				icon.hardlight(1f - (levelRecovery * 0.5f), 1f - (levelRecovery * 0.3f), 1f);
 				break;
 		}
 	}
-	
+
 	@Override
-	public String toString() {
-		switch (state){
-			case NORMAL: default:
+	public String toString()
+	{
+		switch(state)
+		{
+			case NORMAL:
+			default:
 				return Messages.get(this, "angered");
 			case BERSERK:
 				return Messages.get(this, "berserk");
@@ -178,16 +200,19 @@ public class Berserk extends Buff {
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		float dispDamage = (damageFactor(10000) / 100f) - 100f;
-		switch (state){
-			case NORMAL: default:
+		switch(state)
+		{
+			case NORMAL:
+			default:
 				return Messages.get(this, "angered_desc", Math.floor(power * 100f), dispDamage);
 			case BERSERK:
 				return Messages.get(this, "berserk_desc");
 			case RECOVERING:
 				return Messages.get(this, "recovering_desc", levelRecovery);
 		}
-		
+
 	}
 }

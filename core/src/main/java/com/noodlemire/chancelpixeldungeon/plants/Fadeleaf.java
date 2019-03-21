@@ -21,62 +21,31 @@
 
 package com.noodlemire.chancelpixeldungeon.plants;
 
-import com.noodlemire.chancelpixeldungeon.Dungeon;
-import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
-import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
-import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
-import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
-import com.noodlemire.chancelpixeldungeon.effects.Speck;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Invisibility;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfHaste;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfInvisibility;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfRepulsion;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Fadeleaf extends Plant {
-	
+public class Fadeleaf extends Plant
+{
 	{
 		image = 6;
 	}
-	
+
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
-		
-		if (ch instanceof Hero) {
-			
-			ScrollOfTeleportation.teleportHero( (Hero)ch );
-			((Hero)ch).curAction = null;
-			
-		} else if (ch instanceof Mob && !ch.properties().contains(Char.Property.IMMOVABLE)) {
-
-			int count = 10;
-			int newPos;
-			do {
-				newPos = Dungeon.level.randomRespawnCell();
-				if (count-- <= 0) {
-					break;
-				}
-			} while (newPos == -1);
-			
-			if (newPos != -1 && !Dungeon.bossLevel()) {
-			
-				ch.pos = newPos;
-				if (((Mob) ch).state == ((Mob) ch).HUNTING) ((Mob) ch).state = ((Mob) ch).WANDERING;
-				ch.sprite.place( ch.pos );
-				ch.sprite.visible = Dungeon.level.heroFOV[ch.pos];
-				
-			}
-
-		}
-		
-		if (Dungeon.level.heroFOV[pos]) {
-			CellEmitter.get( pos ).start( Speck.factory( Speck.LIGHT ), 0.2f, 3 );
-		}
+	public void activate(Char ch, boolean doWardenBonus)
+	{
+		if(doWardenBonus)
+			Buff.affect(ch, Invisibility.class, 5f);
+		ScrollOfTeleportation.randomTeleport(ch);
 	}
-	
-	public static class Seed extends Plant.Seed {
+
+	public static class Seed extends Plant.Seed
+	{
 		{
 			image = ItemSpriteSheet.SEED_FADELEAF;
 

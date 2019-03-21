@@ -25,19 +25,21 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 
-public class Projecting extends Weapon.Enchantment {
-
-	private static ItemSprite.Glowing GREY = new ItemSprite.Glowing( 0x888888 );
+public class Projecting extends Weapon.Enchantment
+{
+	private static ItemSprite.Glowing GREY = new ItemSprite.Glowing(0x888888);
 
 	@Override
-	public int proc(Weapon weapon, Char attacker, Char defender, int damage) {
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
 		//Does nothing as a proc, instead increases weapon range.
 		//See weapon.reachFactor, and MissileWeapon.throwPos;
 		return damage;
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return GREY;
 	}
 

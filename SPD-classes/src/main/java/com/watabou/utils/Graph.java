@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,82 +29,80 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Graph {
-
-	public static <T extends Node> void setPrice( List<T> nodes, int value ) {
-		for (T node : nodes) {
-			node.price( value );
-		}
+public class Graph
+{
+	public static <T extends Node> void setPrice(List<T> nodes, int value)
+	{
+		for(T node : nodes)
+			node.price(value);
 	}
-	
-	public static <T extends Node> void buildDistanceMap( Collection<T> nodes, Node focus ) {
-		
-		for (T node : nodes) {
-			node.distance( Integer.MAX_VALUE );
-		}
-		
+
+	public static <T extends Node> void buildDistanceMap(Collection<T> nodes, Node focus)
+	{
+		for(T node : nodes)
+			node.distance(Integer.MAX_VALUE);
+
 		LinkedList<Node> queue = new LinkedList<Node>();
-		
-		focus.distance( 0 );
-		queue.add( focus );
-		
-		while (!queue.isEmpty()) {
-			
+
+		focus.distance(0);
+		queue.add(focus);
+
+		while(!queue.isEmpty())
+		{
 			Node node = queue.poll();
 			int distance = node.distance();
 			int price = node.price();
-			
-			for (Node edge : node.edges()) {
-				if (edge.distance() > distance + price) {
-					queue.add( edge );
-					edge.distance( distance + price );
+
+			for(Node edge : node.edges())
+			{
+				if(edge.distance() > distance + price)
+				{
+					queue.add(edge);
+					edge.distance(distance + price);
 				}
 			}
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public static <T extends Node> List<T> buildPath( Collection<T> nodes, T from, T to ) {
-		
+	public static <T extends Node> List<T> buildPath(Collection<T> nodes, T from, T to)
+	{
 		List<T> path = new ArrayList<T>();
-		
+
 		T room = from;
-		while (room != to) {
-			
+		while(room != to)
+		{
 			int min = room.distance();
 			T next = null;
-			
+
 			Collection<? extends Node> edges = room.edges();
-			
-			for (Node edge : edges) {
-				
+
+			for(Node edge : edges)
+			{
 				int distance = edge.distance();
-				if (distance < min) {
+				if(distance < min)
+				{
 					min = distance;
-					next = (T)edge;
+					next = (T) edge;
 				}
 			}
-			
-			if (next == null) {
+
+			if(next == null)
 				return null;
-			}
-			
-			path.add( next );
+
+			path.add(next);
 			room = next;
 		}
-		
+
 		return path;
 	}
-	
-	public interface Node {
-		
+
+	public interface Node
+	{
 		int distance();
-		void distance( int value );
-		
+		void distance(int value);
 		int price();
-		void price( int value );
-		
+		void price(int value);
 		Collection<? extends Node> edges();
-		
 	}
 }

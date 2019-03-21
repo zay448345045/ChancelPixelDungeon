@@ -28,40 +28,50 @@ import com.noodlemire.chancelpixeldungeon.journal.Notes;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class Alchemy extends Blob {
+public class Alchemy extends Blob
+{
 
 	protected int pos;
-	
+
 	@Override
-	protected void evolve() {
+	protected void evolve()
+	{
 		int cell;
-		for (int i=area.top-1; i <= area.bottom; i++) {
-			for (int j = area.left-1; j <= area.right; j++) {
-				cell = j + i* Dungeon.level.width();
-				if (Dungeon.level.insideMap(cell)) {
+		for(int i = area.top - 1; i <= area.bottom; i++)
+		{
+			for(int j = area.left - 1; j <= area.right; j++)
+			{
+				cell = j + i * Dungeon.level.width();
+				if(Dungeon.level.insideMap(cell))
+				{
 					off[cell] = cur[cell];
 					volume += off[cell];
-					if (off[cell] > 0 && Dungeon.level.heroFOV[cell]){
-						Notes.add( Notes.Landmark.ALCHEMY );
+					if(off[cell] > 0 && Dungeon.level.heroFOV[cell])
+					{
+						Notes.add(Notes.Landmark.ALCHEMY);
 					}
-					
+
 					//for pre-0.6.2 saves
-					while (off[cell] > 0 && Dungeon.level.heaps.get(cell) != null){
-						
+					while(off[cell] > 0 && Dungeon.level.heaps.get(cell) != null)
+					{
+
 						int n;
-						do {
-							n = cell + PathFinder.NEIGHBOURS8[Random.Int( 8 )];
-						} while (!Dungeon.level.passable[n]);
-						Dungeon.level.drop( Dungeon.level.heaps.get(cell).pickUp(), n ).sprite.drop( pos );
+						do
+						{
+							n = cell + PathFinder.NEIGHBOURS8[Random.Int(8)];
+						}
+						while(!Dungeon.level.passable[n]);
+						Dungeon.level.drop(Dungeon.level.heaps.get(cell).pickUp(), n).sprite.drop(pos);
 					}
 				}
 			}
 		}
 	}
-	
+
 	@Override
-	public void use( BlobEmitter emitter ) {
-		super.use( emitter );
-		emitter.start( Speck.factory( Speck.BUBBLE ), 0.33f, 0 );
+	public void use(BlobEmitter emitter)
+	{
+		super.use(emitter);
+		emitter.start(Speck.factory(Speck.BUBBLE), 0.33f, 0);
 	}
 }

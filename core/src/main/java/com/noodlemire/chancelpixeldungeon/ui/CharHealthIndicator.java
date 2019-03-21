@@ -25,48 +25,60 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 
-public class CharHealthIndicator extends HealthBar {
-	
+public class CharHealthIndicator extends HealthBar
+{
+
 	private static final int HEIGHT = 1;
-	
+
 	private Char target;
-	
-	public CharHealthIndicator( Char c ){
+
+	public CharHealthIndicator(Char c)
+	{
 		target = c;
 		GameScene.add(this);
 	}
-	
+
 	@Override
-	protected void createChildren() {
+	protected void createChildren()
+	{
 		super.createChildren();
 		height = HEIGHT;
 	}
-	
+
 	@Override
-	public void update() {
+	public void update()
+	{
 		super.update();
-		
-		if (target != null && target.isAlive() && target.sprite.visible) {
+
+		if(target != null && target.isAlive() && target.sprite.visible)
+		{
 			CharSprite sprite = target.sprite;
-			width = sprite.width()*(4/6f);
-			x = sprite.x + sprite.width()/6f;
+			width = sprite.width() * (4 / 6f);
+			x = sprite.x + sprite.width() / 6f;
 			y = sprite.y - 2;
-			level( target );
-			visible = target.HP < target.HT;
-		} else {
+			level(target);
+			visible = target.HP() < target.HT();
+		}
+		else
+		{
 			visible = false;
 		}
 	}
-	
-	public void target( Char ch ) {
-		if (ch != null && ch.isAlive()) {
+
+	public void target(Char ch)
+	{
+		if(ch != null && ch.isAlive())
+		{
 			target = ch;
-		} else {
+		}
+		else
+		{
 			target = null;
 		}
 	}
-	
-	public Char target() {
+
+	public Char target()
+	{
 		return target;
 	}
 }

@@ -22,28 +22,33 @@
 package com.noodlemire.chancelpixeldungeon.plants;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
+import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.items.GrassSeed;
 import com.noodlemire.chancelpixeldungeon.items.food.Blandfruit;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfPlacebo;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class BlandfruitBush extends Plant {
-
+public class BlandfruitBush extends Plant
+{
 	{
 		image = 8;
 	}
 
 	@Override
-	public void activate() {
-		Dungeon.level.drop( new Blandfruit(), pos ).sprite.drop();
+	public void activate(Char ch, boolean doWardenBonus)
+	{
+		if(doWardenBonus)
+			Dungeon.level.drop(new GrassSeed(), pos).sprite.drop();
+		Dungeon.level.drop(new Blandfruit(), pos).sprite.drop();
 	}
 
-	public static class Seed extends Plant.Seed {
+	public static class Seed extends Plant.Seed
+	{
 		{
 			image = ItemSpriteSheet.SEED_BLANDFRUIT;
 
 			plantClass = BlandfruitBush.class;
 			alchemyClass = PotionOfPlacebo.class;
 		}
-
 	}
 }

@@ -21,6 +21,7 @@
 
 package com.noodlemire.chancelpixeldungeon.items.scrolls;
 
+import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Badges;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
@@ -34,22 +35,25 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.noodlemire.chancelpixeldungeon.windows.WndBag;
+import com.watabou.noosa.audio.Sample;
 
-public class ScrollOfUpgrade extends InventoryScroll {
-	
+public class ScrollOfUpgrade extends InventoryScroll
+{
 	{
 		initials = 11;
 		mode = WndBag.Mode.UPGRADEABLE;
+		bones = false;
 	}
-	
-	@Override
-	protected void onItemSelected( Item item ) {
 
-		upgrade( curUser );
+	@Override
+	protected void onItemSelected(Item item)
+	{
+		upgrade(curUser);
 
 		//logic for telling the user when item properties change from upgrades
 		//...yes this is rather messy
-		if (item instanceof Weapon){
+		if(item instanceof Weapon)
+		{
 			Weapon w = (Weapon) item;
 			boolean wasCursed = w.cursed;
 			boolean hadCursedEnchant = w.hasCurseEnchant();
@@ -57,16 +61,15 @@ public class ScrollOfUpgrade extends InventoryScroll {
 
 			w.upgrade();
 
-			if (hadCursedEnchant && !w.hasCurseEnchant()){
-				removeCurse( Dungeon.hero );
-			} else if (wasCursed && !w.cursed){
-				weakenCurse( Dungeon.hero );
-			}
-			if (hadGoodEnchant && !w.hasGoodEnchant()){
-				GLog.w( Messages.get(Weapon.class, "incompatible") );
-			}
-
-		} else if (item instanceof Armor){
+			if(hadCursedEnchant && !w.hasCurseEnchant())
+				removeCurse(Dungeon.hero);
+			else if(wasCursed && !w.cursed)
+				weakenCurse(Dungeon.hero);
+			if(hadGoodEnchant && !w.hasGoodEnchant())
+				GLog.w(Messages.get(Weapon.class, "incompatible"));
+		}
+		else if(item instanceof Armor)
+		{
 			Armor a = (Armor) item;
 			boolean wasCursed = a.cursed;
 			boolean hadCursedGlyph = a.hasCurseGlyph();
@@ -74,52 +77,62 @@ public class ScrollOfUpgrade extends InventoryScroll {
 
 			a.upgrade();
 
-			if (hadCursedGlyph && !a.hasCurseGlyph()){
-				removeCurse( Dungeon.hero );
-			} else if (wasCursed && !a.cursed){
-				weakenCurse( Dungeon.hero );
-			}
-			if (hadGoodGlyph && !a.hasGoodGlyph()){
-				GLog.w( Messages.get(Armor.class, "incompatible") );
-			}
-
-		} else if (item instanceof Wand || item instanceof Ring) {
+			if(hadCursedGlyph && !a.hasCurseGlyph())
+				removeCurse(Dungeon.hero);
+			else if(wasCursed && !a.cursed)
+				weakenCurse(Dungeon.hero);
+			if(hadGoodGlyph && !a.hasGoodGlyph())
+				GLog.w(Messages.get(Armor.class, "incompatible"));
+		}
+		else if(item instanceof Wand || item instanceof Ring)
+		{
 			boolean wasCursed = item.cursed;
 
 			item.upgrade();
 
-			if (wasCursed && !item.cursed){
-				removeCurse( Dungeon.hero );
-			}
-
-		} else {
-			item.upgrade();
+			if(wasCursed && !item.cursed)
+				removeCurse(Dungeon.hero);
 		}
-		
-		Badges.validateItemLevelAquired( item );
-	}
-	
-	public static void upgrade( Hero hero ) {
-		hero.sprite.emitter().start( Speck.factory( Speck.UP ), 0.2f, 3 );
+		else
+			item.upgrade();
+
+		Badges.validateItemLevelAquired(item);
 	}
 
-	public static void weakenCurse( Hero hero ){
-		GLog.p( Messages.get(ScrollOfUpgrade.class, "weaken_curse") );
-		hero.sprite.emitter().start( ShadowParticle.UP, 0.05f, 5 );
+	public static void upgrade(Hero hero)
+	{
+		hero.sprite.emitter().start(Speck.factory(Speck.UP), 0.2f, 3);
 	}
 
-	public static void removeCurse( Hero hero ){
-		GLog.p( Messages.get(ScrollOfUpgrade.class, "remove_curse") );
-		hero.sprite.emitter().start( ShadowParticle.UP, 0.05f, 10 );
+	private static void weakenCurse(Hero hero)
+	{
+		GLog.p(Messages.get(ScrollOfUpgrade.class, "weaken_curse"));
+		hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 5);
 	}
-	
+
+	private static void removeCurse(Hero hero)
+	{
+		GLog.p(Messages.get(ScrollOfUpgrade.class, "remove_curse"));
+		hero.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10);
+	}
+
 	@Override
-	public void empoweredRead() {
+	public void doShout()
+	{
+		Sample.INSTANCE.play(Assets.SND_CHALLENGE);
+		GLog.i(Messages.get(this, "too_loud"));
+		readAnimation();
+	}
+
+	@Override
+	public void empoweredRead()
+	{
 		//does nothing for now, this should never happen.
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return isKnown() ? 50 * quantity : super.price();
 	}
 }

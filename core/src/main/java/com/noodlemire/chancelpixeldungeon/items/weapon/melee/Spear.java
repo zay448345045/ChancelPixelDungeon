@@ -23,20 +23,18 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Spear extends MeleeWeapon {
-
+public class Spear extends MeleeWeapon
+{
 	{
 		image = ItemSpriteSheet.SPEAR;
-
 		tier = 2;
 		DLY = 1.5f; //0.67x speed
 		RCH = 2;    //extra reach
 	}
 
 	@Override
-	public int max(int lvl) {
-		return  Math.round(6.67f*(tier+1)) +    //20 base, up from 15
-				lvl*Math.round(1.33f*(tier+1)); //+4 per level, up from +3
+	public int max(int lvl)
+	{
+		return Math.round(super.max(lvl) * 1.333f); //20 base, up from 15, and +4 per level, up from +3
 	}
-
 }

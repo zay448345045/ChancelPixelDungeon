@@ -2,14 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.noodlemire.chancelpixeldungeon"
 	android:versionCode="264"
-	android:versionName="0.1 BETA"
+	android:versionName="0.1 BETA 3"
 	android:installLocation="auto">
 
-	<uses-sdk
-		android:minSdkVersion="8"
-		android:targetSdkVersion="27"/>
-	
-	<uses-feature
+    <uses-feature
 		android:glEsVersion="0x00020000"/>
 
 	<!-- Note that the game doesn't truly support small screen resolutions,

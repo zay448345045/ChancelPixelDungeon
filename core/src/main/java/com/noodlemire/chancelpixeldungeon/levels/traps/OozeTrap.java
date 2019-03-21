@@ -27,7 +27,8 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Ooze;
 import com.noodlemire.chancelpixeldungeon.effects.Splash;
 
-public class OozeTrap extends Trap {
+public class OozeTrap extends Trap
+{
 
 	{
 		color = GREEN;
@@ -35,12 +36,14 @@ public class OozeTrap extends Trap {
 	}
 
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar( pos );
+	public void activate()
+	{
+		Char ch = Actor.findChar(pos);
 
-		if (ch != null){
+		if(ch != null)
+		{
 			Buff.affect(ch, Ooze.class);
-			Splash.at( pos, 0x000000, 5);
+			Splash.at(pos, 0x000000, 5);
 		}
 	}
 }

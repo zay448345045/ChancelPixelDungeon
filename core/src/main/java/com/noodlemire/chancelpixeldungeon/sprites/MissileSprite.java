@@ -23,6 +23,8 @@ package com.noodlemire.chancelpixeldungeon.sprites;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.items.Item;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfReflection;
+import com.noodlemire.chancelpixeldungeon.items.weapon.Bow;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Crossbow;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Bolas;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Boomerang;
@@ -42,106 +44,119 @@ import com.watabou.utils.PointF;
 
 import java.util.HashMap;
 
-public class MissileSprite extends ItemSprite implements Tweener.Listener {
+public class MissileSprite extends ItemSprite implements Tweener.Listener
+{
+	private static final float SPEED = 240f;
 
-	private static final float SPEED	= 240f;
-	
 	private Callback callback;
-	
-	public void reset( int from, int to, Item item, Callback listener ) {
-		reset( DungeonTilemap.tileToWorld( from ), DungeonTilemap.tileToWorld( to ), item, listener);
+
+	public void reset(int from, int to, Item item, Callback listener)
+	{
+		reset(DungeonTilemap.tileToWorld(from), DungeonTilemap.tileToWorld(to), item, listener);
 	}
 
-	public void reset( Visual from, Visual to, Item item, Callback listener ) {
-		reset(from.center(this), to.center(this), item, listener );
+	public void reset(Visual from, Visual to, Item item, Callback listener)
+	{
+		reset(from.center(this), to.center(this), item, listener);
 	}
 
-	public void reset( Visual from, int to, Item item, Callback listener ) {
-		reset(from.center(this), DungeonTilemap.tileToWorld( to ), item, listener );
-	}
-	
-	public void reset( int from, Visual to, Item item, Callback listener ) {
-		reset(DungeonTilemap.tileToWorld( from ), to.center(this), item, listener );
+	public void reset(Visual from, int to, Item item, Callback listener)
+	{
+		reset(from.center(this), DungeonTilemap.tileToWorld(to), item, listener);
 	}
 
-	public void reset( PointF from, PointF to, Item item, Callback listener) {
+	public void reset(int from, Visual to, Item item, Callback listener)
+	{
+		reset(DungeonTilemap.tileToWorld(from), to.center(this), item, listener);
+	}
+
+	public void reset(PointF from, PointF to, Item item, Callback listener)
+	{
 		revive();
 
-		if (item == null)   view(0, null);
-		else                view(item.image(), item.glowing());
+		if(item == null) view(0, null);
+		else view(item.image(), item.glowing());
 
-		setup( from,
+		setup(from,
 				to,
 				item,
-				listener );
+				listener);
 	}
-	
+
 	private static final int DEFAULT_ANGULAR_SPEED = 720;
-	
-	private static final HashMap<Class<?extends Item>, Integer> ANGULAR_SPEEDS = new HashMap<>();
-	static {
-		ANGULAR_SPEEDS.put(Dart.class,          0);
+
+	private static final HashMap<Class<? extends Item>, Integer> ANGULAR_SPEEDS = new HashMap<>();
+
+	static
+	{
+		ANGULAR_SPEEDS.put(Dart.class, 0);
 		ANGULAR_SPEEDS.put(ThrowingKnife.class, 0);
-		ANGULAR_SPEEDS.put(FishingSpear.class,  0);
+		ANGULAR_SPEEDS.put(FishingSpear.class, 0);
 		ANGULAR_SPEEDS.put(ThrowingSpear.class, 0);
-		ANGULAR_SPEEDS.put(Javelin.class,       0);
-		ANGULAR_SPEEDS.put(Trident.class,       0);
-		
+		ANGULAR_SPEEDS.put(Javelin.class, 0);
+		ANGULAR_SPEEDS.put(Trident.class, 0);
+		ANGULAR_SPEEDS.put(Bow.Arrow.class, 0);
+		ANGULAR_SPEEDS.put(ScrollOfReflection.ReflectionCharge.class, 0);
+
 		//720 is default
-		
-		ANGULAR_SPEEDS.put(Boomerang.class,     1440);
-		ANGULAR_SPEEDS.put(Bolas.class,         1440);
-		
-		ANGULAR_SPEEDS.put(Shuriken.class,      2160);
+
+		ANGULAR_SPEEDS.put(Boomerang.class, 1440);
+		ANGULAR_SPEEDS.put(Bolas.class, 1440);
+
+		ANGULAR_SPEEDS.put(Shuriken.class, 2160);
 	}
 
 	//TODO it might be nice to have a source and destination angle, to improve thrown weapon visuals
-	private void setup( PointF from, PointF to, Item item, Callback listener ){
-
+	private void setup(PointF from, PointF to, Item item, Callback listener)
+	{
 		originToCenter();
 
 		this.callback = listener;
 
-		point( from );
+		point(from);
 
-		PointF d = PointF.diff( to, from );
+		PointF d = PointF.diff(to, from);
 		speed.set(d).normalize().scale(SPEED);
-		
+
 		angularSpeed = DEFAULT_ANGULAR_SPEED;
-		for (Class<?extends Item> cls : ANGULAR_SPEEDS.keySet()){
-			if (cls.isAssignableFrom(item.getClass())){
+		for(Class<? extends Item> cls : ANGULAR_SPEEDS.keySet())
+		{
+			if(cls.isAssignableFrom(item.getClass()))
+			{
 				angularSpeed = ANGULAR_SPEEDS.get(cls);
 				break;
 			}
 		}
-		
-		angle = 135 - (float)(Math.atan2( d.x, d.y ) / 3.1415926 * 180);
-		
-		if (d.x >= 0){
+
+		angle = 135 - (float) (Math.atan2(d.x, d.y) / 3.1415926 * 180);
+
+		if(d.x >= 0)
+		{
 			flipHorizontal = false;
 			updateFrame();
-			
-		} else {
+		}
+		else
+		{
 			angularSpeed = -angularSpeed;
 			angle += 90;
 			flipHorizontal = true;
 			updateFrame();
 		}
-		
+
 		float speed = SPEED;
-		if (item instanceof Dart && Dungeon.hero.belongings.weapon instanceof Crossbow){
+		if((item instanceof Dart && Dungeon.hero.belongings.weapon instanceof Crossbow) || item instanceof Bow.Arrow)
 			speed *= 3f;
-		}
-		PosTweener tweener = new PosTweener( this, to, d.length() / speed );
+
+		PosTweener tweener = new PosTweener(this, to, d.length() / speed);
 		tweener.listener = this;
-		parent.add( tweener );
+		parent.add(tweener);
 	}
 
 	@Override
-	public void onComplete( Tweener tweener ) {
+	public void onComplete(Tweener tweener)
+	{
 		kill();
-		if (callback != null) {
+		if(callback != null)
 			callback.call();
-		}
 	}
 }

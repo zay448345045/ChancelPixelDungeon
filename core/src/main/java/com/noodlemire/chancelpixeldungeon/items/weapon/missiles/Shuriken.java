@@ -25,35 +25,23 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Shuriken extends MissileWeapon {
-
+public class Shuriken extends MissileWeapon
+{
 	{
 		image = ItemSpriteSheet.SHURIKEN;
+		tier = 2;
 	}
 
 	@Override
-	public int min(int lvl) {
-		return 4;
+	public int max(int lvl)
+	{
+		return Math.round(super.max(lvl) * 0.6f); //6, down from 10
 	}
 
 	@Override
-	public int max(int lvl) {
-		return 6;
-	}
-
-	@Override
-	public int STRReq(int lvl) {
-		return 11;
-	}
-	
-	@Override
-	public float speedFactor(Char owner) {
-		if (owner instanceof Hero && ((Hero) owner).justMoved)  return 0;
-		else                                                    return super.speedFactor(owner);
-	}
-	
-	@Override
-	public int price() {
-		return 12 * quantity;
+	public float speedFactor(Char owner)
+	{
+		if(owner instanceof Hero && ((Hero) owner).justMoved) return 0;
+		else return super.speedFactor(owner);
 	}
 }

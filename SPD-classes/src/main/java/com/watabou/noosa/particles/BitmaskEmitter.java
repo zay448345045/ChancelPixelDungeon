@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,15 +29,16 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Random;
 import com.watabou.utils.RectF;
 
-public class BitmaskEmitter extends Emitter {
-
+public class BitmaskEmitter extends Emitter
+{
 	// DON'T USE WITH COMPLETELY TRANSPARENT IMAGES!!!
 
 	private SmartTexture map;
 	private int mapW;
 	private int mapH;
 
-	public BitmaskEmitter( Image target ) {
+	public BitmaskEmitter(Image target)
+	{
 		super();
 
 		this.target = target;
@@ -45,20 +49,22 @@ public class BitmaskEmitter extends Emitter {
 	}
 
 	@Override
-	protected void emit( int index ) {
-
-		RectF frame = ((Image)target).frame();
+	protected void emit(int index)
+	{
+		RectF frame = ((Image) target).frame();
 		float ofsX = frame.left * mapW;
 		float ofsY = frame.top * mapH;
 
 		float x, y;
-		do {
-			x = Random.Float( frame.width() ) * mapW;
-			y = Random.Float( frame.height() ) * mapH;
-		} while ((map.bitmap.getPixel( (int)(x + ofsX), (int)(y + ofsY) ) & 0x000000FF) == 0);
+		do
+		{
+			x = Random.Float(frame.width()) * mapW;
+			y = Random.Float(frame.height()) * mapH;
+		}
+		while((map.bitmap.getPixel((int) (x + ofsX), (int) (y + ofsY)) & 0x000000FF) == 0);
 
-		factory.emit( this, index,
+		factory.emit(this, index,
 				target.x + x * target.scale.x,
-				target.y + y * target.scale.y );
+				target.y + y * target.scale.y);
 	}
 }

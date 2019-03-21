@@ -23,12 +23,10 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Longsword extends MeleeWeapon {
-	
+public class Longsword extends MeleeWeapon
+{
 	{
 		image = ItemSpriteSheet.LONGSWORD;
-
 		tier = 4;
 	}
-
 }

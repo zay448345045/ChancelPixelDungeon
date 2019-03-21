@@ -21,8 +21,8 @@
 
 package com.noodlemire.chancelpixeldungeon.scenes;
 
+import com.noodlemire.chancelpixeldungeon.CPDSettings;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
-import com.noodlemire.chancelpixeldungeon.SPDSettings;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
@@ -34,187 +34,220 @@ import com.watabou.noosa.TouchArea;
 import com.watabou.utils.GameMath;
 import com.watabou.utils.PointF;
 
-public class CellSelector extends TouchArea {
-
+public class CellSelector extends TouchArea
+{
 	public Listener listener = null;
-	
+
 	public boolean enabled;
-	
+
 	private float dragThreshold;
-	
-	public CellSelector( DungeonTilemap map ) {
-		super( map );
+
+	public CellSelector(DungeonTilemap map)
+	{
+		super(map);
 		camera = map.camera();
-		
+
 		dragThreshold = PixelScene.defaultZoom * DungeonTilemap.SIZE / 2;
 	}
-	
+
 	@Override
-	protected void onClick( Touch touch ) {
-		if (dragging) {
-			
+	protected void onClick(Touch touch)
+	{
+		if(dragging)
+		{
+
 			dragging = false;
-			
-		} else {
-			
-			PointF p = Camera.main.screenToCamera( (int)touch.current.x, (int)touch.current.y );
-			for (Char mob : Dungeon.level.mobs.toArray(new Mob[0])){
-				if (mob.sprite != null && mob.sprite.overlapsPoint( p.x, p.y)){
-					select( mob.pos );
+
+		}
+		else
+		{
+
+			PointF p = Camera.main.screenToCamera((int) touch.current.x, (int) touch.current.y);
+			for(Char mob : Dungeon.level.mobs.toArray(new Mob[0]))
+			{
+				if(mob.sprite != null && mob.sprite.overlapsPoint(p.x, p.y))
+				{
+					select(mob.pos);
 					return;
 				}
 			}
 
-			for (Heap heap : Dungeon.level.heaps.values()){
-				if (heap.sprite != null && heap.sprite.overlapsPoint( p.x, p.y)){
-					select( heap.pos );
+			for(Heap heap : Dungeon.level.heaps.values())
+			{
+				if(heap.sprite != null && heap.sprite.overlapsPoint(p.x, p.y))
+				{
+					select(heap.pos);
 					return;
 				}
 			}
-			
-			select( ((DungeonTilemap)target).screenToTile(
-				(int)touch.current.x,
-				(int)touch.current.y,
-					true ) );
+
+			select(((DungeonTilemap) target).screenToTile(
+					(int) touch.current.x,
+					(int) touch.current.y,
+					true));
 		}
 	}
 
-	private float zoom( float value ) {
+	private float zoom(float value)
+	{
 
-		value = GameMath.gate( PixelScene.minZoom, value, PixelScene.maxZoom );
-		SPDSettings.zoom((int) (value - PixelScene.defaultZoom));
-		camera.zoom( value );
+		value = GameMath.gate(PixelScene.minZoom, value, PixelScene.maxZoom);
+		CPDSettings.zoom((int) (value - PixelScene.defaultZoom));
+		camera.zoom(value);
 
 		//Resets character sprite positions with the new camera zoom
 		//This is important as characters are centered on a 16x16 tile, but may have any sprite size
 		//This can lead to none-whole coordinate, which need to be aligned with the zoom
-		for (Char c : Actor.chars()){
-			if (c.sprite != null && !c.sprite.isMoving){
+		for(Char c : Actor.chars())
+		{
+			if(c.sprite != null && !c.sprite.isMoving)
+			{
 				c.sprite.point(c.sprite.worldToCamera(c.pos));
 			}
 		}
 
 		return value;
 	}
-	
-	public void select( int cell ) {
-		if (enabled && listener != null && cell != -1) {
-			
-			listener.onSelect( cell );
+
+	public void select(int cell)
+	{
+		if(enabled && listener != null && cell != -1)
+		{
+			listener.onSelect(cell);
 			GameScene.ready();
-			
-		} else {
-			
-			GameScene.cancel();
-			
 		}
+		else
+			GameScene.cancel();
 	}
-	
+
 	private boolean pinching = false;
 	private Touch another;
 	private float startZoom;
 	private float startSpan;
-	
-	@Override
-	protected void onTouchDown( Touch t ) {
 
-		if (t != touch && another == null) {
-					
-			if (!touch.down) {
+	@Override
+	protected void onTouchDown(Touch t)
+	{
+
+		if(t != touch && another == null)
+		{
+
+			if(!touch.down)
+			{
 				touch = t;
-				onTouchDown( t );
+				onTouchDown(t);
 				return;
 			}
-			
+
 			pinching = true;
-			
+
 			another = t;
-			startSpan = PointF.distance( touch.current, another.current );
+			startSpan = PointF.distance(touch.current, another.current);
 			startZoom = camera.zoom;
 
 			dragging = false;
-		} else if (t != touch) {
+		}
+		else if(t != touch)
+		{
 			reset();
 		}
 	}
-	
+
 	@Override
-	protected void onTouchUp( Touch t ) {
-		if (pinching && (t == touch || t == another)) {
-			
+	protected void onTouchUp(Touch t)
+	{
+		if(pinching && (t == touch || t == another))
+		{
+
 			pinching = false;
-			
-			zoom(Math.round( camera.zoom ));
-			
+
+			zoom(Math.round(camera.zoom));
+
 			dragging = true;
-			if (t == touch) {
+			if(t == touch)
+			{
 				touch = another;
 			}
 			another = null;
-			lastPos.set( touch.current );
+			lastPos.set(touch.current);
 		}
 	}
-	
+
 	private boolean dragging = false;
 	private PointF lastPos = new PointF();
-	
+
 	@Override
-	protected void onDrag( Touch t ) {
-		 
+	protected void onDrag(Touch t)
+	{
+
 		camera.target = null;
 
-		if (pinching) {
+		if(pinching)
+		{
 
-			float curSpan = PointF.distance( touch.current, another.current );
+			float curSpan = PointF.distance(touch.current, another.current);
 			float zoom = (startZoom * curSpan / startSpan);
-			camera.zoom( GameMath.gate(
-				PixelScene.minZoom,
+			camera.zoom(GameMath.gate(
+					PixelScene.minZoom,
 					zoom - (zoom % 0.1f),
-				PixelScene.maxZoom ) );
+					PixelScene.maxZoom));
 
-		} else {
-		
-			if (!dragging && PointF.distance( t.current, t.start ) > dragThreshold) {
-				
+		}
+		else
+		{
+
+			if(!dragging && PointF.distance(t.current, t.start) > dragThreshold)
+			{
+
 				dragging = true;
-				lastPos.set( t.current );
-				
-			} else if (dragging) {
-				camera.scroll.offset( PointF.diff( lastPos, t.current ).invScale( camera.zoom ) );
-				lastPos.set( t.current );
+				lastPos.set(t.current);
+
+			}
+			else if(dragging)
+			{
+				camera.scroll.offset(PointF.diff(lastPos, t.current).invScale(camera.zoom));
+				lastPos.set(t.current);
 			}
 		}
-		
+
 	}
-	
-	public void cancel() {
-		
-		if (listener != null) {
-			listener.onSelect( null );
+
+	public void cancel()
+	{
+		if(listener != null && enabled)
+		{
+			enabled = false;
+			listener.onSelect(null);
 		}
-		
+
 		GameScene.ready();
 	}
 
 	@Override
-	public void reset() {
+	public void reset()
+	{
 		super.reset();
 		another = null;
-		if (pinching){
+		if(pinching)
+		{
 			pinching = false;
 
-			zoom( Math.round( camera.zoom ) );
+			zoom(Math.round(camera.zoom));
 		}
 	}
 
-	public void enable(boolean value){
-		if (enabled != value){
+	public void enable(boolean value)
+	{
+		if(enabled != value)
+		{
 			enabled = value;
 		}
 	}
 
-	public interface Listener {
-		void onSelect( Integer cell );
+	public interface Listener
+	{
+		void onSelect(Integer cell);
+
 		String prompt();
 	}
 }

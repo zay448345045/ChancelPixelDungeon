@@ -22,48 +22,65 @@
 package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.RootCloud;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 
-public class Roots extends FlavourBuff {
-
+public class Roots extends FlavourBuff implements Expulsion
+{
 	{
 		type = buffType.NEGATIVE;
 	}
-	
+
 	@Override
-	public boolean attachTo( Char target ) {
-		if (!target.flying && super.attachTo( target )) {
+	public boolean attachTo(Char target)
+	{
+		if(!target.flying && super.attachTo(target))
+		{
 			target.rooted = true;
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}
-	
+
 	@Override
-	public void detach() {
+	public void detach()
+	{
 		target.rooted = false;
 		super.detach();
 	}
-	
+
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.ROOTS;
 	}
-	
+
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String heroMessage() {
+	public String heroMessage()
+	{
 		return Messages.get(this, "heromsg");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc", dispTurns());
+	}
+
+	@Override
+	public Class<? extends Blob> expulse()
+	{
+		return RootCloud.class;
 	}
 }

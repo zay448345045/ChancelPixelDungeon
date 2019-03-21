@@ -23,14 +23,16 @@ package com.noodlemire.chancelpixeldungeon.items.armor;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class LeatherArmor extends Armor {
+public class LeatherArmor extends Armor
+{
 
 	{
 		image = ItemSpriteSheet.ARMOR_LEATHER;
 	}
-	
-	public LeatherArmor() {
-		super( 2 );
+
+	public LeatherArmor()
+	{
+		super(2);
 	}
 
 }

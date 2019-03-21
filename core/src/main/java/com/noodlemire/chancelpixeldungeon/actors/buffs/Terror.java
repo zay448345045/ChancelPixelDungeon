@@ -21,54 +21,95 @@
 
 package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
+import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
 
-public class Terror extends FlavourBuff {
+public class Terror extends FlavourBuff
+{
 
 	public static final float DURATION = 10f;
 
-	public int object = 0;
+	private int object = -1, pos = -1;
 
-	private static final String OBJECT    = "object";
+	private static final String OBJECT = "object";
 
 	{
 		type = buffType.NEGATIVE;
 	}
 
+	public void set(Char ch)
+	{
+		object = ch.id();
+	}
+
+	public void set(int pos)
+	{
+		Char ch = Actor.findChar(pos);
+		if(ch != null)
+			set(ch);
+		else
+			this.pos = pos;
+	}
+
+	public Char getObject()
+	{
+		return (Char) Actor.findById(object);
+	}
+
+	public int getPos()
+	{
+		return pos;
+	}
+
+	public int get()
+	{
+		if(object != -1)
+			return object;
+		else
+			return pos;
+	}
+
 	@Override
-	public void storeInBundle( Bundle bundle ) {
+	public void storeInBundle(Bundle bundle)
+	{
 		super.storeInBundle(bundle);
 		bundle.put(OBJECT, object);
 	}
 
 	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		object = bundle.getInt( OBJECT );
+	public void restoreFromBundle(Bundle bundle)
+	{
+		super.restoreFromBundle(bundle);
+		object = bundle.getInt(OBJECT);
 	}
 
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.TERROR;
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc", dispTurns());
 	}
 
-	public static void recover( Char target ) {
-		Terror terror = target.buff( Terror.class );
-		if (terror != null && terror.cooldown() < DURATION) {
-			target.remove( terror );
+	public static void recover(Char target)
+	{
+		Terror terror = target.buff(Terror.class);
+		if(terror != null && terror.cooldown() < DURATION)
+		{
+			target.remove(terror);
 		}
 	}
 }

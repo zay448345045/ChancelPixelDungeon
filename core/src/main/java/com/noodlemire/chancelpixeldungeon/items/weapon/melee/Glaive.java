@@ -23,20 +23,19 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Glaive extends MeleeWeapon {
-
+public class Glaive extends MeleeWeapon
+{
 	{
 		image = ItemSpriteSheet.GLAIVE;
-
 		tier = 5;
 		DLY = 1.5f; //0.67x speed
 		RCH = 2;    //extra reach
 	}
 
 	@Override
-	public int max(int lvl) {
-		return  Math.round(6.67f*(tier+1)) +    //40 base, up from 30
-				lvl*Math.round(1.33f*(tier+1)); //+8 per level, up from +6
+	public int max(int lvl)
+	{
+		//40 base, up from 30, and +8 per level, up from +6
+		return Math.round(super.max(lvl) * 1.333f);
 	}
-
 }

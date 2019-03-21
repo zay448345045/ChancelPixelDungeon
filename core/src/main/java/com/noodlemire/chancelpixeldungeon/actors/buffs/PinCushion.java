@@ -29,13 +29,16 @@ import com.watabou.utils.Bundle;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class PinCushion extends Buff {
+public class PinCushion extends Buff
+{
+	private ArrayList<MissileWeapon> items = new ArrayList<>();
 
-	private ArrayList<MissileWeapon> items = new ArrayList<MissileWeapon>();
-
-	public void stick(MissileWeapon projectile){
-		for (Item item : items){
-			if (item.isSimilar(projectile)){
+	public void stick(MissileWeapon projectile)
+	{
+		for(Item item : items)
+		{
+			if(item.isSimilar(projectile))
+			{
 				item.merge(projectile);
 				return;
 			}
@@ -44,23 +47,26 @@ public class PinCushion extends Buff {
 	}
 
 	@Override
-	public void detach() {
-		for (Item item : items)
-			Dungeon.level.drop( item, target.pos).sprite.drop();
+	public void detach()
+	{
+		for(Item item : items)
+			Dungeon.level.drop(item, target.pos).sprite.drop();
 		super.detach();
 	}
 
 	private static final String ITEMS = "items";
 
 	@Override
-	public void storeInBundle(Bundle bundle) {
-		bundle.put( ITEMS , items );
+	public void storeInBundle(Bundle bundle)
+	{
+		bundle.put(ITEMS, items);
 		super.storeInBundle(bundle);
 	}
 
 	@Override
-	public void restoreFromBundle(Bundle bundle) {
-		items = new ArrayList<MissileWeapon>((Collection<MissileWeapon>)((Collection<?>)bundle.getCollection( ITEMS )));
-		super.restoreFromBundle( bundle );
+	public void restoreFromBundle(Bundle bundle)
+	{
+		items = new ArrayList<MissileWeapon>((Collection<MissileWeapon>) ((Collection<?>) bundle.getCollection(ITEMS)));
+		super.restoreFromBundle(bundle);
 	}
 }

@@ -21,8 +21,8 @@
 
 package com.noodlemire.chancelpixeldungeon.items.weapon.missiles.darts;
 
-import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
+import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.PinCushion;
@@ -31,6 +31,7 @@ import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.Recipe;
 import com.noodlemire.chancelpixeldungeon.plants.BlandfruitBush;
 import com.noodlemire.chancelpixeldungeon.plants.Blindweed;
+import com.noodlemire.chancelpixeldungeon.plants.Deadnettle;
 import com.noodlemire.chancelpixeldungeon.plants.Dreamfoil;
 import com.noodlemire.chancelpixeldungeon.plants.Earthroot;
 import com.noodlemire.chancelpixeldungeon.plants.Fadeleaf;
@@ -39,127 +40,147 @@ import com.noodlemire.chancelpixeldungeon.plants.Icecap;
 import com.noodlemire.chancelpixeldungeon.plants.Plant;
 import com.noodlemire.chancelpixeldungeon.plants.Rotberry;
 import com.noodlemire.chancelpixeldungeon.plants.Sorrowmoss;
-import com.noodlemire.chancelpixeldungeon.plants.Deadnettle;
 import com.noodlemire.chancelpixeldungeon.plants.Stormvine;
 import com.noodlemire.chancelpixeldungeon.plants.Sungrass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class TippedDart extends Dart {
-	
+public abstract class TippedDart extends Dart
+{
 	{
 		bones = true;
 	}
-	
+
 	@Override
-	public int STRReq(int lvl) {
+	public int STRReq(int lvl)
+	{
 		return 11;
 	}
-	
+
 	@Override
-	protected void rangedHit(Char enemy, int cell) {
-		if (enemy.isAlive())
+	protected void rangedHit(Char enemy, int cell)
+	{
+		if(enemy.isAlive())
 			Buff.affect(enemy, PinCushion.class).stick(new Dart());
 		else
-			Dungeon.level.drop( new Dart(), enemy.pos ).sprite.drop();
+			Dungeon.level.drop(new Dart(), enemy.pos).sprite.drop();
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return 6 * quantity;
 	}
-	
-	private static HashMap<Class<?extends Plant.Seed>, Class<?extends TippedDart>> types = new HashMap<>();
-	static {
-		types.put(BlandfruitBush.Seed.class,HeavyDart.class);
-		types.put(Blindweed.Seed.class,     BlindingDart.class);
-		types.put(Dreamfoil.Seed.class,     SleepDart.class);
-		types.put(Earthroot.Seed.class,     ParalyticDart.class);
-		types.put(Fadeleaf.Seed.class,      DisplacingDart.class);
-		types.put(Firebloom.Seed.class,     IncendiaryDart.class);
-		types.put(Icecap.Seed.class,        ChillingDart.class);
-		types.put(Rotberry.Seed.class,      RotDart.class);
-		types.put(Sorrowmoss.Seed.class,    PoisonDart.class);
-		types.put(Deadnettle.Seed.class,    DemonDart.class);
-		types.put(Stormvine.Seed.class,     ShockingDart.class);
-		types.put(Sungrass.Seed.class,      HealingDart.class);
+
+	private static HashMap<Class<? extends Plant.Seed>, Class<? extends TippedDart>> types = new HashMap<>();
+
+	static
+	{
+		types.put(BlandfruitBush.Seed.class, HeavyDart.class);
+		types.put(Blindweed.Seed.class, BlindingDart.class);
+		types.put(Dreamfoil.Seed.class, SleepDart.class);
+		types.put(Earthroot.Seed.class, ParalyticDart.class);
+		types.put(Fadeleaf.Seed.class, DisplacingDart.class);
+		types.put(Firebloom.Seed.class, IncendiaryDart.class);
+		types.put(Icecap.Seed.class, ChillingDart.class);
+		types.put(Rotberry.Seed.class, RotDart.class);
+		types.put(Sorrowmoss.Seed.class, PoisonDart.class);
+		types.put(Deadnettle.Seed.class, DemonDart.class);
+		types.put(Stormvine.Seed.class, ShockingDart.class);
+		types.put(Sungrass.Seed.class, HealingDart.class);
 	}
-	
-	public static TippedDart randomTipped(){
+
+	public static TippedDart randomTipped()
+	{
 		Plant.Seed s;
-		do{
+		do
+		{
 			s = (Plant.Seed) Generator.random(Generator.Category.SEED);
-		} while (!types.containsKey(s.getClass()));
-		
-		try{
+		}
+		while(!types.containsKey(s.getClass()));
+
+		try
+		{
 			return (TippedDart) types.get(s.getClass()).newInstance().quantity(2);
-		} catch (Exception e) {
+		}
+		catch(Exception e)
+		{
 			ChancelPixelDungeon.reportException(e);
 			return null;
 		}
-		
 	}
-	
-	public static class TipDart extends Recipe{
-		
+
+	public static class TipDart extends Recipe
+	{
 		@Override
 		//also sorts ingredients if it can
-		public boolean testIngredients(ArrayList<Item> ingredients) {
-			if (ingredients.size() != 2) return false;
-			
-			if (ingredients.get(0).getClass() == Dart.class){
-				if (!(ingredients.get(1) instanceof Plant.Seed)){
+		public boolean testIngredients(ArrayList<Item> ingredients)
+		{
+			if(ingredients.size() != 2) return false;
+
+			if(ingredients.get(0).getClass() == Dart.class)
+			{
+				if(!(ingredients.get(1) instanceof Plant.Seed))
 					return false;
-				}
-			} else if (ingredients.get(0) instanceof Plant.Seed){
-				if (ingredients.get(1).getClass() == Dart.class){
+			}
+			else if(ingredients.get(0) instanceof Plant.Seed)
+			{
+				if(ingredients.get(1).getClass() == Dart.class)
+				{
 					Item temp = ingredients.get(0);
 					ingredients.set(0, ingredients.get(1));
 					ingredients.set(1, temp);
-				} else {
-					return false;
 				}
-			} else {
-				return false;
+				else
+					return false;
 			}
-			
+			else
+				return false;
+
 			Plant.Seed seed = (Plant.Seed) ingredients.get(1);
 
-            return ingredients.get(0).quantity() >= 2
-                    && seed.quantity() >= 1
-                    && types.containsKey(seed.getClass());
+			return ingredients.get(0).quantity() >= 2
+			       && seed.quantity() >= 1
+			       && types.containsKey(seed.getClass());
+		}
 
-        }
-		
 		@Override
-		public int cost(ArrayList<Item> ingredients) {
+		public int cost(ArrayList<Item> ingredients)
+		{
 			return 2;
 		}
-		
+
 		@Override
-		public Item brew(ArrayList<Item> ingredients) {
-			if (!testIngredients(ingredients)) return null;
-			
+		public Item brew(ArrayList<Item> ingredients)
+		{
+			if(!testIngredients(ingredients)) return null;
+
 			ingredients.get(0).quantity(ingredients.get(0).quantity() - 2);
 			ingredients.get(1).quantity(ingredients.get(1).quantity() - 1);
-			
-			try{
+
+			try
+			{
 				return types.get(ingredients.get(1).getClass()).newInstance().quantity(2);
-			} catch (Exception e) {
+			}
+			catch(Exception e)
+			{
 				ChancelPixelDungeon.reportException(e);
 				return null;
 			}
-			
 		}
-		
+
 		@Override
-		public Item sampleOutput(ArrayList<Item> ingredients) {
-			if (!testIngredients(ingredients)) return null;
-			
-			try{
+		public Item sampleOutput(ArrayList<Item> ingredients)
+		{
+			if(!testIngredients(ingredients)) return null;
+
+			try
+			{
 				return types.get(ingredients.get(1).getClass()).newInstance().quantity(2);
-			} catch (Exception e) {
+			}
+			catch(Exception e)
+			{
 				ChancelPixelDungeon.reportException(e);
 				return null;
 			}

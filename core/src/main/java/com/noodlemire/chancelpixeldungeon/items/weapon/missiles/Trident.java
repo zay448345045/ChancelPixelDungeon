@@ -23,30 +23,10 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.missiles;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Trident extends MissileWeapon {
-	
+public class Trident extends MissileWeapon
+{
 	{
 		image = ItemSpriteSheet.TRIDENT;
+		tier = 5;
 	}
-	
-	@Override
-	public int min(int lvl) {
-		return 10;
-	}
-	
-	@Override
-	public int max(int lvl) {
-		return 25;
-	}
-	
-	@Override
-	public int STRReq(int lvl) {
-		return 17;
-	}
-	
-	@Override
-	public int price() {
-		return 30 * quantity;
-	}
-	
 }

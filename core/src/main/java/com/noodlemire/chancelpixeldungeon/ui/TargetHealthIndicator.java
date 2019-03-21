@@ -24,43 +24,54 @@ package com.noodlemire.chancelpixeldungeon.ui;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 
-public class TargetHealthIndicator extends HealthBar {
-	
+public class TargetHealthIndicator extends HealthBar
+{
+
 	public static TargetHealthIndicator instance;
-	
+
 	private Char target;
-	
-	public TargetHealthIndicator() {
+
+	public TargetHealthIndicator()
+	{
 		super();
-		
+
 		instance = this;
 	}
-	
+
 	@Override
-	public void update() {
+	public void update()
+	{
 		super.update();
-		
-		if (target != null && target.isAlive() && target.sprite.visible) {
+
+		if(target != null && target.isAlive() && target.sprite.visible)
+		{
 			CharSprite sprite = target.sprite;
 			width = sprite.width;
 			x = sprite.x;
 			y = sprite.y - 3;
-			level( target );
+			level(target);
 			visible = true;
-		} else {
+		}
+		else
+		{
 			visible = false;
 		}
 	}
-	
-	public void target( Char ch ) {
-		if (ch != null && ch.isAlive()) {
+
+	public void target(Char ch)
+	{
+		if(ch != null && ch.isAlive())
+		{
 			target = ch;
-		} else {
+		}
+		else
+		{
 			target = null;
 		}
 	}
-	
-	public Char target() {
+
+	public Char target()
+	{
 		return target;
 	}
 }

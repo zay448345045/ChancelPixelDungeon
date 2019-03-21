@@ -24,132 +24,159 @@ package com.noodlemire.chancelpixeldungeon.items;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.items.food.Blandfruit;
 import com.noodlemire.chancelpixeldungeon.items.potions.Potion;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.Scroll;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.darts.TippedDart;
 
 import java.util.ArrayList;
 
-public abstract class Recipe {
-	
+public abstract class Recipe
+{
 	public abstract boolean testIngredients(ArrayList<Item> ingredients);
-	
+
 	//not currently used
 	public abstract int cost(ArrayList<Item> ingredients);
-	
+
 	public abstract Item brew(ArrayList<Item> ingredients);
-	
+
 	public abstract Item sampleOutput(ArrayList<Item> ingredients);
-	
+
 	//subclass for the common situation of a recipe with static inputs and outputs
-	public static abstract class SimpleRecipe extends Recipe {
-		
+	public static abstract class SimpleRecipe extends Recipe
+	{
 		//*** These elements must be filled in by subclasses
-		protected Class<?extends Item>[] inputs;
+		protected Class<? extends Item>[] inputs;
 		protected int[] inQuantity;
-		
+
 		protected int cost;
-		
-		protected Class<?extends Item> output;
+
+		protected Class<? extends Item> output;
 		protected int outQuantity;
 		//***
-		
+
 		@Override
-		public final boolean testIngredients(ArrayList<Item> ingredients) {
+		public final boolean testIngredients(ArrayList<Item> ingredients)
+		{
 			boolean found;
-			for(int i = 0; i < inputs.length; i++){
+			for(int i = 0; i < inputs.length; i++)
+			{
 				found = false;
-				for (Item ingredient : ingredients){
-					if (ingredient.getClass() == inputs[i]
-							&& ingredient.quantity() >= inQuantity[i]){
+				for(Item ingredient : ingredients)
+				{
+					if(ingredient.getClass() == inputs[i]
+					   && ingredient.quantity() >= inQuantity[i])
+					{
 						found = true;
 						break;
 					}
 				}
-				if (!found){
+				if(!found)
+				{
 					return false;
 				}
 			}
 			return true;
 		}
-		
-		public final int cost(ArrayList<Item> ingredients){
+
+		public final int cost(ArrayList<Item> ingredients)
+		{
 			return cost;
 		}
-		
+
 		@Override
-		public final Item brew(ArrayList<Item> ingredients) {
-			if (!testIngredients(ingredients)) return null;
-			
-			for(int i = 0; i < inputs.length; i++){
-				for (Item ingredient : ingredients){
-					if (ingredient.getClass() == inputs[i]){
-						ingredient.quantity( ingredient.quantity()-inQuantity[i]);
+		public final Item brew(ArrayList<Item> ingredients)
+		{
+			if(!testIngredients(ingredients)) return null;
+
+			for(int i = 0; i < inputs.length; i++)
+			{
+				for(Item ingredient : ingredients)
+				{
+					if(ingredient.getClass() == inputs[i])
+					{
+						ingredient.quantity(ingredient.quantity() - inQuantity[i]);
 						break;
 					}
 				}
 			}
-			
+
 			//sample output and real output are identical in this case.
 			return sampleOutput(null);
 		}
-		
+
 		//ingredients are ignored, as output doesn't vary
-		public final Item sampleOutput(ArrayList<Item> ingredients){
-			try {
+		public final Item sampleOutput(ArrayList<Item> ingredients)
+		{
+			try
+			{
 				Item result = output.newInstance();
 				result.quantity(outQuantity);
 				return result;
-			} catch (Exception e) {
-				ChancelPixelDungeon.reportException( e );
+			}
+			catch(Exception e)
+			{
+				ChancelPixelDungeon.reportException(e);
 				return null;
 			}
 		}
 	}
-	
-	
+
+
 	//*******
 	// Static members
 	//*******
-	
+
 	private static Recipe[] oneIngredientRecipes = new Recipe[]{
-	
+			new Scroll.ScrollToStone()
 	};
-	
+
 	private static Recipe[] twoIngredientRecipes = new Recipe[]{
-		new Blandfruit.CookFruit(),
-		new TippedDart.TipDart()
+			new Blandfruit.CookFruit(),
+			new TippedDart.TipDart()
 	};
-	
+
 	private static Recipe[] threeIngredientRecipes = new Recipe[]{
-		new Potion.RandomPotion()
+			new Potion.RandomPotion()
 	};
-	
-	public static Recipe findRecipe(ArrayList<Item> ingredients){
-		
-		if (ingredients.size() == 1){
-			for (Recipe recipe : oneIngredientRecipes){
-				if (recipe.testIngredients(ingredients)){
+
+	public static Recipe findRecipe(ArrayList<Item> ingredients)
+	{
+
+		if(ingredients.size() == 1)
+		{
+			for(Recipe recipe : oneIngredientRecipes)
+			{
+				if(recipe.testIngredients(ingredients))
+				{
 					return recipe;
 				}
 			}
-			
-		} else if (ingredients.size() == 2){
-			for (Recipe recipe : twoIngredientRecipes){
-				if (recipe.testIngredients(ingredients)){
+
+		}
+		else if(ingredients.size() == 2)
+		{
+			for(Recipe recipe : twoIngredientRecipes)
+			{
+				if(recipe.testIngredients(ingredients))
+				{
 					return recipe;
 				}
 			}
-			
-		} else if (ingredients.size() == 3){
-			for (Recipe recipe : threeIngredientRecipes){
-				if (recipe.testIngredients(ingredients)){
+
+		}
+		else if(ingredients.size() == 3)
+		{
+			for(Recipe recipe : threeIngredientRecipes)
+			{
+				if(recipe.testIngredients(ingredients))
+				{
 					return recipe;
 				}
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 }
 
 

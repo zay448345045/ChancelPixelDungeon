@@ -6,5 +6,5 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 public interface Expulsion
 {
 	//Can either give a blob class to let potion of expulsion spread it, or return null and give a custom effect
-	public Class<? extends Blob> expulse();
+	Class<? extends Blob> expulse();
 }

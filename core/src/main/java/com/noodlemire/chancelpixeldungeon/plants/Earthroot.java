@@ -22,9 +22,13 @@
 package com.noodlemire.chancelpixeldungeon.plants;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
-import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.RootCloud;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Barkskin;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.DurationBuff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Expulsion;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.FlavourBuff;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.particles.EarthParticle;
@@ -38,27 +42,30 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class Earthroot extends Plant {
-	
+public class Earthroot extends Plant
+{
 	{
 		image = 5;
 	}
-	
+
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
-		
-		if (ch == Dungeon.hero) {
-			Buff.affect( ch, Armor.class ).level(ch.HT);
-		}
-		
-		if (Dungeon.level.heroFOV[pos]) {
-			CellEmitter.bottom( pos ).start( EarthParticle.FACTORY, 0.05f, 8 );
-			Camera.main.shake( 1, 0.4f );
+	public void activate(Char ch, boolean doWardenBonus)
+	{
+		if(ch == Dungeon.hero)
+			if(doWardenBonus)
+				Buff.affect(ch, Barkskin.class).set((Dungeon.depth + 5) / 2f);
+			else
+				Buff.affect(ch, Armor.class).level(ch.HT());
+
+		if(Dungeon.level.heroFOV[pos])
+		{
+			CellEmitter.bottom(pos).start(EarthParticle.FACTORY, 0.05f, 8);
+			Camera.main.shake(1, 0.4f);
 		}
 	}
-	
-	public static class Seed extends Plant.Seed {
+
+	public static class Seed extends Plant.Seed
+	{
 		{
 			image = ItemSpriteSheet.SEED_EARTHROOT;
 
@@ -70,92 +77,105 @@ public class Earthroot extends Plant {
 			bones = true;
 		}
 	}
-	
-	public static class Armor extends Buff {
-		
+
+	public static class Armor extends DurationBuff implements Expulsion
+	{
 		private static final float STEP = 1f;
-		
+
 		private int pos;
-		private int level;
 
 		{
 			type = buffType.POSITIVE;
 		}
-		
+
 		@Override
-		public boolean attachTo( Char target ) {
+		public boolean attachTo(Char target)
+		{
 			pos = target.pos;
-			return super.attachTo( target );
+			return super.attachTo(target);
 		}
-		
+
 		@Override
-		public boolean act() {
-			if (target.pos != pos) {
+		public boolean act()
+		{
+			if(target.pos != pos)
 				detach();
-			}
-			spend( STEP );
+			spend(STEP);
 			return true;
 		}
-		
-		private static int blocking(){
-			return (Dungeon.depth + 5)/2;
+
+		private static int blocking()
+		{
+			return (Dungeon.depth + 5) / 2;
 		}
-		
-		public int absorb( int damage ) {
-			int block = Math.min( damage, blocking());
-			if (level <= block) {
+
+		public int absorb(int damage)
+		{
+			int block = Math.min(damage, blocking());
+
+			if(left() <= block)
 				detach();
-				return damage - block;
-			} else {
-				level -= block;
+			else
+			{
+				shorten(block);
 				BuffIndicator.refreshHero();
-				return damage - block;
 			}
+
+			return damage - block;
 		}
-		
-		public void level( int value ) {
-			if (level < value) {
-				level = value;
-				BuffIndicator.refreshHero();
-			}
+
+		public void level(int value)
+		{
+			set(value);
+			BuffIndicator.refreshHero();
+
 			pos = target.pos;
 		}
-		
+
 		@Override
-		public int icon() {
+		public int icon()
+		{
 			return BuffIndicator.ARMOR;
 		}
-		
+
 		@Override
-		public void tintIcon(Image icon) {
-			FlavourBuff.greyIcon(icon, target.HT/4f, level);
+		public void tintIcon(Image icon)
+		{
+			FlavourBuff.greyIcon(icon, target.HT() / 4f, left());
 		}
-		
+
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return Messages.get(this, "name");
 		}
 
 		@Override
-		public String desc() {
-			return Messages.get(this, "desc", blocking(), level);
+		public String desc()
+		{
+			return Messages.get(this, "desc", blocking(), (int) left());
 		}
 
-		private static final String POS		= "pos";
-		private static final String LEVEL	= "level";
-		
+		private static final String POS = "pos";
+
 		@Override
-		public void storeInBundle( Bundle bundle ) {
-			super.storeInBundle( bundle );
-			bundle.put( POS, pos );
-			bundle.put( LEVEL, level );
+		public Class<? extends Blob> expulse()
+		{
+			return RootCloud.class;
 		}
-		
+
 		@Override
-		public void restoreFromBundle( Bundle bundle ) {
-			super.restoreFromBundle( bundle );
-			pos = bundle.getInt( POS );
-			level = bundle.getInt( LEVEL );
+		public void storeInBundle(Bundle bundle)
+		{
+			super.storeInBundle(bundle);
+			bundle.put(POS, pos);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle)
+		{
+			super.restoreFromBundle(bundle);
+			pos = bundle.getInt(POS);
 		}
 	}
 }

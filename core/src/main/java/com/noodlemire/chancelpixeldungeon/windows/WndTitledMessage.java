@@ -21,39 +21,42 @@
 
 package com.noodlemire.chancelpixeldungeon.windows;
 
-import com.noodlemire.chancelpixeldungeon.SPDSettings;
+import com.noodlemire.chancelpixeldungeon.CPDSettings;
 import com.noodlemire.chancelpixeldungeon.scenes.PixelScene;
 import com.noodlemire.chancelpixeldungeon.ui.RenderedTextMultiline;
 import com.noodlemire.chancelpixeldungeon.ui.Window;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
 
-public class WndTitledMessage extends Window {
+public class WndTitledMessage extends Window
+{
 
-	protected static final int WIDTH_P    = 120;
-	protected static final int WIDTH_L    = 160;
-	protected static final int GAP	= 2;
+	protected static final int WIDTH_P = 120;
+	protected static final int WIDTH_L = 160;
+	protected static final int GAP = 2;
 
-	public WndTitledMessage( Image icon, String title, String message ) {
-		
-		this( new IconTitle( icon, title ), message );
+	public WndTitledMessage(Image icon, String title, String message)
+	{
+
+		this(new IconTitle(icon, title), message);
 
 	}
-	
-	public WndTitledMessage( Component titlebar, String message ) {
+
+	public WndTitledMessage(Component titlebar, String message)
+	{
 
 		super();
 
-		int width = SPDSettings.landscape() ? WIDTH_L : WIDTH_P;
+		int width = CPDSettings.landscape() ? WIDTH_L : WIDTH_P;
 
-		titlebar.setRect( 0, 0, width, 0 );
+		titlebar.setRect(0, 0, width, 0);
 		add(titlebar);
 
-		RenderedTextMultiline text = PixelScene.renderMultiline( 6 );
-		text.text( message, width );
-		text.setPos( titlebar.left(), titlebar.bottom() + GAP );
-		add( text );
+		RenderedTextMultiline text = PixelScene.renderMultiline(6);
+		text.text(message, width);
+		text.setPos(titlebar.left(), titlebar.bottom() + GAP);
+		add(text);
 
-		resize( width, (int)text.bottom() );
+		resize(width, (int) text.bottom());
 	}
 }

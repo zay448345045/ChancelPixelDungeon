@@ -32,15 +32,15 @@ import com.watabou.utils.Random;
 
 import java.util.HashSet;
 
-public class Bee extends Mob {
-	
+public class Bee extends Mob
+{
 	{
 		spriteClass = BeeSprite.class;
-		
+
 		viewDistance = 4;
 
 		EXP = 0;
-		
+
 		flying = true;
 		state = WANDERING;
 	}
@@ -51,119 +51,143 @@ public class Bee extends Mob {
 	private int potPos;
 	//-1 for no owner
 	private int potHolder;
-	
-	private static final String LEVEL	    = "level";
-	private static final String POTPOS	    = "potpos";
-	private static final String POTHOLDER	= "potholder";
-	
+
+	private static final String LEVEL = "level";
+	private static final String POTPOS = "potpos";
+	private static final String POTHOLDER = "potholder";
+
 	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( LEVEL, level );
-		bundle.put( POTPOS, potPos );
-		bundle.put( POTHOLDER, potHolder );
+	public void storeInBundle(Bundle bundle)
+	{
+		super.storeInBundle(bundle);
+		bundle.put(LEVEL, level);
+		bundle.put(POTPOS, potPos);
+		bundle.put(POTHOLDER, potHolder);
 	}
-	
+
 	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		spawn( bundle.getInt( LEVEL ) );
-		potPos = bundle.getInt( POTPOS );
-		potHolder = bundle.getInt( POTHOLDER );
+	public void restoreFromBundle(Bundle bundle)
+	{
+		super.restoreFromBundle(bundle);
+		spawn(bundle.getInt(LEVEL));
+		potPos = bundle.getInt(POTPOS);
+		potHolder = bundle.getInt(POTHOLDER);
 	}
-	
-	public void spawn( int level ) {
+
+	public void spawn(int level)
+	{
 		this.level = level;
-		
-		HT = (2 + level) * 4;
+
+		setHT((3 + level) * 4, true);
 		defenseSkill = 9 + level;
 	}
 
-	public void setPotInfo(int potPos, Char potHolder){
+	public void setPotInfo(int potPos, Char potHolder)
+	{
 		this.potPos = potPos;
-		if (potHolder == null)
+		if(potHolder == null)
 			this.potHolder = -1;
 		else
 			this.potHolder = potHolder.id();
 	}
-	
+
 	@Override
-	public int attackSkill( Char target ) {
+	public int attackSkill(Char target)
+	{
 		return defenseSkill;
 	}
-	
+
 	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( HT / 10, HT / 4 );
+	public int damageRoll()
+	{
+		return Random.NormalIntRange(HT() / 10, HT() / 4);
 	}
-	
+
 	@Override
-	public int attackProc( Char enemy, int damage ) {
-		damage = super.attackProc( enemy, damage );
-		if (enemy instanceof Mob) {
-			((Mob)enemy).aggro( this );
+	public int attackProc(Char enemy, int damage)
+	{
+		damage = super.attackProc(enemy, damage);
+		if(enemy instanceof Mob)
+		{
+			((Mob) enemy).aggro(this);
 		}
 		return damage;
 	}
 
 	@Override
-	protected Char chooseEnemy() {
+	protected Char chooseEnemy()
+	{
 		//if the pot is no longer present, default to regular AI behaviour
-		if (potHolder == -1 && potPos == -1)
+		if(potHolder == -1 && potPos == -1)
 			return super.chooseEnemy();
 
-		//if something is holding the pot, target that
-		else if (Actor.findById(potHolder) != null)
-			return (Char)Actor.findById(potHolder);
+			//if something is holding the pot, target that
+		else if(Actor.findById(potHolder) != null)
+			return (Char) Actor.findById(potHolder);
 
-		//if the pot is on the ground
-		else {
+			//if the pot is on the ground
+		else
+		{
 
 			//try to find a new enemy in these circumstances
-			if (enemy == null || !enemy.isAlive() || state == WANDERING
-					|| Dungeon.level.distance(enemy.pos, potPos) > 3
-					|| (alignment == Alignment.ALLY && enemy.alignment == Alignment.ALLY)){
-				
+			if(enemy == null || !enemy.isAlive() || state == WANDERING
+			   || Dungeon.level.distance(enemy.pos, potPos) > 3
+			   || (alignment == Alignment.ALLY && enemy.alignment == Alignment.ALLY))
+			{
+
 				//find all mobs near the pot
 				HashSet<Char> enemies = new HashSet<>();
-				for (Mob mob : Dungeon.level.mobs) {
-					if (!(mob instanceof Bee)
-							&& Dungeon.level.distance(mob.pos, potPos) <= 3
-							&& mob.alignment != Alignment.NEUTRAL
-							&& !(alignment == Alignment.ALLY && mob.alignment == Alignment.ALLY)) {
+				for(Mob mob : Dungeon.level.mobs)
+				{
+					if(!(mob instanceof Bee)
+					   && Dungeon.level.distance(mob.pos, potPos) <= 3
+					   && mob.alignment != Alignment.NEUTRAL
+					   && !(alignment == Alignment.ALLY && mob.alignment == Alignment.ALLY))
+					{
 						enemies.add(mob);
 					}
 				}
-				
-				if (!enemies.isEmpty()){
+
+				if(!enemies.isEmpty())
+				{
 					return Random.element(enemies);
-				} else {
-					if (alignment != Alignment.ALLY && Dungeon.level.distance(Dungeon.hero.pos, potPos) <= 3){
+				}
+				else
+				{
+					if(alignment != Alignment.ALLY && Dungeon.level.distance(Dungeon.hero.pos, potPos) <= 3)
+					{
 						return Dungeon.hero;
-					} else {
+					}
+					else
+					{
 						return null;
 					}
 				}
-				
-			} else {
+
+			}
+			else
+			{
 				return enemy;
 			}
 
-			
+
 		}
 	}
 
 	@Override
-	protected boolean getCloser(int target) {
-		if (enemy != null && Actor.findById(potHolder) == enemy) {
-			target = enemy.pos;
-		} else if (potPos != -1 && (state == WANDERING || Dungeon.level.distance(target, potPos) > 3))
-			this.target = target = potPos;
-		return super.getCloser( target );
-	}
-	
+	protected boolean getCloser(int target)
 	{
-		immunities.add( Poison.class );
-		immunities.add( Amok.class );
+		if(enemy != null && Actor.findById(potHolder) == enemy)
+		{
+			target = enemy.pos;
+		}
+		else if(potPos != -1 && (state == WANDERING || Dungeon.level.distance(target, potPos) > 3))
+			this.target = target = potPos;
+		return super.getCloser(target);
+	}
+
+	{
+		immunities.add(Poison.class);
+		immunities.add(Amok.class);
 	}
 }

@@ -29,25 +29,25 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
-public class PotionOfMight extends Potion {
-
+public class PotionOfMight extends Potion
+{
 	{
 		initials = 6;
 	}
-	
-	@Override
-	public void apply( Hero hero ) {
-		setKnown();
 
+	@Override
+	public void apply(Hero hero)
+	{
 		Buff.affect(hero, Might.class, Might.DURATION).set(true);
-		hero.sprite.showStatus( CharSprite.POSITIVE, Messages.get(this, "msg_1") );
-		GLog.p( Messages.get(this, "msg_2") );
+		hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "msg_1"));
+		GLog.p(Messages.get(this, "msg_2"));
 
 		Badges.validateStrengthAttained();
 	}
-	
+
 	@Override
-	public int price() {
-		return isKnown() ? 100 * quantity : super.price();
+	public int price()
+	{
+		return isKnown() ? 40 * quantity : super.price();
 	}
 }

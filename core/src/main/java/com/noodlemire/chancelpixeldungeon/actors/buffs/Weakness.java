@@ -24,7 +24,8 @@ package com.noodlemire.chancelpixeldungeon.actors.buffs;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 
-public class Weakness extends FlavourBuff {
+public class Weakness extends FlavourBuff
+{
 
 	public static final float DURATION = 40f;
 
@@ -33,22 +34,26 @@ public class Weakness extends FlavourBuff {
 	}
 
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.WEAKNESS;
 	}
-	
+
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String heroMessage() {
+	public String heroMessage()
+	{
 		return Messages.get(this, "heromsg");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc", dispTurns());
 	}
 }

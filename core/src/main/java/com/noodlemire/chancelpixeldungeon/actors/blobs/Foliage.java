@@ -32,55 +32,67 @@ import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 
-public class Foliage extends Blob {
-	
+public class Foliage extends Blob
+{
+
 	@Override
-	protected void evolve() {
+	protected void evolve()
+	{
 
 		int[] map = Dungeon.level.map;
-		
+
 		boolean visible = false;
 
 		int cell;
-		for (int i = area.left; i < area.right; i++) {
-			for (int j = area.top; j < area.bottom; j++) {
-				cell = i + j*Dungeon.level.width();
-				if (cur[cell] > 0) {
+		for(int i = area.left; i < area.right; i++)
+		{
+			for(int j = area.top; j < area.bottom; j++)
+			{
+				cell = i + j * Dungeon.level.width();
+				if(cur[cell] > 0)
+				{
 
 					off[cell] = cur[cell];
 					volume += off[cell];
 
-					if (map[cell] == Terrain.EMBERS) {
+					if(map[cell] == Terrain.EMBERS)
+					{
 						map[cell] = Terrain.GRASS;
 						GameScene.updateMap(cell);
 					}
 
 					visible = visible || Dungeon.level.heroFOV[cell];
 
-				} else {
+				}
+				else
+				{
 					off[cell] = 0;
 				}
 			}
 		}
-		
+
 		Hero hero = Dungeon.hero;
-		if (hero.isAlive() && hero.visibleEnemies() == 0 && cur[hero.pos] > 0) {
-			Buff.affect( hero, Shadows.class ).prolong();
+		if(hero.isAlive() && hero.visibleEnemies() == 0 && cur[hero.pos] > 0)
+		{
+			Buff.affect(hero, Shadows.class).prolong();
 		}
 
-		if (visible) {
-			Notes.add( Notes.Landmark.GARDEN );
+		if(visible)
+		{
+			Notes.add(Notes.Landmark.GARDEN);
 		}
 	}
-	
+
 	@Override
-	public void use( BlobEmitter emitter ) {
-		super.use( emitter );
-		emitter.start( ShaftParticle.FACTORY, 0.9f, 0 );
+	public void use(BlobEmitter emitter)
+	{
+		super.use(emitter);
+		emitter.start(ShaftParticle.FACTORY, 0.9f, 0);
 	}
-	
+
 	@Override
-	public String tileDesc() {
+	public String tileDesc()
+	{
 		return Messages.get(this, "desc");
 	}
 }

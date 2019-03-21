@@ -37,8 +37,8 @@ import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
 
-public class TalismanOfForesight extends Artifact {
-
+public class TalismanOfForesight extends Artifact
+{
 	{
 		image = ItemSpriteSheet.ARTIFACT_TALISMAN;
 
@@ -52,43 +52,51 @@ public class TalismanOfForesight extends Artifact {
 		defaultAction = AC_SCRY;
 	}
 
-	public static final String AC_SCRY = "SCRY";
+	private static final String AC_SCRY = "SCRY";
 
 	@Override
-	public ArrayList<String> actions( Hero hero ) {
-		ArrayList<String> actions = super.actions( hero );
-		if (isEquipped( hero ) && charge == chargeCap && !cursed)
+	public ArrayList<String> actions(Hero hero)
+	{
+		ArrayList<String> actions = super.actions(hero);
+		if(isEquipped(hero) && charge == chargeCap && (!cursed || isBound()))
 			actions.add(AC_SCRY);
 		return actions;
 	}
 
 	@Override
-	public void execute( Hero hero, String action ) {
+	public void execute(Hero hero, String action)
+	{
 		super.execute(hero, action);
 
-		if (action.equals(AC_SCRY)){
+		if(action.equals(AC_SCRY))
+		{
+			unBind();
 
-			if (!isEquipped(hero))        GLog.i( Messages.get(Artifact.class, "need_to_equip") );
-			else if (charge != chargeCap) GLog.i( Messages.get(this, "no_charge") );
-			else {
+			if(!isEquipped(hero)) GLog.i(Messages.get(Artifact.class, "need_to_equip"));
+			else if(charge != chargeCap) GLog.i(Messages.get(this, "no_charge"));
+			else
+			{
 				hero.sprite.operate(hero.pos);
 				hero.busy();
 				Sample.INSTANCE.play(Assets.SND_BEACON);
 				charge = 0;
-				for (int i = 0; i < Dungeon.level.length(); i++) {
+				for(int i = 0; i < Dungeon.level.length(); i++)
+				{
 
 					int terr = Dungeon.level.map[i];
-					if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
+					if((Terrain.flags[terr] & Terrain.SECRET) != 0)
+					{
 
 						GameScene.updateMap(i);
 
-						if (Dungeon.level.heroFOV[i]) {
+						if(Dungeon.level.heroFOV[i])
+						{
 							GameScene.discoverTile(i, terr);
 						}
 					}
 				}
 
-				GLog.p( Messages.get(this, "scry") );
+				GLog.p(Messages.get(this, "scry"));
 
 				updateQuickslot();
 
@@ -99,19 +107,40 @@ public class TalismanOfForesight extends Artifact {
 	}
 
 	@Override
-	protected ArtifactBuff passiveBuff() {
+	protected ArtifactBuff passiveBuff()
+	{
 		return new Foresight();
 	}
 
 	@Override
-	public String desc() {
+	public void charge(Hero target, float amount)
+	{
+		if(charge < chargeCap)
+		{
+			charge += 4f * amount;
+			if(charge >= chargeCap)
+			{
+				charge = chargeCap;
+				partialCharge = 0;
+				GLog.p(Messages.get(this, "full_charge"));
+			}
+		}
+	}
+
+	@Override
+	public String desc()
+	{
 		String desc = super.desc();
 
-		if ( isEquipped( Dungeon.hero ) ){
-			if (!cursed) {
+		if(isEquipped(Dungeon.hero))
+		{
+			if(!cursed)
+			{
 				desc += "\n\n" + Messages.get(this, "desc_worn");
 
-			} else {
+			}
+			else
+			{
 				desc += "\n\n" + Messages.get(this, "desc_cursed");
 			}
 		}
@@ -119,12 +148,14 @@ public class TalismanOfForesight extends Artifact {
 		return desc;
 	}
 
-	public class Foresight extends ArtifactBuff{
+	public class Foresight extends ArtifactBuff
+	{
 		private int warn = 0;
 
 		@Override
-		public boolean act() {
-			spend( TICK );
+		public boolean act()
+		{
+			spend(TICK);
 
 			boolean smthFound = false;
 
@@ -133,87 +164,108 @@ public class TalismanOfForesight extends Artifact {
 			int cx = target.pos % Dungeon.level.width();
 			int cy = target.pos / Dungeon.level.width();
 			int ax = cx - distance;
-			if (ax < 0) {
+			if(ax < 0)
+			{
 				ax = 0;
 			}
 			int bx = cx + distance;
-			if (bx >= Dungeon.level.width()) {
+			if(bx >= Dungeon.level.width())
+			{
 				bx = Dungeon.level.width() - 1;
 			}
 			int ay = cy - distance;
-			if (ay < 0) {
+			if(ay < 0)
+			{
 				ay = 0;
 			}
 			int by = cy + distance;
-			if (by >= Dungeon.level.height()) {
+			if(by >= Dungeon.level.height())
+			{
 				by = Dungeon.level.height() - 1;
 			}
 
-			for (int y = ay; y <= by; y++) {
-				for (int x = ax, p = ax + y * Dungeon.level.width(); x <= bx; x++, p++) {
+			for(int y = ay; y <= by; y++)
+			{
+				for(int x = ax, p = ax + y * Dungeon.level.width(); x <= bx; x++, p++)
+				{
 
-					if (Dungeon.level.heroFOV[p]
-							&& Dungeon.level.secret[p]
-							&& Dungeon.level.map[p] != Terrain.SECRET_DOOR)
-							smthFound = true;
+					if(Dungeon.level.heroFOV[p]
+					   && Dungeon.level.secret[p]
+					   && Dungeon.level.map[p] != Terrain.SECRET_DOOR)
+						smthFound = true;
 				}
 			}
 
-			if (smthFound && !cursed){
-				if (warn == 0){
-					GLog.w( Messages.get(this, "uneasy") );
-					if (target instanceof Hero){
-						((Hero)target).interrupt();
+			if(smthFound && (!cursed || isBound()))
+			{
+				if(warn == 0)
+				{
+					GLog.w(Messages.get(this, "uneasy"));
+					if(target instanceof Hero)
+					{
+						((Hero) target).interrupt();
 					}
 				}
 				warn = 3;
-			} else {
-				if (warn > 0){
-					warn --;
+			}
+			else
+			{
+				if(warn > 0)
+				{
+					warn--;
 				}
 			}
 			BuffIndicator.refreshHero();
 
 			//fully charges in 2000 turns at lvl=0, scaling to 667 turns at lvl = 10.
 			LockedFloor lock = target.buff(LockedFloor.class);
-			if (charge < chargeCap && !cursed && (lock == null || lock.regenOn())) {
-				partialCharge += 0.05+(level()*0.01);
+			if(charge < chargeCap && (!cursed || isBound()) && (lock == null || lock.regenOn()))
+			{
+				partialCharge += 0.05 + (level() * 0.01);
 
-				if (partialCharge > 1 && charge < chargeCap) {
+				if(partialCharge > 1 && charge < chargeCap)
+				{
 					partialCharge--;
 					charge++;
-				} else if (charge >= chargeCap) {
+				}
+				else if(charge >= chargeCap)
+				{
 					partialCharge = 0;
-					GLog.p( Messages.get(this, "full_charge") );
+					GLog.p(Messages.get(this, "full_charge"));
 				}
 			}
 
 			return true;
 		}
 
-		public void charge(){
-			charge = Math.min(charge+(2+(level()/3)), chargeCap);
+		public void charge()
+		{
+			charge = Math.min(charge + (2 + (level() / 3)), chargeCap);
 			exp++;
-			if (exp >= 4 && level() < levelCap) {
+			if(exp >= 4 && level() < levelCap)
+			{
 				upgrade();
-				GLog.p( Messages.get(this, "levelup") );
+				GLog.p(Messages.get(this, "levelup"));
 				exp -= 4;
 			}
 		}
 
 		@Override
-		public String toString() {
-			return  Messages.get(this, "name");
+		public String toString()
+		{
+			return Messages.get(this, "name");
 		}
 
 		@Override
-		public String desc() {
+		public String desc()
+		{
 			return Messages.get(this, "desc");
 		}
 
 		@Override
-		public int icon() {
-			if (warn == 0)
+		public int icon()
+		{
+			if(warn == 0)
 				return BuffIndicator.NONE;
 			else
 				return BuffIndicator.FORESIGHT;

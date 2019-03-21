@@ -21,9 +21,9 @@
 
 package com.noodlemire.chancelpixeldungeon.windows;
 
+import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.GamesInProgress;
-import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
@@ -39,124 +39,136 @@ import com.watabou.utils.FileUtils;
 
 import java.util.Locale;
 
-public class WndGameInProgress extends Window {
-	
-	private static final int WIDTH    = 120;
-	private static final int HEIGHT   = 120;
-	
-	private int GAP	  = 5;
-	
+public class WndGameInProgress extends Window
+{
+	private static final int WIDTH = 120;
+	private static final int HEIGHT = 120;
+
+	private int GAP = 5;
+
 	private float pos;
-	
-	public WndGameInProgress(final int slot){
-		
+
+	public WndGameInProgress(final int slot)
+	{
 		final GamesInProgress.Info info = GamesInProgress.check(slot);
-		
+
 		String className = null;
-		if (info.subClass != HeroSubClass.NONE){
+		if(info.subClass != HeroSubClass.NONE)
 			className = info.subClass.title();
-		} else {
+		else
 			className = info.heroClass.title();
-		}
-		
+
 		IconTitle title = new IconTitle();
-		title.icon( HeroSprite.avatar(info.heroClass, info.armorTier) );
+		title.icon(HeroSprite.avatar(info.heroClass, info.armorTier));
 		title.label((Messages.get(this, "title", info.level, className)).toUpperCase(Locale.ENGLISH));
 		title.color(Window.SHPX_COLOR);
-		title.setRect( 0, 0, WIDTH, 0 );
+		title.setRect(0, 0, WIDTH, 0);
 		add(title);
-		
-		if (info.challenges > 0) GAP -= 2;
-		
+
+		if(info.challenges > 0) GAP -= 2;
+
 		pos = title.bottom() + GAP;
-		
-		if (info.challenges > 0) {
-			RedButton btnChallenges = new RedButton( Messages.get(this, "challenges") ) {
+
+		if(info.challenges > 0)
+		{
+			RedButton btnChallenges = new RedButton(Messages.get(this, "challenges"))
+			{
 				@Override
-				protected void onClick() {
-					Game.scene().add( new WndChallenges( info.challenges, false ) );
+				protected void onClick()
+				{
+					Game.scene().add(new WndChallenges(info.challenges, false));
 				}
 			};
 			float btnW = btnChallenges.reqWidth() + 2;
-			btnChallenges.setRect( (WIDTH - btnW)/2, pos, btnW , btnChallenges.reqHeight() + 2 );
-			add( btnChallenges );
-			
+			btnChallenges.setRect((WIDTH - btnW) / 2, pos, btnW, btnChallenges.reqHeight() + 2);
+			add(btnChallenges);
+
 			pos = btnChallenges.bottom() + GAP;
 		}
-		
+
 		pos += GAP;
-		
-		statSlot( Messages.get(this, "str"), info.str );
-		if (info.shld > 0) statSlot( Messages.get(this, "health"), info.hp + "+" + info.shld + "/" + info.ht );
-		else statSlot( Messages.get(this, "health"), (info.hp) + "/" + info.ht );
-		statSlot( Messages.get(this, "exp"), info.exp + "/" + Hero.maxExp(info.level) );
-		
+
+		statSlot(Messages.get(this, "str"), info.str);
+		if(info.shld > 0)
+			statSlot(Messages.get(this, "health"), info.hp + "+" + info.shld + "/" + info.ht);
+		else statSlot(Messages.get(this, "health"), (info.hp) + "/" + info.ht);
+		statSlot(Messages.get(this, "exp"), info.exp + "/" + Hero.maxExp(info.level));
+
 		pos += GAP;
-		statSlot( Messages.get(this, "gold"), info.goldCollected );
-		statSlot( Messages.get(this, "depth"), info.maxDepth );
-		
+		statSlot(Messages.get(this, "gold"), info.goldCollected);
+		statSlot(Messages.get(this, "depth"), info.maxDepth);
+
 		pos += GAP;
-		
-		RedButton cont = new RedButton(Messages.get(this, "continue")){
+
+		RedButton cont = new RedButton(Messages.get(this, "continue"))
+		{
 			@Override
-			protected void onClick() {
+			protected void onClick()
+			{
 				super.onClick();
-				
+
 				GamesInProgress.curSlot = slot;
-				
+
 				Dungeon.hero = null;
 				InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
 				ChancelPixelDungeon.switchScene(InterlevelScene.class);
 			}
 		};
-		
-		RedButton erase = new RedButton( Messages.get(this, "erase")){
+
+		RedButton erase = new RedButton(Messages.get(this, "erase"))
+		{
 			@Override
-			protected void onClick() {
+			protected void onClick()
+			{
 				super.onClick();
-				
+
 				ChancelPixelDungeon.scene().add(new WndOptions(
 						Messages.get(WndGameInProgress.class, "erase_warn_title"),
 						Messages.get(WndGameInProgress.class, "erase_warn_body"),
 						Messages.get(WndGameInProgress.class, "erase_warn_yes"),
-						Messages.get(WndGameInProgress.class, "erase_warn_no") ) {
+						Messages.get(WndGameInProgress.class, "erase_warn_no"))
+				{
 					@Override
-					protected void onSelect( int index ) {
-						if (index == 0) {
+					protected void onSelect(int index)
+					{
+						if(index == 0)
+						{
 							FileUtils.deleteDir(GamesInProgress.gameFolder(slot));
 							GamesInProgress.setUnknown(slot);
 							ChancelPixelDungeon.switchNoFade(StartScene.class);
 						}
 					}
-				} );
+				});
 			}
 		};
-		
-		cont.setRect(0, HEIGHT - 20, WIDTH/2 -1, 20);
+
+		cont.setRect(0, HEIGHT - 20, WIDTH / 2 - 1, 20);
 		add(cont);
-		
-		erase.setRect(WIDTH/2 + 1, HEIGHT-20, WIDTH/2 - 1, 20);
+
+		erase.setRect(WIDTH / 2 + 1, HEIGHT - 20, WIDTH / 2 - 1, 20);
 		add(erase);
-		
+
 		resize(WIDTH, HEIGHT);
 	}
-	
-	private void statSlot( String label, String value ) {
-		
-		RenderedText txt = PixelScene.renderText( label, 8 );
+
+	private void statSlot(String label, String value)
+	{
+
+		RenderedText txt = PixelScene.renderText(label, 8);
 		txt.y = pos;
-		add( txt );
-		
-		txt = PixelScene.renderText( value, 8 );
+		add(txt);
+
+		txt = PixelScene.renderText(value, 8);
 		txt.x = WIDTH * 0.6f;
 		txt.y = pos;
 		PixelScene.align(txt);
-		add( txt );
-		
+		add(txt);
+
 		pos += GAP + txt.baseLine();
 	}
-	
-	private void statSlot( String label, int value ) {
-		statSlot( label, Integer.toString( value ) );
+
+	private void statSlot(String label, int value)
+	{
+		statSlot(label, Integer.toString(value));
 	}
 }

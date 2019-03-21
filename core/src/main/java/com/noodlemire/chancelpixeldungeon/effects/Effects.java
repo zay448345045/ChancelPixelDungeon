@@ -24,9 +24,11 @@ package com.noodlemire.chancelpixeldungeon.effects;
 import com.noodlemire.chancelpixeldungeon.Assets;
 import com.watabou.noosa.Image;
 
-public class Effects {
+public class Effects
+{
 
-	public enum  Type {
+	public enum Type
+	{
 		RIPPLE,
 		LIGHTNING,
 		WOUND,
@@ -37,9 +39,11 @@ public class Effects {
 		HEALTH_RAY
 	}
 
-    public static Image get( Type type ) {
-		Image icon = new Image( Assets.EFFECTS );
-		switch (type) {
+	public static Image get(Type type)
+	{
+		Image icon = new Image(Assets.EFFECTS);
+		switch(type)
+		{
 			case RIPPLE:
 				icon.frame(icon.texture.uvRect(0, 0, 16, 16));
 				break;

@@ -22,18 +22,30 @@
 package com.noodlemire.chancelpixeldungeon.items.rings;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.messages.Messages;
 
-public class RingOfEvasion extends Ring {
-	
+import java.text.DecimalFormat;
+
+public class RingOfEvasion extends Ring
+{
 	@Override
-	protected RingBuff buff( ) {
+	protected RingBuff buff()
+	{
 		return new Evasion();
 	}
-	
-	public static float evasionMultiplier( Char target ){
-		return (float) Math.pow( 1.15, getBonus(target, Evasion.class));
+
+	public static float evasionMultiplier(Char target)
+	{
+		return (float) Math.pow(1.15, getBonus(target, Evasion.class));
 	}
 
-	public class Evasion extends RingBuff {
+	public String statsInfo()
+	{
+		if(isIdentified())
+			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (Math.pow(1.15f, soloBonus()) - 1f)));
+		else
+			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(15f));
 	}
+
+	public class Evasion extends RingBuff {}
 }

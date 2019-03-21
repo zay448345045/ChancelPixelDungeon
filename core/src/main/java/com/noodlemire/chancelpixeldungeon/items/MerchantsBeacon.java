@@ -29,14 +29,13 @@ import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
 
-public class MerchantsBeacon extends Item {
+public class MerchantsBeacon extends Item
+{
 
 	private static final String AC_USE = "USE";
 
 	{
 		image = ItemSpriteSheet.BEACON;
-
-		stackable = true;
 
 		defaultAction = AC_USE;
 
@@ -44,37 +43,49 @@ public class MerchantsBeacon extends Item {
 	}
 
 	@Override
-	public ArrayList<String> actions(Hero hero) {
+	public boolean stackable()
+	{
+		return true;
+	}
+
+	@Override
+	public ArrayList<String> actions(Hero hero)
+	{
 		ArrayList<String> actions = super.actions(hero);
 		actions.add(AC_USE);
 		return actions;
 	}
 
 	@Override
-	public void execute(Hero hero, String action) {
+	public void execute(Hero hero, String action)
+	{
 
 		super.execute(hero, action);
 
-		if (action.equals(AC_USE)) {
-			detach( hero.belongings.backpack );
+		if(action.equals(AC_USE))
+		{
+			detach(hero.belongings.backpack);
 			Shopkeeper.sell();
-			Sample.INSTANCE.play( Assets.SND_BEACON );
+			Sample.INSTANCE.play(Assets.SND_BEACON);
 		}
 
 	}
 
 	@Override
-	public boolean isUpgradable() {
+	public boolean isUpgradable()
+	{
 		return false;
 	}
 
 	@Override
-	public boolean isIdentified() {
+	public boolean isIdentified()
+	{
 		return true;
 	}
 
 	@Override
-	public int price() {
+	public int price()
+	{
 		return 5 * quantity;
 	}
 

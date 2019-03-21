@@ -26,7 +26,6 @@ import com.noodlemire.chancelpixeldungeon.Badges;
 import com.noodlemire.chancelpixeldungeon.Challenges;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.items.BrokenSeal;
-import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.armor.ClothArmor;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.CloakOfShadows;
 import com.noodlemire.chancelpixeldungeon.items.bags.PotionBandolier;
@@ -39,71 +38,73 @@ import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfInvisibility;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.noodlemire.chancelpixeldungeon.items.wands.WandOfMagicMissile;
+import com.noodlemire.chancelpixeldungeon.items.weapon.Bow;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Dagger;
-import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Knuckles;
+import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Gloves;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.MagesStaff;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.WornShortsword;
-import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Boomerang;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.ThrowingStone;
+import com.noodlemire.chancelpixeldungeon.journal.Catalog;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.watabou.utils.Bundle;
 
-public enum HeroClass {
-
-	WARRIOR( "warrior", HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR ),
-	MAGE( "mage", HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK ),
-	ROGUE( "rogue", HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER ),
-	HUNTRESS( "huntress", HeroSubClass.WARDEN, HeroSubClass.SNIPER );
+public enum HeroClass
+{
+	WARRIOR("warrior", HeroSubClass.BERSERKER, HeroSubClass.GLADIATOR),
+	MAGE("mage", HeroSubClass.BATTLEMAGE, HeroSubClass.WARLOCK),
+	ROGUE("rogue", HeroSubClass.ASSASSIN, HeroSubClass.FREERUNNER),
+	HUNTRESS("huntress", HeroSubClass.WARDEN, HeroSubClass.SNIPER);
 
 	private String title;
 	private HeroSubClass[] subClasses;
 
-	HeroClass( String title, HeroSubClass...subClasses ) {
+	HeroClass(String title, HeroSubClass... subClasses)
+	{
 		this.title = title;
 		this.subClasses = subClasses;
 	}
 
-	public void initHero( Hero hero ) {
-
+	public void initHero(Hero hero)
+	{
 		hero.heroClass = this;
 
-		initCommon( hero );
+		initCommon(hero);
 
-		switch (this) {
+		switch(this)
+		{
 			case WARRIOR:
-				initWarrior( hero );
+				initWarrior(hero);
 				break;
 
 			case MAGE:
-				initMage( hero );
+				initMage(hero);
 				break;
 
 			case ROGUE:
-				initRogue( hero );
+				initRogue(hero);
 				break;
 
 			case HUNTRESS:
-				initHuntress( hero );
+				initHuntress(hero);
 				break;
 		}
-		
 	}
 
-	private static void initCommon( Hero hero ) {
-		Item i = new ClothArmor().identify();
-		if (!Challenges.isItemBlocked(i)) hero.belongings.armor = (ClothArmor)i;
+	private static void initCommon(Hero hero)
+	{
+		(hero.belongings.armor = new ClothArmor()).identify();
 
-		i = new Food();
-		if (!Challenges.isItemBlocked(i)) i.collect();
-
-		if (Dungeon.isChallenged(Challenges.NO_FOOD)){
+		if(Dungeon.isChallenged(Challenges.NO_FOOD))
 			new SmallRation().collect();
-		}
+		else
+			new Food().collect();
 	}
 
-	public Badges.Badge masteryBadge() {
-		switch (this) {
+	public Badges.Badge masteryBadge()
+	{
+		switch(this)
+		{
 			case WARRIOR:
 				return Badges.Badge.MASTERY_WARRIOR;
 			case MAGE:
@@ -116,24 +117,25 @@ public enum HeroClass {
 		return null;
 	}
 
-	private static void initWarrior( Hero hero ) {
+	private static void initWarrior(Hero hero)
+	{
 		(hero.belongings.weapon = new WornShortsword()).identify();
 		ThrowingStone stones = new ThrowingStone();
 		stones.identify().quantity(3).collect();
 		Dungeon.quickslot.setSlot(0, stones);
 
-		if (hero.belongings.armor != null){
+		if(hero.belongings.armor != null)
 			hero.belongings.armor.affixSeal(new BrokenSeal());
-		}
-		
+
 		new PotionBandolier().collect();
 		Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
 		new PotionOfHealing().identify();
 	}
 
-	private static void initMage( Hero hero ) {
+	private static void initMage(Hero hero)
+	{
 		MagesStaff staff;
-		
+
 		staff = new MagesStaff(new WandOfMagicMissile());
 
 		(hero.belongings.weapon = staff).identify();
@@ -146,12 +148,13 @@ public enum HeroClass {
 		new ScrollOfUpgrade().identify();
 	}
 
-	private static void initRogue( Hero hero ) {
+	private static void initRogue(Hero hero)
+	{
 		(hero.belongings.weapon = new Dagger()).identify();
 
 		CloakOfShadows cloak = new CloakOfShadows();
 		(hero.belongings.misc1 = cloak).identify();
-		hero.belongings.misc1.activate( hero );
+		hero.belongings.misc1.activate(hero);
 
 		ThrowingKnife knives = new ThrowingKnife();
 		knives.quantity(3).collect();
@@ -164,91 +167,100 @@ public enum HeroClass {
 		new PotionOfInvisibility().identify();
 	}
 
-	private static void initHuntress( Hero hero ) {
+	private static void initHuntress(Hero hero)
+	{
+		(hero.belongings.weapon = new Gloves()).identify();
 
-		(hero.belongings.weapon = new Knuckles()).identify();
-		Boomerang boomerang = new Boomerang();
-		boomerang.identify().collect();
-
-		Dungeon.quickslot.setSlot(0, boomerang);
+		Bow bow = new Bow();
+		bow.collect();
+		Dungeon.quickslot.setSlot(0, bow);
+		Catalog.setSeen(Bow.class); //Bow is always identified, so this is necessary so it shows up in the catalog
 
 		new VelvetPouch().collect();
 		Dungeon.LimitedDrops.VELVET_POUCH.drop();
+
 		new ScrollOfIdentify().identify();
 	}
-	
-	public String title() {
+
+	public String title()
+	{
 		return Messages.get(HeroClass.class, title);
 	}
-	
-	public HeroSubClass[] subClasses() {
+
+	public HeroSubClass[] subClasses()
+	{
 		return subClasses;
 	}
-	
-	public String spritesheet() {
-		
-		switch (this) {
-		case WARRIOR:
-			return Assets.WARRIOR;
-		case MAGE:
-			return Assets.MAGE;
-		case ROGUE:
-			return Assets.ROGUE;
-		case HUNTRESS:
-			return Assets.HUNTRESS;
+
+	public String spritesheet()
+	{
+		switch(this)
+		{
+			case WARRIOR:
+				return Assets.WARRIOR;
+			case MAGE:
+				return Assets.MAGE;
+			case ROGUE:
+				return Assets.ROGUE;
+			case HUNTRESS:
+				return Assets.HUNTRESS;
 		}
-		
-		return null;
-	}
-	
-	public String[] perks() {
-		
-		switch (this) {
-		case WARRIOR:
-			return new String[]{
-					Messages.get(HeroClass.class, "warrior_perk1"),
-					Messages.get(HeroClass.class, "warrior_perk2"),
-					Messages.get(HeroClass.class, "warrior_perk3"),
-					Messages.get(HeroClass.class, "warrior_perk4"),
-					Messages.get(HeroClass.class, "warrior_perk5"),
-			};
-		case MAGE:
-			return new String[]{
-					Messages.get(HeroClass.class, "mage_perk1"),
-					Messages.get(HeroClass.class, "mage_perk2"),
-					Messages.get(HeroClass.class, "mage_perk3"),
-					Messages.get(HeroClass.class, "mage_perk4"),
-					Messages.get(HeroClass.class, "mage_perk5"),
-			};
-		case ROGUE:
-			return new String[]{
-					Messages.get(HeroClass.class, "rogue_perk1"),
-					Messages.get(HeroClass.class, "rogue_perk2"),
-					Messages.get(HeroClass.class, "rogue_perk3"),
-					Messages.get(HeroClass.class, "rogue_perk4"),
-					Messages.get(HeroClass.class, "rogue_perk5"),
-			};
-		case HUNTRESS:
-			return new String[]{
-					Messages.get(HeroClass.class, "huntress_perk1"),
-					Messages.get(HeroClass.class, "huntress_perk2"),
-					Messages.get(HeroClass.class, "huntress_perk3"),
-					Messages.get(HeroClass.class, "huntress_perk4"),
-					Messages.get(HeroClass.class, "huntress_perk5"),
-			};
-		}
-		
+
 		return null;
 	}
 
-	private static final String CLASS	= "class";
-	
-	public void storeInBundle( Bundle bundle ) {
-		bundle.put( CLASS, toString() );
+	public String[] perks()
+	{
+
+		switch(this)
+		{
+			case WARRIOR:
+				return new String[]{
+						Messages.get(HeroClass.class, "warrior_perk1"),
+						Messages.get(HeroClass.class, "warrior_perk2"),
+						Messages.get(HeroClass.class, "warrior_perk3"),
+						Messages.get(HeroClass.class, "warrior_perk4"),
+						Messages.get(HeroClass.class, "warrior_perk5"),
+				};
+			case MAGE:
+				return new String[]{
+						Messages.get(HeroClass.class, "mage_perk1"),
+						Messages.get(HeroClass.class, "mage_perk2"),
+						Messages.get(HeroClass.class, "mage_perk3"),
+						Messages.get(HeroClass.class, "mage_perk4"),
+						Messages.get(HeroClass.class, "mage_perk5"),
+				};
+			case ROGUE:
+				return new String[]{
+						Messages.get(HeroClass.class, "rogue_perk1"),
+						Messages.get(HeroClass.class, "rogue_perk2"),
+						Messages.get(HeroClass.class, "rogue_perk3"),
+						Messages.get(HeroClass.class, "rogue_perk4"),
+						Messages.get(HeroClass.class, "rogue_perk5"),
+				};
+			case HUNTRESS:
+				return new String[]{
+						Messages.get(HeroClass.class, "huntress_perk1"),
+						Messages.get(HeroClass.class, "huntress_perk2"),
+						Messages.get(HeroClass.class, "huntress_perk3"),
+						Messages.get(HeroClass.class, "huntress_perk4"),
+						Messages.get(HeroClass.class, "huntress_perk5"),
+				};
+		}
+
+		return null;
 	}
-	
-	public static HeroClass restoreInBundle( Bundle bundle ) {
-		String value = bundle.getString( CLASS );
-		return value.length() > 0 ? valueOf( value ) : ROGUE;
+
+	private static final String CLASS = "class";
+
+	public void storeInBundle(Bundle bundle)
+	{
+		bundle.put(CLASS, toString());
+	}
+
+	public static HeroClass restoreInBundle(Bundle bundle)
+	{
+		String value = bundle.getString(CLASS);
+		return value.length() > 0 ? valueOf(value) : ROGUE;
 	}
 }

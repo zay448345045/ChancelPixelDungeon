@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,23 +26,25 @@ package com.watabou.noosa.tweeners;
 
 import com.watabou.noosa.Visual;
 
-public class AlphaTweener extends Tweener {
-
+public class AlphaTweener extends Tweener
+{
 	public Visual image;
-	
+
 	public float start;
 	public float delta;
-	
-	public AlphaTweener( Visual image, float alpha, float time ) {
-		super( image, time );
-		
+
+	public AlphaTweener(Visual image, float alpha, float time)
+	{
+		super(image, time);
+
 		this.image = image;
 		start = image.alpha();
 		delta = alpha - start;
 	}
 
 	@Override
-	protected void updateValues( float progress ) {
-		image.alpha( start + delta * progress );
+	protected void updateValues(float progress)
+	{
+		image.alpha(start + delta * progress);
 	}
 }

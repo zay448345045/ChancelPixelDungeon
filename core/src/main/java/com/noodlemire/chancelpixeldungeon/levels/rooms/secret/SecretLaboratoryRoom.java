@@ -27,21 +27,21 @@ import com.noodlemire.chancelpixeldungeon.items.potions.Potion;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfCorrosivity;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfEnticement;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfExperience;
+import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfExpulsion;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfFrost;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfHaste;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfHealing;
+import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfHydrocombustion;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfInvisibility;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfLevitation;
-import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfHydrocombustion;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfMight;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfOvergrowth;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfPlacebo;
-import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfRefreshment;
+import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfPurity;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfRepulsion;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfShielding;
-import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfTelepathy;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfShockwave;
-import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfPurity;
+import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfTelepathy;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfThunderstorm;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfToxicity;
 import com.noodlemire.chancelpixeldungeon.levels.Level;
@@ -53,65 +53,74 @@ import com.watabou.utils.Random;
 import java.util.HashMap;
 
 //TODO specific implementation
-public class SecretLaboratoryRoom extends SecretRoom {
-	
+public class SecretLaboratoryRoom extends SecretRoom
+{
+
 	private static HashMap<Class<? extends Potion>, Float> potionChances = new HashMap<>();
+
 	static
 	{
-		potionChances.put(PotionOfHealing.class,        2f);
-		potionChances.put(PotionOfExperience.class,     6f);
-		potionChances.put(PotionOfToxicity.class,       1f);
-		potionChances.put(PotionOfShockwave.class,   	3f);
-		potionChances.put(PotionOfHydrocombustion.class,1f);
-		potionChances.put(PotionOfLevitation.class,     1f);
-		potionChances.put(PotionOfTelepathy.class,      3f);
-		potionChances.put(PotionOfPurity.class,         2f);
-		potionChances.put(PotionOfInvisibility.class,   1f);
-		potionChances.put(PotionOfFrost.class,          1f);
-		potionChances.put(PotionOfCorrosivity.class,    2f);
-		potionChances.put(PotionOfEnticement.class,     1f);
-		potionChances.put(PotionOfHaste.class,          3f);
-		potionChances.put(PotionOfOvergrowth.class,     2f);
-		potionChances.put(PotionOfPlacebo.class,        1f);
-		potionChances.put(PotionOfRefreshment.class,    2f);
-		potionChances.put(PotionOfRepulsion.class,      1f);
-		potionChances.put(PotionOfShielding.class,      3f);
-		potionChances.put(PotionOfThunderstorm.class,   1f);
-		potionChances.put(PotionOfMight.class,          2f);
+		potionChances.put(PotionOfHealing.class, 2f);
+		potionChances.put(PotionOfExperience.class, 6f);
+		potionChances.put(PotionOfToxicity.class, 1f);
+		potionChances.put(PotionOfShockwave.class, 3f);
+		potionChances.put(PotionOfHydrocombustion.class, 1f);
+		potionChances.put(PotionOfLevitation.class, 1f);
+		potionChances.put(PotionOfTelepathy.class, 3f);
+		potionChances.put(PotionOfPurity.class, 2f);
+		potionChances.put(PotionOfInvisibility.class, 1f);
+		potionChances.put(PotionOfFrost.class, 1f);
+		potionChances.put(PotionOfCorrosivity.class, 2f);
+		potionChances.put(PotionOfEnticement.class, 1f);
+		potionChances.put(PotionOfHaste.class, 3f);
+		potionChances.put(PotionOfOvergrowth.class, 2f);
+		potionChances.put(PotionOfPlacebo.class, 1f);
+		potionChances.put(PotionOfExpulsion.class, 2f);
+		potionChances.put(PotionOfRepulsion.class, 1f);
+		potionChances.put(PotionOfShielding.class, 3f);
+		potionChances.put(PotionOfThunderstorm.class, 1f);
+		potionChances.put(PotionOfMight.class, 2f);
 	}
-	
-	public void paint( Level level ) {
-		
-		Painter.fill( level, this, Terrain.WALL );
-		Painter.fill( level, this, 1, Terrain.EMPTY_SP );
-		
-		entrance().set( Door.Type.HIDDEN );
-		
+
+	public void paint(Level level)
+	{
+
+		Painter.fill(level, this, Terrain.WALL);
+		Painter.fill(level, this, 1, Terrain.EMPTY_SP);
+
+		entrance().set(Door.Type.HIDDEN);
+
 		Point pot = center();
-		Painter.set( level, pot, Terrain.ALCHEMY );
-		
+		Painter.set(level, pot, Terrain.ALCHEMY);
+
 		Alchemy alchemy = new Alchemy();
-		alchemy.seed( level, pot.x + level.width() * pot.y, Random.IntRange(30, 60) );
-		level.blobs.put( Alchemy.class, alchemy );
-		
-		int n = Random.IntRange( 2, 3 );
+		alchemy.seed(level, pot.x + level.width() * pot.y, Random.IntRange(30, 60));
+		level.blobs.put(Alchemy.class, alchemy);
+
+		int n = Random.IntRange(2, 3);
 		HashMap<Class<? extends Potion>, Float> chances = new HashMap<>(potionChances);
-		for (int i=0; i < n; i++) {
+		for(int i = 0; i < n; i++)
+		{
 			int pos;
-			do {
+			do
+			{
 				pos = level.pointToCell(random());
-			} while (level.map[pos] != Terrain.EMPTY_SP || level.heaps.get( pos ) != null);
-			
-			try{
-				Class<?extends Potion> potionCls = Random.chances(chances);
+			}
+			while(level.map[pos] != Terrain.EMPTY_SP || level.heaps.get(pos) != null);
+
+			try
+			{
+				Class<? extends Potion> potionCls = Random.chances(chances);
 				chances.put(potionCls, 0f);
-				level.drop( potionCls.newInstance(), pos );
-			} catch (Exception e){
+				level.drop(potionCls.newInstance(), pos);
+			}
+			catch(Exception e)
+			{
 				ChancelPixelDungeon.reportException(e);
 			}
-			
+
 		}
-		
+
 	}
-	
+
 }

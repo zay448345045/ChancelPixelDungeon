@@ -28,72 +28,88 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
-public class MagicalSleep extends Buff {
+public class MagicalSleep extends Buff
+{
 
 	private static final float STEP = 1f;
 
 	@Override
-	public boolean attachTo( Char target ) {
-		if (!target.isImmune(Sleep.class) && super.attachTo( target )) {
+	public boolean attachTo(Char target)
+	{
+		if(!target.isImmune(Sleep.class) && super.attachTo(target))
+		{
 
-			if (target instanceof Hero)
-				if (target.HP == target.buff(Regeneration.class).regencap()) {
+			if(target instanceof Hero)
+				if(target.HP() == target.buff(Regeneration.class).regencap())
+				{
 					GLog.i(Messages.get(this, "toohealthy"));
 					detach();
 					return true;
-				} else {
+				}
+				else
+				{
 					GLog.i(Messages.get(this, "fallasleep"));
 				}
-			else if (target instanceof Mob)
-				((Mob)target).state = ((Mob)target).SLEEPING;
+			else if(target instanceof Mob)
+				((Mob) target).state = ((Mob) target).SLEEPING;
 
 			target.paralysed++;
 
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}
 
 	@Override
-	public boolean act(){
-		if (target instanceof Mob && ((Mob) target).state != ((Mob) target).SLEEPING){
+	public boolean act()
+	{
+		if(target instanceof Mob && ((Mob) target).state != ((Mob) target).SLEEPING)
+		{
 			detach();
 			return true;
 		}
-		if (target instanceof Hero) {
-			target.HP = Math.min(target.HP+1, target.HT);
+		if(target instanceof Hero)
+		{
+			target.heal(1);
 			((Hero) target).resting = true;
-			if (target.HP == target.buff(Regeneration.class).regencap()) {
+			if(target.HP() == target.buff(Regeneration.class).regencap())
+			{
 				GLog.p(Messages.get(this, "wakeup"));
 				detach();
 			}
 		}
-		spend( STEP );
+		spend(STEP);
 		return true;
 	}
 
 	@Override
-	public void detach() {
-		if (target.paralysed > 0)
+	public void detach()
+	{
+		if(target.paralysed > 0)
 			target.paralysed--;
-		if (target instanceof Hero)
+		if(target instanceof Hero)
 			((Hero) target).resting = false;
 		super.detach();
 	}
 
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.MAGIC_SLEEP;
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc");
 	}
 }

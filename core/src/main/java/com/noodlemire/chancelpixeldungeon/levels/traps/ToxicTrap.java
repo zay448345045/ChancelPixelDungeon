@@ -26,7 +26,8 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.ToxicGas;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 
-public class ToxicTrap extends Trap{
+public class ToxicTrap extends Trap
+{
 
 	{
 		color = GREEN;
@@ -34,9 +35,10 @@ public class ToxicTrap extends Trap{
 	}
 
 	@Override
-	public void activate() {
+	public void activate()
+	{
 
-		GameScene.add( Blob.seed( pos, 300 + 20 * Dungeon.depth, ToxicGas.class ) );
+		GameScene.add(Blob.seed(pos, 300 + 20 * Dungeon.depth, ToxicGas.class));
 
 	}
 }

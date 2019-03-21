@@ -5,19 +5,21 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class RotberryCore extends Item
 {
-    {
-        image = ItemSpriteSheet.ROTBERRY;
+	{
+		image = ItemSpriteSheet.ROTBERRY;
 
-        unique = true;
-    }
+		unique = true;
+	}
 
-    @Override
-    public boolean isUpgradable() {
-        return false;
-    }
+	@Override
+	public boolean isUpgradable()
+	{
+		return false;
+	}
 
-    @Override
-    public boolean isIdentified() {
-        return true;
-    }
+	@Override
+	public boolean isIdentified()
+	{
+		return true;
+	}
 }

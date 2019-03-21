@@ -23,7 +23,8 @@ package com.noodlemire.chancelpixeldungeon.levels.traps;
 
 import com.noodlemire.chancelpixeldungeon.items.Bomb;
 
-public class ExplosiveTrap extends Trap {
+public class ExplosiveTrap extends Trap
+{
 
 	{
 		color = ORANGE;
@@ -31,7 +32,8 @@ public class ExplosiveTrap extends Trap {
 	}
 
 	@Override
-	public void activate() {
+	public void activate()
+	{
 		new Bomb().explode(pos);
 	}
 

@@ -33,34 +33,34 @@ import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
-public class PotionOfLevitation extends Potion {
-
+public class PotionOfLevitation extends Potion
+{
 	{
 		initials = 4;
 	}
 
 	@Override
-	public void shatter( int cell ) {
-
-		if (Dungeon.level.heroFOV[cell]) {
-			setKnown();
-
-			splash( cell );
-			Sample.INSTANCE.play( Assets.SND_SHATTER );
+	public void shatter(int cell)
+	{
+		if(Dungeon.level.heroFOV[cell])
+		{
+			splash(cell);
+			Sample.INSTANCE.play(Assets.SND_SHATTER);
 		}
 
-		GameScene.add( Blob.seed( cell, 1000, ConfusionGas.class ) );
+		GameScene.add(Blob.seed(cell, 1000, ConfusionGas.class));
 	}
-	
+
 	@Override
-	public void apply( Hero hero ) {
-		setKnown();
-		Buff.affect( hero, Levitation.class, Levitation.DURATION );
-		GLog.i( Messages.get(this, "float") );
+	public void apply(Hero hero)
+	{
+		Buff.affect(hero, Levitation.class, Levitation.DURATION);
+		GLog.i(Messages.get(this, "float"));
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return isKnown() ? 30 * quantity : super.price();
 	}
 }

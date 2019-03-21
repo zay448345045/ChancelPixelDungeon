@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,24 +31,23 @@ import com.watabou.glscripts.Script;
 
 //Remember that switching programs is expensive
 // if this script is to be used many times try to block them together
-public class NoosaScriptNoLighting extends NoosaScript {
-
+public class NoosaScriptNoLighting extends NoosaScript
+{
 	@Override
-	public void lighting(float rm, float gm, float bm, float am, float ra, float ga, float ba, float aa) {
-		//Does nothing
+	public void lighting(float rm, float gm, float bm, float am, float ra, float ga, float ba, float aa) {/*Does nothing*/}
+
+	public static NoosaScriptNoLighting get()
+	{
+		return Script.use(NoosaScriptNoLighting.class);
 	}
 
-	public static NoosaScriptNoLighting get(){
-		return Script.use( NoosaScriptNoLighting.class );
-	}
-
 	@Override
-	protected String shader() {
+	protected String shader()
+	{
 		return SHADER;
 	}
 
 	private static final String SHADER =
-
 			"uniform mat4 uCamera;" +
 			"uniform mat4 uModel;" +
 			"attribute vec4 aXYZW;" +
@@ -55,9 +57,7 @@ public class NoosaScriptNoLighting extends NoosaScript {
 			"  gl_Position = uCamera * uModel * aXYZW;" +
 			"  vUV = aUV;" +
 			"}" +
-
 			"//\n" +
-
 			"varying mediump vec2 vUV;" +
 			"uniform lowp sampler2D uTex;" +
 			"void main() {" +

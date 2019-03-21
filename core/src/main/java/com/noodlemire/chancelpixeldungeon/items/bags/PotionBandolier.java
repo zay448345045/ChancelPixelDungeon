@@ -25,7 +25,8 @@ import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.potions.Potion;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class PotionBandolier extends Bag {
+public class PotionBandolier extends Bag
+{
 
 	{
 		image = ItemSpriteSheet.BANDOLIER;
@@ -34,12 +35,14 @@ public class PotionBandolier extends Bag {
 	}
 
 	@Override
-	public boolean grab( Item item ) {
+	public boolean grab(Item item)
+	{
 		return item instanceof Potion;
 	}
 
 	@Override
-	public int price() {
+	public int price()
+	{
 		return 40;
 	}
 

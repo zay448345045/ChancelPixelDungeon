@@ -23,14 +23,16 @@ package com.noodlemire.chancelpixeldungeon.items.armor;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class ScaleArmor extends Armor {
+public class ScaleArmor extends Armor
+{
 
 	{
 		image = ItemSpriteSheet.ARMOR_SCALE;
 	}
-	
-	public ScaleArmor() {
-		super( 4 );
+
+	public ScaleArmor()
+	{
+		super(4);
 	}
 
 }

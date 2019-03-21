@@ -21,8 +21,8 @@
 
 package com.noodlemire.chancelpixeldungeon.windows;
 
+import com.noodlemire.chancelpixeldungeon.CPDSettings;
 import com.noodlemire.chancelpixeldungeon.Challenges;
-import com.noodlemire.chancelpixeldungeon.SPDSettings;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.PixelScene;
@@ -34,77 +34,87 @@ import com.watabou.noosa.RenderedText;
 
 import java.util.ArrayList;
 
-public class WndChallenges extends Window {
+public class WndChallenges extends Window
+{
 
-	private static final int WIDTH		= 120;
-	private static final int TTL_HEIGHT    = 12;
-	private static final int BTN_HEIGHT    = 18;
-	private static final int GAP        = 1;
+	private static final int WIDTH = 120;
+	private static final int TTL_HEIGHT = 12;
+	private static final int BTN_HEIGHT = 18;
+	private static final int GAP = 1;
 
 	private boolean editable;
 	private ArrayList<CheckBox> boxes;
 
-	public WndChallenges( int checked, boolean editable ) {
+	public WndChallenges(int checked, boolean editable)
+	{
 
 		super();
 
 		this.editable = editable;
 
-		RenderedText title = PixelScene.renderText( Messages.get(this, "title"), 9 );
-		title.hardlight( TITLE_COLOR );
+		RenderedText title = PixelScene.renderText(Messages.get(this, "title"), 9);
+		title.hardlight(TITLE_COLOR);
 		title.x = (WIDTH - title.width()) / 2;
 		title.y = (TTL_HEIGHT - title.height()) / 2;
 		PixelScene.align(title);
-		add( title );
+		add(title);
 
 		boxes = new ArrayList<>();
 
 		float pos = TTL_HEIGHT;
-		for (int i=0; i < Challenges.NAME_IDS.length; i++) {
+		for(int i = 0; i < Challenges.NAME_IDS.length; i++)
+		{
 
 			final String challenge = Challenges.NAME_IDS[i];
-			
-			CheckBox cb = new CheckBox( Messages.get(Challenges.class, challenge) );
-			cb.checked( (checked & Challenges.MASKS[i]) != 0 );
+
+			CheckBox cb = new CheckBox(Messages.get(Challenges.class, challenge));
+			cb.checked((checked & Challenges.MASKS[i]) != 0);
 			cb.active = editable;
 
-			if (i > 0) {
+			if(i > 0)
+			{
 				pos += GAP;
 			}
-			cb.setRect( 0, pos, WIDTH-16, BTN_HEIGHT );
+			cb.setRect(0, pos, WIDTH - 16, BTN_HEIGHT);
 
-			add( cb );
-			boxes.add( cb );
-			
-			IconButton info = new IconButton(Icons.get(Icons.INFO)){
+			add(cb);
+			boxes.add(cb);
+
+			IconButton info = new IconButton(Icons.get(Icons.INFO))
+			{
 				@Override
-				protected void onClick() {
+				protected void onClick()
+				{
 					super.onClick();
 					ChancelPixelDungeon.scene().add(
-							new WndMessage(Messages.get(Challenges.class, challenge+"_desc"))
+							new WndMessage(Messages.get(Challenges.class, challenge + "_desc"))
 					);
 				}
 			};
 			info.setRect(cb.right(), pos, 16, BTN_HEIGHT);
 			add(info);
-			
+
 			pos = cb.bottom();
 		}
 
-		resize( WIDTH, (int)pos );
+		resize(WIDTH, (int) pos);
 	}
 
 	@Override
-	public void onBackPressed() {
+	public void onBackPressed()
+	{
 
-		if (editable) {
+		if(editable)
+		{
 			int value = 0;
-			for (int i=0; i < boxes.size(); i++) {
-				if (boxes.get( i ).checked()) {
+			for(int i = 0; i < boxes.size(); i++)
+			{
+				if(boxes.get(i).checked())
+				{
 					value |= Challenges.MASKS[i];
 				}
 			}
-			SPDSettings.challenges( value );
+			CPDSettings.challenges(value);
 		}
 
 		super.onBackPressed();

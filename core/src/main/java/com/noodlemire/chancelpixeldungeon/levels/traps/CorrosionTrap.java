@@ -26,7 +26,8 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.CorrosiveGas;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 
-public class CorrosionTrap extends Trap {
+public class CorrosionTrap extends Trap
+{
 
 	{
 		color = GREY;
@@ -34,11 +35,12 @@ public class CorrosionTrap extends Trap {
 	}
 
 	@Override
-	public void activate() {
+	public void activate()
+	{
 
 		CorrosiveGas corrosiveGas = Blob.seed(pos, 80 + 5 * Dungeon.depth, CorrosiveGas.class);
 
-		corrosiveGas.setStrength(1+Dungeon.depth/4);
+		corrosiveGas.setStrength(1 + Dungeon.depth / 4);
 
 		GameScene.add(corrosiveGas);
 

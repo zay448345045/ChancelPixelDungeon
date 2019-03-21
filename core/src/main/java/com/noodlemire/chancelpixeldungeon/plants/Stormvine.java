@@ -21,29 +21,31 @@
 
 package com.noodlemire.chancelpixeldungeon.plants;
 
-import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Levitation;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Vertigo;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfLevitation;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Stormvine extends Plant {
-
+public class Stormvine extends Plant
+{
 	{
 		image = 9;
 	}
 
 	@Override
-	public void activate() {
-		Char ch = Actor.findChar(pos);
-
-		if (ch != null) {
-			Buff.affect(ch, Vertigo.class, Vertigo.DURATION );
-		}
+	public void activate(Char ch, boolean doWardenBonus)
+	{
+		if(ch != null)
+			if(doWardenBonus)
+				Buff.affect(ch, Levitation.class, 10f);
+			else
+				Buff.affect(ch, Vertigo.class, Vertigo.DURATION);
 	}
 
-	public static class Seed extends Plant.Seed {
+	public static class Seed extends Plant.Seed
+	{
 		{
 			image = ItemSpriteSheet.SEED_STORMVINE;
 

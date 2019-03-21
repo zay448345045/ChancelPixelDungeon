@@ -23,13 +23,10 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Greatsword extends MeleeWeapon
+public class Broadsword extends MeleeWeapon
 {
-
-    {
-        image = ItemSpriteSheet.GREATSWORD;
-
-        tier = 5;
-    }
-
+	{
+		image = ItemSpriteSheet.BROADSWORD;
+		tier = 5;
+	}
 }

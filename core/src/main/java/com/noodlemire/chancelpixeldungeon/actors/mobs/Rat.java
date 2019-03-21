@@ -25,29 +25,32 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.sprites.RatSprite;
 import com.watabou.utils.Random;
 
-public class Rat extends Mob {
-
+public class Rat extends Mob
+{
 	{
 		spriteClass = RatSprite.class;
-		
-		HP = HT = 8;
+
+		setHT(9, true);
 		defenseSkill = 2;
-		
+
 		maxLvl = 5;
 	}
-	
+
 	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 1, 4 );
+	public int damageRoll()
+	{
+		return Random.NormalIntRange(1, 4);
 	}
-	
+
 	@Override
-	public int attackSkill( Char target ) {
+	public int attackSkill(Char target)
+	{
 		return 8;
 	}
-	
+
 	@Override
-	public int drRoll() {
+	public int drRoll()
+	{
 		return Random.NormalIntRange(0, 1);
 	}
 }

@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,43 +26,52 @@ package com.watabou.glwrap;
 
 import android.opengl.GLES20;
 
-public class Uniform {
-
+public class Uniform
+{
 	private int location;
-	
-	public Uniform(int location) {
+
+	public Uniform(int location)
+	{
 		this.location = location;
 	}
-	
-	public int location() {
+
+	public int location()
+	{
 		return location;
 	}
-	
-	public void enable() {
+
+	public void enable()
+	{
 		GLES20.glEnableVertexAttribArray(location);
 	}
-	
-	public void disable() {
+
+	public void disable()
+	{
 		GLES20.glDisableVertexAttribArray(location);
 	}
-	
-	public void value1f(float value) {
+
+	public void value1f(float value)
+	{
 		GLES20.glUniform1f(location, value);
 	}
-	
-	public void value2f(float v1, float v2) {
+
+	public void value2f(float v1, float v2)
+	{
 		GLES20.glUniform2f(location, v1, v2);
 	}
-	
-	public void value4f(float v1, float v2, float v3, float v4) {
+
+	public void value4f(float v1, float v2, float v3, float v4)
+	{
 		GLES20.glUniform4f(location, v1, v2, v3, v4);
 	}
-	
-	public void valueM3(float[] value) {
+
+	public void valueM3(float[] value)
+	{
 		GLES20.glUniformMatrix3fv(location, 1, false, value, 0);
 	}
-	
-	public void valueM4(float[] value) {
+
+	public void valueM4(float[] value)
+	{
 		GLES20.glUniformMatrix4fv(location, 1, false, value, 0);
 	}
 }

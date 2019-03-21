@@ -21,30 +21,40 @@
 
 package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.ConfusionGas;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 
-public class Vertigo extends FlavourBuff {
-
-	public static final float DURATION	= 10f;
+public class Vertigo extends FlavourBuff implements Expulsion
+{
+	public static final float DURATION = 10f;
 
 	{
 		type = buffType.NEGATIVE;
 	}
 
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.VERTIGO;
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc", dispTurns());
 	}
-	
+
+	@Override
+	public Class<? extends Blob> expulse()
+	{
+		return ConfusionGas.class;
+	}
 }

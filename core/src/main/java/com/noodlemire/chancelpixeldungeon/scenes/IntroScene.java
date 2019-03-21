@@ -25,20 +25,24 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.windows.WndStory;
 import com.watabou.noosa.Game;
 
-public class IntroScene extends PixelScene {
-	
+public class IntroScene extends PixelScene
+{
+
 	@Override
-	public void create() {
+	public void create()
+	{
 		super.create();
-		
-		add( new WndStory( Messages.get(this, "text") ) {
+
+		add(new WndStory(Messages.get(this, "text"))
+		{
 			@Override
-			public void hide() {
+			public void hide()
+			{
 				super.hide();
-				Game.switchScene( InterlevelScene.class );
+				Game.switchScene(InterlevelScene.class);
 			}
-		} );
-		
+		});
+
 		fadeIn();
 	}
 }

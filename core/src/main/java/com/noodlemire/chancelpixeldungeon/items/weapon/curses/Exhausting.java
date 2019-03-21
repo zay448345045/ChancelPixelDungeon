@@ -29,14 +29,17 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.Random;
 
-public class Exhausting extends Weapon.Enchantment {
+public class Exhausting extends Weapon.Enchantment
+{
 
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
+	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing(0x000000);
 
 	@Override
-	public int proc(Weapon weapon, Char attacker, Char defender, int damage ) {
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
 
-		if (attacker == Dungeon.hero && Random.Int(15) == 0) {
+		if(attacker == Dungeon.hero && Random.Int(15) == 0)
+		{
 			Buff.affect(attacker, Weakness.class, Random.NormalIntRange(5, 20));
 		}
 
@@ -44,12 +47,14 @@ public class Exhausting extends Weapon.Enchantment {
 	}
 
 	@Override
-	public boolean curse() {
+	public boolean curse()
+	{
 		return true;
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return BLACK;
 	}
 }

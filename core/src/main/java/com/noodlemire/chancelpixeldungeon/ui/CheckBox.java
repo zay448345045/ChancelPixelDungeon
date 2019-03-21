@@ -23,22 +23,25 @@ package com.noodlemire.chancelpixeldungeon.ui;
 
 import com.noodlemire.chancelpixeldungeon.scenes.PixelScene;
 
-public class CheckBox extends RedButton {
+public class CheckBox extends RedButton
+{
 
 	private boolean checked = false;
-	
-	public CheckBox( String label ) {
-		super( label );
-		
-		icon( Icons.get( Icons.UNCHECKED ) );
+
+	public CheckBox(String label)
+	{
+		super(label);
+
+		icon(Icons.get(Icons.UNCHECKED));
 	}
 
 	@Override
-	protected void layout() {
+	protected void layout()
+	{
 		super.layout();
-		
+
 		float margin = (height - text.baseLine()) / 2;
-		
+
 		text.x = x + margin;
 		text.y = y + margin;
 		PixelScene.align(text);
@@ -49,21 +52,25 @@ public class CheckBox extends RedButton {
 		icon.y = y + margin;
 		PixelScene.align(icon);
 	}
-	
-	public boolean checked() {
+
+	public boolean checked()
+	{
 		return checked;
 	}
-	
-	public void checked( boolean value ) {
-		if (checked != value) {
+
+	public void checked(boolean value)
+	{
+		if(checked != value)
+		{
 			checked = value;
-			icon.copy( Icons.get( checked ? Icons.CHECKED : Icons.UNCHECKED ) );
+			icon.copy(Icons.get(checked ? Icons.CHECKED : Icons.UNCHECKED));
 		}
 	}
-	
+
 	@Override
-	protected void onClick() {
+	protected void onClick()
+	{
 		super.onClick();
-		checked( !checked );
+		checked(!checked);
 	}
 }

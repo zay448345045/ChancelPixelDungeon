@@ -21,87 +21,83 @@
 
 package com.noodlemire.chancelpixeldungeon.actors.blobs;
 
-import com.noodlemire.chancelpixeldungeon.Challenges;
-import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.BlobEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
-import com.noodlemire.chancelpixeldungeon.items.Generator;
-import com.noodlemire.chancelpixeldungeon.items.Generator.Category;
 import com.noodlemire.chancelpixeldungeon.items.Item;
-import com.noodlemire.chancelpixeldungeon.items.artifacts.Artifact;
-import com.noodlemire.chancelpixeldungeon.items.potions.Potion;
-import com.noodlemire.chancelpixeldungeon.items.rings.Ring;
-import com.noodlemire.chancelpixeldungeon.items.scrolls.Scroll;
+import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfBlessing;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfUpgrade;
-import com.noodlemire.chancelpixeldungeon.items.wands.Wand;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
-import com.noodlemire.chancelpixeldungeon.items.weapon.melee.MagesStaff;
-import com.noodlemire.chancelpixeldungeon.items.weapon.melee.MeleeWeapon;
-import com.noodlemire.chancelpixeldungeon.journal.Catalog;
 import com.noodlemire.chancelpixeldungeon.journal.Notes.Landmark;
-import com.noodlemire.chancelpixeldungeon.levels.traps.DistortionTrap;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
-import com.noodlemire.chancelpixeldungeon.plants.Plant;
-import com.watabou.utils.Random;
 
-public class WaterOfTransmutation extends WellWater
+import static com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass.ASSASSIN;
+import static com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass.BATTLEMAGE;
+import static com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass.BERSERKER;
+import static com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass.FREERUNNER;
+import static com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass.GLADIATOR;
+import static com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass.SNIPER;
+import static com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass.WARDEN;
+import static com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass.WARLOCK;
+
+public class WaterOfExchange extends WellWater
 {
 	@Override
 	protected Item affectItem(Item item)
 	{
-		if(item instanceof MagesStaff)
-		{
-			item = changeStaff((MagesStaff) item);
-		}
-		else if(item instanceof MeleeWeapon)
-		{
-			item = changeWeapon((MeleeWeapon) item);
-		}
-		else if(item instanceof Scroll)
-		{
-			item = changeScroll((Scroll) item);
-		}
-		else if(item instanceof Potion)
-		{
-			item = changePotion((Potion) item);
-		}
-		else if(item instanceof Ring)
-		{
-			item = changeRing((Ring) item);
-		}
-		else if(item instanceof Wand)
-		{
-			item = changeWand((Wand) item);
-		}
-		else if(item instanceof Plant.Seed)
-		{
-			item = changeSeed((Plant.Seed) item);
-		}
-		else if(item instanceof Artifact)
-		{
-			item = changeArtifact((Artifact) item);
-		}
+		if(item instanceof ScrollOfUpgrade)
+			item = new ScrollOfBlessing();
+		else if(item instanceof ScrollOfBlessing)
+			item = new ScrollOfUpgrade();
+		else if(item instanceof Weapon && ((Weapon) item).augment != Weapon.Augment.NONE)
+			if(((Weapon) item).augment == Weapon.Augment.DAMAGE)
+				((Weapon) item).augment = Weapon.Augment.SPEED;
+			else
+				((Weapon) item).augment = Weapon.Augment.DAMAGE;
+		else if(item instanceof Armor && ((Armor) item).augment != Armor.Augment.NONE)
+			if(((Armor) item).augment == Armor.Augment.DEFENSE)
+				((Armor) item).augment = Armor.Augment.EVASION;
+			else
+				((Armor) item).augment = Armor.Augment.DEFENSE;
 		else
-		{
-			item = null;
-		}
-
-		//incase a never-seen item pops out
-		if(item != null && item.isIdentified())
-		{
-			Catalog.setSeen(item.getClass());
-		}
+			return null;
 
 		return item;
-
 	}
 
 	@Override
 	protected boolean affectHero(Hero hero)
 	{
-		DistortionTrap.resetLevel();
+		switch(hero.subClass)
+		{
+			case BERSERKER:
+				hero.subClass = GLADIATOR;
+				break;
+			case GLADIATOR:
+				hero.subClass = BERSERKER;
+				break;
+			case BATTLEMAGE:
+				hero.subClass = WARLOCK;
+				break;
+			case WARLOCK:
+				hero.subClass = BATTLEMAGE;
+				break;
+			case ASSASSIN:
+				hero.subClass = FREERUNNER;
+				break;
+			case FREERUNNER:
+				hero.subClass = ASSASSIN;
+				break;
+			case SNIPER:
+				hero.subClass = WARDEN;
+				break;
+			case WARDEN:
+				hero.subClass = SNIPER;
+				break;
+			default:
+				return false;
+		}
 		return true;
 	}
 
@@ -115,184 +111,7 @@ public class WaterOfTransmutation extends WellWater
 	@Override
 	protected Landmark record()
 	{
-		return Landmark.WELL_OF_TRANSMUTATION;
-	}
-
-	private MagesStaff changeStaff(MagesStaff staff)
-	{
-		Class<? extends Wand> wandClass = staff.wandClass();
-
-		if(wandClass == null)
-		{
-			return null;
-		}
-		else
-		{
-			Wand n;
-			do
-			{
-				n = Generator.randomWand(false);
-			}
-			while(Challenges.isItemBlocked(n) || n.getClass() == wandClass);
-			n.level(0);
-			staff.imbueWand(n, null);
-		}
-
-		return staff;
-	}
-
-	private Weapon changeWeapon(MeleeWeapon w)
-	{
-		Weapon n;
-		Category c = Generator.wepTiers[w.tier - 1];
-
-		do
-		{
-			try
-			{
-				n = (MeleeWeapon) c.classes[Random.chances(c.probs)].newInstance();
-			}
-			catch(Exception e)
-			{
-				ChancelPixelDungeon.reportException(e);
-				return null;
-			}
-		}
-		while(Challenges.isItemBlocked(n) || n.getClass() == w.getClass());
-
-		int level = w.level();
-		if(level > 0)
-		{
-			n.upgrade(level);
-		}
-		else if(level < 0)
-		{
-			n.degrade(-level);
-		}
-
-		n.enchantment = w.enchantment;
-		n.levelKnown = w.levelKnown;
-		n.cursedKnown = w.cursedKnown;
-		n.cursed = w.cursed;
-		n.augment = w.augment;
-
-		return n;
-	}
-
-	private Ring changeRing(Ring r)
-	{
-		Ring n;
-		do
-		{
-			n = Generator.randomRing(false);
-		}
-		while(Challenges.isItemBlocked(n) || n.getClass() == r.getClass());
-
-		n.level(0);
-
-		int level = r.level();
-		if(level > 0)
-		{
-			n.upgrade(level);
-		}
-		else if(level < 0)
-		{
-			n.degrade(-level);
-		}
-
-		n.levelKnown = r.levelKnown;
-		n.cursedKnown = r.cursedKnown;
-		n.cursed = r.cursed;
-
-		return n;
-	}
-
-	private Artifact changeArtifact(Artifact a)
-	{
-		Artifact n = Generator.randomArtifact();
-
-		if(n != null && !Challenges.isItemBlocked(n))
-		{
-			n.cursedKnown = a.cursedKnown;
-			n.cursed = a.cursed;
-			n.levelKnown = a.levelKnown;
-			n.transferUpgrade(a.visiblyUpgraded());
-			return n;
-		}
-
-		return null;
-	}
-
-	private Wand changeWand(Wand w)
-	{
-
-		Wand n;
-		do
-		{
-			n = Generator.randomWand(false);
-		}
-		while(Challenges.isItemBlocked(n) || n.getClass() == w.getClass());
-
-		n.level(0);
-		n.upgrade(w.level());
-
-		n.levelKnown = w.levelKnown;
-		n.cursedKnown = w.cursedKnown;
-		n.cursed = w.cursed;
-
-		return n;
-	}
-
-	private Plant.Seed changeSeed(Plant.Seed s)
-	{
-
-		Plant.Seed n;
-
-		do
-		{
-			n = (Plant.Seed) Generator.random(Category.SEED);
-		}
-		while(n.getClass() == s.getClass());
-
-		return n;
-	}
-
-	private Scroll changeScroll(Scroll s)
-	{
-		if(s instanceof ScrollOfUpgrade)
-		{
-
-			return new ScrollOfBlessing();
-
-		}
-		else if(s instanceof ScrollOfBlessing)
-		{
-
-			return new ScrollOfUpgrade();
-
-		}
-		else
-		{
-
-			Scroll n;
-			do
-			{
-				n = (Scroll) Generator.random(Category.SCROLL);
-			}
-			while(n.getClass() == s.getClass());
-			return n;
-		}
-	}
-
-	private Potion changePotion(Potion p)
-	{
-		Potion n;
-		do
-		{
-			n = (Potion) Generator.random(Category.POTION);
-		}
-		while(n.getClass() == p.getClass());
-		return n;
+		return Landmark.WELL_OF_EXCHANGE;
 	}
 
 	@Override

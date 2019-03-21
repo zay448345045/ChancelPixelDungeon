@@ -23,25 +23,24 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Greataxe extends MeleeWeapon {
-
+public class Greataxe extends MeleeWeapon
+{
 	{
 		image = ItemSpriteSheet.GREATAXE;
-
 		tier = 5;
 	}
 
 	@Override
-	public int max(int lvl) {
-		return  5*(tier+5) +    //50 base, up from 30
-				lvl*(tier+1);   //scaling unchanged
+	public int max(int lvl)
+	{
+		//50 base, up from 30; scaling unchanged
+		return super.max(lvl) + 20;
 	}
 
 	@Override
-	public int STRReq(int lvl) {
-		lvl = Math.max(0, lvl);
+	public int STRReq(int lvl)
+	{
 		//20 base strength req, up from 18
-		return (10 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
+		return super.STRReq(lvl) + 2;
 	}
-
 }

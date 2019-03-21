@@ -30,22 +30,25 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
-public class Vorpal extends Weapon.Enchantment {
+public class Vorpal extends Weapon.Enchantment
+{
 
-	private static ItemSprite.Glowing RED = new ItemSprite.Glowing( 0xAA6666 );
+	private static ItemSprite.Glowing RED = new ItemSprite.Glowing(0xAA6666);
 
 	@Override
-	public int proc(Weapon weapon, Char attacker, Char defender, int damage) {
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
 		// lvl 0 - 33%
 		// lvl 1 - 50%
 		// lvl 2 - 60%
-		int level = Math.max( 0, weapon.level() );
+		int level = Math.max(0, weapon.level());
 
-		if (Random.Int( level + 3 ) >= 2) {
+		if(Random.Int(level + 3) >= 2)
+		{
 
-			Buff.affect(defender, Bleeding.class).set(damage/4);
-			Splash.at( defender.sprite.center(), -PointF.PI / 2, PointF.PI / 6,
-					defender.sprite.blood(), 10 );
+			Buff.affect(defender, Bleeding.class).set(damage / 4);
+			Splash.at(defender.sprite.center(), -PointF.PI / 2, PointF.PI / 6,
+					defender.sprite.blood(), 10);
 
 		}
 
@@ -53,7 +56,8 @@ public class Vorpal extends Weapon.Enchantment {
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return RED;
 	}
 

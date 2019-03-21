@@ -22,18 +22,30 @@
 package com.noodlemire.chancelpixeldungeon.items.rings;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.messages.Messages;
 
-public class RingOfHaste extends Ring {
-	
+import java.text.DecimalFormat;
+
+public class RingOfHaste extends Ring
+{
 	@Override
-	protected RingBuff buff( ) {
+	protected RingBuff buff()
+	{
 		return new Haste();
 	}
-	
-	public static float speedMultiplier( Char target ){
-		return (float)Math.pow(1.2, getBonus(target, Haste.class));
+
+	public static float speedMultiplier(Char target)
+	{
+		return (float) Math.pow(1.2, getBonus(target, Haste.class));
 	}
-	
-	public class Haste extends RingBuff {
+
+	public String statsInfo()
+	{
+		if(isIdentified())
+			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (Math.pow(1.2f, soloBonus()) - 1f)));
+		else
+			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(20f));
 	}
+
+	private class Haste extends RingBuff {}
 }

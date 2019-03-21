@@ -29,7 +29,8 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Weakness;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.particles.ShadowParticle;
 
-public class WeakeningTrap extends Trap{
+public class WeakeningTrap extends Trap
+{
 
 	{
 		color = GREEN;
@@ -37,14 +38,17 @@ public class WeakeningTrap extends Trap{
 	}
 
 	@Override
-	public void activate() {
-		if (Dungeon.level.heroFOV[ pos ]){
+	public void activate()
+	{
+		if(Dungeon.level.heroFOV[pos])
+		{
 			CellEmitter.get(pos).burst(ShadowParticle.UP, 5);
 		}
 
-		Char ch = Actor.findChar( pos );
-		if (ch == Dungeon.hero){
-			Buff.prolong( ch, Weakness.class, Weakness.DURATION*2f );
+		Char ch = Actor.findChar(pos);
+		if(ch == Dungeon.hero)
+		{
+			Buff.prolong(ch, Weakness.class, Weakness.DURATION * 2f);
 		}
 	}
 }

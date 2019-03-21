@@ -30,76 +30,87 @@ import com.noodlemire.chancelpixeldungeon.ui.RenderedTextMultiline;
 import com.watabou.noosa.Group;
 import com.watabou.noosa.RenderedText;
 
-public class WndClass extends WndTabbed {
+public class WndClass extends WndTabbed
+{
 
-	private static final int WIDTH			= 110;
+	private static final int WIDTH = 110;
 
-	private static final int TAB_WIDTH	= 50;
+	private static final int TAB_WIDTH = 50;
 
 	private HeroClass cl;
 
 	private PerksTab tabPerks;
 	private MasteryTab tabMastery;
 
-	public WndClass( HeroClass cl ) {
+	public WndClass(HeroClass cl)
+	{
 
 		super();
 
 		this.cl = cl;
 
 		tabPerks = new PerksTab();
-		add( tabPerks );
+		add(tabPerks);
 
-		Tab tab = new RankingTab( cl.title().toUpperCase(), tabPerks );
-		tab.setSize( TAB_WIDTH, tabHeight() );
-		add( tab );
+		Tab tab = new RankingTab(cl.title().toUpperCase(), tabPerks);
+		tab.setSize(TAB_WIDTH, tabHeight());
+		add(tab);
 
-		if (Badges.isUnlocked( cl.masteryBadge() )) {
+		if(Badges.isUnlocked(cl.masteryBadge()))
+		{
 			tabMastery = new MasteryTab();
-			add( tabMastery );
+			add(tabMastery);
 
-			tab = new RankingTab( Messages.get(this, "mastery"), tabMastery );
-			add( tab );
+			tab = new RankingTab(Messages.get(this, "mastery"), tabMastery);
+			add(tab);
 
 			resize(
-					(int)Math.max( tabPerks.width, tabMastery.width ),
-					(int)Math.max( tabPerks.height, tabMastery.height ) );
-		} else {
-			resize( (int)tabPerks.width, (int)tabPerks.height );
+					(int) Math.max(tabPerks.width, tabMastery.width),
+					(int) Math.max(tabPerks.height, tabMastery.height));
+		}
+		else
+		{
+			resize((int) tabPerks.width, (int) tabPerks.height);
 		}
 
 		layoutTabs();
 
-		select( 0 );
+		select(0);
 	}
 
-	private class RankingTab extends LabeledTab {
+	private class RankingTab extends LabeledTab
+	{
 
 		private Group page;
 
-		public RankingTab( String label, Group page ) {
-			super( label );
+		public RankingTab(String label, Group page)
+		{
+			super(label);
 			this.page = page;
 		}
 
 		@Override
-		protected void select( boolean value ) {
-			super.select( value );
-			if (page != null) {
+		protected void select(boolean value)
+		{
+			super.select(value);
+			if(page != null)
+			{
 				page.visible = page.active = selected;
 			}
 		}
 	}
 
-	private class PerksTab extends Group {
+	private class PerksTab extends Group
+	{
 
-		private static final int MARGIN	= 4;
-		private static final int GAP	= 4;
+		private static final int MARGIN = 4;
+		private static final int GAP = 4;
 
 		public float height;
 		public float width;
 
-		public PerksTab() {
+		public PerksTab()
+		{
 			super();
 
 			float dotWidth = 0;
@@ -107,27 +118,31 @@ public class WndClass extends WndTabbed {
 			String[] items = cl.perks();
 			float pos = MARGIN;
 
-			for (int i=0; i < items.length; i++) {
+			for(int i = 0; i < items.length; i++)
+			{
 
-				if (i > 0) {
+				if(i > 0)
+				{
 					pos += GAP;
 				}
 
-				RenderedText dot = PixelScene.renderText( "-", 6 );
+				RenderedText dot = PixelScene.renderText("-", 6);
 				dot.y = pos;
-				if (dotWidth == 0) {
+				if(dotWidth == 0)
+				{
 					dotWidth = dot.width();
 				}
-				add( dot );
+				add(dot);
 
-				RenderedTextMultiline item = PixelScene.renderMultiline( items[i], 6 );
-				item.maxWidth((int)(WIDTH - MARGIN * 2 - dotWidth));
+				RenderedTextMultiline item = PixelScene.renderMultiline(items[i], 6);
+				item.maxWidth((int) (WIDTH - MARGIN * 2 - dotWidth));
 				item.setPos(dot.x + dot.width(), pos);
-				add( item );
+				add(item);
 
 				pos += item.height();
 				float w = item.width();
-				if (w > width) {
+				if(w > width)
+				{
 					width = w;
 				}
 			}
@@ -137,18 +152,21 @@ public class WndClass extends WndTabbed {
 		}
 	}
 
-	private class MasteryTab extends Group {
+	private class MasteryTab extends Group
+	{
 
-		private static final int MARGIN	= 4;
+		private static final int MARGIN = 4;
 
 		public float height;
 		public float width;
 
-		public MasteryTab() {
+		public MasteryTab()
+		{
 			super();
 
 			String message = null;
-			switch (cl) {
+			switch(cl)
+			{
 				case WARRIOR:
 					message = HeroSubClass.GLADIATOR.desc() + "\n\n" + HeroSubClass.BERSERKER.desc();
 					break;
@@ -163,10 +181,10 @@ public class WndClass extends WndTabbed {
 					break;
 			}
 
-			RenderedTextMultiline text = PixelScene.renderMultiline( 6 );
-			text.text( message, WIDTH - MARGIN * 2 );
-			text.setPos( MARGIN, MARGIN );
-			add( text );
+			RenderedTextMultiline text = PixelScene.renderMultiline(6);
+			text.text(message, WIDTH - MARGIN * 2);
+			text.setPos(MARGIN, MARGIN);
+			add(text);
 
 			height = text.bottom() + MARGIN;
 			width = text.right() + MARGIN;

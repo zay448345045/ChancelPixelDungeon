@@ -36,91 +36,99 @@ import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
 
-public class TomeOfMastery extends Item {
-	
+public class TomeOfMastery extends Item
+{
+
 	public static final float TIME_TO_READ = 10;
-	
-	public static final String AC_READ	= "READ";
-	
+
+	public static final String AC_READ = "READ";
+
 	{
-		stackable = false;
 		image = ItemSpriteSheet.MASTERY;
-		
+
 		unique = true;
 	}
-	
+
 	@Override
-	public ArrayList<String> actions( Hero hero ) {
-		ArrayList<String> actions = super.actions( hero );
-		actions.add( AC_READ );
+	public ArrayList<String> actions(Hero hero)
+	{
+		ArrayList<String> actions = super.actions(hero);
+		actions.add(AC_READ);
 		return actions;
 	}
-	
+
 	@Override
-	public void execute( Hero hero, String action ) {
+	public void execute(Hero hero, String action)
+	{
 
-		super.execute( hero, action );
+		super.execute(hero, action);
 
-		if (action.equals( AC_READ )) {
-			
+		if(action.equals(AC_READ))
+		{
+
 			curUser = hero;
-			
+
 			HeroSubClass way1 = null;
 			HeroSubClass way2 = null;
-			switch (hero.heroClass) {
-			case WARRIOR:
-				way1 = HeroSubClass.GLADIATOR;
-				way2 = HeroSubClass.BERSERKER;
-				break;
-			case MAGE:
-				way1 = HeroSubClass.BATTLEMAGE;
-				way2 = HeroSubClass.WARLOCK;
-				break;
-			case ROGUE:
-				way1 = HeroSubClass.FREERUNNER;
-				way2 = HeroSubClass.ASSASSIN;
-				break;
-			case HUNTRESS:
-				way1 = HeroSubClass.SNIPER;
-				way2 = HeroSubClass.WARDEN;
-				break;
+			switch(hero.heroClass)
+			{
+				case WARRIOR:
+					way1 = HeroSubClass.GLADIATOR;
+					way2 = HeroSubClass.BERSERKER;
+					break;
+				case MAGE:
+					way1 = HeroSubClass.BATTLEMAGE;
+					way2 = HeroSubClass.WARLOCK;
+					break;
+				case ROGUE:
+					way1 = HeroSubClass.FREERUNNER;
+					way2 = HeroSubClass.ASSASSIN;
+					break;
+				case HUNTRESS:
+					way1 = HeroSubClass.SNIPER;
+					way2 = HeroSubClass.WARDEN;
+					break;
 			}
-			GameScene.show( new WndChooseWay( this, way1, way2 ) );
-			
+			GameScene.show(new WndChooseWay(this, way1, way2));
+
 		}
 	}
-	
+
 	@Override
-	public boolean doPickUp( Hero hero ) {
+	public boolean doPickUp(Hero hero)
+	{
 		Badges.validateMastery();
-		return super.doPickUp( hero );
+		return super.doPickUp(hero);
 	}
-	
+
 	@Override
-	public boolean isUpgradable() {
+	public boolean isUpgradable()
+	{
 		return false;
 	}
-	
+
 	@Override
-	public boolean isIdentified() {
+	public boolean isIdentified()
+	{
 		return true;
 	}
-	
-	public void choose( HeroSubClass way ) {
-		
-		detach( curUser.belongings.backpack );
-		
-		curUser.spend( TomeOfMastery.TIME_TO_READ );
+
+	public void choose(HeroSubClass way)
+	{
+
+		detach(curUser.belongings.backpack);
+
+		curUser.spend(TomeOfMastery.TIME_TO_READ);
 		curUser.busy();
-		
+
 		curUser.subClass = way;
-		
-		curUser.sprite.operate( curUser.pos );
-		Sample.INSTANCE.play( Assets.SND_MASTERY );
-		
-		SpellSprite.show( curUser, SpellSprite.MASTERY );
-		curUser.sprite.emitter().burst( Speck.factory( Speck.MASTERY ), 12 );
-		GLog.w( Messages.get(this, "way", way.title()) );
-		
+
+		curUser.sprite.operate(curUser.pos);
+		Sample.INSTANCE.play(Assets.SND_MASTERY);
+
+		SpellSprite.show(curUser, SpellSprite.MASTERY);
+		curUser.sprite.emitter().burst(Speck.factory(Speck.MASTERY), 12);
+		GLog.w(Messages.get(this, "way", way.title()));
+
 	}
 }

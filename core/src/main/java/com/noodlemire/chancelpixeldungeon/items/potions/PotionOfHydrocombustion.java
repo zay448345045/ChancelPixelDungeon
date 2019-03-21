@@ -29,8 +29,8 @@ import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 
-public class PotionOfHydrocombustion extends Potion {
-
+public class PotionOfHydrocombustion extends Potion
+{
 	{
 		initials = 5;
 
@@ -38,33 +38,29 @@ public class PotionOfHydrocombustion extends Potion {
 	}
 
 	@Override
-	public void shatter( int cell ) {
-
-		if (Dungeon.level.heroFOV[cell]) {
-			setKnown();
-
-			splash( cell );
-			Sample.INSTANCE.play( Assets.SND_SHATTER );
+	public void shatter(int cell)
+	{
+		if(Dungeon.level.heroFOV[cell])
+		{
+			splash(cell);
+			Sample.INSTANCE.play(Assets.SND_SHATTER);
 		}
 
-		for (int offset : PathFinder.NEIGHBOURS9){
-			if (!Dungeon.level.solid[cell+offset]) {
-
+		for(int offset : PathFinder.NEIGHBOURS9)
+			if(!Dungeon.level.solid[cell + offset])
 				GameScene.add(Blob.seed(cell + offset, 2, Fire.class));
-
-			}
-		}
 	}
 
 	@Override
 	public void setKnown()
 	{
-		defaultAction = AC_THROW;
 		super.setKnown();
+		if(isIdentified()) defaultAction = AC_THROW;
 	}
 
 	@Override
-	public int price() {
+	public int price()
+	{
 		return isKnown() ? 30 * quantity : super.price();
 	}
 }

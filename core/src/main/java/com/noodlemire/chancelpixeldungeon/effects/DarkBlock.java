@@ -24,36 +24,41 @@ package com.noodlemire.chancelpixeldungeon.effects;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.watabou.noosa.Gizmo;
 
-public class DarkBlock extends Gizmo{
+public class DarkBlock extends Gizmo
+{
 
 	private CharSprite target;
 
-	public DarkBlock( CharSprite target ) {
+	public DarkBlock(CharSprite target)
+	{
 		super();
 
 		this.target = target;
 	}
 
 	@Override
-	public void update() {
+	public void update()
+	{
 		super.update();
 
 		target.brightness(0.4f);
 
 	}
 
-	public void lighten() {
+	public void lighten()
+	{
 
 		target.resetColor();
 		killAndErase();
 
 	}
 
-	public static DarkBlock darken( CharSprite sprite ) {
+	public static DarkBlock darken(CharSprite sprite)
+	{
 
-		DarkBlock darkBlock = new DarkBlock( sprite );
-		if (sprite.parent != null)
-			sprite.parent.add( darkBlock );
+		DarkBlock darkBlock = new DarkBlock(sprite);
+		if(sprite.parent != null)
+			sprite.parent.add(darkBlock);
 
 		return darkBlock;
 	}

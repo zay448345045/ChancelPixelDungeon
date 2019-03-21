@@ -22,7 +22,6 @@
 package com.noodlemire.chancelpixeldungeon.items.weapon.missiles.darts;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Bless;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Invisibility;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Might;
@@ -34,11 +33,11 @@ public class DemonDart extends TippedDart
 	{
 		image = ItemSpriteSheet.DEMON_DART;
 	}
-	
+
 	@Override
 	public int proc(Char attacker, Char defender, int damage)
 	{
-		int cost = defender.HP / 2;
+		int cost = defender.HP() / 2;
 
 		if(cost > 0)
 		{
@@ -48,7 +47,7 @@ public class DemonDart extends TippedDart
 			Buff.prolong(defender, MindVision.class, cost);
 			Buff.prolong(defender, Invisibility.class, cost);
 		}
-		
+
 		return super.proc(attacker, defender, damage);
 	}
 }

@@ -23,7 +23,6 @@ package com.noodlemire.chancelpixeldungeon.actors.mobs;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Terror;
 import com.noodlemire.chancelpixeldungeon.items.Gold;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.BruteSprite;
@@ -31,60 +30,61 @@ import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
-public class Brute extends Mob {
-	
+public class Brute extends Mob
+{
 	{
 		spriteClass = BruteSprite.class;
-		
-		HP = HT = 40;
+
+		setHT(49, true);
 		defenseSkill = 15;
-		
+
 		EXP = 8;
 		maxLvl = 15;
-		
+
 		loot = Gold.class;
 		lootChance = 0.5f;
 	}
-	
+
 	private boolean enraged = false;
-	
+
 	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		enraged = HP < HT / 4;
+	public void restoreFromBundle(Bundle bundle)
+	{
+		super.restoreFromBundle(bundle);
+		enraged = HP() < HT() / 4;
 	}
-	
+
 	@Override
-	public int damageRoll() {
+	public int damageRoll()
+	{
 		return enraged ?
-			Random.NormalIntRange( 15, 45 ) :
-			Random.NormalIntRange( 6, 26 );
+				Random.NormalIntRange(15, 45) :
+				Random.NormalIntRange(6, 26);
 	}
-	
+
 	@Override
-	public int attackSkill( Char target ) {
+	public int attackSkill(Char target)
+	{
 		return 20;
 	}
-	
+
 	@Override
-	public int drRoll() {
+	public int drRoll()
+	{
 		return Random.NormalIntRange(0, 8);
 	}
-	
+
 	@Override
-	public void damage( int dmg, Object src ) {
-		super.damage( dmg, src );
-		
-		if (isAlive() && !enraged && HP < HT / 4) {
-			enraged = true;
-			spend( TICK );
-			if (Dungeon.level.heroFOV[pos]) {
-				sprite.showStatus( CharSprite.NEGATIVE, Messages.get(this, "enraged") );
-			}
-		}
-	}
-	
+	public void damage(int dmg, Object src)
 	{
-		immunities.add( Terror.class );
+		super.damage(dmg, src);
+
+		if(isAlive() && !enraged && HP() < HT() / 4)
+		{
+			enraged = true;
+			spend(TICK);
+			if(Dungeon.level.heroFOV[pos])
+				sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "enraged"));
+		}
 	}
 }

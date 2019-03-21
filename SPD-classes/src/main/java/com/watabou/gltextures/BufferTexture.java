@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,37 +33,42 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 
 //provides a native intbuffer implementation because android.graphics.bitmap is too slow
-public class BufferTexture extends SmartTexture {
-	
+public class BufferTexture extends SmartTexture
+{
+
 	public IntBuffer pixels;
-	
-	public BufferTexture(int w, int h) {
+
+	public BufferTexture(int w, int h)
+	{
 		super();
 		width = w;
 		height = h;
 		pixels = ByteBuffer.
-				allocateDirect( w * h * 4 ).
-				order( ByteOrder.nativeOrder() ).
+				allocateDirect(w * h * 4).
+				order(ByteOrder.nativeOrder()).
 				asIntBuffer();
 	}
-	
+
 	@Override
-	protected void generate() {
+	protected void generate()
+	{
 		int[] ids = new int[1];
-		GLES20.glGenTextures( 1, ids, 0 );
+		GLES20.glGenTextures(1, ids, 0);
 		id = ids[0];
 	}
-	
+
 	@Override
-	public void reload() {
+	public void reload()
+	{
 		super.reload();
 		update();
 	}
-	
-	public void update(){
+
+	public void update()
+	{
 		bind();
-		filter( Texture.LINEAR, Texture.LINEAR );
-		wrap( Texture.CLAMP, Texture.CLAMP);
+		filter(Texture.LINEAR, Texture.LINEAR);
+		wrap(Texture.CLAMP, Texture.CLAMP);
 		pixels.position(0);
 		GLES20.glTexImage2D(
 				GLES20.GL_TEXTURE_2D,
@@ -71,15 +79,16 @@ public class BufferTexture extends SmartTexture {
 				0,
 				GLES20.GL_RGBA,
 				GLES20.GL_UNSIGNED_BYTE,
-				pixels );
+				pixels);
 	}
-	
+
 	//allows partially updating the texture
-	public void update(int top, int bottom){
+	public void update(int top, int bottom)
+	{
 		bind();
-		filter( Texture.LINEAR, Texture.LINEAR );
-		wrap( Texture.CLAMP, Texture.CLAMP);
-		pixels.position(top*width);
+		filter(Texture.LINEAR, Texture.LINEAR);
+		wrap(Texture.CLAMP, Texture.CLAMP);
+		pixels.position(top * width);
 		GLES20.glTexSubImage2D(GLES20.GL_TEXTURE_2D,
 				0,
 				0,

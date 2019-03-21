@@ -26,32 +26,37 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 
-public class Corruption extends Buff {
-
+public class Corruption extends Buff
+{
 	{
 		type = buffType.NEGATIVE;
 	}
 
 	private float buildToDamage = 0f;
-	
+
 	@Override
-	public boolean attachTo(Char target) {
-		if (super.attachTo(target)){
+	public boolean attachTo(Char target)
+	{
+		if(super.attachTo(target))
+		{
 			target.alignment = Char.Alignment.ALLY;
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}
-	
-	@Override
-	public boolean act() {
-		buildToDamage += target.HT/200f;
 
-		int damage = (int)buildToDamage;
+	@Override
+	public boolean act()
+	{
+		buildToDamage += target.HT() / 200f;
+
+		int damage = (int) buildToDamage;
 		buildToDamage -= damage;
 
-		if (damage > 0)
+		if(damage > 0)
 			target.damage(damage, this);
 
 		spend(TICK);
@@ -60,23 +65,27 @@ public class Corruption extends Buff {
 	}
 
 	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add( CharSprite.State.DARKENED );
-		else if (target.invisible == 0) target.sprite.remove( CharSprite.State.DARKENED );
+	public void fx(boolean on)
+	{
+		if(on) target.sprite.add(CharSprite.State.DARKENED);
+		else if(target.invisible == 0) target.sprite.remove(CharSprite.State.DARKENED);
 	}
 
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.CORRUPT;
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc");
 	}
 }

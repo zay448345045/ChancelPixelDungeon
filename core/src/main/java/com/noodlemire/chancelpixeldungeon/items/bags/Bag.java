@@ -34,167 +34,219 @@ import com.watabou.utils.Bundle;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Bag extends Item implements Iterable<Item> {
+public class Bag extends Item implements Iterable<Item>
+{
 
-	public static final String AC_OPEN	= "OPEN";
-	
+	public static final String AC_OPEN = "OPEN";
+
 	{
 		image = 11;
-		
+
 		defaultAction = AC_OPEN;
 
 		unique = true;
 	}
-	
+
 	public Char owner;
-	
+
 	public ArrayList<Item> items = new ArrayList<Item>();
-	
+
 	public int size = 1;
-	
+
 	@Override
-	public void execute( Hero hero, String action ) {
+	public void execute(Hero hero, String action)
+	{
 
-		super.execute( hero, action );
+		super.execute(hero, action);
 
-		if (action.equals( AC_OPEN )) {
-			
-			GameScene.show( new WndBag( this, null, WndBag.Mode.ALL, null ) );
-			
+		if(action.equals(AC_OPEN))
+		{
+
+			GameScene.show(new WndBag(this, null, WndBag.Mode.ALL, null));
+
 		}
 	}
-	
-	@Override
-	public boolean collect( Bag container ) {
 
-		for (Item item : container.items.toArray( new Item[0] )) {
-			if (grab( item )) {
+	@Override
+	public boolean collect(Bag container)
+	{
+
+		for(Item item : container.items.toArray(new Item[0]))
+		{
+			if(grab(item))
+			{
 				int slot = Dungeon.quickslot.getSlot(item);
 				item.detachAll(container);
-				if (!item.collect(this)) {
+				if(!item.collect(this))
+				{
 					item.collect(container);
 				}
-				if (slot != -1) {
+				if(slot != -1)
+				{
 					Dungeon.quickslot.setSlot(slot, item);
 				}
 			}
 		}
 
-		if (super.collect( container )) {
-			
+		if(super.collect(container))
+		{
+
 			owner = container.owner;
-			
-			Badges.validateAllBagsBought( this );
-			
+
+			Badges.validateAllBagsBought(this);
+
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}
 
 	@Override
-	public void onDetach( ) {
+	public void onDetach()
+	{
 		this.owner = null;
-		for (Item item : items)
+		for(Item item : items)
 			Dungeon.quickslot.clearItem(item);
 		updateQuickslot();
 	}
 
 	@Override
-	public boolean isUpgradable() {
+	public boolean isUpgradable()
+	{
 		return false;
-	}
-	
-	@Override
-	public boolean isIdentified() {
-		return true;
-	}
-	
-	public void clear() {
-		items.clear();
-	}
-	
-	public void resurrect() {
-		for (Item item : items.toArray(new Item[0])){
-			if (!item.unique) items.remove(item);
-		}
-	}
-	
-	private static final String ITEMS	= "inventory";
-	
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( ITEMS, items );
 	}
 
 	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		for (Bundlable item : bundle.getCollection( ITEMS )) {
-			if (item != null) ((Item)item).collect( this );
+	public boolean isIdentified()
+	{
+		return true;
+	}
+
+	public void clear()
+	{
+		items.clear();
+	}
+
+	public void resurrect()
+	{
+		for(Item item : items.toArray(new Item[0]))
+		{
+			if(!item.unique) items.remove(item);
 		}
-    }
-	
-	public boolean contains( Item item ) {
-		for (Item i : items) {
-			if (i == item) {
+	}
+
+	private static final String ITEMS = "inventory";
+
+	@Override
+	public void storeInBundle(Bundle bundle)
+	{
+		super.storeInBundle(bundle);
+		bundle.put(ITEMS, items);
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle)
+	{
+		super.restoreFromBundle(bundle);
+		for(Bundlable item : bundle.getCollection(ITEMS))
+		{
+			if(item != null) ((Item) item).collect(this);
+		}
+	}
+
+	public boolean contains(Item item)
+	{
+		for(Item i : items)
+		{
+			if(i == item)
+			{
 				return true;
-			} else if (i instanceof Bag && ((Bag)i).contains( item )) {
+			}
+			else if(i instanceof Bag && ((Bag) i).contains(item))
+			{
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	public boolean grab( Item item ) {
+
+	public boolean contains(Class<? extends Item> target)
+	{
+		for(Item i : items)
+			if(i.getClass().equals(target))
+				return true;
+			else if(i instanceof Bag && ((Bag) i).contains(target))
+				return true;
+
+		return false;
+	}
+
+	public boolean grab(Item item)
+	{
 		return false;
 	}
 
 	@Override
-	public Iterator<Item> iterator() {
+	public Iterator<Item> iterator()
+	{
 		return new ItemIterator();
 	}
-	
-	private class ItemIterator implements Iterator<Item> {
+
+	private class ItemIterator implements Iterator<Item>
+	{
 
 		private int index = 0;
 		private Iterator<Item> nested = null;
-		
+
 		@Override
-		public boolean hasNext() {
-			if (nested != null) {
+		public boolean hasNext()
+		{
+			if(nested != null)
+			{
 				return nested.hasNext() || index < items.size();
-			} else {
+			}
+			else
+			{
 				return index < items.size();
 			}
 		}
 
 		@Override
-		public Item next() {
-			if (nested != null && nested.hasNext()) {
-				
+		public Item next()
+		{
+			if(nested != null && nested.hasNext())
+			{
+
 				return nested.next();
-				
-			} else {
-				
+
+			}
+			else
+			{
+
 				nested = null;
-				
-				Item item = items.get( index++ );
-				if (item instanceof Bag) {
-					nested = ((Bag)item).iterator();
+
+				Item item = items.get(index++);
+				if(item instanceof Bag)
+				{
+					nested = ((Bag) item).iterator();
 				}
-				
+
 				return item;
 			}
 		}
 
 		@Override
-		public void remove() {
-			if (nested != null) {
+		public void remove()
+		{
+			if(nested != null)
+			{
 				nested.remove();
-			} else {
-				items.remove( index );
+			}
+			else
+			{
+				items.remove(index);
 			}
 		}
 	}

@@ -30,22 +30,25 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.Random;
 
-public class Dazzling extends Weapon.Enchantment {
+public class Dazzling extends Weapon.Enchantment
+{
 
-	private static ItemSprite.Glowing YELLOW = new ItemSprite.Glowing( 0xFFFF00 );
+	private static ItemSprite.Glowing YELLOW = new ItemSprite.Glowing(0xFFFF00);
 
 	@Override
-	public int proc(Weapon weapon, Char attacker, Char defender, int damage) {
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
 		// lvl 0 - 20%
 		// lvl 1 - 33%
 		// lvl 2 - 43%
-		int level = Math.max( 0, weapon.level() );
+		int level = Math.max(0, weapon.level());
 
-		if (Random.Int( level + 5 ) >= 4) {
+		if(Random.Int(level + 5) >= 4)
+		{
 
-			Buff.prolong( defender, Blindness.class, Random.Float( 1f, 1f + level ) );
-			Buff.prolong( defender, Cripple.class, Random.Float( 1f, 1f + level/2f ) );
-			defender.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 6 );
+			Buff.prolong(defender, Blindness.class, Random.Float(1f, 1f + level));
+			Buff.prolong(defender, Cripple.class, Random.Float(1f, 1f + level / 2f));
+			defender.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 6);
 
 		}
 
@@ -53,7 +56,8 @@ public class Dazzling extends Weapon.Enchantment {
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return YELLOW;
 	}
 

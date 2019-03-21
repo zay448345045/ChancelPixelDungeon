@@ -22,8 +22,11 @@
 package com.noodlemire.chancelpixeldungeon.plants;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
+import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Fire;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Freezing;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.FrostImbue;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfFrost;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfInvisibility;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfThunderstorm;
@@ -31,27 +34,29 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.BArray;
 import com.watabou.utils.PathFinder;
 
-public class Icecap extends Plant {
-	
+public class Icecap extends Plant
+{
 	{
 		image = 1;
 	}
-	
+
 	@Override
-	public void activate() {
-		
-		PathFinder.buildDistanceMap( pos, BArray.not( Dungeon.level.losBlocking, null ), 1 );
-		
-		Fire fire = (Fire)Dungeon.level.blobs.get( Fire.class );
-		
-		for (int i=0; i < PathFinder.distance.length; i++) {
-			if (PathFinder.distance[i] < Integer.MAX_VALUE) {
-				Freezing.affect( i, fire );
-			}
-		}
+	public void activate(Char ch, boolean doWardenBonus)
+	{
+		if(doWardenBonus)
+			Buff.affect(ch, FrostImbue.class);
+
+		PathFinder.buildDistanceMap(pos, BArray.not(Dungeon.level.losBlocking, null), 1);
+
+		Fire fire = (Fire) Dungeon.level.blobs.get(Fire.class);
+
+		for(int i = 0; i < PathFinder.distance.length; i++)
+			if(PathFinder.distance[i] < Integer.MAX_VALUE)
+				Freezing.affect(i, fire);
 	}
-	
-	public static class Seed extends Plant.Seed {
+
+	public static class Seed extends Plant.Seed
+	{
 		{
 			image = ItemSpriteSheet.SEED_ICECAP;
 

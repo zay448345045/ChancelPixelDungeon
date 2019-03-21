@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,8 +40,8 @@ package com.watabou.glwrap;
 
 //DO NOT REFERENCE THIS CLASS ON DEVICES API 9 AND ABOVE, use android.opengl.GLES20 instead.
 @SuppressWarnings("JniMissingFunction")
-public class FroyoGLES20Fix {
-
+public class FroyoGLES20Fix
+{
 	static
 	{
 		System.loadLibrary("FroyoGLES20Fix");
@@ -47,5 +50,4 @@ public class FroyoGLES20Fix {
 	native public static void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, int offset);
 
 	native public static void glDrawElements(int mode, int count, int type, int offset);
-
 }

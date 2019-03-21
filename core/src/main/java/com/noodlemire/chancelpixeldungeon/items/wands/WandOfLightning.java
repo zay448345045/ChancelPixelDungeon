@@ -42,103 +42,117 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class WandOfLightning extends DamageWand {
-
+public class WandOfLightning extends DamageWand
+{
 	{
 		image = ItemSpriteSheet.WAND_LIGHTNING;
 	}
-	
+
 	private ArrayList<Char> affected = new ArrayList<>();
 
 	ArrayList<Lightning.Arc> arcs = new ArrayList<>();
 
-	public int min(int lvl){
-		return 5+lvl;
+	public int min(int lvl)
+	{
+		return 5 + lvl;
 	}
 
-	public int max(int lvl){
-		return 10+5*lvl;
+	public int max(int lvl)
+	{
+		return 10 + 5 * lvl;
 	}
-	
+
 	@Override
-	protected void onZap( Ballistica bolt ) {
-
+	protected void onZap(Ballistica bolt)
+	{
 		//lightning deals less damage per-target, the more targets that are hit.
-		float multipler = 0.4f + (0.6f/affected.size());
+		float multipler = 0.4f + (0.6f / affected.size());
 		//if the main target is in water, all affected take full damage
-		if (Dungeon.level.water[bolt.collisionPos]) multipler = 1f;
+		if(Dungeon.level.water[bolt.collisionPos]) multipler = 1f;
 
 		int min = 5 + level();
-		int max = 10 + 5*level();
+		int max = 10 + 5 * level();
 
-		for (Char ch : affected){
+		for(Char ch : affected)
+		{
 			processSoulMark(ch, chargesPerCast());
 			ch.damage(Math.round(damageRoll() * multipler), this);
 
-			if (ch == Dungeon.hero) Camera.main.shake( 2, 0.3f );
-			ch.sprite.centerEmitter().burst( SparkParticle.FACTORY, 3 );
+			if(ch == Dungeon.hero) Camera.main.shake(2, 0.3f);
+			ch.sprite.centerEmitter().burst(SparkParticle.FACTORY, 3);
 			ch.sprite.flash();
 		}
 
-		if (!curUser.isAlive()) {
-			Dungeon.fail( getClass() );
+		if(!curUser.isAlive())
+		{
+			Dungeon.fail(getClass());
 			GLog.n(Messages.get(this, "ondeath"));
 		}
 	}
 
 	@Override
-	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage) {
+	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage)
+	{
 		//acts like shocking enchantment
 		new Shocking().proc(staff, attacker, defender, damage);
 	}
 
-	private void arc( Char ch ) {
-		
-		affected.add( ch );
+	private void arc(Char ch)
+	{
+
+		affected.add(ch);
 
 		int dist;
-		if (Dungeon.level.water[ch.pos] && !ch.flying)
+		if(Dungeon.level.water[ch.pos] && !ch.flying)
 			dist = 2;
 		else
 			dist = 1;
 
-			PathFinder.buildDistanceMap( ch.pos, BArray.not( Dungeon.level.solid, null ), dist );
-			for (int i = 0; i < PathFinder.distance.length; i++) {
-				if (PathFinder.distance[i] < Integer.MAX_VALUE){
-					Char n = Actor.findChar( i );
-					                 //the hero is only zapped if they are adjacent
-					if (n != null && !(n == Dungeon.hero && PathFinder.distance[i] > 1) && !affected.contains( n )) {
-						arcs.add(new Lightning.Arc(ch.sprite.center(), n.sprite.center()));
-						arc(n);
-					}
+		PathFinder.buildDistanceMap(ch.pos, BArray.not(Dungeon.level.solid, null), dist);
+		for(int i = 0; i < PathFinder.distance.length; i++)
+		{
+			if(PathFinder.distance[i] < Integer.MAX_VALUE)
+			{
+				Char n = Actor.findChar(i);
+				//the hero is only zapped if they are adjacent
+				if(n != null && !(n == Dungeon.hero && PathFinder.distance[i] > 1) && !affected.contains(n))
+				{
+					arcs.add(new Lightning.Arc(ch.sprite.center(), n.sprite.center()));
+					arc(n);
 				}
+			}
 		}
 	}
-	
+
 	@Override
-	protected void fx( Ballistica bolt, Callback callback ) {
+	protected void fx(Ballistica bolt, Callback callback)
+	{
 
 		affected.clear();
 		arcs.clear();
 
 		int cell = bolt.collisionPos;
 
-		Char ch = Actor.findChar( cell );
-		if (ch != null) {
-			arcs.add( new Lightning.Arc(curUser.sprite.center(), ch.sprite.center()));
+		Char ch = Actor.findChar(cell);
+		if(ch != null)
+		{
+			arcs.add(new Lightning.Arc(curUser.sprite.center(), ch.sprite.center()));
 			arc(ch);
-		} else {
-			arcs.add( new Lightning.Arc(curUser.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(bolt.collisionPos)));
-			CellEmitter.center( cell ).burst( SparkParticle.FACTORY, 3 );
+		}
+		else
+		{
+			arcs.add(new Lightning.Arc(curUser.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(bolt.collisionPos)));
+			CellEmitter.center(cell).burst(SparkParticle.FACTORY, 3);
 		}
 
 		//don't want to wait for the effect before processing damage.
-		curUser.sprite.parent.addToFront( new Lightning( arcs, null ) );
+		curUser.sprite.parent.addToFront(new Lightning(arcs, null));
 		callback.call();
 	}
 
 	@Override
-	public void staffFx(MagesStaff.StaffParticle particle) {
+	public void staffFx(MagesStaff.StaffParticle particle)
+	{
 		particle.color(0xFFFFFF);
 		particle.am = 0.6f;
 		particle.setLifespan(0.6f);
@@ -151,5 +165,5 @@ public class WandOfLightning extends DamageWand {
 		particle.x -= dst;
 		particle.y += dst;
 	}
-	
+
 }

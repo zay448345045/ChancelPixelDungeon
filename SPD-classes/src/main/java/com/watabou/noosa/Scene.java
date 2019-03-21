@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,58 +27,60 @@ package com.watabou.noosa;
 import com.watabou.input.Keys;
 import com.watabou.utils.Signal;
 
-public class Scene extends Group {
-	
+public class Scene extends Group
+{
 	private Signal.Listener<Keys.Key> keyListener;
-	
-	public void create() {
-		Keys.event.add( keyListener = new Signal.Listener<Keys.Key>() {
+
+	public void create()
+	{
+		Keys.event.add(keyListener = new Signal.Listener<Keys.Key>()
+		{
 			@Override
-			public void onSignal( Keys.Key key ) {
-				if (Game.instance != null && key.pressed) {
-					switch (key.code) {
-					case Keys.BACK:
-						onBackPressed();
-						break;
-					case Keys.MENU:
-						onMenuPressed();
-						break;
+			public void onSignal(Keys.Key key)
+			{
+				if(Game.instance != null && key.pressed)
+				{
+					switch(key.code)
+					{
+						case Keys.BACK:
+							onBackPressed();
+							break;
+						case Keys.MENU:
+							onMenuPressed();
+							break;
 					}
 				}
 			}
-		} );
-	}
-	
-	@Override
-	public void destroy() {
-		Keys.event.remove( keyListener );
-		super.destroy();
-	}
-	
-	public void onPause() {
-		
-	}
-	
-	public void onResume(){
-	
-	}
-	
-	@Override
-	public void update() {
-		super.update();
-	}
-	
-	@Override
-	public Camera camera() {
-		return Camera.main;
-	}
-	
-	protected void onBackPressed() {
-		Game.instance.finish();
-	}
-	
-	protected void onMenuPressed() {
-		
+		});
 	}
 
+	@Override
+	public void destroy()
+	{
+		Keys.event.remove(keyListener);
+		super.destroy();
+	}
+
+	public void onPause() {}
+
+	public void onResume() {}
+
+	@Override
+	public void update()
+	{
+		super.update();
+	}
+
+	@Override
+	public Camera camera()
+	{
+		return Camera.main;
+	}
+
+	protected void onBackPressed()
+	{
+		Game.instance.finish();
+	}
+
+	protected void onMenuPressed() {}
 }

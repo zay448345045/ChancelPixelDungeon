@@ -25,18 +25,21 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 
-public class Flow extends Armor.Glyph {
+public class Flow extends Armor.Glyph
+{
 
-	private static ItemSprite.Glowing BLUE = new ItemSprite.Glowing( 0x0000FF );
+	private static ItemSprite.Glowing BLUE = new ItemSprite.Glowing(0x0000FF);
 
 	@Override
-	public int proc(Armor armor, Char attacker, Char defender, int damage) {
+	public int proc(Armor armor, Char attacker, Char defender, int damage)
+	{
 		//no proc effect, see armor.speedfactor for effect.
 		return damage;
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return BLUE;
 	}
 

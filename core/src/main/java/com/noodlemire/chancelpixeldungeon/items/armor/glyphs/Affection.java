@@ -31,29 +31,33 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite.Glowing;
 import com.watabou.utils.Random;
 
-public class Affection extends Glyph {
-	
-	private static ItemSprite.Glowing PINK = new ItemSprite.Glowing( 0xFF4488 );
-	
+public class Affection extends Glyph
+{
+
+	private static ItemSprite.Glowing PINK = new ItemSprite.Glowing(0xFF4488);
+
 	@Override
-	public int proc( Armor armor, Char attacker, Char defender, int damage) {
+	public int proc(Armor armor, Char attacker, Char defender, int damage)
+	{
 
 		int level = Math.max(0, armor.level());
-		
-		if (Random.Int( level / 2 + 10 ) >= 9) {
-			
-			int duration = Random.IntRange( 2, 5 );
 
-			Buff.affect( attacker, Charm.class, duration ).object = defender.id();
-			attacker.sprite.centerEmitter().start( Speck.factory( Speck.HEART ), 0.2f, 5 );
+		if(Random.Int(level / 2 + 10) >= 9)
+		{
+
+			int duration = Random.IntRange(2, 5);
+
+			Buff.affect(attacker, Charm.class, duration).object = defender.id();
+			attacker.sprite.centerEmitter().start(Speck.factory(Speck.HEART), 0.2f, 5);
 
 		}
-		
+
 		return damage;
 	}
 
 	@Override
-	public Glowing glowing() {
+	public Glowing glowing()
+	{
 		return PINK;
 	}
 }

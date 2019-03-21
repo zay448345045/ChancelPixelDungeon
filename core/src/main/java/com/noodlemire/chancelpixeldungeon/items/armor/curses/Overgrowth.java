@@ -28,41 +28,44 @@ import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.plants.BlandfruitBush;
 import com.noodlemire.chancelpixeldungeon.plants.Plant;
-import com.noodlemire.chancelpixeldungeon.plants.Deadnettle;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.Random;
 
-public class Overgrowth extends Armor.Glyph {
-	
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing( 0x000000 );
-	
+public class Overgrowth extends Armor.Glyph
+{
+	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing(0x000000);
+
 	@Override
-	public int proc(Armor armor, Char attacker, Char defender, int damage) {
-		
-		if ( Random.Int( 20 ) == 0) {
-			
+	public int proc(Armor armor, Char attacker, Char defender, int damage)
+	{
+		if(Random.Int(20) == 0)
+		{
 			Plant.Seed s;
-			do{
+			do
+			{
 				s = (Plant.Seed) Generator.random(Generator.Category.SEED);
-			} while (s instanceof BlandfruitBush.Seed || s instanceof Deadnettle.Seed);
-			
+			}
+			while(s instanceof BlandfruitBush.Seed);
+
 			Plant p = s.couch(defender.pos, null);
-			
-			p.activate();
-			CellEmitter.get( defender.pos ).burst( LeafParticle.LEVEL_SPECIFIC, 10 );
-			
+
+			//If this curse allowed warden benefits, it would be incredibly powerful
+			p.activate(defender, false);
+			CellEmitter.get(defender.pos).burst(LeafParticle.LEVEL_SPECIFIC, 10);
 		}
-		
+
 		return damage;
 	}
-	
+
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return BLACK;
 	}
-	
+
 	@Override
-	public boolean curse() {
+	public boolean curse()
+	{
 		return true;
 	}
 }

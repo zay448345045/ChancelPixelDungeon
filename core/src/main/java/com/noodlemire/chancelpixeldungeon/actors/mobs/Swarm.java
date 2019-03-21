@@ -40,112 +40,119 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class Swarm extends Mob {
-
+public class Swarm extends Mob
+{
 	{
 		spriteClass = SwarmSprite.class;
-		
-		HP = HT = 50;
+
+		setHT(50, true);
 		defenseSkill = 5;
 
 		EXP = 3;
 		maxLvl = 9;
-		
+
 		flying = true;
 
 		loot = new PotionOfHealing();
-		lootChance = 0.1667f; //by default, see rollToDropLoot()
+		lootChance = 0.75f; //by default, see rollToDropLoot()
 	}
-	
-	private static final float SPLIT_DELAY	= 1f;
-	
-	int generation	= 0;
-	
-	private static final String GENERATION	= "generation";
-	
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( GENERATION, generation );
-	}
-	
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		generation = bundle.getInt( GENERATION );
-		if (generation > 0) EXP = 0;
-	}
-	
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 1, 4 );
-	}
-	
-	@Override
-	public int defenseProc( Char enemy, int damage ) {
 
-		if (HP >= damage + 2) {
+	private static final float SPLIT_DELAY = 1f;
+
+	private int generation = 1;
+
+	private static final String GENERATION = "generation";
+
+	@Override
+	public void storeInBundle(Bundle bundle)
+	{
+		super.storeInBundle(bundle);
+		bundle.put(GENERATION, generation);
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle)
+	{
+		super.restoreFromBundle(bundle);
+		generation = bundle.getInt(GENERATION);
+		if(generation > 1) EXP = 0;
+	}
+
+	@Override
+	public int damageRoll()
+	{
+		return Random.NormalIntRange(1, 4);
+	}
+
+	@Override
+	public int defenseProc(Char enemy, int damage)
+	{
+		if(HP() >= damage + 2)
+		{
 			ArrayList<Integer> candidates = new ArrayList<>();
 			boolean[] solid = Dungeon.level.solid;
-			
+
 			int[] neighbours = {pos + 1, pos - 1, pos + Dungeon.level.width(), pos - Dungeon.level.width()};
-			for (int n : neighbours) {
-				if (!solid[n] && Actor.findChar( n ) == null) {
-					candidates.add( n );
-				}
-			}
-	
-			if (candidates.size() > 0) {
-				
+			for(int n : neighbours)
+				if(!solid[n] && Actor.findChar(n) == null)
+					candidates.add(n);
+
+			if(candidates.size() > 0)
+			{
 				Swarm clone = split();
-				clone.HP = (HP - damage) / 2;
-				clone.pos = Random.element( candidates );
+				clone.setHP((HP() - damage) / 2);
+				clone.pos = Random.element(candidates);
 				clone.state = clone.HUNTING;
-				
-				if (Dungeon.level.map[clone.pos] == Terrain.DOOR) {
-					Door.enter( clone.pos );
-				}
-				
-				GameScene.add( clone, SPLIT_DELAY );
-				Actor.addDelayed( new Pushing( clone, pos, clone.pos ), -1 );
-				
-				HP -= clone.HP;
+
+				if(Dungeon.level.map[clone.pos] == Terrain.DOOR)
+					Door.enter(clone.pos);
+
+				GameScene.add(clone, SPLIT_DELAY);
+				Actor.addDelayed(new Pushing(clone, pos, clone.pos), -1);
+
+				setHP(HP() - clone.HP());
 			}
 		}
-		
+
 		return super.defenseProc(enemy, damage);
 	}
-	
+
 	@Override
-	public int attackSkill( Char target ) {
+	public int attackSkill(Char target)
+	{
 		return 10;
 	}
-	
-	private Swarm split() {
+
+	private Swarm split()
+	{
 		Swarm clone = new Swarm();
 		clone.generation = generation + 1;
 		clone.EXP = 0;
-		if (buff( Burning.class ) != null) {
-			Buff.affect( clone, Burning.class ).reignite( clone );
+		if(buff(Burning.class) != null)
+		{
+			Buff.affect(clone, Burning.class).reignite();
 		}
-		if (buff( Poison.class ) != null) {
-			Buff.affect( clone, Poison.class ).set(2);
+		if(buff(Poison.class) != null)
+		{
+			Buff.affect(clone, Poison.class).set(2);
 		}
-		if (buff(Corruption.class ) != null) {
-			Buff.affect( clone, Corruption.class);
+		if(buff(Corruption.class) != null)
+		{
+			Buff.affect(clone, Corruption.class);
 		}
 		return clone;
 	}
-	
+
 	@Override
-	public void rollToDropLoot() {
-		lootChance = 1f/(6 * (generation+1) );
-		lootChance *= (5f - Dungeon.LimitedDrops.SWARM_HP.count) / 5f;
+	public void rollToDropLoot()
+	{
+		lootChance *= (1f / generation) * ((5 - Dungeon.LimitedDrops.SWARM_HP.count) / 5f);
 		super.rollToDropLoot();
 	}
-	
+
 	@Override
-	protected Item createLoot(){
+	protected Item createLoot()
+	{
 		Dungeon.LimitedDrops.SWARM_HP.count++;
 		return super.createLoot();
 	}

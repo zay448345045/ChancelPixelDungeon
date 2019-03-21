@@ -24,31 +24,49 @@ package com.noodlemire.chancelpixeldungeon.items.stones;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 
-public abstract class Runestone extends Item {
-	
+public abstract class Runestone extends Item
+{
+
 	{
-		stackable = true;
 		defaultAction = AC_THROW;
 	}
-	
+
 	@Override
-	protected void onThrow(int cell) {
-		if (Dungeon.level.pit[cell] || !defaultAction.equals(AC_THROW)){
-			super.onThrow( cell );
-		} else {
+	public boolean stackable()
+	{
+		return true;
+	}
+
+	@Override
+	protected void onThrow(int cell)
+	{
+		if(Dungeon.level.pit[cell] || !defaultAction.equals(AC_THROW))
+		{
+			super.onThrow(cell);
+		}
+		else
+		{
 			activate(cell);
 		}
 	}
-	
+
 	protected abstract void activate(int cell);
-	
+
 	@Override
-	public boolean isUpgradable() {
+	public boolean isUpgradable()
+	{
 		return false;
 	}
-	
+
 	@Override
-	public boolean isIdentified() {
+	public boolean isIdentified()
+	{
 		return true;
+	}
+
+	@Override
+	public int price()
+	{
+		return 10 * quantity;
 	}
 }

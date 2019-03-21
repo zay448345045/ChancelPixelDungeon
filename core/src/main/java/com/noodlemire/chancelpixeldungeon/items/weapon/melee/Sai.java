@@ -24,23 +24,23 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Sai extends MeleeWeapon {
-
+public class Sai extends MeleeWeapon
+{
 	{
 		image = ItemSpriteSheet.SAI;
-
 		tier = 3;
 		DLY = 0.5f; //2x speed
 	}
 
 	@Override
-	public int max(int lvl) {
-		return  Math.round(2.5f*(tier+1)) +     //10 base, down from 20
-				lvl*Math.round(0.5f*(tier+1));  //+2 per level, down from +4
+	public int max(int lvl)
+	{
+		return Math.round(super.max(lvl) * 0.5f); //10 base, down from 20, and +2 per level, down from +4
 	}
 
 	@Override
-	public int defenseFactor( Char owner ) {
-		return 3;	//3 extra defence
+	public int defenseFactor(Char owner)
+	{
+		return 3;    //3 extra defence
 	}
 }

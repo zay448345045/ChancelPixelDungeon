@@ -29,7 +29,8 @@ import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 
-public class ShockingTrap extends Trap {
+public class ShockingTrap extends Trap
+{
 
 	{
 		color = YELLOW;
@@ -37,17 +38,21 @@ public class ShockingTrap extends Trap {
 	}
 
 	@Override
-	public void activate() {
-		
-		if (Dungeon.level.heroFOV[pos]){
-			Sample.INSTANCE.play( Assets.SND_LIGHTNING );
+	public void activate()
+	{
+
+		if(Dungeon.level.heroFOV[pos])
+		{
+			Sample.INSTANCE.play(Assets.SND_LIGHTNING);
 		}
-		
-		for( int i : PathFinder.NEIGHBOURS9) {
-			if (!Dungeon.level.solid[pos + i]) {
+
+		for(int i : PathFinder.NEIGHBOURS9)
+		{
+			if(!Dungeon.level.solid[pos + i])
+			{
 				GameScene.add(Blob.seed(pos + i, 10, Electricity.class));
 			}
 		}
 	}
-	
+
 }

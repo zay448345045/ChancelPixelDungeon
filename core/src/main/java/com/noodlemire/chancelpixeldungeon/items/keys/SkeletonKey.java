@@ -23,17 +23,20 @@ package com.noodlemire.chancelpixeldungeon.items.keys;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class SkeletonKey extends Key {
-	
+public class SkeletonKey extends Key
+{
+
 	{
 		image = ItemSpriteSheet.SKELETON_KEY;
 	}
-	
-	public SkeletonKey() {
-		this( 0 );
+
+	public SkeletonKey()
+	{
+		this(0);
 	}
-	
-	public SkeletonKey( int depth ) {
+
+	public SkeletonKey(int depth)
+	{
 		super();
 		this.depth = depth;
 	}

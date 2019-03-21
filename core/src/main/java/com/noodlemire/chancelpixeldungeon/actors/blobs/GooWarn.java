@@ -22,13 +22,13 @@
 package com.noodlemire.chancelpixeldungeon.actors.blobs;
 
 
-
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.effects.BlobEmitter;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.GooSprite;
 
-public class GooWarn extends Blob {
+public class GooWarn extends Blob
+{
 
 	//cosmetic blob, used to warn noobs that goo's pump up should, infact, be avoided.
 
@@ -40,16 +40,20 @@ public class GooWarn extends Blob {
 	protected int pos;
 
 	@Override
-	protected void evolve() {
+	protected void evolve()
+	{
 
 		int cell;
 
-		for (int i = area.left; i < area.right; i++){
-			for (int j = area.top; j < area.bottom; j++){
-				cell = i + j*Dungeon.level.width();
+		for(int i = area.left; i < area.right; i++)
+		{
+			for(int j = area.top; j < area.bottom; j++)
+			{
+				cell = i + j * Dungeon.level.width();
 				off[cell] = cur[cell] > 0 ? cur[cell] - 1 : 0;
 
-				if (off[cell] > 0) {
+				if(off[cell] > 0)
+				{
 					volume += off[cell];
 				}
 			}
@@ -58,13 +62,15 @@ public class GooWarn extends Blob {
 	}
 
 	@Override
-	public void use( BlobEmitter emitter ) {
-		super.use( emitter );
-		emitter.pour(GooSprite.GooParticle.FACTORY, 0.03f );
+	public void use(BlobEmitter emitter)
+	{
+		super.use(emitter);
+		emitter.pour(GooSprite.GooParticle.FACTORY, 0.03f);
 	}
 
 	@Override
-	public String tileDesc() {
+	public String tileDesc()
+	{
 		return Messages.get(this, "desc");
 	}
 }

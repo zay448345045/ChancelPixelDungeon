@@ -22,19 +22,31 @@
 package com.noodlemire.chancelpixeldungeon.items.rings;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.messages.Messages;
 
-public class RingOfFuror extends Ring {
+import java.text.DecimalFormat;
 
+public class RingOfFuror extends Ring
+{
 	@Override
-	protected RingBuff buff( ) {
+	protected RingBuff buff()
+	{
 		return new Furor();
 	}
-	
-	public static float modifyAttackDelay( float delay, Char target){
-		//furor bonus only affects delay after 0.2
-		return (float)(0.2 + (delay - 0.2)*Math.pow(0.85, getBonus(target, Furor.class)));
+
+	public static float modifyAttackDelay(Char target)
+	{
+		return 1f / (float)Math.pow(1.105, getBonus(target, Furor.class));
 	}
 
-	public class Furor extends RingBuff {
+	public String statsInfo() {
+		if (isIdentified())
+			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (Math.pow(1.105f, soloBonus()) - 1f)));
+		else
+			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(10.5f));
+	}
+
+	public class Furor extends RingBuff
+	{
 	}
 }

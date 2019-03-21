@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,23 +27,25 @@ package com.watabou.noosa.tweeners;
 import com.watabou.noosa.Camera;
 import com.watabou.utils.PointF;
 
-public class CameraScrollTweener extends Tweener {
-
+public class CameraScrollTweener extends Tweener
+{
 	public Camera camera;
-	
+
 	public PointF start;
 	public PointF end;
-	
-	public CameraScrollTweener( Camera camera, PointF pos, float time ) {
-		super( camera, time );
-		
+
+	public CameraScrollTweener(Camera camera, PointF pos, float time)
+	{
+		super(camera, time);
+
 		this.camera = camera;
 		start = camera.scroll;
 		end = pos;
 	}
 
 	@Override
-	protected void updateValues( float progress ) {
-		camera.scroll = PointF.inter( start, end, progress );
+	protected void updateValues(float progress)
+	{
+		camera.scroll = PointF.inter(start, end, progress);
 	}
 }

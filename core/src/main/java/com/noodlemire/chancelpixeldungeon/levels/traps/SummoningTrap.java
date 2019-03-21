@@ -31,7 +31,8 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class SummoningTrap extends Trap {
+public class SummoningTrap extends Trap
+{
 
 	private static final float DELAY = 2f;
 
@@ -41,43 +42,52 @@ public class SummoningTrap extends Trap {
 	}
 
 	@Override
-	public void activate() {
+	public void activate()
+	{
 
-		if (Dungeon.bossLevel()) {
+		if(Dungeon.bossLevel())
+		{
 			return;
 		}
 
 		int nMobs = 1;
-		if (Random.Int( 2 ) == 0) {
+		if(Random.Int(2) == 0)
+		{
 			nMobs++;
-			if (Random.Int( 2 ) == 0) {
+			if(Random.Int(2) == 0)
+			{
 				nMobs++;
 			}
 		}
 
 		ArrayList<Integer> candidates = new ArrayList<>();
 
-		for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+		for(int i = 0; i < PathFinder.NEIGHBOURS8.length; i++)
+		{
 			int p = pos + PathFinder.NEIGHBOURS8[i];
-			if (Actor.findChar( p ) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
-				candidates.add( p );
+			if(Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p]))
+			{
+				candidates.add(p);
 			}
 		}
 
 		ArrayList<Integer> respawnPoints = new ArrayList<>();
 
-		while (nMobs > 0 && candidates.size() > 0) {
-			int index = Random.index( candidates );
+		while(nMobs > 0 && candidates.size() > 0)
+		{
+			int index = Random.index(candidates);
 
-			respawnPoints.add( candidates.remove( index ) );
+			respawnPoints.add(candidates.remove(index));
 			nMobs--;
 		}
 
 		ArrayList<Mob> mobs = new ArrayList<>();
 
-		for (Integer point : respawnPoints) {
+		for(Integer point : respawnPoints)
+		{
 			Mob mob = Dungeon.level.createMob();
-			if (mob != null) {
+			if(mob != null)
+			{
 				mob.state = mob.WANDERING;
 				mob.pos = point;
 				GameScene.add(mob, DELAY);
@@ -86,7 +96,8 @@ public class SummoningTrap extends Trap {
 		}
 
 		//important to process the visuals and pressing of cells last, so spawned mobs have a chance to occupy cells first
-		for (Mob mob : mobs){
+		for(Mob mob : mobs)
+		{
 			ScrollOfTeleportation.appear(mob, mob.pos);
 			//so hidden traps are triggered as well
 			Dungeon.level.press(mob.pos, mob, true);

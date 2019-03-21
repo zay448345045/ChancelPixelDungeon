@@ -28,7 +28,8 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 
-public class Chains extends Group {
+public class Chains extends Group
+{
 
 	private static final double A = 180 / Math.PI;
 
@@ -44,13 +45,15 @@ public class Chains extends Group {
 
 	private PointF from, to;
 
-	public Chains(int from, int to, Callback callback){
+	public Chains(int from, int to, Callback callback)
+	{
 		this(DungeonTilemap.tileCenterToWorld(from),
 				DungeonTilemap.tileCenterToWorld(to),
 				callback);
 	}
 
-	public Chains(PointF from, PointF to, Callback callback){
+	public Chains(PointF from, PointF to, Callback callback)
+	{
 		super();
 
 		this.callback = callback;
@@ -60,40 +63,47 @@ public class Chains extends Group {
 
 		float dx = to.x - from.x;
 		float dy = to.y - from.y;
-		distance = (float)Math.hypot(dx, dy);
+		distance = (float) Math.hypot(dx, dy);
 
 
-		duration = distance/300f + 0.1f;
+		duration = distance / 300f + 0.1f;
 
-		rotation = (float)(Math.atan2( dy, dx ) * A) + 90f;
+		rotation = (float) (Math.atan2(dy, dx) * A) + 90f;
 
-		numChains = Math.round(distance/6f)+1;
+		numChains = Math.round(distance / 6f) + 1;
 
 		chains = new Image[numChains];
-		for (int i = 0; i < chains.length; i++){
+		for(int i = 0; i < chains.length; i++)
+		{
 			chains[i] = new Image(Effects.get(Effects.Type.CHAIN));
 			chains[i].angle = rotation;
-			chains[i].origin.set( chains[i].width()/ 2, chains[i].height() );
+			chains[i].origin.set(chains[i].width() / 2, chains[i].height());
 			add(chains[i]);
 		}
 	}
 
 	@Override
-	public void update() {
-		if ((spent += Game.elapsed) > duration) {
+	public void update()
+	{
+		if((spent += Game.elapsed) > duration)
+		{
 
 			killAndErase();
-			if (callback != null) {
+			if(callback != null)
+			{
 				callback.call();
 			}
 
-		} else {
+		}
+		else
+		{
 			float dx = to.x - from.x;
 			float dy = to.y - from.y;
-			for (int i = 0; i < chains.length; i++) {
+			for(int i = 0; i < chains.length; i++)
+			{
 				chains[i].center(new PointF(
-						from.x + ((dx * (i / (float)chains.length)) * (spent/duration)),
-						from.y + ((dy * (i / (float)chains.length)) * (spent/duration))
+						from.x + ((dx * (i / (float) chains.length)) * (spent / duration)),
+						from.y + ((dy * (i / (float) chains.length)) * (spent / duration))
 				));
 			}
 		}

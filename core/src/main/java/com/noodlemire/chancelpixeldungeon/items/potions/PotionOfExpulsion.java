@@ -1,55 +1,75 @@
 package com.noodlemire.chancelpixeldungeon.items.potions;
 
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Bleeding;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Blindness;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.GasBlob;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Burning;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Charm;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Corrosion;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Cripple;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Drowsy;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Frost;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Ooze;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Poison;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Roots;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Sleep;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Slow;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Vertigo;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Weakness;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.DurationBuff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Expulsion;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
-import com.noodlemire.chancelpixeldungeon.items.armor.glyphs.Viscosity;
+import com.noodlemire.chancelpixeldungeon.items.artifacts.CloakOfShadows;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.EnvironmentScroll;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
-public class PotionOfRefreshment extends Potion
+public class PotionOfExpulsion extends Potion
 {
-    {
-        initials = 17;
-    }
+	public static final int MIN_RANGE = 1,
+			MAX_RANGE = 3;
 
-    @Override
-    public void apply(Hero hero)
-    {
-        setKnown();
+	{
+		initials = 17;
+	}
 
-        GLog.i(Messages.get(this, "refreshed"));
-        Buff.detach(hero, Poison.class);
-        Buff.detach(hero, Cripple.class);
-        Buff.detach(hero, Weakness.class);
-        Buff.detach(hero, Bleeding.class);
-        Buff.detach(hero, Drowsy.class);
-        Buff.detach(hero, Slow.class);
-        Buff.detach(hero, Vertigo.class);
-        Buff.detach(hero, Blindness.class);
-        Buff.detach(hero, Burning.class);
-        Buff.detach(hero, Charm.class);
-        Buff.detach(hero, Corrosion.class);
-        Buff.detach(hero, Frost.class);
-        Buff.detach(hero, Ooze.class);
-        Buff.detach(hero, Paralysis.class);
-        Buff.detach(hero, Roots.class);
-        Buff.detach(hero, Sleep.class);
-        Buff.detach(hero, Viscosity.DeferedDamage.class);
-    }
+	@Override
+	public void apply(Hero hero)
+	{
+		GLog.i(Messages.get(this, "refreshed"));
+
+		for(Buff buff : hero.buffs())
+		{
+			if(buff instanceof Expulsion)
+			{
+				Class<? extends Blob> blobclass;
+				float blobamount;
+
+				blobclass = ((Expulsion) buff).expulse();
+
+				if(buff instanceof DurationBuff)
+				{
+					blobamount = ((DurationBuff) buff).left();
+					buff.detach();
+				}
+				else if(buff instanceof CloakOfShadows.cloakStealth)
+				{
+					CloakOfShadows cloak = hero.belongings.misc1 instanceof CloakOfShadows
+							? (CloakOfShadows) hero.belongings.misc1
+							: (CloakOfShadows) hero.belongings.misc2;
+
+					blobamount = cloak.charges() * 3;
+					cloak.drain();
+				}
+				else
+				{
+					blobamount = buff.cooldown() + 1;
+					buff.detach();
+				}
+
+				if(blobclass != null)
+				{
+					//Gasses tend to vanish quickly at low amount due to how they spread, so give them an amount boost.
+					if(blobclass.getSuperclass() == GasBlob.class) blobamount *= 4;
+
+					//Give a min range requirement so that spreading blobs give players a chance to escape
+					//(Custom effects tend to be instant, so no min range is needed)
+					boolean[] aoe = EnvironmentScroll.fovAt(curUser.pos, MAX_RANGE, false);
+					boolean[] not = EnvironmentScroll.fovAt(curUser.pos, MIN_RANGE, false);
+
+					for(int i = 0; i < aoe.length; i++)
+						if(aoe[i] && !not[i])
+							GameScene.add(Blob.seed(i, (int) Math.ceil(blobamount), blobclass));
+				}
+			}
+		}
+	}
 }

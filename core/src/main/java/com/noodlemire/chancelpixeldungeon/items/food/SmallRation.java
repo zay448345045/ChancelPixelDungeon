@@ -24,15 +24,17 @@ package com.noodlemire.chancelpixeldungeon.items.food;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Hunger;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class SmallRation extends Food {
+public class SmallRation extends Food
+{
 
 	{
 		image = ItemSpriteSheet.OVERPRICED;
-		energy = Hunger.HUNGRY/2f;
+		energy = Hunger.HUNGRY / 2f;
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return 10 * quantity;
 	}
 }

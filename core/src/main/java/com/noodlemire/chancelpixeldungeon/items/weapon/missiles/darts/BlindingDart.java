@@ -27,17 +27,19 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 
-public class BlindingDart extends TippedDart {
-	
+public class BlindingDart extends TippedDart
+{
+
 	{
 		image = ItemSpriteSheet.BLINDING_DART;
 	}
-	
+
 	@Override
-	public int proc(Char attacker, Char defender, int damage) {
-		
+	public int proc(Char attacker, Char defender, int damage)
+	{
+
 		Buff.affect(defender, Blindness.class, 10f);
-		
+
 		return super.proc(attacker, defender, damage);
 	}
 }

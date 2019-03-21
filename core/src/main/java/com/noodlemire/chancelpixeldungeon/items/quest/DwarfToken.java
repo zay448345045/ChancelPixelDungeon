@@ -24,22 +24,30 @@ package com.noodlemire.chancelpixeldungeon.items.quest;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class DwarfToken extends Item {
-	
+public class DwarfToken extends Item
+{
+
 	{
 		image = ItemSpriteSheet.TOKEN;
-		
-		stackable = true;
+
 		unique = true;
 	}
-	
+
 	@Override
-	public boolean isUpgradable() {
+	public boolean stackable()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean isUpgradable()
+	{
 		return false;
 	}
-	
+
 	@Override
-	public boolean isIdentified() {
+	public boolean isIdentified()
+	{
 		return true;
 	}
 }

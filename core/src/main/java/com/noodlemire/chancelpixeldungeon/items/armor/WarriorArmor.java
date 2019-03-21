@@ -37,49 +37,58 @@ import com.watabou.noosa.Camera;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 
-public class WarriorArmor extends ClassArmor {
-	
-	private static int LEAP_TIME	= 1;
-	private static int SHOCK_TIME	= 3;
+public class WarriorArmor extends ClassArmor
+{
+
+	private static int LEAP_TIME = 1;
+	private static int SHOCK_TIME = 3;
 
 	{
 		image = ItemSpriteSheet.ARMOR_WARRIOR;
 	}
 
 	@Override
-	public void doSpecial() {
-		GameScene.selectCell( leaper );
+	public void doSpecial()
+	{
+		GameScene.selectCell(leaper);
 	}
-	
-	protected static CellSelector.Listener leaper = new  CellSelector.Listener() {
-		
+
+	protected static CellSelector.Listener leaper = new CellSelector.Listener()
+	{
+
 		@Override
-		public void onSelect( Integer target ) {
-			if (target != null && target != curUser.pos) {
-				
+		public void onSelect(Integer target)
+		{
+			if(target != null && target != curUser.pos)
+			{
+
 				Ballistica route = new Ballistica(curUser.pos, target, Ballistica.PROJECTILE);
 				int cell = route.collisionPos;
 
 				//can't occupy the same cell as another char, so move back one.
-				if (Actor.findChar( cell ) != null && cell != curUser.pos)
-					cell = route.path.get(route.dist-1);
+				if(Actor.findChar(cell) != null && cell != curUser.pos)
+					cell = route.path.get(route.dist - 1);
 
 
-				curUser.HP -= (curUser.HP / 3);
+				curUser.damage(curUser.HP() / 3, this);
 
 				final int dest = cell;
 				curUser.busy();
-				curUser.sprite.jump(curUser.pos, cell, new Callback() {
+				curUser.sprite.jump(curUser.pos, cell, new Callback()
+				{
 					@Override
-					public void call() {
+					public void call()
+					{
 						curUser.move(dest);
 						Dungeon.level.press(dest, curUser, true);
 						Dungeon.observe();
 						GameScene.updateFog();
 
-						for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+						for(int i = 0; i < PathFinder.NEIGHBOURS8.length; i++)
+						{
 							Char mob = Actor.findChar(curUser.pos + PathFinder.NEIGHBOURS8[i]);
-							if (mob != null && mob != curUser) {
+							if(mob != null && mob != curUser)
+							{
 								Buff.prolong(mob, Paralysis.class, SHOCK_TIME);
 							}
 						}
@@ -92,9 +101,10 @@ public class WarriorArmor extends ClassArmor {
 				});
 			}
 		}
-		
+
 		@Override
-		public String prompt() {
+		public String prompt()
+		{
 			return Messages.get(WarriorArmor.class, "prompt");
 		}
 	};

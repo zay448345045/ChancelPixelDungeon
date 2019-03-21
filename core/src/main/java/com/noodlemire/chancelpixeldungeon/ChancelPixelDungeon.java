@@ -37,32 +37,73 @@ import com.watabou.utils.DeviceCompat;
 
 import javax.microedition.khronos.opengles.GL10;
 
-public class ChancelPixelDungeon extends Game {
-	
-	//variable constants for specific older versions of shattered, used for data conversion
+public class ChancelPixelDungeon extends Game
+{
+	//variable constants for specific older versions of chancel, used for data conversion
 	//versions older than v0.6.0b are no longer supported, and data from them is ignored
-	public static final int v0_6_0b = 185;
-	
-	public static final int v0_6_2e = 229;
+	//(currently unused beyond checking for latest version)
 
-	public static final int v0_6_5  = 260;
-	
-	public ChancelPixelDungeon() {
-		super( WelcomeScene.class );
+	public static final int v0_1BETA3 = 303;
+
+	public ChancelPixelDungeon()
+	{
+		super(WelcomeScene.class);
+
+		//v0.1 Beta 2
+		com.watabou.utils.Bundle.addAlias(
+				com.noodlemire.chancelpixeldungeon.items.potions.PotionOfExpulsion.class,
+				"com.noodlemire.chancelpixeldungeon.items.potions.PotionOfRefreshment");
+
+		com.watabou.utils.Bundle.addAlias(
+				com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfBlessing.class,
+				"com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfMagicalInfusionc");
+
+		com.watabou.utils.Bundle.addAlias(
+				com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfCleansing.class,
+				"com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfRemoveCurse");
+
+		com.watabou.utils.Bundle.addAlias(
+				com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfReflection.class,
+				"com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfMirrorImage");
+
+		com.watabou.utils.Bundle.addAlias(
+				com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfSupernova.class,
+				"com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfPsionicBlast");
+
+		com.watabou.utils.Bundle.addAlias(
+				com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfIdentify.class,
+				"com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfMagicMapping");
+
+		com.watabou.utils.Bundle.addAlias(
+				com.noodlemire.chancelpixeldungeon.items.weapon.melee.Gloves.class,
+				"com.noodlemire.chancelpixeldungeon.items.weapon.melee.Knuckles");
+
+		com.watabou.utils.Bundle.addAlias(
+				com.noodlemire.chancelpixeldungeon.items.weapon.melee.Pavise.class,
+				"com.noodlemire.chancelpixeldungeon.items.weapon.melee.Greatshield");
+
+		com.watabou.utils.Bundle.addAlias(
+				com.noodlemire.chancelpixeldungeon.items.weapon.melee.Broadsword.class,
+				"com.noodlemire.chancelpixeldungeon.items.weapon.melee.Greatsword");
+
+		com.watabou.utils.Bundle.addAlias(
+				com.noodlemire.chancelpixeldungeon.items.stones.StoneOfPreservation.class,
+				"com.noodlemire.chancelpixeldungeon.items.stones.StoneOfEnchantment");
 	}
-	
+
 	@Override
-	protected void onCreate( Bundle savedInstanceState ) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 
 		updateSystemUI();
-		SPDSettings.landscape ( SPDSettings.landscape() );
-		
-		Music.INSTANCE.enable( SPDSettings.music() );
-		Music.INSTANCE.volume( SPDSettings.musicVol()/10f );
-		Sample.INSTANCE.enable( SPDSettings.soundFx() );
-		Sample.INSTANCE.volume( SPDSettings.SFXVol()/10f );
-		
+		CPDSettings.landscape(CPDSettings.landscape());
+
+		Music.INSTANCE.enable(CPDSettings.music());
+		Music.INSTANCE.volume(CPDSettings.musicVol() / 10f);
+		Sample.INSTANCE.enable(CPDSettings.soundFx());
+		Sample.INSTANCE.volume(CPDSettings.SFXVol() / 10f);
+
 		Music.setMuteListener();
 
 		Sample.INSTANCE.load(
@@ -113,138 +154,134 @@ public class ChancelPixelDungeon extends Game {
 				Assets.SND_BONES,
 				Assets.SND_BEE,
 				Assets.SND_DEGRADE,
-				Assets.SND_MIMIC );
+				Assets.SND_MIMIC);
 
-		if (!SPDSettings.systemFont()) {
+		if(!CPDSettings.systemFont())
 			RenderedText.setFont("pixelfont.ttf");
-		} else {
-			RenderedText.setFont( null );
-		}
-		
+		else
+			RenderedText.setFont(null);
 	}
 
 	@Override
-	public void onWindowFocusChanged( boolean hasFocus ) {
-		super.onWindowFocusChanged( hasFocus );
-		if (hasFocus) updateSystemUI();
+	public void onWindowFocusChanged(boolean hasFocus)
+	{
+		super.onWindowFocusChanged(hasFocus);
+		if(hasFocus) updateSystemUI();
 	}
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
+	public void onMultiWindowModeChanged(boolean isInMultiWindowMode)
+	{
 		super.onMultiWindowModeChanged(isInMultiWindowMode);
 		updateSystemUI();
 	}
 
-	public static void switchNoFade(Class<? extends PixelScene> c){
+	public static void switchNoFade(Class<? extends PixelScene> c)
+	{
 		switchNoFade(c, null);
 	}
 
-	public static void switchNoFade(Class<? extends PixelScene> c, SceneChangeCallback callback) {
+	public static void switchNoFade(Class<? extends PixelScene> c, SceneChangeCallback callback)
+	{
 		PixelScene.noFade = true;
-		switchScene( c, callback );
+		switchScene(c, callback);
 	}
 
 	@Override
-	public void onSurfaceChanged( GL10 gl, int width, int height ) {
-
-		super.onSurfaceChanged( gl, width, height );
+	public void onSurfaceChanged(GL10 gl, int width, int height)
+	{
+		super.onSurfaceChanged(gl, width, height);
 
 		updateDisplaySize();
-
 	}
 
-	public void updateDisplaySize(){
-		boolean landscape = SPDSettings.landscape();
-		
-		if (landscape != (width > height)) {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+	public void updateDisplaySize()
+	{
+		boolean landscape = CPDSettings.landscape();
+
+		if(landscape != (width > height))
+			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD)
 				instance.setRequestedOrientation(landscape ?
 						ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE :
 						ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-			} else {
+			else
 				instance.setRequestedOrientation(landscape ?
 						ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
 						ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-			}
-		}
-		
-		if (view.getMeasuredWidth() == 0 || view.getMeasuredHeight() == 0)
+
+		if(view.getMeasuredWidth() == 0 || view.getMeasuredHeight() == 0)
 			return;
 
 		dispWidth = view.getMeasuredWidth();
 		dispHeight = view.getMeasuredHeight();
 
-		float dispRatio = dispWidth / (float)dispHeight;
+		float dispRatio = dispWidth / (float) dispHeight;
 
 		float renderWidth = dispRatio > 1 ? PixelScene.MIN_WIDTH_L : PixelScene.MIN_WIDTH_P;
 		float renderHeight = dispRatio > 1 ? PixelScene.MIN_HEIGHT_L : PixelScene.MIN_HEIGHT_P;
 
 		//force power saver in this case as all devices must run at at least 2x scale.
-		if (dispWidth < renderWidth*2 || dispHeight < renderHeight*2)
-			SPDSettings.put( SPDSettings.KEY_POWER_SAVER, true );
+		if(dispWidth < renderWidth * 2 || dispHeight < renderHeight * 2)
+			CPDSettings.put(CPDSettings.KEY_POWER_SAVER, true);
 
-		if (SPDSettings.powerSaver()){
+		if(CPDSettings.powerSaver())
+		{
 
-			int maxZoom = (int)Math.min(dispWidth/renderWidth, dispHeight/renderHeight);
+			int maxZoom = (int) Math.min(dispWidth / renderWidth, dispHeight / renderHeight);
 
-			renderWidth *= Math.max( 2, Math.round(1f + maxZoom*0.4f));
-			renderHeight *= Math.max( 2, Math.round(1f + maxZoom*0.4f));
+			renderWidth *= Math.max(2, Math.round(1f + maxZoom * 0.4f));
+			renderHeight *= Math.max(2, Math.round(1f + maxZoom * 0.4f));
 
-			if (dispRatio > renderWidth / renderHeight){
+			if(dispRatio > renderWidth / renderHeight)
 				renderWidth = renderHeight * dispRatio;
-			} else {
+			else
 				renderHeight = renderWidth / dispRatio;
-			}
 
 			final int finalW = Math.round(renderWidth);
 			final int finalH = Math.round(renderHeight);
-			if (finalW != width || finalH != height){
-
-				runOnUiThread(new Runnable() {
+			if(finalW != width || finalH != height)
+				runOnUiThread(new Runnable()
+				{
 					@Override
-					public void run() {
+					public void run()
+					{
 						view.getHolder().setFixedSize(finalW, finalH);
 					}
 				});
-
-			}
-		} else {
-			runOnUiThread(new Runnable() {
+		}
+		else
+			runOnUiThread(new Runnable()
+			{
 				@Override
-				public void run() {
+				public void run()
+				{
 					view.getHolder().setSizeFromLayout();
 				}
 			});
-		}
 	}
 
-	public static void updateSystemUI() {
-
+	public static void updateSystemUI()
+	{
 		boolean fullscreen = Build.VERSION.SDK_INT < Build.VERSION_CODES.N
-								|| !instance.isInMultiWindowMode();
+		                     || !instance.isInMultiWindowMode();
 
-		if (fullscreen){
+		if(fullscreen)
 			instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-		} else {
+		else
 			instance.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
 					WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-		}
 
-		if (DeviceCompat.supportsFullScreen()){
-			if (fullscreen && SPDSettings.fullscreen()) {
+		if(DeviceCompat.supportsFullScreen())
+			if(fullscreen && CPDSettings.fullscreen())
 				instance.getWindow().getDecorView().setSystemUiVisibility(
 						View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
 						View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
 						View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-						View.SYSTEM_UI_FLAG_HIDE_NAVIGATION );
-			} else {
+						View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+			else
 				instance.getWindow().getDecorView().setSystemUiVisibility(
-						View.SYSTEM_UI_FLAG_LAYOUT_STABLE );
-			}
-		}
-
+						View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 	}
-	
 }

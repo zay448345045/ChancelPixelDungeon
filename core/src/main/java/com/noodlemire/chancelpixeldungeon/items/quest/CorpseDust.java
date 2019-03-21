@@ -38,36 +38,42 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class CorpseDust extends Item {
-	
+public class CorpseDust extends Item
+{
+
 	{
 		image = ItemSpriteSheet.DUST;
-		
+
 		cursed = true;
 		cursedKnown = true;
-		
+
 		unique = true;
 	}
 
 	@Override
-	public ArrayList<String> actions(Hero hero) {
+	public ArrayList<String> actions(Hero hero)
+	{
 		return new ArrayList<>(); //yup, no dropping this one
 	}
 
 	@Override
-	public boolean isUpgradable() {
+	public boolean isUpgradable()
+	{
 		return false;
 	}
-	
+
 	@Override
-	public boolean isIdentified() {
+	public boolean isIdentified()
+	{
 		return true;
 	}
 
 	@Override
-	public boolean doPickUp(Hero hero) {
-		if (super.doPickUp(hero)){
-			GLog.n( Messages.get( this, "chill") );
+	public boolean doPickUp(Hero hero)
+	{
+		if(super.doPickUp(hero))
+		{
+			GLog.n(Messages.get(this, "chill"));
 			Buff.affect(hero, DustGhostSpawner.class);
 			return true;
 		}
@@ -75,35 +81,44 @@ public class CorpseDust extends Item {
 	}
 
 	@Override
-	protected void onDetach() {
+	protected void onDetach()
+	{
 		DustGhostSpawner spawner = Dungeon.hero.buff(DustGhostSpawner.class);
-		if (spawner != null){
+		if(spawner != null)
+		{
 			spawner.dispel();
 		}
 	}
 
-	public static class DustGhostSpawner extends Buff {
+	public static class DustGhostSpawner extends Buff
+	{
 
 		int spawnPower = 0;
 
 		@Override
-		public boolean act() {
+		public boolean act()
+		{
 			spawnPower++;
 			int wraiths = 1; //we include the wraith we're trying to spawn
-			for (Mob mob : Dungeon.level.mobs){
-				if (mob instanceof Wraith){
+			for(Mob mob : Dungeon.level.mobs)
+			{
+				if(mob instanceof Wraith)
+				{
 					wraiths++;
 				}
 			}
 
-			int powerNeeded = Math.min(25, wraiths*wraiths);
+			int powerNeeded = Math.min(25, wraiths * wraiths);
 
-			if (powerNeeded <= spawnPower){
+			if(powerNeeded <= spawnPower)
+			{
 				spawnPower -= powerNeeded;
 				int pos = 0;
-				do{
+				do
+				{
 					pos = Random.Int(Dungeon.level.length());
-				} while (!Dungeon.level.heroFOV[pos] || !Dungeon.level.passable[pos] || Actor.findChar( pos ) != null);
+				}
+				while(!Dungeon.level.heroFOV[pos] || !Dungeon.level.passable[pos] || Actor.findChar(pos) != null);
 				Wraith.spawnAt(pos);
 				Sample.INSTANCE.play(Assets.SND_CURSED);
 			}
@@ -112,10 +127,13 @@ public class CorpseDust extends Item {
 			return true;
 		}
 
-		public void dispel(){
+		public void dispel()
+		{
 			detach();
-			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-				if (mob instanceof Wraith){
+			for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
+			{
+				if(mob instanceof Wraith)
+				{
 					mob.die(null);
 				}
 			}
@@ -124,15 +142,17 @@ public class CorpseDust extends Item {
 		private static String SPAWNPOWER = "spawnpower";
 
 		@Override
-		public void storeInBundle(Bundle bundle) {
+		public void storeInBundle(Bundle bundle)
+		{
 			super.storeInBundle(bundle);
-			bundle.put( SPAWNPOWER, spawnPower );
+			bundle.put(SPAWNPOWER, spawnPower);
 		}
 
 		@Override
-		public void restoreFromBundle(Bundle bundle) {
+		public void restoreFromBundle(Bundle bundle)
+		{
 			super.restoreFromBundle(bundle);
-			spawnPower = bundle.getInt( SPAWNPOWER );
+			spawnPower = bundle.getInt(SPAWNPOWER);
 		}
 	}
 

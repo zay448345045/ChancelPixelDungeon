@@ -27,21 +27,21 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.sprites.AlbinoSprite;
 import com.watabou.utils.Random;
 
-public class Albino extends Rat {
-
+public class Albino extends Rat
+{
 	{
 		spriteClass = AlbinoSprite.class;
-		
-		HP = HT = 15;
+
+		setHT(16, true);
 	}
-	
+
 	@Override
-	public int attackProc( Char enemy, int damage ) {
-		damage = super.attackProc( enemy, damage );
-		if (Random.Int( 2 ) == 0) {
-			Buff.affect( enemy, Bleeding.class ).set( damage );
-		}
-		
+	public int attackProc(Char enemy, int damage)
+	{
+		damage = super.attackProc(enemy, damage);
+		if(Random.Int(2) == 0)
+			Buff.affect(enemy, Bleeding.class).set(damage);
+
 		return damage;
 	}
 }

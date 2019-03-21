@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,103 +21,271 @@
 
 package com.noodlemire.chancelpixeldungeon.actors.mobs.npcs;
 
+import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
+import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.CorrosiveGas;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.ToxicGas;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Burning;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Corruption;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.MirrorGuard;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
+import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
+import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
+import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.MirrorSprite;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
-public class MirrorImage extends NPC {
-	
+public class MirrorImage extends NPC
+{
+	private boolean individual;
+
 	{
 		spriteClass = MirrorSprite.class;
-		
+
+		setHT(8, true);
+		defenseSkill = 1;
+
 		alignment = Alignment.ALLY;
 		state = HUNTING;
-	}
-	
-	public int tier;
-	
-	private int attack;
-	private int damage;
-	
-	private static final String TIER	= "tier";
-	private static final String ATTACK	= "attack";
-	private static final String DAMAGE	= "damage";
-	
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( TIER, tier );
-		bundle.put( ATTACK, attack );
-		bundle.put( DAMAGE, damage );
-	}
-	
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		tier = bundle.getInt( TIER );
-		attack = bundle.getInt( ATTACK );
-		damage = bundle.getInt( DAMAGE );
-	}
-	
-	public void duplicate( Hero hero ) {
-		tier = hero.tier();
-		attack = hero.attackSkill( hero );
-		damage = hero.damageRoll();
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return attack;
-	}
-	
-	@Override
-	public int damageRoll() {
-		return damage;
-	}
-	
-	@Override
-	public int attackProc( Char enemy, int damage ) {
-		damage = super.attackProc( enemy, damage );
 
-		destroy();
-		sprite.die();
-		
-		return damage;
+		WANDERING = new Wandering();
+
+		//before other mobs
+		actPriority = MOB_PRIO + 1;
 	}
-	
+
+	private Hero hero;
+	private int heroID;
+	public int armTier;
+
+	private int deathTimer = -1;
+
 	@Override
-	public CharSprite sprite() {
+	protected boolean act()
+	{
+		if(!isAlive())
+		{
+			deathTimer--;
+
+			if(deathTimer > 0)
+			{
+				sprite.alpha((deathTimer + 3) / 8f);
+				spend(TICK);
+			}
+			else
+			{
+				destroy();
+				sprite.die();
+			}
+			return true;
+		}
+
+		if(deathTimer != -1)
+		{
+			if(paralysed == 0) sprite.remove(CharSprite.State.PARALYSED);
+			deathTimer = -1;
+			sprite.resetColor();
+		}
+
+		if(hero == null)
+		{
+			hero = (Hero) Actor.findById(heroID);
+			if(hero == null)
+			{
+				destroy();
+				sprite.die();
+				return true;
+			}
+		}
+
+		if(hero.tier() != armTier)
+		{
+			armTier = hero.tier();
+			((MirrorSprite) sprite).updateArmor(armTier);
+		}
+
+		return super.act();
+	}
+
+	@Override
+	public void die(Object cause)
+	{
+		if(deathTimer == -1)
+		{
+			deathTimer = 5;
+			sprite.add(CharSprite.State.PARALYSED);
+		}
+	}
+
+	private static final String HEROID = "hero_id";
+	private static final String TIMER = "timer";
+
+	@Override
+	public void storeInBundle(Bundle bundle)
+	{
+		super.storeInBundle(bundle);
+		bundle.put(HEROID, heroID);
+		bundle.put(TIMER, deathTimer);
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle)
+	{
+		super.restoreFromBundle(bundle);
+		heroID = bundle.getInt(HEROID);
+		deathTimer = bundle.getInt(TIMER);
+	}
+
+	public void duplicate(Hero hero, int HP)
+	{
+		this.hero = hero;
+		heroID = this.hero.id();
+		setHT(MirrorGuard.maxHP(hero), false);
+		setHP(HP);
+	}
+
+	public void duplicateIndividual(Hero hero)
+	{
+		duplicate(hero, hero.HT());
+		individual = true;
+	}
+
+	public boolean isIndividual()
+	{
+		return individual;
+	}
+
+	@Override
+	public int damageRoll()
+	{
+		return Random.NormalIntRange(1 + hero.lvl / 8, 4 + hero.lvl / 2);
+	}
+
+	@Override
+	public int attackSkill(Char target)
+	{
+		return hero.attackSkill(target);
+	}
+
+	@Override
+	public int defenseSkill(Char enemy)
+	{
+		if(hero != null)
+		{
+			int baseEvasion = 4 + hero.lvl;
+			int heroEvasion = hero.defenseSkill(enemy);
+
+			//if the hero has more/less evasion, 50% of it is applied
+			return super.defenseSkill(enemy) * (baseEvasion + heroEvasion) / 2;
+		}
+		else
+			return 0;
+	}
+
+	@Override
+	public int drRoll()
+	{
+		if(hero != null)
+			return hero.drRoll();
+		else
+			return 0;
+	}
+
+	@Override
+	public int defenseProc(Char enemy, int damage)
+	{
+		damage = super.defenseProc(enemy, damage);
+		if(hero.belongings.armor != null)
+			return hero.belongings.armor.proc(enemy, this, damage);
+		else
+			return damage;
+	}
+
+	@Override
+	public float speed()
+	{
+		if(hero.belongings.armor != null)
+			return hero.belongings.armor.speedFactor(this, super.speed());
+
+		return super.speed();
+	}
+
+	@Override
+	public int attackProc(Char enemy, int damage)
+	{
+		if(enemy instanceof Mob)
+			((Mob) enemy).aggro(this);
+
+		return super.attackProc(enemy, damage);
+	}
+
+	@Override
+	public CharSprite sprite()
+	{
 		CharSprite s = super.sprite();
-		((MirrorSprite)s).updateArmor( tier );
+
+		hero = (Hero) Actor.findById(heroID);
+		if(hero != null)
+			armTier = hero.tier();
+
+		((MirrorSprite)s).updateArmor(armTier);
 		return s;
 	}
 
 	@Override
-	public boolean interact() {
-		
+	public boolean interact()
+	{
+		if(!Dungeon.level.passable[pos])
+			return true;
+
 		int curPos = pos;
-		
-		moveSprite( pos, Dungeon.hero.pos );
-		move( Dungeon.hero.pos );
-		
-		Dungeon.hero.sprite.move( Dungeon.hero.pos, curPos );
-		Dungeon.hero.move( curPos );
-		
-		Dungeon.hero.spend( 1 / Dungeon.hero.speed() );
+
+		moveSprite(pos, Dungeon.hero.pos);
+		move(Dungeon.hero.pos);
+
+		Dungeon.hero.sprite.move(Dungeon.hero.pos, curPos);
+		Dungeon.hero.move(curPos);
+
+		Dungeon.hero.spend(1 / Dungeon.hero.speed());
 		Dungeon.hero.busy();
 
 		return true;
 	}
-	
+
+	public void sendToBuff()
 	{
-		immunities.add( ToxicGas.class );
-		immunities.add( CorrosiveGas.class );
-		immunities.add( Burning.class );
+		Buff.affect(hero, MirrorGuard.class).set(HP());
+		destroy();
+		CellEmitter.get(pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
+		sprite.die();
+		Sample.INSTANCE.play(Assets.SND_TELEPORT);
+	}
+
+	{
+		immunities.add(ToxicGas.class);
+		immunities.add(CorrosiveGas.class);
+		immunities.add(Burning.class);
+		immunities.add(Corruption.class);
+	}
+
+	private class Wandering extends Mob.Wandering
+	{
+		@Override
+		public boolean act(boolean enemyInFOV, boolean justAlerted)
+		{
+			if(!individual && !enemyInFOV)
+			{
+				sendToBuff();
+				return true;
+			}
+			else
+				return super.act(enemyInFOV, justAlerted);
+		}
 	}
 }

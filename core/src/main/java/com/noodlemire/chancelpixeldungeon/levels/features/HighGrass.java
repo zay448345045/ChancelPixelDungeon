@@ -26,11 +26,13 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Barkskin;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
+import com.noodlemire.chancelpixeldungeon.actors.hero.HeroClass;
 import com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.particles.LeafParticle;
 import com.noodlemire.chancelpixeldungeon.items.Dewdrop;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
+import com.noodlemire.chancelpixeldungeon.items.GrassSeed;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.armor.glyphs.Camouflage;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.SandalsOfNature;
@@ -40,67 +42,85 @@ import com.noodlemire.chancelpixeldungeon.plants.BlandfruitBush;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.watabou.utils.Random;
 
-public class HighGrass {
+public class HighGrass
+{
 
-	public static void trample( Level level, int pos, Char ch ) {
-		
-		Level.set( pos, Terrain.GRASS );
-		GameScene.updateMap( pos );
-		
+	public static void trample(Level level, int pos, Char ch)
+	{
+
+		Level.set(pos, Terrain.GRASS);
+		GameScene.updateMap(pos);
+
 		int naturalismLevel = 0;
 
-		if (ch != null) {
-			SandalsOfNature.Naturalism naturalism = ch.buff( SandalsOfNature.Naturalism.class );
-			if (naturalism != null) {
-				if (!naturalism.isCursed()) {
+		if(ch != null)
+		{
+			SandalsOfNature.Naturalism naturalism = ch.buff(SandalsOfNature.Naturalism.class);
+			if(naturalism != null)
+			{
+				if(!naturalism.isCursed())
+				{
 					naturalismLevel = naturalism.itemLevel() + 1;
 					naturalism.charge();
-				} else {
+				}
+				else
+				{
 					naturalismLevel = -1;
 				}
 			}
 		}
 
-		if (naturalismLevel >= 0) {
+		if(naturalismLevel >= 0)
+		{
 			// Seed, scales from 1/16 to 1/4
-			if (Random.Int(16 - naturalismLevel * 3) == 0) {
+			if(Random.Int(16 - naturalismLevel * 3) == 0)
+			{
 				Item seed = Generator.random(Generator.Category.SEED);
 
-				if (seed instanceof BlandfruitBush.Seed) {
-					if (Random.Int(3) - Dungeon.LimitedDrops.BLANDFRUIT_SEED.count >= 0) {
+				if(seed instanceof BlandfruitBush.Seed)
+				{
+					if(Random.Int(3) - Dungeon.LimitedDrops.BLANDFRUIT_SEED.count >= 0)
+					{
 						level.drop(seed, pos).sprite.drop();
 						Dungeon.LimitedDrops.BLANDFRUIT_SEED.count++;
 					}
-				} else
+				}
+				else
 					level.drop(seed, pos).sprite.drop();
 			}
 
-			// Dew, scales from 1/6 to 1/3
-			if (Random.Int(24 - naturalismLevel*3) <= 3) {
+			//Dew, scales from 1/6 to 1/3
+			if(Random.Int(24 - naturalismLevel * 3) <= 3)
 				level.drop(new Dewdrop(), pos).sprite.drop();
-			}
+			//Grass seeds for Huntresses, scales from 1/3 to 2/3
+			if(ch instanceof Hero && ((Hero) ch).heroClass == HeroClass.HUNTRESS
+			   && Random.Int(12 - naturalismLevel * 3) <= 3)
+				level.drop(new GrassSeed(), pos).sprite.drop();
 		}
 
 		int leaves = 4;
-		
 
-		if (ch instanceof Hero) {
-			Hero hero = (Hero)ch;
+
+		if(ch instanceof Hero)
+		{
+			Hero hero = (Hero) ch;
 
 			// Barkskin
-			if (hero.subClass == HeroSubClass.WARDEN) {
-				Buff.affect(ch, Barkskin.class).level(ch.HT / 3);
+			if(hero.subClass == HeroSubClass.WARDEN)
+			{
+				Buff.affect(ch, Barkskin.class).set(ch.HT() / 3f);
 				leaves += 4;
 			}
 
 			//Camouflage
-			if (hero.belongings.armor != null && hero.belongings.armor.hasGlyph(Camouflage.class)){
+			if(hero.belongings.armor != null && hero.belongings.armor.hasGlyph(Camouflage.class))
+			{
 				Buff.affect(hero, Camouflage.Camo.class).set(3 + hero.belongings.armor.level());
 				leaves += 4;
 			}
 		}
-		
-		CellEmitter.get( pos ).burst( LeafParticle.LEVEL_SPECIFIC, leaves );
-		if (Dungeon.level.heroFOV[pos]) Dungeon.observe();
+
+		CellEmitter.get(pos).burst(LeafParticle.LEVEL_SPECIFIC, leaves);
+		if(Dungeon.level.heroFOV[pos]) Dungeon.observe();
 	}
 }

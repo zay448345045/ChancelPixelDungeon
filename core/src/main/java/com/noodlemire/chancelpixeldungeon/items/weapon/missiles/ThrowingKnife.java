@@ -30,66 +30,55 @@ import com.noodlemire.chancelpixeldungeon.items.rings.RingOfSharpshooting;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
 
-public class ThrowingKnife extends MissileWeapon {
-	
+public class ThrowingKnife extends MissileWeapon
+{
+	private Char enemy;
+
 	{
 		image = ItemSpriteSheet.THROWING_KNIFE;
-		
+		tier = 1;
 		bones = false;
-		
 	}
-	
+
 	@Override
-	public int min(int lvl) {
-		return 2;
-	}
-	
+	public int max(int lvl)
+	{
+		return Math.round(super.max(lvl) * 1.2f);
+	} //6, up from 5
+
 	@Override
-	public int max(int lvl) {
-		return 6;
-	}
-	
-	@Override
-	public int STRReq(int lvl) {
-		return 9;
-	}
-	
-	private Char enemy;
-	
-	@Override
-	protected void onThrow(int cell) {
+	protected void onThrow(int cell)
+	{
 		enemy = Actor.findChar(cell);
 		super.onThrow(cell);
 	}
-	
+
 	@Override
-	public int damageRoll(Char owner) {
-		if (owner instanceof Hero) {
-			Hero hero = (Hero)owner;
-			if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
+	public int damageRoll(Char owner)
+	{
+		if(owner instanceof Hero)
+		{
+			Hero hero = (Hero) owner;
+			if(enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero))
+			{
 				//deals 75% toward max to max on surprise, instead of min to max.
 				int diff = max() - min();
-				int damage = augment.damageFactor(Random.NormalIntRange(
-						min() + Math.round(diff*0.75f),
-						max()));
-				damage = Math.round(damage * RingOfSharpshooting.damageMultiplier( hero ));
+				int damage = hero.dynamicRoll(
+						min() + Math.round(diff * 0.75f),
+						max());
+				damage = Math.round(damage * RingOfSharpshooting.damageMultiplier(hero));
 				int exStr = hero.STR() - STRReq();
-				if (exStr > 0 && hero.heroClass == HeroClass.HUNTRESS) {
+				if(exStr > 0 && hero.heroClass == HeroClass.HUNTRESS)
 					damage += Random.IntRange(0, exStr);
-				}
 				return damage;
 			}
 		}
 		return super.damageRoll(owner);
 	}
-	
+
 	@Override
-	protected float durabilityPerUse() {
-		return super.durabilityPerUse()*2f;
-	}
-	
-	@Override
-	public int price() {
-		return 6 * quantity;
+	protected float durabilityPerUse()
+	{
+		return super.durabilityPerUse() * 2f;
 	}
 }

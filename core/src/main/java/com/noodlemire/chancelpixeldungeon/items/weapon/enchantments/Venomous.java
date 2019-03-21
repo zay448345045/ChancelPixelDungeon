@@ -31,29 +31,33 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite.Glowing;
 import com.watabou.utils.Random;
 
-public class Venomous extends Weapon.Enchantment {
+public class Venomous extends Weapon.Enchantment
+{
 
-	private static ItemSprite.Glowing PURPLE = new ItemSprite.Glowing( 0x4400AA );
-	
+	private static ItemSprite.Glowing PURPLE = new ItemSprite.Glowing(0x4400AA);
+
 	@Override
-	public int proc( Weapon weapon, Char attacker, Char defender, int damage ) {
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
 		// lvl 0 - 33%
 		// lvl 1 - 50%
 		// lvl 2 - 60%
-		int level = Math.max( 0, weapon.level() );
-		
-		if (Random.Int( level + 3 ) >= 2) {
-			
-			Buff.affect( defender, Poison.class ).extend( ((level/2) + 1) );
-			CellEmitter.center(defender.pos).burst( PoisonParticle.SPLASH, 5 );
+		int level = Math.max(0, weapon.level());
+
+		if(Random.Int(level + 3) >= 2)
+		{
+
+			Buff.affect(defender, Poison.class).extend(((level / 2) + 1));
+			CellEmitter.center(defender.pos).burst(PoisonParticle.SPLASH, 5);
 
 		}
 
 		return damage;
 	}
-	
+
 	@Override
-	public Glowing glowing() {
+	public Glowing glowing()
+	{
 		return PURPLE;
 	}
 }

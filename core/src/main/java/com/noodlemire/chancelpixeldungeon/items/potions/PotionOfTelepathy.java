@@ -28,27 +28,27 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
-public class PotionOfTelepathy extends Potion {
-
+public class PotionOfTelepathy extends Potion
+{
 	{
 		initials = 7;
 	}
 
 	@Override
-	public void apply( Hero hero ) {
-		setKnown();
-		Buff.affect( hero, MindVision.class, MindVision.DURATION );
+	public void apply(Hero hero)
+	{
+		Buff.affect(hero, MindVision.class, MindVision.DURATION);
 		Dungeon.observe();
-		
-		if (Dungeon.level.mobs.size() > 0) {
-			GLog.i( Messages.get(this, "see_mobs") );
-		} else {
-			GLog.i( Messages.get(this, "see_none") );
-		}
+
+		if(Dungeon.level.mobs.size() > 0)
+			GLog.i(Messages.get(this, "see_mobs"));
+		else
+			GLog.i(Messages.get(this, "see_none"));
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return isKnown() ? 40 * quantity : super.price();
 	}
 }

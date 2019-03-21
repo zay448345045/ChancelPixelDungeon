@@ -27,24 +27,24 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Healing;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfHealing;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class HealingDart extends TippedDart {
-	
+public class HealingDart extends TippedDart
+{
+
 	{
 		image = ItemSpriteSheet.HEALING_DART;
 	}
-	
+
 	@Override
-	public int proc(Char attacker, Char defender, int damage) {
-		
+	public int proc(Char attacker, Char defender, int damage)
+	{
 		//heals 30 hp at base, scaling with enemy HT
-		Buff.affect( defender, Healing.class ).setHeal((int)(0.5f*defender.HT + 30), 0.333f, 0);
-		PotionOfHealing.cure( defender );
-		
-		if (attacker.alignment == defender.alignment){
+		Buff.affect(defender, Healing.class).setHeal((int) (0.5f * defender.HT() + 30), 0.333f, 0);
+		PotionOfHealing.cure(defender);
+
+		if(attacker.alignment == defender.alignment)
 			return 0;
-		}
-		
+
 		return super.proc(attacker, defender, damage);
 	}
-	
+
 }

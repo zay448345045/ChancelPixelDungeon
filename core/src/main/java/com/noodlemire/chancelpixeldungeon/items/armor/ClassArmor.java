@@ -30,10 +30,10 @@ import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 
-abstract public class ClassArmor extends Armor {
-
+abstract public class ClassArmor extends Armor
+{
 	private static final String AC_SPECIAL = "SPECIAL";
-	
+
 	{
 		levelKnown = true;
 		cursedKnown = true;
@@ -43,114 +43,130 @@ abstract public class ClassArmor extends Armor {
 	}
 
 	private int armorTier;
-	
-	public ClassArmor() {
-		super( 6 );
+
+	ClassArmor()
+	{
+		super(6);
 	}
-	
-	public static ClassArmor upgrade ( Hero owner, Armor armor ) {
-		
+
+	public static ClassArmor upgrade(Hero owner, Armor armor)
+	{
+
 		ClassArmor classArmor = null;
-		
-		switch (owner.heroClass) {
-		case WARRIOR:
-			classArmor = new WarriorArmor();
-			BrokenSeal seal = armor.checkSeal();
-			if (seal != null) {
-				classArmor.affixSeal(seal);
-			}
-			break;
-		case ROGUE:
-			classArmor = new RogueArmor();
-			break;
-		case MAGE:
-			classArmor = new MageArmor();
-			break;
-		case HUNTRESS:
-			classArmor = new HuntressArmor();
-			break;
+
+		switch(owner.heroClass)
+		{
+			case WARRIOR:
+				classArmor = new WarriorArmor();
+				BrokenSeal seal = armor.checkSeal();
+				if(seal != null)
+				{
+					classArmor.affixSeal(seal);
+				}
+				break;
+			case ROGUE:
+				classArmor = new RogueArmor();
+				break;
+			case MAGE:
+				classArmor = new MageArmor();
+				break;
+			case HUNTRESS:
+				classArmor = new HuntressArmor();
+				break;
 		}
-		
+
 		classArmor.level(armor.level());
 		classArmor.armorTier = armor.tier;
 		classArmor.augment = armor.augment;
-		classArmor.inscribe( armor.glyph );
+		classArmor.inscribe(armor.glyph);
 		classArmor.identify();
-		
+
 		return classArmor;
 	}
 
-	private static final String ARMOR_TIER	= "armortier";
+	private static final String ARMOR_TIER = "armortier";
 
 	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle( bundle );
-		bundle.put( ARMOR_TIER, armorTier );
+	public void storeInBundle(Bundle bundle)
+	{
+		super.storeInBundle(bundle);
+		bundle.put(ARMOR_TIER, armorTier);
 	}
 
 	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle( bundle );
-		
-		armorTier = bundle.getInt( ARMOR_TIER );
+	public void restoreFromBundle(Bundle bundle)
+	{
+		super.restoreFromBundle(bundle);
+
+		armorTier = bundle.getInt(ARMOR_TIER);
 	}
-	
+
 	@Override
-	public ArrayList<String> actions( Hero hero ) {
-		ArrayList<String> actions = super.actions( hero );
-		if (hero.HP >= 3 && isEquipped( hero )) {
-			actions.add( AC_SPECIAL );
+	public ArrayList<String> actions(Hero hero)
+	{
+		ArrayList<String> actions = super.actions(hero);
+		if(hero.HP() >= 3 && isEquipped(hero))
+		{
+			actions.add(AC_SPECIAL);
 		}
 		return actions;
 	}
-	
+
 	@Override
-	public void execute( Hero hero, String action ) {
+	public void execute(Hero hero, String action)
+	{
+		super.execute(hero, action);
 
-		super.execute( hero, action );
-
-		if (action.equals(AC_SPECIAL)) {
-			
-			if (hero.HP < 3) {
-				GLog.w( Messages.get(this, "low_hp") );
-			} else if (!isEquipped( hero )) {
-				GLog.w( Messages.get(this, "not_equipped") );
-			} else {
+		if(action.equals(AC_SPECIAL))
+		{
+			if(hero.HP() < 3)
+				GLog.w(Messages.get(this, "low_hp"));
+			else if(!isEquipped(hero))
+				GLog.w(Messages.get(this, "not_equipped"));
+			else
+			{
 				curUser = hero;
 				Invisibility.dispel();
 				doSpecial();
 			}
-			
+
 		}
 	}
 
 	abstract public void doSpecial();
 
 	@Override
-	public int STRReq(int lvl) {
+	public int STRReq(int lvl)
+	{
 		lvl = Math.max(0, lvl);
 
 		//strength req decreases at +1,+3,+6,+10,etc.
-		return (8 + Math.round(armorTier * 2)) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
+		return (8 + Math.round(armorTier * 2)) - (int) (Math.sqrt(8 * lvl + 1) - 1) / 2;
 	}
 
 	@Override
-	public int DRMax(int lvl){
+	public int DRMax(int lvl)
+	{
 		int max = armorTier * (2 + lvl) + augment.defenseFactor(lvl);
-		if (lvl > max){
-			return ((lvl - max)+1)/2;
-		} else {
+		if(lvl > max)
+		{
+			return ((lvl - max) + 1) / 2;
+		}
+		else
+		{
 			return max;
 		}
 	}
-	
+
 	@Override
-	public boolean isIdentified() {
+	public boolean isIdentified()
+	{
 		return true;
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return 0;
 	}
 

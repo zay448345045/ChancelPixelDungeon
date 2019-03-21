@@ -23,16 +23,24 @@ package com.noodlemire.chancelpixeldungeon.levels.rooms.secret;
 
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.Scroll;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfBalance;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfCharm;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfCleansing;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfDarkness;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfDecay;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfIdentify;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfInsulation;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfLullaby;
-import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfMagicMapping;
-import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfMirrorImage;
-import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfPsionicBlast;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfMagma;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfNecromancy;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfRage;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfRecharging;
-import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfReflection;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfSupernova;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTaunt;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTerror;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.noodlemire.chancelpixeldungeon.levels.Level;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.levels.painters.Painter;
@@ -41,64 +49,79 @@ import com.watabou.utils.Random;
 import java.util.HashMap;
 
 //TODO specific implementation
-public class SecretLibraryRoom extends SecretRoom {
-	
+public class SecretLibraryRoom extends SecretRoom
+{
 	@Override
-	public int minWidth() {
+	public int minWidth()
+	{
 		return Math.max(7, super.minWidth());
 	}
-	
+
 	@Override
-	public int minHeight() {
+	public int minHeight()
+	{
 		return Math.max(7, super.minHeight());
 	}
-	
+
 	private static HashMap<Class<? extends Scroll>, Float> scrollChances = new HashMap<>();
-	static{
-		scrollChances.put( ScrollOfIdentify.class,      1f );
-		scrollChances.put( ScrollOfTeleportation.class, 1f );
-		scrollChances.put( ScrollOfRemoveCurse.class,   3f );
-		scrollChances.put( ScrollOfRecharging.class,    1f );
-		scrollChances.put( ScrollOfMagicMapping.class,  3f );
-		scrollChances.put( ScrollOfRage.class,          1f );
-		scrollChances.put( ScrollOfTerror.class,        2f );
-		scrollChances.put( ScrollOfLullaby.class,       2f );
-		scrollChances.put( ScrollOfPsionicBlast.class,  5f );
-		scrollChances.put( ScrollOfMirrorImage.class,   1f );
+
+	static
+	{
+		scrollChances.put(ScrollOfIdentify.class, 1f);
+		scrollChances.put(ScrollOfTeleportation.class, 1f);
+		scrollChances.put(ScrollOfCleansing.class, 3f);
+		scrollChances.put(ScrollOfRecharging.class, 1f);
+		scrollChances.put(ScrollOfRage.class, 1f);
+		scrollChances.put(ScrollOfTerror.class, 2f);
+		scrollChances.put(ScrollOfLullaby.class, 2f);
+		scrollChances.put(ScrollOfSupernova.class, 5f);
+		scrollChances.put(ScrollOfReflection.class, 1f);
+		scrollChances.put(ScrollOfDecay.class, 4f);
+		scrollChances.put(ScrollOfBalance.class, 2f);
+		scrollChances.put(ScrollOfDarkness.class, 1f);
+		scrollChances.put(ScrollOfNecromancy.class, 2f);
+		scrollChances.put(ScrollOfTransmutation.class, 5f);
+		scrollChances.put(ScrollOfCharm.class, 2f);
+		scrollChances.put(ScrollOfInsulation.class, 2f);
+		scrollChances.put(ScrollOfTaunt.class, 2f);
+		scrollChances.put(ScrollOfMagma.class, 2f);
 	}
-	
-	public void paint( Level level ) {
-		
-		Painter.fill( level, this, Terrain.WALL );
-		Painter.fill( level, this, 1, Terrain.BOOKSHELF );
-		
+
+	public void paint(Level level)
+	{
+		Painter.fill(level, this, Terrain.WALL);
+		Painter.fill(level, this, 1, Terrain.BOOKSHELF);
+
 		Painter.fillEllipse(level, this, 2, Terrain.EMPTY_SP);
-		
+
 		Door entrance = entrance();
-		if (entrance.x == left || entrance.x == right){
+		if(entrance.x == left || entrance.x == right)
 			Painter.drawInside(level, this, entrance, (width() - 3) / 2, Terrain.EMPTY_SP);
-		} else {
+		else
 			Painter.drawInside(level, this, entrance, (height() - 3) / 2, Terrain.EMPTY_SP);
-		}
-		entrance.set( Door.Type.HIDDEN );
-		
-		int n = Random.IntRange( 2, 3 );
+		entrance.set(Door.Type.HIDDEN);
+
+		int n = Random.IntRange(2, 3);
 		HashMap<Class<? extends Scroll>, Float> chances = new HashMap<>(scrollChances);
-		for (int i=0; i < n; i++) {
+		for(int i = 0; i < n; i++)
+		{
 			int pos;
-			do {
+			do
+			{
 				pos = level.pointToCell(random());
-			} while (level.map[pos] != Terrain.EMPTY_SP || level.heaps.get( pos ) != null);
-			
-			try{
-				Class<?extends Scroll> scrollCls = Random.chances(chances);
+			}
+			while(level.map[pos] != Terrain.EMPTY_SP || level.heaps.get(pos) != null);
+
+			try
+			{
+				Class<? extends Scroll> scrollCls = Random.chances(chances);
 				chances.put(scrollCls, 0f);
-				level.drop( scrollCls.newInstance(), pos );
-			} catch (Exception e){
+				level.drop(scrollCls.newInstance(), pos);
+			}
+			catch(Exception e)
+			{
 				ChancelPixelDungeon.reportException(e);
 			}
-			
 		}
 	}
-	
 }

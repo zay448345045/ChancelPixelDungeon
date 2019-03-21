@@ -24,12 +24,14 @@ package com.noodlemire.chancelpixeldungeon.utils;
 import com.watabou.utils.Random;
 
 //This class defines the parameters for seeds in ShatteredPD and contains a few convenience methods
-public class DungeonSeed {
+public class DungeonSeed
+{
 
 	private static long TOTAL_SEEDS = 5429503678976L; //26^9 possible seeds
 
-	public static long randomSeed(){
-		return Random.Long( TOTAL_SEEDS );
+	public static long randomSeed()
+	{
+		return Random.Long(TOTAL_SEEDS);
 	}
 
 	//Seed codes take the form @@@-@@@-@@@ where @ is any letter from A to Z (only uppercase)
@@ -40,14 +42,16 @@ public class DungeonSeed {
 
 
 	//Takes a seed code (@@@@@@@@@) and converts it to the equivalent long value
-	public static long convertFromCode( String code ){
-		if (code.length() != 9)
+	public static long convertFromCode(String code)
+	{
+		if(code.length() != 9)
 			throw new IllegalArgumentException("codes must be 9 A-Z characters.");
 
 		long result = 0;
-		for (int i = 8; i >= 0; i--) {
+		for(int i = 8; i >= 0; i--)
+		{
 			char c = code.charAt(i);
-			if (c > 'Z' || c < 'A')
+			if(c > 'Z' || c < 'A')
 				throw new IllegalArgumentException("codes must be 9 A-Z characters.");
 
 			result += (c - 65) * Math.pow(26, (8 - i));
@@ -56,8 +60,9 @@ public class DungeonSeed {
 	}
 
 	//Takes a long value and converts it to the equivalent seed code
-	public static String convertToCode( long seed ){
-		if (seed < 0 || seed >= TOTAL_SEEDS)
+	public static String convertToCode(long seed)
+	{
+		if(seed < 0 || seed >= TOTAL_SEEDS)
 			throw new IllegalArgumentException("seeds must be within the range [0, TOTAL_SEEDS)");
 
 		//this almost gives us the right answer, but its 0-p instead of A-Z
@@ -65,16 +70,20 @@ public class DungeonSeed {
 		String result = "";
 
 		//so we convert
-		for (int i = 0; i < 9; i++) {
+		for(int i = 0; i < 9; i++)
+		{
 
-			if (i < interrim.length()){
+			if(i < interrim.length())
+			{
 				char c = interrim.charAt(i);
-				if (c <= '9') c += 17; //convert 0-9 to A-J
-				else          c -= 22; //convert a-p to K-Z
+				if(c <= '9') c += 17; //convert 0-9 to A-J
+				else c -= 22; //convert a-p to K-Z
 
 				result += c;
 
-			} else {
+			}
+			else
+			{
 				result = 'A' + result; //pad with A (zeroes) until we reach length of 9
 
 			}
@@ -86,12 +95,14 @@ public class DungeonSeed {
 	//Using this we can let users input 'fun' plaintext seeds and convert them to a long equivalent.
 	// This is basically the same as string.hashcode except with long, and accounting for overflow
 	// to ensure the produced seed is always in the range [0, TOTAL_SEEDS)
-	public static long convertFromText( String inputText ){
+	public static long convertFromText(String inputText)
+	{
 		long total = 0;
-		for (char c : inputText.toCharArray()){
+		for(char c : inputText.toCharArray())
+		{
 			total = 31 * total + c;
 		}
-		if (total < 0) total += Long.MAX_VALUE;
+		if(total < 0) total += Long.MAX_VALUE;
 		total %= TOTAL_SEEDS;
 		return total;
 	}

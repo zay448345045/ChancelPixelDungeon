@@ -25,11 +25,13 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.plants.Plant;
 import com.noodlemire.chancelpixeldungeon.tiles.TerrainFeaturesTilemap;
 
-public class WndInfoPlant extends WndTitledMessage {
-	
-	public WndInfoPlant( Plant plant ) {
-		
-		super(TerrainFeaturesTilemap.tile( plant.pos, Dungeon.level.map[plant.pos]),
+public class WndInfoPlant extends WndTitledMessage
+{
+
+	public WndInfoPlant(Plant plant)
+	{
+
+		super(TerrainFeaturesTilemap.tile(plant.pos, Dungeon.level.map[plant.pos]),
 				plant.plantName, plant.desc());
 
 	}

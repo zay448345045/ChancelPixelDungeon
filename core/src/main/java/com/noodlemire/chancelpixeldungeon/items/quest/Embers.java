@@ -25,7 +25,8 @@ import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Embers extends Item {
+public class Embers extends Item
+{
 
 	{
 		image = ItemSpriteSheet.EMBER;
@@ -34,17 +35,20 @@ public class Embers extends Item {
 	}
 
 	@Override
-	public boolean isUpgradable() {
+	public boolean isUpgradable()
+	{
 		return false;
 	}
 
 	@Override
-	public boolean isIdentified() {
+	public boolean isIdentified()
+	{
 		return true;
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return new ItemSprite.Glowing(0x660000, 3f);
 	}
 }

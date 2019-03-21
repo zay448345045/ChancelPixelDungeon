@@ -29,14 +29,15 @@ import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.items.Heap;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.KindOfWeapon;
-import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Knuckles;
+import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Gloves;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 
-public class DisarmingTrap extends Trap{
+public class DisarmingTrap extends Trap
+{
 
 	{
 		color = RED;
@@ -44,17 +45,20 @@ public class DisarmingTrap extends Trap{
 	}
 
 	@Override
-	public void activate() {
-		Heap heap = Dungeon.level.heaps.get( pos );
+	public void activate()
+	{
+		Heap heap = Dungeon.level.heaps.get(pos);
 
-		if (heap != null){
+		if(heap != null)
+		{
 			int cell = Dungeon.level.randomRespawnCell();
 
-			if (cell != -1) {
+			if(cell != -1)
+			{
 				Item item = heap.pickUp();
-				Dungeon.level.drop( item, cell ).seen = true;
-				for (int i : PathFinder.NEIGHBOURS9)
-					Dungeon.level.visited[cell+i] = true;
+				Dungeon.level.drop(item, cell).seen = true;
+				for(int i : PathFinder.NEIGHBOURS9)
+					Dungeon.level.visited[cell + i] = true;
 				GameScene.updateFog();
 
 				Sample.INSTANCE.play(Assets.SND_TELEPORT);
@@ -62,24 +66,27 @@ public class DisarmingTrap extends Trap{
 			}
 		}
 
-		if (Dungeon.hero.pos == pos){
+		if(Dungeon.hero.pos == pos)
+		{
 			Hero hero = Dungeon.hero;
 			KindOfWeapon weapon = hero.belongings.weapon;
 
-			if (weapon != null && !(weapon instanceof Knuckles) && !weapon.cursed) {
+			if(weapon != null && !(weapon instanceof Gloves) && !weapon.cursed)
+			{
 
 				int cell = Dungeon.level.randomRespawnCell();
-				if (cell != -1) {
+				if(cell != -1)
+				{
 					hero.belongings.weapon = null;
 					Dungeon.quickslot.clearItem(weapon);
 					weapon.updateQuickslot();
 
 					Dungeon.level.drop(weapon, cell).seen = true;
-					for (int i : PathFinder.NEIGHBOURS9)
-						Dungeon.level.visited[cell+i] = true;
+					for(int i : PathFinder.NEIGHBOURS9)
+						Dungeon.level.visited[cell + i] = true;
 					GameScene.updateFog();
 
-					GLog.w( Messages.get(this, "disarm") );
+					GLog.w(Messages.get(this, "disarm"));
 
 					Sample.INSTANCE.play(Assets.SND_TELEPORT);
 					CellEmitter.get(pos).burst(Speck.factory(Speck.LIGHT), 4);

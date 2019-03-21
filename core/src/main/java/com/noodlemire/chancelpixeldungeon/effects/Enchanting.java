@@ -26,18 +26,20 @@ import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.watabou.noosa.Game;
 
-public class Enchanting extends ItemSprite {
-	private static final int SIZE	= 16;
+public class Enchanting extends ItemSprite
+{
+	private static final int SIZE = 16;
 
-	private enum Phase {
+	private enum Phase
+	{
 		FADE_IN, STATIC, FADE_OUT
 	}
 
-	private static final float FADE_IN_TIME		= 0.2f;
-	private static final float STATIC_TIME		= 1.0f;
-	private static final float FADE_OUT_TIME	= 0.4f;
+	private static final float FADE_IN_TIME = 0.2f;
+	private static final float STATIC_TIME = 1.0f;
+	private static final float FADE_OUT_TIME = 0.4f;
 
-	private static final float ALPHA	= 0.6f;
+	private static final float ALPHA = 0.6f;
 
 	private int color;
 
@@ -47,11 +49,13 @@ public class Enchanting extends ItemSprite {
 	private float duration;
 	private float passed;
 
-	public Enchanting( Item item ) {
-		super( item.image(), null );
+	private Enchanting(Item item)
+	{
+		super(item.image(), null);
 		originToCenter();
 
-		color = item.glowing().color;
+		color = item.glowing() != null ? item.glowing().color
+				: 0xFFFFFF;
 
 		phase = Phase.FADE_IN;
 		duration = FADE_IN_TIME;
@@ -59,28 +63,32 @@ public class Enchanting extends ItemSprite {
 	}
 
 	@Override
-	public void update() {
+	public void update()
+	{
 		super.update();
 
 		x = target.sprite.center().x - SIZE / 2;
 		y = target.sprite.y - SIZE;
 
-		switch (phase) {
+		switch(phase)
+		{
 			case FADE_IN:
-				alpha( passed / duration * ALPHA );
-				scale.set( passed / duration );
+				alpha(passed / duration * ALPHA);
+				scale.set(passed / duration);
 				break;
 			case STATIC:
-				tint( color, passed / duration * 0.8f );
+				tint(color, passed / duration * 0.8f);
 				break;
 			case FADE_OUT:
-				alpha( (1 - passed / duration) * ALPHA );
-				scale.set( 1 + passed / duration );
+				alpha((1 - passed / duration) * ALPHA);
+				scale.set(1 + passed / duration);
 				break;
 		}
 
-		if ((passed += Game.elapsed) > duration) {
-			switch (phase) {
+		if((passed += Game.elapsed) > duration)
+		{
+			switch(phase)
+			{
 				case FADE_IN:
 					phase = Phase.STATIC;
 					duration = STATIC_TIME;
@@ -98,14 +106,13 @@ public class Enchanting extends ItemSprite {
 		}
 	}
 
-	public static void show( Char ch, Item item ) {
-
-		if (!ch.sprite.visible) {
+	public static void show(Char ch, Item item)
+	{
+		if(!ch.sprite.visible)
 			return;
-		}
 
-		Enchanting sprite = new Enchanting( item );
+		Enchanting sprite = new Enchanting(item);
 		sprite.target = ch;
-		ch.sprite.parent.add( sprite );
+		ch.sprite.parent.add(sprite);
 	}
 }

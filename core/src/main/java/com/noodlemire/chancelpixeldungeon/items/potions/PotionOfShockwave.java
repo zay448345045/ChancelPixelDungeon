@@ -27,14 +27,18 @@ import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
+import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
+import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
-public class PotionOfShockwave extends Potion {
+public class PotionOfShockwave extends Potion implements Hero.Doom
+{
 
 	{
 		initials = 8;
@@ -43,46 +47,57 @@ public class PotionOfShockwave extends Potion {
 	}
 
 	@Override
-	public void shatter( int cell ) {
-		setKnown();
-		splash( cell );
-		Sample.INSTANCE.play( Assets.SND_SHATTER );
+	public void shatter(int cell)
+	{
+		splash(cell);
+		Sample.INSTANCE.play(Assets.SND_SHATTER);
 
-		for(int x = -4; x < 4; x++) {
-			for(int y = -4*Dungeon.level.width(); y < 4*Dungeon.level.width(); y += Dungeon.level.width()) {
+		for(int x = -4; x < 4; x++)
+		{
+			for(int y = -4 * Dungeon.level.width(); y < 4 * Dungeon.level.width(); y += Dungeon.level.width())
+			{
 				int falling_rock_cell = cell + x + y;
 
-				if(falling_rock_cell >= 0 && falling_rock_cell < Dungeon.level.map.length) {
-					CellEmitter.get( falling_rock_cell ).start( Speck.factory( Speck.ROCK ), 0.07f, 10 );
+				if(falling_rock_cell >= 0 && falling_rock_cell < Dungeon.level.map.length)
+				{
+					CellEmitter.get(falling_rock_cell).start(Speck.factory(Speck.ROCK), 0.07f, 10);
 
-					if (Dungeon.level.water[falling_rock_cell]) {
-						GameScene.ripple( falling_rock_cell );
-					}
+					if(Dungeon.level.water[falling_rock_cell])
+						GameScene.ripple(falling_rock_cell);
 
 					Dungeon.level.press(falling_rock_cell, null, true);
 
-					Char ch = Actor.findChar( falling_rock_cell );
-					if (ch != null) {
-						Buff.prolong( ch, Paralysis.class, 8 );
+					Char ch = Actor.findChar(falling_rock_cell);
+					if(ch != null)
+					{
+						Buff.prolong(ch, Paralysis.class, 8);
 						ch.damage(Random.Int(1, Dungeon.depth), this);
 					}
 				}
 			}
 		}
 
-		Camera.main.shake( 3, 0.7f );
-		Sample.INSTANCE.play( Assets.SND_ROCKS );
+		Camera.main.shake(3, 0.7f);
+		Sample.INSTANCE.play(Assets.SND_ROCKS);
 	}
 
 	@Override
 	public void setKnown()
 	{
-		defaultAction = AC_THROW;
 		super.setKnown();
+		if(isIdentified()) defaultAction = AC_THROW;
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return isKnown() ? 40 * quantity : super.price();
+	}
+
+	@Override
+	public void onDeath()
+	{
+		Dungeon.fail(getClass());
+		GLog.n(Messages.get(this, "ondeath"));
 	}
 }

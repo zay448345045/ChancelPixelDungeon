@@ -22,20 +22,32 @@
 package com.noodlemire.chancelpixeldungeon.items.rings;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.messages.Messages;
 
-public class RingOfAccuracy extends Ring {
-	
+import java.text.DecimalFormat;
+
+public class RingOfAccuracy extends Ring
+{
 	@Override
-	protected RingBuff buff( ) {
+	protected RingBuff buff()
+	{
 		return new Accuracy();
 	}
-	
-	//The ring of accuracy reduces enemy evasion
-	// this makes it more powerful against more evasive enemies
-	public static float enemyEvasionMultiplier( Char target ){
-		return (float)Math.pow(0.75, getBonus(target, Accuracy.class));
+
+	public static float accuracyMultiplier( Char target )
+	{
+		return (float) Math.pow(1.3f, getBonus(target, Accuracy.class));
 	}
-	
-	public class Accuracy extends RingBuff {
+
+	public String statsInfo()
+	{
+		if(isIdentified())
+			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (Math.pow(1.3f, soloBonus()) - 1f)));
+		else
+			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(30f));
+	}
+
+	public class Accuracy extends RingBuff
+	{
 	}
 }

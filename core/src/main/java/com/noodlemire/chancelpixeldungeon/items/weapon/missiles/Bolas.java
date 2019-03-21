@@ -26,41 +26,35 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Cripple;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Bolas extends MissileWeapon {
-	
+public class Bolas extends MissileWeapon
+{
 	{
 		image = ItemSpriteSheet.BOLAS;
-		
+		tier = 3;
 	}
-	
+
 	@Override
-	public int min(int lvl) {
-		return 4;
+	public int min(int lvl)
+	{
+		return Math.round(super.min(lvl) * 0.667f); //4, down from 6
 	}
-	
+
 	@Override
-	public int max(int lvl) {
-		return 6;
+	public int max(int lvl)
+	{
+		return Math.round(super.max(lvl) * 0.4f); //6, down from 15
 	}
-	
+
 	@Override
-	public int STRReq(int lvl) {
-		return 15;
+	public int proc(Char attacker, Char defender, int damage)
+	{
+		Buff.prolong(defender, Cripple.class, Cripple.DURATION);
+		return super.proc(attacker, defender, damage);
 	}
-	
+
 	@Override
-	public int proc( Char attacker, Char defender, int damage ) {
-		Buff.prolong( defender, Cripple.class, Cripple.DURATION );
-		return super.proc( attacker, defender, damage );
-	}
-	
-	@Override
-	protected float durabilityPerUse() {
-		return super.durabilityPerUse()*2f;
-	}
-	
-	@Override
-	public int price() {
-		return 18 * quantity;
+	protected float durabilityPerUse()
+	{
+		return super.durabilityPerUse() * 2f;
 	}
 }

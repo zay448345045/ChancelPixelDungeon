@@ -24,10 +24,12 @@ package com.noodlemire.chancelpixeldungeon.windows;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.Icons;
 
-public class WndError extends WndTitledMessage {
+public class WndError extends WndTitledMessage
+{
 
-	public WndError( String message ) {
-		super( Icons.WARNING.get(), Messages.get(WndError.class, "title"), message );
+	public WndError(String message)
+	{
+		super(Icons.WARNING.get(), Messages.get(WndError.class, "title"), message);
 	}
 
 }

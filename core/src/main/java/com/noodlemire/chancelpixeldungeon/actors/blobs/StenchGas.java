@@ -21,8 +21,6 @@
 
 package com.noodlemire.chancelpixeldungeon.actors.blobs;
 
-import com.noodlemire.chancelpixeldungeon.Dungeon;
-import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
@@ -30,35 +28,31 @@ import com.noodlemire.chancelpixeldungeon.effects.BlobEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 
-public class StenchGas extends Blob {
+public class StenchGas extends GasBlob
+{
 
 	@Override
-	protected void evolve() {
-		super.evolve();
-
-		Char ch;
-		int cell;
-
-		for (int i = area.left; i < area.right; i++){
-			for (int j = area.top; j < area.bottom; j++){
-				cell = i + j*Dungeon.level.width();
-				if (cur[cell] > 0 && (ch = Actor.findChar( cell )) != null) {
-					if (!ch.isImmune(this.getClass()))
-						Buff.prolong( ch, Paralysis.class, Paralysis.DURATION/5 );
-				}
-			}
-		}
+	void affect(Char ch, int cell)
+	{
+		Buff.prolong(ch, Paralysis.class, Paralysis.DURATION / 5);
 	}
 
 	@Override
-	public void use( BlobEmitter emitter ) {
-		super.use( emitter );
-
-		emitter.pour( Speck.factory(Speck.STENCH), 0.4f );
+	void affect(int cell)
+	{
 	}
 
 	@Override
-	public String tileDesc() {
+	public void use(BlobEmitter emitter)
+	{
+		super.use(emitter);
+
+		emitter.pour(Speck.factory(Speck.STENCH), 0.4f);
+	}
+
+	@Override
+	public String tileDesc()
+	{
 		return Messages.get(this, "desc");
 	}
 }

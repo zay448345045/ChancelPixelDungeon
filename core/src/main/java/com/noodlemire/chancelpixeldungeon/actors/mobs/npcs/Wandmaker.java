@@ -47,46 +47,55 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class Wandmaker extends NPC {
+public class Wandmaker extends NPC
+{
 
 	{
 		spriteClass = WandmakerSprite.class;
 
 		properties.add(Property.IMMOVABLE);
 	}
-	
+
 	@Override
-	protected boolean act() {
+	protected boolean act()
+	{
 		throwItem();
 		return super.act();
 	}
-	
+
 	@Override
-	public int defenseSkill( Char enemy ) {
+	public int defenseSkill(Char enemy)
+	{
 		return 1000;
 	}
-	
+
 	@Override
-	public void damage( int dmg, Object src ) {
+	public void damage(int dmg, Object src)
+	{
 	}
-	
+
 	@Override
-	public void add( Buff buff ) {
+	public void add(Buff buff)
+	{
 	}
-	
+
 	@Override
-	public boolean reset() {
+	public boolean reset()
+	{
 		return true;
 	}
-	
+
 	@Override
-	public boolean interact() {
-		
-		sprite.turnTo( pos, Dungeon.hero.pos );
-		if (Quest.given) {
-			
+	public boolean interact()
+	{
+
+		sprite.turnTo(pos, Dungeon.hero.pos);
+		if(Quest.given)
+		{
+
 			Item item;
-			switch (Quest.type) {
+			switch(Quest.type)
+			{
 				case 1:
 				default:
 					item = Dungeon.hero.belongings.getItem(CorpseDust.class);
@@ -99,11 +108,15 @@ public class Wandmaker extends NPC {
 					break;
 			}
 
-			if (item != null) {
-				GameScene.show( new WndWandmaker( this, item ) );
-			} else {
+			if(item != null)
+			{
+				GameScene.show(new WndWandmaker(this, item));
+			}
+			else
+			{
 				String msg = "";
-				switch(Quest.type){
+				switch(Quest.type)
+				{
 					case 1:
 						msg = Messages.get(this, "reminder_dust", Dungeon.hero.givenName());
 						break;
@@ -116,12 +129,15 @@ public class Wandmaker extends NPC {
 				}
 				GameScene.show(new WndQuest(this, msg));
 			}
-			
-		} else {
+
+		}
+		else
+		{
 
 			String msg1 = "";
 			String msg2 = "";
-			switch(Dungeon.hero.heroClass){
+			switch(Dungeon.hero.heroClass)
+			{
 				case WARRIOR:
 					msg1 += Messages.get(this, "intro_warrior");
 					break;
@@ -138,7 +154,8 @@ public class Wandmaker extends NPC {
 
 			msg1 += Messages.get(this, "intro_1");
 
-			switch (Quest.type){
+			switch(Quest.type)
+			{
 				case 1:
 					msg2 += Messages.get(this, "intro_dust");
 					break;
@@ -154,137 +171,157 @@ public class Wandmaker extends NPC {
 			final String msg2final = msg2;
 			final NPC wandmaker = this;
 
-			GameScene.show(new WndQuest(wandmaker, msg1){
+			GameScene.show(new WndQuest(wandmaker, msg1)
+			{
 				@Override
-				public void hide() {
+				public void hide()
+				{
 					super.hide();
 					GameScene.show(new WndQuest(wandmaker, msg2final));
 				}
 			});
 
-			Notes.add( Notes.Landmark.WANDMAKER );
+			Notes.add(Notes.Landmark.WANDMAKER);
 			Quest.given = true;
 		}
 
 		return false;
 	}
-	
-	public static class Quest {
+
+	public static class Quest
+	{
 
 		private static int type;
 		// 1 = corpse dust quest
 		// 2 = elemental embers quest
 		// 3 = rotberry quest
-		
+
 		private static boolean spawned;
-		
+
 		private static boolean given;
-		
+
 		public static Wand wand1;
 		public static Wand wand2;
-		
-		public static void reset() {
+
+		public static void reset()
+		{
 			spawned = false;
 			type = 0;
 
 			wand1 = null;
 			wand2 = null;
 		}
-		
-		private static final String NODE		= "wandmaker";
-		
-		private static final String SPAWNED		= "spawned";
-		private static final String TYPE		= "type";
-		private static final String GIVEN		= "given";
-		private static final String WAND1		= "wand1";
-		private static final String WAND2		= "wand2";
 
-		private static final String RITUALPOS	= "ritualpos";
-		
-		public static void storeInBundle( Bundle bundle ) {
-			
+		private static final String NODE = "wandmaker";
+
+		private static final String SPAWNED = "spawned";
+		private static final String TYPE = "type";
+		private static final String GIVEN = "given";
+		private static final String WAND1 = "wand1";
+		private static final String WAND2 = "wand2";
+
+		private static final String RITUALPOS = "ritualpos";
+
+		public static void storeInBundle(Bundle bundle)
+		{
+
 			Bundle node = new Bundle();
-			
-			node.put( SPAWNED, spawned );
-			
-			if (spawned) {
-				
-				node.put( TYPE, type );
-				
-				node.put( GIVEN, given );
-				
-				node.put( WAND1, wand1 );
-				node.put( WAND2, wand2 );
 
-				if (type == 2){
-					node.put( RITUALPOS, CeremonialCandle.ritualPos );
+			node.put(SPAWNED, spawned);
+
+			if(spawned)
+			{
+
+				node.put(TYPE, type);
+
+				node.put(GIVEN, given);
+
+				node.put(WAND1, wand1);
+				node.put(WAND2, wand2);
+
+				if(type == 2)
+				{
+					node.put(RITUALPOS, CeremonialCandle.ritualPos);
 				}
 
 			}
-			
-			bundle.put( NODE, node );
-		}
-		
-		public static void restoreFromBundle( Bundle bundle ) {
 
-			Bundle node = bundle.getBundle( NODE );
-			
-			if (!node.isNull() && (spawned = node.getBoolean( SPAWNED ))) {
+			bundle.put(NODE, node);
+		}
+
+		public static void restoreFromBundle(Bundle bundle)
+		{
+
+			Bundle node = bundle.getBundle(NODE);
+
+			if(!node.isNull() && (spawned = node.getBoolean(SPAWNED)))
+			{
 
 				type = node.getInt(TYPE);
-				
-				given = node.getBoolean( GIVEN );
-				
-				wand1 = (Wand)node.get( WAND1 );
-				wand2 = (Wand)node.get( WAND2 );
 
-				if (type == 2){
-					CeremonialCandle.ritualPos = node.getInt( RITUALPOS );
+				given = node.getBoolean(GIVEN);
+
+				wand1 = (Wand) node.get(WAND1);
+				wand2 = (Wand) node.get(WAND2);
+
+				if(type == 2)
+				{
+					CeremonialCandle.ritualPos = node.getInt(RITUALPOS);
 				}
 
-			} else {
+			}
+			else
+			{
 				reset();
 			}
 		}
-		
+
 		private static boolean questRoomSpawned;
-		
-		public static void spawnWandmaker( Level level, Room room ) {
-			if (questRoomSpawned) {
-				
+
+		public static void spawnWandmaker(Level level, Room room)
+		{
+			if(questRoomSpawned)
+			{
 				questRoomSpawned = false;
-				
+
 				Wandmaker npc = new Wandmaker();
-				do {
+				do
+				{
 					npc.pos = level.pointToCell(room.random());
-				} while (npc.pos == level.entrance);
-				level.mobs.add( npc );
+				}
+				while(npc.pos == level.entrance);
+				level.mobs.add(npc);
 
 				spawned = true;
 
 				given = false;
-				wand1 = (Wand) Generator.random(Generator.Category.WAND);
+				wand1 = Generator.randomWand(false);
 				wand1.cursed = false;
-				wand1.upgrade();
+				wand1.level(2);
 
-				do {
-					wand2 = (Wand) Generator.random(Generator.Category.WAND);
-				} while (wand2.getClass().equals(wand1.getClass()));
+				do
+				{
+					wand2 = Generator.randomWand(false);
+				}
+				while(wand2.getClass().equals(wand1.getClass()));
 				wand2.cursed = false;
-				wand2.upgrade();
-				
+				wand2.level(2);
 			}
 		}
-		
-		public static ArrayList<Room> spawnRoom( ArrayList<Room> rooms) {
+
+		public static ArrayList<Room> spawnRoom(ArrayList<Room> rooms)
+		{
 			questRoomSpawned = false;
-			if (!spawned && (type != 0 || (Dungeon.depth > 6 && Random.Int( 10 - Dungeon.depth ) == 0))) {
-				
+			if(!spawned && (type != 0 || (Dungeon.depth > 6 && Random.Int(10 - Dungeon.depth) == 0)))
+			{
+
 				// decide between 1,2, or 3 for quest type.
-				if (type == 0) type = Random.Int(3)+1;
-				
-				switch (type){
-					case 1: default:
+				if(type == 0) type = Random.Int(3) + 1;
+
+				switch(type)
+				{
+					case 1:
+					default:
 						rooms.add(new MassGraveRoom());
 						break;
 					case 2:
@@ -294,18 +331,19 @@ public class Wandmaker extends NPC {
 						rooms.add(new RotGardenRoom());
 						break;
 				}
-		
+
 				questRoomSpawned = true;
-				
+
 			}
 			return rooms;
 		}
-		
-		public static void complete() {
+
+		public static void complete()
+		{
 			wand1 = null;
 			wand2 = null;
-			
-			Notes.remove( Notes.Landmark.WANDMAKER );
+
+			Notes.remove(Notes.Landmark.WANDMAKER);
 		}
 	}
 }

@@ -27,58 +27,70 @@ import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Button;
 
-public class IconButton extends Button {
-	
+public class IconButton extends Button
+{
+
 	protected Image icon;
-	
-	public IconButton(){
+
+	public IconButton()
+	{
 		super();
 	}
-	
-	public IconButton( Image icon ){
+
+	public IconButton(Image icon)
+	{
 		super();
-		icon( icon );
+		icon(icon);
 	}
-	
+
 	@Override
-	protected void layout() {
+	protected void layout()
+	{
 		super.layout();
-		
-		if (icon != null) {
+
+		if(icon != null)
+		{
 			icon.x = x + (width - icon.width()) / 2f;
 			icon.y = y + (height - icon.height()) / 2f;
 			PixelScene.align(icon);
 		}
 	}
-	
+
 	@Override
-	protected void onTouchDown() {
-		if (icon != null) icon.brightness( 1.5f );
-		Sample.INSTANCE.play( Assets.SND_CLICK );
+	protected void onTouchDown()
+	{
+		if(icon != null) icon.brightness(1.5f);
+		Sample.INSTANCE.play(Assets.SND_CLICK);
 	}
-	
+
 	@Override
-	protected void onTouchUp() {
-		if (icon != null) icon.resetColor();
+	protected void onTouchUp()
+	{
+		if(icon != null) icon.resetColor();
 	}
-	
-	public void enable( boolean value ) {
+
+	public void enable(boolean value)
+	{
 		active = value;
-		if (icon != null) icon.alpha( value ? 1.0f : 0.3f );
+		if(icon != null) icon.alpha(value ? 1.0f : 0.3f);
 	}
-	
-	public void icon( Image icon ) {
-		if (this.icon != null) {
-			remove( this.icon );
+
+	public void icon(Image icon)
+	{
+		if(this.icon != null)
+		{
+			remove(this.icon);
 		}
 		this.icon = icon;
-		if (this.icon != null) {
-			add( this.icon );
+		if(this.icon != null)
+		{
+			add(this.icon);
 			layout();
 		}
 	}
-	
-	public Image icon(){
+
+	public Image icon()
+	{
 		return icon;
 	}
 }

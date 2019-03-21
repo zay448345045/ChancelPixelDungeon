@@ -24,9 +24,11 @@ package com.noodlemire.chancelpixeldungeon.windows;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.npcs.NPC;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 
-public class WndQuest extends WndTitledMessage {
+public class WndQuest extends WndTitledMessage
+{
 
-	public WndQuest( NPC questgiver, String text ) {
-		super( questgiver.sprite(), Messages.titleCase( questgiver.name ), text );
+	public WndQuest(NPC questgiver, String text)
+	{
+		super(questgiver.sprite(), Messages.titleCase(questgiver.name), text);
 	}
 }

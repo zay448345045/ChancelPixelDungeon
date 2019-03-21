@@ -26,29 +26,34 @@ import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.levels.painters.Painter;
 import com.noodlemire.chancelpixeldungeon.levels.rooms.Room;
 
-public class ExitRoom extends StandardRoom {
-	
+public class ExitRoom extends StandardRoom
+{
+
 	@Override
-	public int minWidth() {
+	public int minWidth()
+	{
 		return Math.max(super.minWidth(), 5);
 	}
-	
+
 	@Override
-	public int minHeight() {
+	public int minHeight()
+	{
 		return Math.max(super.minHeight(), 5);
 	}
-	
-	public void paint(Level level) {
 
-		Painter.fill( level, this, Terrain.WALL );
-		Painter.fill( level, this, 1, Terrain.EMPTY );
-		
-		for (Room.Door door : connected.values()) {
-			door.set( Room.Door.Type.REGULAR );
+	public void paint(Level level)
+	{
+
+		Painter.fill(level, this, Terrain.WALL);
+		Painter.fill(level, this, 1, Terrain.EMPTY);
+
+		for(Room.Door door : connected.values())
+		{
+			door.set(Room.Door.Type.REGULAR);
 		}
-		
-		level.exit = level.pointToCell(random( 2 ));
-		Painter.set( level, level.exit, Terrain.EXIT );
+
+		level.exit = level.pointToCell(random(2));
+		Painter.set(level, level.exit, Terrain.EXIT);
 	}
-	
+
 }

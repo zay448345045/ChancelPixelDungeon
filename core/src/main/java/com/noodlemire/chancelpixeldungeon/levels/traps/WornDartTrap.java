@@ -22,8 +22,8 @@
 package com.noodlemire.chancelpixeldungeon.levels.traps;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
-import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
+import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.darts.Dart;
@@ -33,7 +33,8 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
-public class WornDartTrap extends Trap {
+public class WornDartTrap extends Trap
+{
 
 	{
 		color = GREY;
@@ -41,59 +42,73 @@ public class WornDartTrap extends Trap {
 	}
 
 	@Override
-	public Trap hide() {
+	public Trap hide()
+	{
 		//this one can't be hidden
 		return reveal();
 	}
 
 	@Override
-	public void activate() {
+	public void activate()
+	{
 		Char target = Actor.findChar(pos);
-		
+
 		//find the closest char that can be aimed at
-		if (target == null){
-			for (Char ch : Actor.chars()){
+		if(target == null)
+		{
+			for(Char ch : Actor.chars())
+			{
 				Ballistica bolt = new Ballistica(pos, ch.pos, Ballistica.PROJECTILE);
-				if (bolt.collisionPos == ch.pos &&
-						(target == null || Dungeon.level.trueDistance(pos, ch.pos) < Dungeon.level.trueDistance(pos, target.pos))){
+				if(bolt.collisionPos == ch.pos &&
+				   (target == null || Dungeon.level.trueDistance(pos, ch.pos) < Dungeon.level.trueDistance(pos, target.pos)))
+				{
 					target = ch;
 				}
 			}
 		}
-		if (target != null) {
+		if(target != null)
+		{
 			final Char finalTarget = target;
 			final WornDartTrap trap = this;
-			if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[target.pos]) {
-				Actor.add(new Actor() {
-					
+			if(Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[target.pos])
+			{
+				Actor.add(new Actor()
+				{
+
 					{
 						//it's a visual effect, gets priority no matter what
 						actPriority = VFX_PRIO;
 					}
-					
+
 					@Override
-					protected boolean act() {
+					protected boolean act()
+					{
 						final Actor toRemove = this;
 						((MissileSprite) ChancelPixelDungeon.scene().recycle(MissileSprite.class)).
-							reset(pos, finalTarget.sprite, new Dart(), new Callback() {
-								@Override
-								public void call() {
-								int dmg = Random.NormalIntRange(1, 4) - finalTarget.drRoll();
-								finalTarget.damage(dmg, trap);
-								if (finalTarget == Dungeon.hero && !finalTarget.isAlive()){
-									Dungeon.fail( trap.getClass()  );
-								}
-								Sample.INSTANCE.play(Assets.SND_HIT, 1, 1, Random.Float(0.8f, 1.25f));
-								finalTarget.sprite.bloodBurstA(finalTarget.sprite.center(), dmg);
-								finalTarget.sprite.flash();
-								Actor.remove(toRemove);
-								next();
-								}
-							});
+								reset(pos, finalTarget.sprite, new Dart(), new Callback()
+								{
+									@Override
+									public void call()
+									{
+										int dmg = Random.NormalIntRange(1, 4) - finalTarget.drRoll();
+										finalTarget.damage(dmg, trap);
+										if(finalTarget == Dungeon.hero && !finalTarget.isAlive())
+										{
+											Dungeon.fail(trap.getClass());
+										}
+										Sample.INSTANCE.play(Assets.SND_HIT, 1, 1, Random.Float(0.8f, 1.25f));
+										finalTarget.sprite.bloodBurstA(finalTarget.sprite.center(), dmg);
+										finalTarget.sprite.flash();
+										Actor.remove(toRemove);
+										next();
+									}
+								});
 						return false;
 					}
 				});
-			} else {
+			}
+			else
+			{
 				finalTarget.damage(Random.NormalIntRange(1, 4) - finalTarget.drRoll(), trap);
 			}
 		}

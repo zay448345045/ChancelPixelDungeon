@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,81 +24,83 @@
 
 package com.watabou.noosa;
 
-public class Gizmo {
-	
+public class Gizmo
+{
 	public boolean exists;
 	public boolean alive;
 	public boolean active;
 	public boolean visible;
-	
+
 	public Group parent;
-	
+
 	public Camera camera;
-	
-	public Gizmo() {
-		exists	= true;
-		alive	= true;
-		active	= true;
-		visible	= true;
+
+	public Gizmo()
+	{
+		exists = true;
+		alive = true;
+		active = true;
+		visible = true;
 	}
-	
-	public void destroy() {
+
+	public void destroy()
+	{
 		parent = null;
 	}
-	
-	public void update() {
-	}
-	
-	public void draw() {
-	}
-	
-	public void kill() {
+
+	public void update() {}
+
+	public void draw() {}
+
+	public void kill()
+	{
 		alive = false;
 		exists = false;
 	}
-	
+
 	// Not exactly opposite to "kill" method
-	public void revive() {
+	public void revive()
+	{
 		alive = true;
 		exists = true;
 	}
-	
-	public Camera camera() {
-		if (camera != null) {
+
+	public Camera camera()
+	{
+		if(camera != null)
 			return camera;
-		} else if (parent != null) {
+		else if(parent != null)
 			return this.camera = parent.camera();
-		} else {
+		else
 			return null;
-		}
 	}
-	
-	public boolean isVisible() {
-		if (parent == null) {
+
+	public boolean isVisible()
+	{
+		if(parent == null)
 			return visible;
-		} else {
+		else
 			return visible && parent.isVisible();
-		}
 	}
-	
-	public boolean isActive() {
-		if (parent == null) {
+
+	public boolean isActive()
+	{
+		if(parent == null)
 			return active;
-		} else {
+		else
 			return active && parent.isActive();
-		}
 	}
-	
-	public void killAndErase() {
+
+	public void killAndErase()
+	{
 		kill();
-		if (parent != null) {
-			parent.erase( this );
-		}
+		if(parent != null)
+			parent.erase(this);
 	}
-	
-	public void remove() {
-		if (parent != null) {
-			parent.remove( this );
-		}
+
+	public void remove()
+	{
+		if(parent != null)
+			parent.remove(this);
 	}
 }

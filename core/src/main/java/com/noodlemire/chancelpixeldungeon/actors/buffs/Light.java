@@ -28,54 +28,66 @@ import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 
-public class Light extends FlavourBuff {
+public class Light extends FlavourBuff
+{
 
-	public static final float DURATION	= 300f;
-	public static final int DISTANCE	= 6;
-	
+	public static final float DURATION = 300f;
+	public static final int DISTANCE = 6;
+
 	@Override
-	public boolean attachTo( Char target ) {
-		if (super.attachTo( target )) {
-			if (Dungeon.level != null) {
-				target.viewDistance = Math.max( Dungeon.level.viewDistance, DISTANCE );
+	public boolean attachTo(Char target)
+	{
+		if(super.attachTo(target))
+		{
+			if(Dungeon.level != null)
+			{
+				target.viewDistance = Math.max(Dungeon.level.viewDistance, DISTANCE);
 				Dungeon.observe();
 			}
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}
-	
+
 	@Override
-	public void detach() {
+	public void detach()
+	{
 		target.viewDistance = Dungeon.level.viewDistance;
-		Dungeon.observe(DISTANCE+1);
+		Dungeon.observe(DISTANCE + 1);
 		super.detach();
 	}
-	
+
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.LIGHT;
 	}
-	
+
 	@Override
-	public void tintIcon(Image icon) {
+	public void tintIcon(Image icon)
+	{
 		greyIcon(icon, 20f, cooldown());
 	}
 
 	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add(CharSprite.State.ILLUMINATED);
+	public void fx(boolean on)
+	{
+		if(on) target.sprite.add(CharSprite.State.ILLUMINATED);
 		else target.sprite.remove(CharSprite.State.ILLUMINATED);
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc", dispTurns());
 	}
 }

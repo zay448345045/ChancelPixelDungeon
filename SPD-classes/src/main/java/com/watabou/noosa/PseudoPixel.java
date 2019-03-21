@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,26 +26,29 @@ package com.watabou.noosa;
 
 import com.watabou.gltextures.TextureCache;
 
-public class PseudoPixel extends Image {
-	
-	public PseudoPixel() {
-		super( TextureCache.createSolid( 0xFFFFFFFF ) );
+public class PseudoPixel extends Image
+{
+	public PseudoPixel()
+	{
+		super(TextureCache.createSolid(0xFFFFFFFF));
 	}
-	
-	public PseudoPixel( float x, float y, int color ) {
 
+	public PseudoPixel(float x, float y, int color)
+	{
 		this();
-		
+
 		this.x = x;
 		this.y = y;
-		color( color );
+		color(color);
 	}
-	
-	public void size( float w, float h ) {
-		scale.set( w, h );
+
+	public void size(float w, float h)
+	{
+		scale.set(w, h);
 	}
-	
-	public void size( float value ) {
-		scale.set( value );
+
+	public void size(float value)
+	{
+		scale.set(value);
 	}
 }

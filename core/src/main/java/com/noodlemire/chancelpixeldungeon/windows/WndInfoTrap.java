@@ -26,11 +26,13 @@ import com.noodlemire.chancelpixeldungeon.levels.traps.Trap;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.tiles.TerrainFeaturesTilemap;
 
-public class WndInfoTrap extends WndTitledMessage {
+public class WndInfoTrap extends WndTitledMessage
+{
 
-	public WndInfoTrap(Trap trap) {
+	public WndInfoTrap(Trap trap)
+	{
 
-		super(TerrainFeaturesTilemap.tile( trap.pos, Dungeon.level.map[trap.pos]),
+		super(TerrainFeaturesTilemap.tile(trap.pos, Dungeon.level.map[trap.pos]),
 				Messages.titleCase(trap.name),
 				(!trap.active ? Messages.get(WndInfoTrap.class, "inactive") + "\n\n" : "") + trap.desc());
 

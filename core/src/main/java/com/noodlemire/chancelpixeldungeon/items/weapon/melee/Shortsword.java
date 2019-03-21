@@ -23,12 +23,10 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Shortsword extends MeleeWeapon {
-
+public class Shortsword extends MeleeWeapon
+{
 	{
 		image = ItemSpriteSheet.SHORTSWORD;
-
 		tier = 2;
 	}
-
 }

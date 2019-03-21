@@ -3,7 +3,10 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2018 Evan Debenham
+ * Copyright (C) 2014-2019 Evan Debenham
+ *
+ * Chancel Pixel Dungeon
+ * Copyright (C) 2018-2019 Noodlemire
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,47 +26,51 @@ package com.watabou.glwrap;
 
 import android.opengl.GLES20;
 
-public class Framebuffer {
+public class Framebuffer
+{
+	public static final int COLOR = GLES20.GL_COLOR_ATTACHMENT0;
+	public static final int DEPTH = GLES20.GL_DEPTH_ATTACHMENT;
+	public static final int STENCIL = GLES20.GL_STENCIL_ATTACHMENT;
 
-	public static final int COLOR	= GLES20.GL_COLOR_ATTACHMENT0;
-	public static final int DEPTH	= GLES20.GL_DEPTH_ATTACHMENT;
-	public static final int STENCIL	= GLES20.GL_STENCIL_ATTACHMENT;
-	
-	public static final Framebuffer	system	= new Framebuffer( 0 );
-	
+	public static final Framebuffer system = new Framebuffer(0);
+
 	private int id;
-	
-	public Framebuffer() {
+
+	public Framebuffer()
+	{
 		int[] buffers = new int[1];
-		GLES20.glGenBuffers( 1, buffers, 0 );
+		GLES20.glGenBuffers(1, buffers, 0);
 		id = buffers[0];
 	}
-	
-	private Framebuffer( int n ) {
-		
+
+	private Framebuffer(int n) {}
+
+	public void bind()
+	{
+		GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, id);
 	}
-	
-	public void bind() {
-		GLES20.glBindFramebuffer( GLES20.GL_FRAMEBUFFER, id );
-	}
-	
-	public void delete() {
+
+	public void delete()
+	{
 		int[] buffers = {id};
-		GLES20.glDeleteFramebuffers( 1, buffers, 0 );
+		GLES20.glDeleteFramebuffers(1, buffers, 0);
 	}
-	
-	public void attach( int point, Texture tex ) {
+
+	public void attach(int point, Texture tex)
+	{
 		bind();
-		GLES20.glFramebufferTexture2D( GLES20.GL_FRAMEBUFFER, point, GLES20.GL_TEXTURE_2D, tex.id, 0 );
+		GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, point, GLES20.GL_TEXTURE_2D, tex.id, 0);
 	}
-	
-	public void attach( int point, Renderbuffer buffer ) {
+
+	public void attach(int point, Renderbuffer buffer)
+	{
 		bind();
-		GLES20.glFramebufferRenderbuffer( GLES20.GL_RENDERBUFFER, point, GLES20.GL_TEXTURE_2D, buffer.id() );
+		GLES20.glFramebufferRenderbuffer(GLES20.GL_RENDERBUFFER, point, GLES20.GL_TEXTURE_2D, buffer.id());
 	}
-	
-	public boolean status() {
+
+	public boolean status()
+	{
 		bind();
-		return GLES20.glCheckFramebufferStatus( GLES20.GL_FRAMEBUFFER ) == GLES20.GL_FRAMEBUFFER_COMPLETE;
+		return GLES20.glCheckFramebufferStatus(GLES20.GL_FRAMEBUFFER) == GLES20.GL_FRAMEBUFFER_COMPLETE;
 	}
 }

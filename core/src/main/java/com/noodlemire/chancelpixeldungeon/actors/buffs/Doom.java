@@ -25,30 +25,35 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 
-public class Doom extends Buff {
-	
+public class Doom extends Buff
+{
+
 	{
 		type = buffType.NEGATIVE;
 	}
-	
+
 	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add( CharSprite.State.DARKENED );
-		else if (target.invisible == 0) target.sprite.remove( CharSprite.State.DARKENED );
+	public void fx(boolean on)
+	{
+		if(on) target.sprite.add(CharSprite.State.DARKENED);
+		else if(target.invisible == 0) target.sprite.remove(CharSprite.State.DARKENED);
 	}
-	
+
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.CORRUPT;
 	}
-	
+
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
-	
+
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc");
 	}
 }

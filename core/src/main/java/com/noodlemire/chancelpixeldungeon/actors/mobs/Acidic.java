@@ -28,27 +28,28 @@ import com.noodlemire.chancelpixeldungeon.sprites.AcidicSprite;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.utils.Random;
 
-public class Acidic extends Scorpio {
-
+public class Acidic extends Scorpio
+{
 	{
 		spriteClass = AcidicSprite.class;
-		
+
 		properties.add(Property.ACIDIC);
 	}
-	
+
 	@Override
-	public int defenseProc( Char enemy, int damage ) {
-		
-		int dmg = Random.IntRange( 0, damage );
-		if (dmg > 0) {
-			enemy.damage( dmg, this );
-			if (!enemy.isAlive() && enemy == Dungeon.hero) {
+	public int defenseProc(Char enemy, int damage)
+	{
+		int dmg = Random.IntRange(0, damage);
+		if(dmg > 0)
+		{
+			enemy.damage(dmg, this);
+			if(!enemy.isAlive() && enemy == Dungeon.hero)
+			{
 				Dungeon.fail(getClass());
 				GLog.n(Messages.capitalize(Messages.get(Char.class, "kill", name)));
 			}
 		}
-		
-		return super.defenseProc( enemy, damage );
+
+		return super.defenseProc(enemy, damage);
 	}
-	
 }

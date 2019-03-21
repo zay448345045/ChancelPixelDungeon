@@ -26,41 +26,35 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Bleeding;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Tomahawk extends MissileWeapon {
-
+public class Tomahawk extends MissileWeapon
+{
 	{
 		image = ItemSpriteSheet.TOMAHAWK;
-
+		tier = 4;
 	}
 
 	@Override
-	public int min(int lvl) {
-		return 6;
+	public int min(int lvl)
+	{
+		return Math.round(super.min(lvl) * 0.75f); //6, down from 8
 	}
 
 	@Override
-	public int max(int lvl) {
-		return 15;
+	public int max(int lvl)
+	{
+		return Math.round(super.max(lvl) * 0.75f); //15, down from 20
 	}
 
 	@Override
-	public int STRReq(int lvl) {
-		return 15;
+	public int proc(Char attacker, Char defender, int damage)
+	{
+		Buff.affect(defender, Bleeding.class).set(damage);
+		return super.proc(attacker, defender, damage);
 	}
-	
+
 	@Override
-	public int proc( Char attacker, Char defender, int damage ) {
-		Buff.affect( defender, Bleeding.class ).set( damage );
-		return super.proc( attacker, defender, damage );
-	}
-	
-	@Override
-	protected float durabilityPerUse() {
-		return super.durabilityPerUse()*2f;
-	}
-	
-	@Override
-	public int price() {
-		return 24 * quantity;
+	protected float durabilityPerUse()
+	{
+		return super.durabilityPerUse() * 2f;
 	}
 }

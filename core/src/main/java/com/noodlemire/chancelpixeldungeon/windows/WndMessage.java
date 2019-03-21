@@ -21,28 +21,30 @@
 
 package com.noodlemire.chancelpixeldungeon.windows;
 
-import com.noodlemire.chancelpixeldungeon.SPDSettings;
+import com.noodlemire.chancelpixeldungeon.CPDSettings;
 import com.noodlemire.chancelpixeldungeon.scenes.PixelScene;
 import com.noodlemire.chancelpixeldungeon.ui.RenderedTextMultiline;
 import com.noodlemire.chancelpixeldungeon.ui.Window;
 
-public class WndMessage extends Window {
+public class WndMessage extends Window
+{
 
 	private static final int WIDTH_P = 120;
 	private static final int WIDTH_L = 144;
 	private static final int MARGIN = 4;
-	
-	public WndMessage( String text ) {
-		
+
+	public WndMessage(String text)
+	{
+
 		super();
-		
-		RenderedTextMultiline info = PixelScene.renderMultiline( text, 6 );
-		info.maxWidth((SPDSettings.landscape() ? WIDTH_L : WIDTH_P) - MARGIN * 2);
+
+		RenderedTextMultiline info = PixelScene.renderMultiline(text, 6);
+		info.maxWidth((CPDSettings.landscape() ? WIDTH_L : WIDTH_P) - MARGIN * 2);
 		info.setPos(MARGIN, MARGIN);
-		add( info );
+		add(info);
 
 		resize(
-			(int)info.width() + MARGIN * 2,
-			(int)info.height() + MARGIN * 2 );
+				(int) info.width() + MARGIN * 2,
+				(int) info.height() + MARGIN * 2);
 	}
 }

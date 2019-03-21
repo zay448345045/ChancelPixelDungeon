@@ -25,18 +25,21 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 
-public class Obfuscation extends Armor.Glyph {
+public class Obfuscation extends Armor.Glyph
+{
 
-	private static ItemSprite.Glowing GREY = new ItemSprite.Glowing( 0x888888 );
+	private static ItemSprite.Glowing GREY = new ItemSprite.Glowing(0x888888);
 
 	@Override
-	public int proc(Armor armor, Char attacker, Char defender, int damage) {
+	public int proc(Armor armor, Char attacker, Char defender, int damage)
+	{
 		//no proc effect, see armor.stealthfactor for effect.
 		return damage;
 	}
 
 	@Override
-	public ItemSprite.Glowing glowing() {
+	public ItemSprite.Glowing glowing()
+	{
 		return GREY;
 	}
 

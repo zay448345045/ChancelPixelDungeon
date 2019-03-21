@@ -25,7 +25,6 @@ import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Amok;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Invisibility;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mimic;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
@@ -34,61 +33,59 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
-public class ScrollOfRage extends Scroll {
-
+public class ScrollOfRage extends Scroll
+{
 	{
 		initials = 6;
 	}
 
 	@Override
-	public void doRead() {
-
-		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-			mob.beckon( curUser.pos );
-			if (Dungeon.level.heroFOV[mob.pos]) {
+	public void doRead()
+	{
+		for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
+		{
+			mob.beckon(curUser.pos);
+			if(Dungeon.level.heroFOV[mob.pos])
 				Buff.prolong(mob, Amok.class, 5f);
-			}
 		}
 
-		for (Heap heap : Dungeon.level.heaps.values()) {
-			if (heap.type == Heap.Type.MIMIC) {
-				Mimic m = Mimic.spawnAt( heap.pos, heap.items );
-				if (m != null) {
-					m.beckon( curUser.pos );
+		for(Heap heap : Dungeon.level.heaps.values())
+		{
+			if(heap.type == Heap.Type.MIMIC)
+			{
+				Mimic m = Mimic.spawnAt(heap.pos, heap.items);
+				if(m != null)
+				{
+					m.beckon(curUser.pos);
 					heap.destroy();
 				}
 			}
 		}
 
-		GLog.w( Messages.get(this, "roar") );
-		setKnown();
-		
-		curUser.sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
-		Sample.INSTANCE.play( Assets.SND_CHALLENGE );
-		Invisibility.dispel();
+		GLog.w(Messages.get(this, "roar"));
+
+		curUser.sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.3f, 3);
+		Sample.INSTANCE.play(Assets.SND_CHALLENGE);
 
 		readAnimation();
 	}
-	
+
 	@Override
-	public void empoweredRead() {
-		for (Mob mob : Dungeon.level.mobs.toArray( new Mob[0] )) {
-			if (Dungeon.level.heroFOV[mob.pos]) {
+	public void empoweredRead()
+	{
+		for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
+			if(Dungeon.level.heroFOV[mob.pos])
 				Buff.prolong(mob, Amok.class, 5f);
-			}
-		}
-		
-		setKnown();
-		
-		curUser.sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
-		Sample.INSTANCE.play( Assets.SND_READ );
-		Invisibility.dispel();
-		
+
+		curUser.sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.3f, 3);
+		Sample.INSTANCE.play(Assets.SND_READ);
+
 		readAnimation();
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return isKnown() ? 30 * quantity : super.price();
 	}
 }

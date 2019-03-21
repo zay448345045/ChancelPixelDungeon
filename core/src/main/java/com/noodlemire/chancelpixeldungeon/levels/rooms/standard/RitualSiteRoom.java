@@ -30,22 +30,27 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.tiles.CustomTiledVisual;
 import com.watabou.utils.Point;
 
-public class RitualSiteRoom extends StandardRoom {
-	
+public class RitualSiteRoom extends StandardRoom
+{
+
 	@Override
-	public int minWidth() {
+	public int minWidth()
+	{
 		return Math.max(super.minWidth(), 5);
 	}
-	
+
 	@Override
-	public int minHeight() {
+	public int minHeight()
+	{
 		return Math.max(super.minHeight(), 5);
 	}
 
-	public void paint( Level level ) {
+	public void paint(Level level)
+	{
 
-		for (Door door : connected.values()) {
-			door.set( Door.Type.REGULAR );
+		for(Door door : connected.values())
+		{
+			door.set(Door.Type.REGULAR);
 		}
 
 		Painter.fill(level, this, Terrain.WALL);
@@ -56,8 +61,8 @@ public class RitualSiteRoom extends StandardRoom {
 		vis.pos(c.x - 1, c.y - 1);
 
 		level.customTiles.add(vis);
-		
-		Painter.fill(level, c.x-1, c.y-1, 3, 3, Terrain.EMPTY_DECO);
+
+		Painter.fill(level, c.x - 1, c.y - 1, 3, 3, Terrain.EMPTY_DECO);
 
 		level.addItemToSpawn(new CeremonialCandle());
 		level.addItemToSpawn(new CeremonialCandle());
@@ -67,26 +72,31 @@ public class RitualSiteRoom extends StandardRoom {
 		CeremonialCandle.ritualPos = c.x + (level.width() * c.y);
 	}
 
-	public static class RitualMarker extends CustomTiledVisual {
+	public static class RitualMarker extends CustomTiledVisual
+	{
 
-		public RitualMarker(){
-			super( Assets.PRISON_QUEST );
+		public RitualMarker()
+		{
+			super(Assets.PRISON_QUEST);
 		}
 
 		@Override
-		public CustomTiledVisual create() {
+		public CustomTiledVisual create()
+		{
 			tileH = tileW = 3;
 			mapSimpleImage(0, 0);
 			return super.create();
 		}
 
 		@Override
-		public String name(int tileX, int tileY) {
+		public String name(int tileX, int tileY)
+		{
 			return Messages.get(this, "name");
 		}
 
 		@Override
-		public String desc(int tileX, int tileY) {
+		public String desc(int tileX, int tileY)
+		{
 			return Messages.get(this, "desc");
 		}
 	}

@@ -30,8 +30,8 @@ import com.watabou.noosa.Image;
 import java.text.DecimalFormat;
 import java.util.HashSet;
 
-public class Buff extends Actor {
-	
+public class Buff extends Actor
+{
 	public Char target;
 
 	{
@@ -40,122 +40,146 @@ public class Buff extends Actor {
 
 	//determines how the buff is announced when it is shown.
 	//buffs that work behind the scenes, or have other visual indicators can usually be silent.
-	public enum buffType {POSITIVE, NEGATIVE, NEUTRAL, SILENT}
+	public enum buffType
+	{
+		POSITIVE, NEGATIVE, NEUTRAL, SILENT
+	}
 
-    public buffType type = buffType.SILENT;
-	
+	public buffType type = buffType.SILENT;
+
 	protected HashSet<Class> resistances = new HashSet<>();
-	
-	public HashSet<Class> resistances() {
+
+	public HashSet<Class> resistances()
+	{
 		return new HashSet<>(resistances);
 	}
-	
+
 	protected HashSet<Class> immunities = new HashSet<>();
-	
-	public HashSet<Class> immunities() {
+
+	public HashSet<Class> immunities()
+	{
 		return new HashSet<>(immunities);
 	}
-	
-	public boolean attachTo( Char target ) {
 
-		if (target.isImmune( getClass() )) {
+	public boolean attachTo(Char target)
+	{
+		if(target.isImmune(getClass()))
 			return false;
-		}
-		
+
 		this.target = target;
-		target.add( this );
+		target.add(this);
 
-		if (target.buffs().contains(this)){
-			if (target.sprite != null) fx( true );
+		if(target.buffs().contains(this))
+		{
+			if(target.sprite != null) fx(true);
 			return true;
-		} else
+		}
+		else
 			return false;
 	}
-	
-	public void detach() {
-		if (target.sprite != null) fx( false );
-		target.remove( this );
+
+	public void detach()
+	{
+		if(target.sprite != null) fx(false);
+		target.remove(this);
 	}
-	
+
 	@Override
-	public boolean act() {
-		diactivate();
+	public boolean act()
+	{
+		deactivate();
 		return true;
 	}
-	
-	public int icon() {
+
+	public int icon()
+	{
 		return BuffIndicator.NONE;
 	}
-	
-	public void tintIcon( Image icon ){
+
+	public void tintIcon(Image icon)
+	{
 		//do nothing by default
 	}
 
-	public void fx(boolean on) {
+	public void fx(boolean on)
+	{
 		//do nothing by default
 	}
 
-    public String heroMessage(){
+	public String heroMessage()
+	{
 		return null;
 	}
 
-	public String desc(){
+	public String desc()
+	{
 		return "";
 	}
 
 	//to handle the common case of showing how many turns are remaining in a buff description.
-	protected String dispTurns(float input){
+	protected String dispTurns(float input)
+	{
 		return new DecimalFormat("#.##").format(input);
 	}
 
 	//creates a fresh instance of the buff and attaches that, this allows duplication.
-	public static<T extends Buff> T append( Char target, Class<T> buffClass ) {
-		try {
+	public static <T extends Buff> T append(Char target, Class<T> buffClass)
+	{
+		try
+		{
 			T buff = buffClass.newInstance();
-			buff.attachTo( target );
+			buff.attachTo(target);
 			return buff;
-		} catch (Exception e) {
+		}
+		catch(Exception e)
+		{
 			ChancelPixelDungeon.reportException(e);
 			return null;
 		}
 	}
 
-	public static<T extends FlavourBuff> T append( Char target, Class<T> buffClass, float duration ) {
-		T buff = append( target, buffClass );
-		buff.spend( duration * target.resist(buffClass) );
+	public static <T extends FlavourBuff> T append(Char target, Class<T> buffClass, float duration)
+	{
+		T buff = append(target, buffClass);
+		buff.spend(duration * target.resist(buffClass));
 		return buff;
 	}
 
 	//same as append, but prevents duplication.
-	public static<T extends Buff> T affect( Char target, Class<T> buffClass ) {
-		T buff = target.buff( buffClass );
-		if (buff != null) {
+	public static <T extends Buff> T affect(Char target, Class<T> buffClass)
+	{
+		T buff = target.buff(buffClass);
+		if(buff != null)
 			return buff;
-		} else {
-			return append( target, buffClass );
-		}
+		else
+			return append(target, buffClass);
 	}
-	
-	public static<T extends FlavourBuff> T affect( Char target, Class<T> buffClass, float duration ) {
-		T buff = affect( target, buffClass );
-		buff.spend( duration * target.resist(buffClass) );
+
+	public static <T extends FlavourBuff> T affect(Char target, Class<T> buffClass, float duration)
+	{
+		T buff = affect(target, buffClass);
+		buff.spend(duration * target.resist(buffClass));
 		return buff;
 	}
 
 	//postpones an already active buff, or creates & attaches a new buff and delays that.
-	public static<T extends FlavourBuff> T prolong( Char target, Class<T> buffClass, float duration ) {
-		T buff = affect( target, buffClass );
-		buff.postpone( duration * target.resist(buffClass) );
+	public static <T extends FlavourBuff> T prolong(Char target, Class<T> buffClass, float duration)
+	{
+		T buff = affect(target, buffClass);
+		buff.postpone(duration * target.resist(buffClass));
 		return buff;
 	}
-	
-	public static void detach( Buff buff ) {
-		if (buff != null) {
+
+	public static void detach(Buff buff)
+	{
+		if(buff != null)
+		{
 			buff.detach();
 		}
 	}
-	
-	public static void detach( Char target, Class<? extends Buff> cl ) {
-		detach( target.buff( cl ) );
+
+	public static void detach(Char target, Class<? extends Buff> cl)
+	{
+		detach(target.buff(cl));
 	}
 }

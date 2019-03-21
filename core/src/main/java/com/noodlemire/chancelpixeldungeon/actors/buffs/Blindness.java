@@ -22,38 +22,52 @@
 package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Darkness;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 
-public class Blindness extends FlavourBuff {
+public class Blindness extends FlavourBuff implements Expulsion
+{
 
 	{
 		type = buffType.NEGATIVE;
 	}
-	
+
 	@Override
-	public void detach() {
+	public void detach()
+	{
 		super.detach();
 		Dungeon.observe();
 	}
-	
+
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.BLINDNESS;
 	}
-	
+
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String heroMessage() {
+	public String heroMessage()
+	{
 		return Messages.get(this, "heromsg");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc", dispTurns());
+	}
+
+	@Override
+	public Class<? extends Blob> expulse()
+	{
+		return Darkness.class;
 	}
 }

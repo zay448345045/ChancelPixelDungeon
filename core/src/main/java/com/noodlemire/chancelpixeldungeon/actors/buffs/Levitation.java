@@ -23,56 +23,75 @@ package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.ConfusionGas;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 
-public class Levitation extends FlavourBuff {
+public class Levitation extends FlavourBuff implements Expulsion
+{
 
-	public static final float DURATION	= 20f;
-	
+	public static final float DURATION = 20f;
+
 	@Override
-	public boolean attachTo( Char target ) {
-		if (super.attachTo( target )) {
+	public boolean attachTo(Char target)
+	{
+		if(super.attachTo(target))
+		{
 			target.flying = true;
-			Roots.detach( target, Roots.class );
+			Roots.detach(target, Roots.class);
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}
-	
+
 	@Override
-	public void detach() {
+	public void detach()
+	{
 		target.flying = false;
-		Dungeon.level.press( target.pos, target, true );
+		Dungeon.level.press(target.pos, target, true);
 		super.detach();
 	}
-	
+
 	@Override
-	public int icon() {
+	public int icon()
+	{
 		return BuffIndicator.LEVITATION;
 	}
-	
+
 	@Override
-	public void tintIcon(Image icon) {
+	public void tintIcon(Image icon)
+	{
 		greyIcon(icon, 5f, cooldown());
 	}
-	
+
 	@Override
-	public void fx(boolean on) {
-		if (on) target.sprite.add(CharSprite.State.LEVITATING);
+	public void fx(boolean on)
+	{
+		if(on) target.sprite.add(CharSprite.State.LEVITATING);
 		else target.sprite.remove(CharSprite.State.LEVITATING);
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return Messages.get(this, "name");
 	}
 
 	@Override
-	public String desc() {
+	public String desc()
+	{
 		return Messages.get(this, "desc", dispTurns());
+	}
+
+	@Override
+	public Class<? extends Blob> expulse()
+	{
+		return ConfusionGas.class;
 	}
 }

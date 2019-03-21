@@ -23,7 +23,6 @@ package com.noodlemire.chancelpixeldungeon.items.scrolls;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Invisibility;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Recharging;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.SpellSprite;
@@ -32,42 +31,47 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
-public class ScrollOfRecharging extends Scroll {
-
-	public static final float BUFF_DURATION = 30f;
+public class ScrollOfRecharging extends Scroll
+{
+	private static final float BUFF_DURATION = 30f;
 
 	{
 		initials = 7;
 	}
 
 	@Override
-	public void doRead() {
+	public void doRead()
+	{
+		Sample.INSTANCE.play(Assets.SND_READ);
+		recharge();
+	}
 
-		Buff.affect(curUser, Recharging.class, BUFF_DURATION);
+	private void recharge()
+	{
+		Buff.affect(curUser, Recharging.class).set(BUFF_DURATION);
 		charge(curUser);
-		
-		Sample.INSTANCE.play( Assets.SND_READ );
-		Invisibility.dispel();
 
-		GLog.i( Messages.get(this, "surge") );
-		SpellSprite.show( curUser, SpellSprite.CHARGE );
-		setKnown();
+		GLog.i(Messages.get(this, "surge"));
+		SpellSprite.show(curUser, SpellSprite.CHARGE);
 
 		readAnimation();
 	}
-	
+
 	@Override
-	public void empoweredRead() {
+	public void empoweredRead()
+	{
 		doRead();
-		Buff.append(curUser, Recharging.class, BUFF_DURATION/3f);
+		Buff.append(curUser, Recharging.class).set(BUFF_DURATION);
 	}
-	
-	public static void charge( Hero hero ) {
-		hero.sprite.centerEmitter().burst( EnergyParticle.FACTORY, 15 );
+
+	public static void charge(Hero hero)
+	{
+		hero.sprite.centerEmitter().burst(EnergyParticle.FACTORY, 15);
 	}
-	
+
 	@Override
-	public int price() {
+	public int price()
+	{
 		return isKnown() ? 40 * quantity : super.price();
 	}
 }

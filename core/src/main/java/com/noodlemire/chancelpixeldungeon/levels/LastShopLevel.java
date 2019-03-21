@@ -40,111 +40,135 @@ import com.watabou.noosa.Group;
 
 import java.util.ArrayList;
 
-public class LastShopLevel extends RegularLevel {
-	
+public class LastShopLevel extends RegularLevel
+{
+
 	{
 		color1 = 0x4b6636;
 		color2 = 0xf2f2f2;
 	}
-	
+
 	@Override
-	public String tilesTex() {
+	public String tilesTex()
+	{
 		return Assets.TILES_CITY;
 	}
-	
+
 	@Override
-	public String waterTex() {
+	public String waterTex()
+	{
 		return Assets.WATER_CITY;
 	}
-	
+
 	@Override
-	protected boolean build() {
+	protected boolean build()
+	{
 		feeling = Feeling.CHASM;
-		if (super.build()){
-			
-			for (int i=0; i < length(); i++) {
-				if (map[i] == Terrain.SECRET_DOOR) {
+		if(super.build())
+		{
+
+			for(int i = 0; i < length(); i++)
+			{
+				if(map[i] == Terrain.SECRET_DOOR)
+				{
 					map[i] = Terrain.DOOR;
 				}
 			}
-			
+
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}
-	
+
 	@Override
-	protected ArrayList<Room> initRooms() {
+	protected ArrayList<Room> initRooms()
+	{
 		ArrayList<Room> rooms = new ArrayList<>();
-		
-		rooms.add ( roomEntrance = new EntranceRoom());
-		rooms.add( new ImpShopRoom() );
-		rooms.add( roomExit = new ExitRoom());
-		
+
+		rooms.add(roomEntrance = new EntranceRoom());
+		rooms.add(new ImpShopRoom());
+		rooms.add(roomExit = new ExitRoom());
+
 		return rooms;
 	}
-	
+
 	@Override
-	protected Builder builder() {
+	protected Builder builder()
+	{
 		return new LineBuilder()
 				.setPathVariance(0f)
 				.setPathLength(1f, new float[]{1})
 				.setTunnelLength(new float[]{0, 0, 1}, new float[]{1});
 	}
-	
+
 	@Override
-	protected Painter painter() {
+	protected Painter painter()
+	{
 		return new CityPainter()
-				.setWater( 0.10f, 4 )
-				.setGrass( 0.10f, 3 );
+				.setWater(0.10f, 4)
+				.setGrass(0.10f, 3);
 	}
-	
+
 	@Override
-	public Mob createMob() {
+	public Mob createMob()
+	{
 		return null;
 	}
-	
+
 	@Override
-	protected void createMobs() {
+	protected void createMobs()
+	{
 	}
-	
-	public Actor respawner() {
+
+	public Actor respawner()
+	{
 		return null;
 	}
-	
+
 	@Override
-	protected void createItems() {
+	protected void createItems()
+	{
 		Item item = Bones.get();
-		if (item != null) {
+		if(item != null)
+		{
 			int pos;
-			do {
+			do
+			{
 				pos = pointToCell(roomEntrance.random());
-			} while (pos == entrance);
-			drop( item, pos ).type = Heap.Type.REMAINS;
+			}
+			while(pos == entrance);
+			drop(item, pos).type = Heap.Type.REMAINS;
 		}
 	}
-	
+
 	@Override
-	public int randomRespawnCell() {
-		return pointToCell( roomEntrance.random() );
+	public int randomRespawnCell()
+	{
+		return pointToCell(roomEntrance.random());
 	}
-	
+
 	@Override
-	public String tileName( int tile ) {
-		switch (tile) {
+	public String tileName(int tile)
+	{
+		switch(tile)
+		{
 			case Terrain.WATER:
 				return Messages.get(CityLevel.class, "water_name");
 			case Terrain.HIGH_GRASS:
 				return Messages.get(CityLevel.class, "high_grass_name");
 			default:
-				return super.tileName( tile );
+				return super.tileName(tile);
 		}
 	}
-	
+
 	@Override
-	public String tileDesc(int tile) {
-		switch (tile) {
+	public String tileDesc(int tile)
+	{
+		switch(tile)
+		{
 			case Terrain.ENTRANCE:
 				return Messages.get(CityLevel.class, "entrance_desc");
 			case Terrain.EXIT:
@@ -160,12 +184,13 @@ public class LastShopLevel extends RegularLevel {
 			case Terrain.BOOKSHELF:
 				return Messages.get(CityLevel.class, "bookshelf_desc");
 			default:
-				return super.tileDesc( tile );
+				return super.tileDesc(tile);
 		}
 	}
 
 	@Override
-	public Group addVisuals( ) {
+	public Group addVisuals()
+	{
 		super.addVisuals();
 		CityLevel.addCityVisuals(this, visuals);
 		return visuals;

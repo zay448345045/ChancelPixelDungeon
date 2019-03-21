@@ -27,21 +27,26 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Chill;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class ChillingDart extends TippedDart {
-	
+public class ChillingDart extends TippedDart
+{
+
 	{
 		image = ItemSpriteSheet.CHILLING_DART;
 	}
-	
+
 	@Override
-	public int proc(Char attacker, Char defender, int damage) {
-		
-		if (Dungeon.level.water[defender.pos]){
+	public int proc(Char attacker, Char defender, int damage)
+	{
+
+		if(Dungeon.level.water[defender.pos])
+		{
 			Buff.prolong(defender, Chill.class, 10f);
-		} else {
+		}
+		else
+		{
 			Buff.prolong(defender, Chill.class, 6f);
 		}
-		
+
 		return super.proc(attacker, defender, damage);
 	}
 }

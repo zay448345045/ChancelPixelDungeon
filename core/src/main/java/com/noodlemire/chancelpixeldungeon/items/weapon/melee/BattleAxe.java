@@ -23,19 +23,12 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class BattleAxe extends MeleeWeapon {
-
+public class BattleAxe extends WarHammer
+{
 	{
 		image = ItemSpriteSheet.BATTLE_AXE;
-
 		tier = 4;
 		ACC = 1.24f; //24% boost to accuracy
+		//20 base, down from 25; scaling unchanged
 	}
-
-	@Override
-	public int max(int lvl) {
-		return  4*(tier+1) +    //20 base, down from 25
-				lvl*(tier+1);   //scaling unchanged
-	}
-
 }

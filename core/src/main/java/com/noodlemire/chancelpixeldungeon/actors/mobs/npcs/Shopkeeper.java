@@ -33,69 +33,82 @@ import com.noodlemire.chancelpixeldungeon.sprites.ShopkeeperSprite;
 import com.noodlemire.chancelpixeldungeon.windows.WndBag;
 import com.noodlemire.chancelpixeldungeon.windows.WndTradeItem;
 
-public class Shopkeeper extends NPC {
+public class Shopkeeper extends NPC
+{
 
 	{
 		spriteClass = ShopkeeperSprite.class;
 
 		properties.add(Property.IMMOVABLE);
 	}
-	
+
 	@Override
-	protected boolean act() {
+	protected boolean act()
+	{
 
 		throwItem();
-		
-		sprite.turnTo( pos, Dungeon.hero.pos );
-		spend( TICK );
+
+		sprite.turnTo(pos, Dungeon.hero.pos);
+		spend(TICK);
 		return true;
 	}
-	
+
 	@Override
-	public void damage( int dmg, Object src ) {
+	public void damage(int dmg, Object src)
+	{
 		flee();
 	}
-	
+
 	@Override
-	public void add( Buff buff ) {
+	public void add(Buff buff)
+	{
 		flee();
 	}
-	
-	public void flee() {
-		for (Heap heap: Dungeon.level.heaps.values()) {
-			if (heap.type == Heap.Type.FOR_SALE) {
-				CellEmitter.get( heap.pos ).burst( ElmoParticle.FACTORY, 4 );
+
+	public void flee()
+	{
+		for(Heap heap : Dungeon.level.heaps.values())
+		{
+			if(heap.type == Heap.Type.FOR_SALE)
+			{
+				CellEmitter.get(heap.pos).burst(ElmoParticle.FACTORY, 4);
 				heap.destroy();
 			}
 		}
-		
+
 		destroy();
-		
+
 		sprite.killAndErase();
-		CellEmitter.get( pos ).burst( ElmoParticle.FACTORY, 6 );
+		CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
 	}
-	
+
 	@Override
-	public boolean reset() {
+	public boolean reset()
+	{
 		return true;
 	}
-	
-	public static WndBag sell() {
-		return GameScene.selectItem( itemSelector, WndBag.Mode.FOR_SALE, Messages.get(Shopkeeper.class, "sell"));
+
+	public static WndBag sell()
+	{
+		return GameScene.selectItem(itemSelector, WndBag.Mode.FOR_SALE, Messages.get(Shopkeeper.class, "sell"));
 	}
-	
-	private static WndBag.Listener itemSelector = new WndBag.Listener() {
+
+	private static WndBag.Listener itemSelector = new WndBag.Listener()
+	{
 		@Override
-		public void onSelect( Item item ) {
-			if (item != null) {
+		public void onSelect(Item item)
+		{
+			if(item != null)
+			{
 				WndBag parentWnd = sell();
-				GameScene.show( new WndTradeItem( item, parentWnd ) );
+				GameScene.show(new WndTradeItem(item, parentWnd));
 			}
 		}
 	};
 
 	@Override
-	public boolean interact() {
+	public boolean interact()
+	{
 		sell();
 		return false;
 	}
