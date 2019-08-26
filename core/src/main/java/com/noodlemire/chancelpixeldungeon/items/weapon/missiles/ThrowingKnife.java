@@ -24,11 +24,8 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.missiles;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
-import com.noodlemire.chancelpixeldungeon.actors.hero.HeroClass;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
-import com.noodlemire.chancelpixeldungeon.items.rings.RingOfSharpshooting;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.utils.Random;
 
 public class ThrowingKnife extends MissileWeapon
 {
@@ -37,14 +34,16 @@ public class ThrowingKnife extends MissileWeapon
 	{
 		image = ItemSpriteSheet.THROWING_KNIFE;
 		tier = 1;
+		baseUses = 5;
 		bones = false;
 	}
 
 	@Override
 	public int max(int lvl)
 	{
-		return Math.round(super.max(lvl) * 1.2f);
-	} //6, up from 5
+		return 6 * tier +                      //6 base, up from 5
+		       (tier == 1 ? 2 * lvl : tier * lvl); //scaling unchanged
+	}
 
 	@Override
 	protected void onThrow(int cell)
@@ -63,22 +62,12 @@ public class ThrowingKnife extends MissileWeapon
 			{
 				//deals 75% toward max to max on surprise, instead of min to max.
 				int diff = max() - min();
-				int damage = hero.dynamicRoll(
+
+				return augment.damageFactor(hero.dynamicRoll(
 						min() + Math.round(diff * 0.75f),
-						max());
-				damage = Math.round(damage * RingOfSharpshooting.damageMultiplier(hero));
-				int exStr = hero.STR() - STRReq();
-				if(exStr > 0 && hero.heroClass == HeroClass.HUNTRESS)
-					damage += Random.IntRange(0, exStr);
-				return damage;
+						max()));
 			}
 		}
 		return super.damageRoll(owner);
-	}
-
-	@Override
-	protected float durabilityPerUse()
-	{
-		return super.durabilityPerUse() * 2f;
 	}
 }

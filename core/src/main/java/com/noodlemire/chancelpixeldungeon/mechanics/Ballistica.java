@@ -101,23 +101,24 @@ public class Ballistica
 		int cell = from;
 
 		int err = dA / 2;
-		while(Dungeon.level.insideMap(cell))
+		while (Dungeon.level.insideMap(cell))
 		{
 			//if we're in a wall, collide with the previous cell along the path.
-			if(stopTerrain && cell != sourcePos && !Dungeon.level.passable[cell] && !Dungeon.level.avoid[cell])
+			//we don't use solid here because we don't want to stop short of closed doors
+			if (stopTerrain && cell != sourcePos && !Dungeon.level.passable[cell] && !Dungeon.level.avoid[cell])
 				collide(path.get(path.size() - 1));
 
 			path.add(cell);
 
-			if((stopTerrain && cell != sourcePos && Dungeon.level.losBlocking[cell])
-			   || (cell != sourcePos && stopChars && Actor.findChar(cell) != null)
-			   || (cell == to && stopTarget))
+			if ((stopTerrain && cell != sourcePos && Dungeon.level.solid[cell])
+			    || (cell != sourcePos && stopChars && Actor.findChar( cell ) != null)
+			    || (cell == to && stopTarget))
 				collide(cell);
 
 			cell += stepA;
 
 			err += dB;
-			if(err >= dA)
+			if (err >= dA)
 			{
 				err = err - dA;
 				cell = cell + stepB;

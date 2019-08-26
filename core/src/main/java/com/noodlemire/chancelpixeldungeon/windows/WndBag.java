@@ -93,14 +93,14 @@ public class WndBag extends WndTabbed
 
 	private static WndBag INSTANCE;
 
-	protected static final int COLS_P = 4;
-	protected static final int COLS_L = 6;
+	private static final int COLS_P = 4;
+	private static final int COLS_L = 6;
 
-	protected static final int SLOT_WIDTH = 28;
-	protected static final int SLOT_HEIGHT = 28;
-	protected static final int SLOT_MARGIN = 1;
+	private static final int SLOT_WIDTH = 28;
+	private static final int SLOT_HEIGHT = 28;
+	private static final int SLOT_MARGIN = 1;
 
-	protected static final int TITLE_HEIGHT = 14;
+	private static final int TITLE_HEIGHT = 14;
 
 	private Listener listener;
 	private WndBag.Mode mode;
@@ -192,7 +192,7 @@ public class WndBag extends WndTabbed
 			INSTANCE = null;
 	}
 
-	protected void placeTitle(Bag bag, int width)
+	private void placeTitle(Bag bag, int width)
 	{
 		RenderedText txtTitle = PixelScene.renderText(
 				title != null ? Messages.titleCase(title) : Messages.titleCase(bag.name()), 9);
@@ -217,7 +217,7 @@ public class WndBag extends WndTabbed
 		add(amt);
 	}
 
-	protected void placeItems(Bag container)
+	private void placeItems(Bag container)
 	{
 		// Equipped items
 		Belongings stuff = Dungeon.hero.belongings;
@@ -235,7 +235,7 @@ public class WndBag extends WndTabbed
 			placeItem(null);
 	}
 
-	protected void placeItem(final Item item)
+	private void placeItem(final Item item)
 	{
 		int x = col * (SLOT_WIDTH + SLOT_MARGIN);
 		int y = TITLE_HEIGHT + row * (SLOT_HEIGHT + SLOT_MARGIN);
@@ -281,12 +281,11 @@ public class WndBag extends WndTabbed
 
 	private class BagTab extends Tab
 	{
-
 		private Image icon;
 
 		private Bag bag;
 
-		public BagTab(Bag bag)
+		BagTab(Bag bag)
 		{
 			super();
 
@@ -425,26 +424,26 @@ public class WndBag extends WndTabbed
 				else
 				{
 					enable(
-							mode == Mode.FOR_SALE && !item.unique && (item.price() > 0) && (!item.isEquipped(Dungeon.hero) || !item.cursed) ||
-							mode == Mode.UPGRADEABLE && item.isUpgradable() ||
-							mode == Mode.UNIDENTIFED && !item.isIdentified() && item.image != ItemSpriteSheet.POTION_UNSTABLE && item.image != ItemSpriteSheet.SCROLL_MYSTERY ||
-							mode == Mode.UNIDED_OR_CURSED_OR_ENCHANTED && ((item instanceof EquipableItem || item instanceof Wand) && (!item.isIdentified() || item.cursed)) ||
-							mode == Mode.QUICKSLOT && (item.defaultAction != null) ||
-							mode == Mode.WEAPON && (item instanceof MeleeWeapon || item instanceof Boomerang) ||
-							mode == Mode.ARMOR && (item instanceof Armor) ||
-							mode == Mode.ENCHANTABLE && (item instanceof MeleeWeapon || item instanceof Bow || item instanceof Boomerang || item instanceof Armor) ||
-							mode == Mode.ENCHANTABLE_IDED && item.isIdentified() && (item instanceof MeleeWeapon || item instanceof Bow || item instanceof Boomerang || item instanceof Armor) ||
-							mode == Mode.ENCHANTED && !(item instanceof Bow) && (item instanceof Weapon && (((Weapon) item).enchantment != null) || (item instanceof Armor && (((Armor) item).glyph != null))) ||
-							mode == Mode.WAND && (item instanceof Wand) ||
-							mode == Mode.SEED && (item instanceof Seed) ||
-							mode == Mode.FOOD && (item instanceof Food) ||
-							mode == Mode.POTION && (item instanceof Potion) ||
-							mode == Mode.SCROLL && (item instanceof Scroll) ||
-							mode == Mode.UNIDED_POTION_OR_SCROLL && (!item.isIdentified() && (item instanceof Scroll || item instanceof Potion)) ||
-							mode == Mode.IDED_POTION && (item.isIdentified() && item instanceof Potion) ||
-							mode == Mode.EQUIPMENT && (item instanceof EquipableItem) ||
-							mode == Mode.ALCHEMY && item.isIdentified() && (item instanceof Seed || item instanceof Scroll || (item instanceof Blandfruit && ((Blandfruit) item).potionAttrib == null) || (item.getClass() == Dart.class)) ||
-							mode == Mode.TRANSMUTABLE && item instanceof Transmutable ||
+							(mode == Mode.FOR_SALE && !item.unique && (item.price() > 0) && (!item.isEquipped(Dungeon.hero) || !item.cursed)) ||
+							(mode == Mode.UPGRADEABLE && item.isUpgradable()) ||
+							(mode == Mode.UNIDENTIFED && !item.isIdentified() && item.image != ItemSpriteSheet.POTION_UNSTABLE && item.image != ItemSpriteSheet.SCROLL_MYSTERY) ||
+							(mode == Mode.UNIDED_OR_CURSED_OR_ENCHANTED && ((item instanceof EquipableItem || item instanceof Wand) && (!item.isIdentified() || item.cursed))) ||
+							(mode == Mode.QUICKSLOT && (item.defaultAction != null)) ||
+							(mode == Mode.WEAPON && (item instanceof MeleeWeapon || item instanceof Boomerang)) ||
+							(mode == Mode.ARMOR && item instanceof Armor) ||
+							(mode == Mode.ENCHANTABLE && (item instanceof MeleeWeapon || item instanceof Bow || item instanceof Boomerang || item instanceof Armor)) ||
+							(mode == Mode.ENCHANTABLE_IDED && item.isIdentified() && (item instanceof MeleeWeapon || item instanceof Bow || item instanceof Boomerang || item instanceof Armor)) ||
+							(mode == Mode.ENCHANTED && !(item instanceof Bow) && (item instanceof Weapon && (((Weapon) item).enchantment != null) || (item instanceof Armor && (((Armor) item).glyph != null)))) ||
+							(mode == Mode.WAND && item instanceof Wand) ||
+							(mode == Mode.SEED && item instanceof Seed) ||
+							(mode == Mode.FOOD && item instanceof Food) ||
+							(mode == Mode.POTION && item instanceof Potion) ||
+							(mode == Mode.SCROLL && item instanceof Scroll) ||
+							(mode == Mode.UNIDED_POTION_OR_SCROLL && (!item.isIdentified() && (item instanceof Scroll || item instanceof Potion))) ||
+							(mode == Mode.IDED_POTION && (item.isIdentified() && item instanceof Potion)) ||
+							(mode == Mode.EQUIPMENT && item instanceof EquipableItem) ||
+							(mode == Mode.ALCHEMY && item.isIdentified() && (item instanceof Seed || item instanceof Scroll || (item instanceof Blandfruit && ((Blandfruit) item).potionAttrib == null) || (item.getClass() == Dart.class))) ||
+							(mode == Mode.TRANSMUTABLE && item instanceof Transmutable) ||
 							mode == Mode.ALL
 					);
 					//extra logic for cursed weapons or armor

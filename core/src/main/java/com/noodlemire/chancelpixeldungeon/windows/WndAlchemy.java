@@ -99,11 +99,10 @@ public class WndAlchemy extends Window
 						if(item != null)
 						{
 							if(!item.collect())
-							{
 								Dungeon.level.drop(item, Dungeon.hero.pos);
-							}
 							item = null;
 							slot.item(new WndBag.Placeholder(ItemSpriteSheet.SOMETHING));
+							updateState();
 						}
 						GameScene.selectItem(itemSelector, WndBag.Mode.ALCHEMY, Messages.get(WndAlchemy.class, "select"));
 					}
@@ -245,13 +244,9 @@ public class WndAlchemy extends Window
 						if(inputs[i].item == null)
 						{
 							if(item instanceof Dart)
-							{
 								inputs[i].item(item.detachAll(Dungeon.hero.belongings.backpack));
-							}
 							else
-							{
 								inputs[i].item(item.detach(Dungeon.hero.belongings.backpack));
-							}
 							break;
 						}
 					}
@@ -277,7 +272,6 @@ public class WndAlchemy extends Window
 
 	private void updateState()
 	{
-
 		ArrayList<Item> ingredients = filterInput(Item.class);
 		Recipe recipe = Recipe.findRecipe(ingredients);
 
@@ -286,7 +280,6 @@ public class WndAlchemy extends Window
 			output.item(recipe.sampleOutput(ingredients));
 			output.visible = true;
 			btnCombine.enable(true);
-
 		}
 		else
 		{

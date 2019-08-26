@@ -80,9 +80,7 @@ public class Statue extends Mob
 	protected boolean act()
 	{
 		if(Dungeon.level.heroFOV[pos])
-		{
 			Notes.add(Notes.Landmark.STATUE);
-		}
 		return super.act();
 	}
 
@@ -119,11 +117,8 @@ public class Statue extends Mob
 	@Override
 	public void damage(int dmg, Object src)
 	{
-
 		if(state == PASSIVE)
-		{
 			state = HUNTING;
-		}
 
 		super.damage(dmg, src);
 	}
@@ -166,6 +161,8 @@ public class Statue extends Mob
 	@Override
 	public String description()
 	{
+		weapon.identify();
+
 		return Messages.get(this, "desc", weapon.name());
 	}
 

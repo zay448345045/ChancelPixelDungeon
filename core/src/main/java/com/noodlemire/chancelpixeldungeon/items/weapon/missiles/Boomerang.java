@@ -22,93 +22,36 @@
 package com.noodlemire.chancelpixeldungeon.items.weapon.missiles;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
+import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
-import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.sprites.MissileSprite;
-
-import java.util.ArrayList;
 
 public class Boomerang extends MissileWeapon
 {
 	{
 		image = ItemSpriteSheet.BOOMERANG;
 
-		unique = true;
-		bones = false;
+		tier = 3;
+		sticky = false;
 	}
 
 	@Override
-	public boolean stackable()
+	protected void onThrow(int cell)
 	{
-		return false;
-	}
-
-	@Override
-	public ArrayList<String> actions(Hero hero)
-	{
-		ArrayList<String> actions = super.actions(hero);
-		if(!isEquipped(hero)) actions.add(AC_EQUIP);
-		return actions;
-	}
-
-	@Override
-	public int min(int lvl)
-	{
-		return 1 +
-		       lvl;
-	}
-
-	@Override
-	public int max(int lvl)
-	{
-		return 6 +     //half the base damage of a tier-1 weapon
-		       2 * lvl;//scales the same as a tier 1 weapon
-	}
-
-	@Override
-	public int STRReq(int lvl)
-	{
-		lvl = Math.max(0, lvl);
-		//strength req decreases at +1,+3,+6,+10,etc.
-		return 9 - (int) (Math.sqrt(8 * lvl + 1) - 1) / 2;
-	}
-
-	@Override
-	public boolean isUpgradable()
-	{
-		return true;
-	}
-
-	@Override
-	public boolean isIdentified()
-	{
-		return levelKnown && cursedKnown;
-	}
-
-	@Override
-	public Item upgrade(boolean enchant)
-	{
-		super.upgrade(enchant);
-
-		updateQuickslot();
-
-		return this;
-	}
-
-	@Override
-	protected float durabilityPerUse()
-	{
-		return 0;
-	}
-
-	@Override
-	public void rangedHit(Char enemy, int cell)
-	{
-		circleBack(cell, curUser);
+		Char enemy = Actor.findChar(cell);
+		if(enemy == null || enemy == curUser)
+		{
+			parent = null;
+			rangedMiss(cell);
+		}
+		else if(!curUser.shoot(enemy, this))
+			rangedMiss(cell);
+		else
+			rangedHit(enemy, cell);
 	}
 
 	@Override
@@ -119,31 +62,16 @@ public class Boomerang extends MissileWeapon
 
 	private void circleBack(int from, Hero owner)
 	{
+		durability -= durabilityPerUse();
+
+		if(durability <= 0)
+			return;
 
 		((MissileSprite) curUser.sprite.parent.recycle(MissileSprite.class)).
 				reset(from, owner.sprite, curItem, null);
 
-		if(throwEquiped)
-		{
-			owner.belongings.weapon = this;
-			owner.spend(-TIME_TO_EQUIP);
-			Dungeon.quickslot.replacePlaceholder(this);
-			updateQuickslot();
-		}
-		else if(!collect(curUser.belongings.backpack))
-		{
+		if(!collect(curUser.belongings.backpack))
 			Dungeon.level.drop(this, owner.pos).sprite.drop();
-		}
-	}
-
-	private boolean throwEquiped;
-
-	@Override
-	public void cast(Hero user, int dst)
-	{
-		throwEquiped = isEquipped(user) && !cursed;
-		if(throwEquiped) Dungeon.quickslot.convertToPlaceholder(this);
-		super.cast(user, dst);
 	}
 
 	@Override

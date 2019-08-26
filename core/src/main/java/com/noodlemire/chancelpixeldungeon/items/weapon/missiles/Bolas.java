@@ -31,18 +31,14 @@ public class Bolas extends MissileWeapon
 	{
 		image = ItemSpriteSheet.BOLAS;
 		tier = 3;
-	}
-
-	@Override
-	public int min(int lvl)
-	{
-		return Math.round(super.min(lvl) * 0.667f); //4, down from 6
+		baseUses = 5;
 	}
 
 	@Override
 	public int max(int lvl)
 	{
-		return Math.round(super.max(lvl) * 0.4f); //6, down from 15
+		return 3 * tier +                      //9 base, down from 15
+		       (tier == 1 ? 2 * lvl : tier * lvl); //scaling unchanged
 	}
 
 	@Override
@@ -50,11 +46,5 @@ public class Bolas extends MissileWeapon
 	{
 		Buff.prolong(defender, Cripple.class, Cripple.DURATION);
 		return super.proc(attacker, defender, damage);
-	}
-
-	@Override
-	protected float durabilityPerUse()
-	{
-		return super.durabilityPerUse() * 2f;
 	}
 }

@@ -72,6 +72,7 @@ import com.noodlemire.chancelpixeldungeon.ui.BusyIndicator;
 import com.noodlemire.chancelpixeldungeon.ui.CharHealthIndicator;
 import com.noodlemire.chancelpixeldungeon.ui.GameLog;
 import com.noodlemire.chancelpixeldungeon.ui.LootIndicator;
+import com.noodlemire.chancelpixeldungeon.ui.PinCushionIndicator;
 import com.noodlemire.chancelpixeldungeon.ui.QuickSlotButton;
 import com.noodlemire.chancelpixeldungeon.ui.ResumeIndicator;
 import com.noodlemire.chancelpixeldungeon.ui.StatusPane;
@@ -157,6 +158,7 @@ public class GameScene extends PixelScene
 	private LootIndicator loot;
 	private ActionIndicator action;
 	private ResumeIndicator resume;
+	private PinCushionIndicator pincushion;
 
 	@Override
 	public void create()
@@ -323,6 +325,10 @@ public class GameScene extends PixelScene
 		action = new ActionIndicator();
 		action.camera = uiCamera;
 		add(action);
+
+		pincushion = new PinCushionIndicator();
+		pincushion.camera = uiCamera;
+		add(pincushion);
 
 		resume = new ResumeIndicator();
 		resume.camera = uiCamera;
@@ -561,19 +567,22 @@ public class GameScene extends PixelScene
 		if(tagAttack != attack.active ||
 		   tagLoot != loot.visible ||
 		   tagAction != action.visible ||
-		   tagResume != resume.visible)
+		   tagResume != resume.visible ||
+		   tagPincushion != pincushion.visible)
 		{
 
 			//we only want to change the layout when new tags pop in, not when existing ones leave.
 			boolean tagAppearing = (attack.active && !tagAttack) ||
 			                       (loot.visible && !tagLoot) ||
 			                       (action.visible && !tagAction) ||
-			                       (resume.visible && !tagResume);
+			                       (resume.visible && !tagResume) ||
+			                       (pincushion.visible && !tagPincushion);
 
 			tagAttack = attack.active;
 			tagLoot = loot.visible;
 			tagAction = action.visible;
 			tagResume = resume.visible;
+			tagPincushion = pincushion.visible;
 
 			if(tagAppearing) layoutTags();
 		}
@@ -585,10 +594,10 @@ public class GameScene extends PixelScene
 	private boolean tagLoot = false;
 	private boolean tagAction = false;
 	private boolean tagResume = false;
+	private boolean tagPincushion = false;
 
 	public static void layoutTags()
 	{
-
 		if(scene == null) return;
 
 		float tagLeft = CPDSettings.flipTags() ? 0 : uiCamera.width - scene.attack.width();
@@ -629,6 +638,13 @@ public class GameScene extends PixelScene
 		{
 			scene.resume.setPos(tagLeft, pos - scene.resume.height());
 			scene.resume.flip(tagLeft == 0);
+			pos = scene.resume.top();
+		}
+
+		if(scene.tagPincushion)
+		{
+			scene.pincushion.setPos(tagLeft, pos - scene.pincushion.height());
+			scene.pincushion.flip(tagLeft == 0);
 		}
 	}
 

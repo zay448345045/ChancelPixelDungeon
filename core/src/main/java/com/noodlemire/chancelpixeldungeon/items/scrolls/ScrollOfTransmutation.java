@@ -8,6 +8,8 @@ import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.Transmutable;
 import com.noodlemire.chancelpixeldungeon.journal.Catalog;
 import com.noodlemire.chancelpixeldungeon.levels.traps.DistortionTrap;
+import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.noodlemire.chancelpixeldungeon.windows.WndBag;
 
 public class ScrollOfTransmutation extends InventoryScroll
@@ -22,6 +24,7 @@ public class ScrollOfTransmutation extends InventoryScroll
 	@Override
 	protected void onItemSelected(Item item)
 	{
+		System.out.println("step 1");
 		if(empowered)
 		{
 			Item result1 = ((Transmutable)item).transmute();
@@ -49,6 +52,14 @@ public class ScrollOfTransmutation extends InventoryScroll
 
 	private void handleTransmutation(Item item, Item result)
 	{
+		System.out.println("step 2");
+		if(result == null)
+		{
+			GLog.i(Messages.get(this,"failed"));
+			return;
+		}
+
+		System.out.println("step 3");
 		//In case a never-seen item pops out
 		if(result.isIdentified())
 			Catalog.setSeen(result.getClass());
@@ -65,9 +76,10 @@ public class ScrollOfTransmutation extends InventoryScroll
 			if(!result.collect())
 				Dungeon.level.drop(result, curUser.pos).sprite.drop();
 		}
+		System.out.println("step 4");
 
 		Enchanting.show(curUser, result);
-		curUser.sprite.emitter().burst(Speck.factory(Speck.CHANGE), 0);
+		curUser.sprite.emitter().burst(Speck.factory(Speck.CHANGE), 4);
 	}
 
 	@Override

@@ -32,10 +32,8 @@ import java.util.ArrayList;
 
 public class Torch extends Item
 {
-
-	public static final String AC_LIGHT = "LIGHT";
-
-	public static final float TIME_TO_LIGHT = 1;
+	private static final String AC_LIGHT = "LIGHT";
+	private static final float TIME_TO_LIGHT = 1;
 
 	{
 		image = ItemSpriteSheet.TORCH;
@@ -60,12 +58,10 @@ public class Torch extends Item
 	@Override
 	public void execute(Hero hero, String action)
 	{
-
 		super.execute(hero, action);
 
 		if(action.equals(AC_LIGHT))
 		{
-
 			hero.spend(TIME_TO_LIGHT);
 			hero.busy();
 
@@ -77,7 +73,6 @@ public class Torch extends Item
 
 			Emitter emitter = hero.sprite.centerEmitter();
 			emitter.start(FlameParticle.FACTORY, 0.2f, 3);
-
 		}
 	}
 
@@ -98,5 +93,4 @@ public class Torch extends Item
 	{
 		return 10 * quantity;
 	}
-
 }

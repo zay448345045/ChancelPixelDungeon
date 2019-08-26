@@ -28,24 +28,21 @@ public class ThrowingHammer extends MissileWeapon
 	{
 		image = ItemSpriteSheet.THROWING_HAMMER;
 		tier = 5;
+		baseUses = 15;
 		sticky = false;
 	}
 
 	@Override
 	public int min(int lvl)
 	{
-		return Math.round(super.min(lvl) * 0.8f); //8, down from 10
+		return Math.round(1.6f * tier) +   //8 base, down from 10
+		       (tier == 1 ? lvl : 2 * lvl);  //scaling unchanged
 	}
 
 	@Override
 	public int max(int lvl)
 	{
-		return Math.round(super.max(lvl) * 0.8f); //20, down from 25
-	}
-
-	@Override
-	protected float durabilityPerUse()
-	{
-		return super.durabilityPerUse() / 1.5f;
+		return 4 * tier +                  //20 base, down from 25
+		       (tier) * lvl;               //scaling unchanged
 	}
 }

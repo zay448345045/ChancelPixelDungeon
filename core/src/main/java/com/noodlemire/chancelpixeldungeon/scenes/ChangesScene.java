@@ -89,7 +89,6 @@ import java.util.ArrayList;
 //TODO: update this class with relevant info as new versions come out.
 public class ChangesScene extends PixelScene
 {
-
 	private final ArrayList<ChangeInfo> infos = new ArrayList<>();
 
 	@Override
@@ -136,10 +135,110 @@ public class ChangesScene extends PixelScene
 		add(list);
 
 		//************************
+		//    CPD v0.1 BETA 4
+		//************************
+
+		ChangeInfo changes = new ChangeInfo("CPD v0.1 BETA 4", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		infos.add(changes);
+
+		changes = new ChangeInfo("New Content", false, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		infos.add(changes);
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KUNAI, null), "New Throwing Weapons",
+				"A few new missiles have been added to the game, one for each tier (except tier 1).\n\n" +
+				"_-_ Kunai are tier-2 weapons with extra durability.\n" +
+				"_-_ Boomerangs are tier-3 weapons that return to their user if they miss, but fall to the ground otherwise.\n" +
+				"_-_ Knobkerries are tier-4 weapons with increased durability, but won't stick to their targets.\n" +
+				"_-_ Kpingas are tier-5 weapons with high damage and accuracy, but low durability and high strength requirement.\n\n" +
+				"(Resemblences to Shattered's Kunai or Heavy Boomerang are purely coincidential.)"));
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KPINGA, null), "Forceful Missile Removal",
+				"Players now have a new ability. When standing next to an enemy, a button " +
+				"will appear at the side of the screen. After tapping it and selecting the specific enemy, the player " +
+				"will violently rip said missile out of the enemy, as long as they don't miss. All of the factors " +
+				"of a melee attack apply to this, such as player accuracy and enemy evasion skills. Note that " +
+				"this method of missile removal will cost another use out of a missile's durability.\n\n" +
+				"This is meant mostly to give missiles a better chance at being primary weapons once upgraded. At " +
+				"low levels, this will typically only wear down the missile faster while dealing less damage than " +
+				"your melee weapon would have. However, when upgraded, missiles might do more than available melee " +
+				"options, while having infinite durability. Not to mention, a removed missile goes straight back to " +
+				"your inventory and can be used again right away."));
+
+		changes = new ChangeInfo("Changes", false, "");
+		changes.hardlight(CharSprite.WARNING);
+		infos.add(changes);
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
+				"_-_ Scroll of Balance now fails if attempted to be shouted.\n" +
+				"_-_ Transfusion buff imported from Shattered so that self damage is only applied when healing allies.\n" +
+				"_-_ Imported bola buff from shattered\n" +
+				"_-_ Wands and missiles going through grass other sight-blocking terrain was imported from shattered\n" +
+				"_-_ Changed BETA 2 to a large title in this changelog for better visual clarity\n" +
+				"_-_ Items can no longer be thrown underneath Yog-Dzewa. Instead, they bounce off onto an adjacent " +
+				"square. Consequently, this means that Potions of Thunderstorm can no longer be used to effortlessly " +
+				"beat this final boss.\n" +
+				"_-_ Potion of Might's duration has been increased to 300, up from 200."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.SPINNER, 144, 0, 16, 16), Messages.get(this, "bugfixes") + " 1",
+				"Fixed (Existed in Shattered PD):\n" +
+				"_-_ Cloak removing the STEALTH option from its description while at one charge.\n" +
+				"_-_ Bleeding's larger icon being slightly off-center.\n\n" +
+				"Fixed (Caused by BETA):\n" +
+				"_-_ Transmutation, when read, freezing the game upon selecting an item\n" +
+				"_-_ Uncursing items not marking them that they're known to be uncursed.\n" +
+				"_-_ Various scroll descriptions not mentioning what happens if they're shouted, or having outdated descriptions.\n" +
+				"_-_ Certain accidental ommisions in the BETA 3 section of the changelog; see Dynamic Strength, Quest " +
+				"Reward Changes, Hero Bleeding, and Misc sections.\n" +
+				"_-_ Numberous other changelog typos.\n" +
+				"_-_ Scrolls of Taunt being the only item name capitalized in the Stone of Intuition's selection window.\n" +
+				"_-_ Lucky's awkward and overly wordy description."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.SPINNER, 144, 0, 16, 16), Messages.get(this, "bugfixes") + " 2",
+				"Fixed (Caused by BETA):\n" +
+				"_-_ The depth icon having a couple extra pixels from the Dynamic Strength icon\n" +
+				"_-_ Players not being able to shoot while inside of darkness\n" +
+				"_-_ Staircase icon in Ranking Screen showing a couple pixels form another icon.\n" +
+				"_-_ Runestone sprite in Alchemy UI not being removed if the inputted scroll was removed.\n" +
+				"_-_ Animated Statues not showing the names of their weapons' enchantments.\n" +
+				"_-_ Poor wording in Lucky's description.\n" +
+				"_-_ Missile weapons still being affected by excess strength bonus, which was removed.\n" +
+				"_-_ Cancelling the affects of identified scrolls still consuming the scroll unless only one was left."));
+
+		changes = new ChangeInfo("Buffs", false, "");
+		changes.hardlight(CharSprite.POSITIVE);
+		infos.add(changes);
+
+		changes.addButton(new ChangeButton(new Image(Assets.BUFFS_LARGE, 16, 96, 16, 16), "Potion of Might",
+				"Duration has been increased to 300, up from 200."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.ROT_HEART, 0, 0, 16, 16), "Rot Heart",
+				"Instead of plain toxic gas, the Rot Heart now spawns a mixture of Corrosive and Enticement Gas, " +
+				"just like the Seed of Rotberry. However, Enticement Gas has been adjusted so that its range of effect " +
+				"is reduced at lower quantities. In other words, you won't have to worry about the Rot Heart calling the " +
+				"entire floor upon you every time you attack it."));
+
+		changes = new ChangeInfo("From Shattered PD", false, "");
+		changes.hardlight(Window.SHPX_COLOR);
+		infos.add(changes);
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_TRANSFUSION, null), "Wand of Transfusion",
+				"Wand of Transfusion changed significantly when used on enemies:\n" +
+				"_-_ No longer self-harms, now grants a mild self-shield instead\n" +
+				"_-_ Charm duration no longer scales with level, damage to undead enemies reduced"));
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
+				"_-_ Missile Weapons can now be upgraded. The specific mechanics are the same as they " +
+				"were in Shattered.\n" +
+				"_-_ Thrown weapons now show their tier.\n" +
+				"_-_ Missiles and Wand zaps now travel through foilage, instead of being stopped by it."));
+
+		//************************
 		//    CPD v0.1 BETA 3
 		//************************
 
-		ChangeInfo changes = new ChangeInfo("CPD v0.1 BETA 3", true, "");
+		changes = new ChangeInfo("CPD v0.1 BETA 3", true, "");
 		changes.hardlight(Window.TITLE_COLOR);
 		infos.add(changes);
 
@@ -152,12 +251,15 @@ public class ChangesScene extends PixelScene
 				"Instead of being completely random, damage you deal on hit is now influenced by this stat. While " +
 				"this is at its max, you will also deal max damage. However, it decreases with each attack, and is " +
 				"increased by doing anything other than dealing direct damage, including by using other consumable " +
-				"items. More information can be found in a new journal page about this."));
+				"items. More information can be found in a new journal page about this.\n\n" +
+				"This icon shows the sparkle that represents this in-game, normally displayed in the upper-left corner, " +
+				"over the fist of the player's avatar. It ranges in color according to the player's current dynamic " +
+				"strength: red at maximum, yellow at medium, invisible at minimum."));
 
 		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_MYSTERY, null), "Scroll Existence System",
 				"The existence system that applied to potions now also applies to scrolls!\n\n" +
 				"_-_ Four scrolls will be present in every single game.\n" +
-				"    _-_ Upgrade, Blessing (Renamed from Vanilla's Enchantment), Cleaning (Renamed from Remove Curse, Identify\n\n" +
+				"    _-_ Upgrade, Blessing (Renamed from Vanilla's Enchantment), Cleansing (Renamed from Remove Curse, Identify\n\n" +
 				"_-_ Out of sixteen others, eight will be chosen when a run starts to be able to be generated.\n" +
 				"    _-_ Balance (New), Charm (Renamed from imported Affection), Darkness (Imported from YAPD), Decay (New), " +
 				"Insulation (Renamed from imported Anti-Magic), Lullaby, Magma (New), Necromancy (New), Rage, Recharging, " +
@@ -263,6 +365,12 @@ public class ChangesScene extends PixelScene
 		"limit to how much tremendous good luck you can have, bad luck in the short term means that there are more " +
 		"opportunities for high level items to spawn in later levels."));
 
+		changes.addButton(new ChangeButton(new Image(Assets.GHOST, 0, 0, 14, 15), "Quest reward changes",
+				"_-_ The Sad Ghost now gives a regularly randomized weapon or armor that is upgraded once (aside " +
+				"from the fact that it still can't be cursed).\n\n" +
+				"_-_ The Wandmaker's wands are now always level +2.\n\n" +
+				"_-_ The Ambitious Imp's ring is now always level +4."));
+
 		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
 				"_-_ Succubi now drop Stones of Hypnotism, since Scrolls of Lullaby don't appear every game.\n" +
 				"_-_ The Blessing Buff has been deleted from the code and its sprite has been overwritten by another, " +
@@ -271,7 +379,9 @@ public class ChangesScene extends PixelScene
 				"throwing potions or shouting scrolls, not when drinking or reading.\n" +
 				"_-_ Throwing a potion now identifies it, no matter what.\n" +
 				"_-_ Enchantments are now hidden by default on unidentified items until they're equipped. This is to make " +
-				"it harder to tell if an item is uncursed."));
+				"it harder to tell if an item is uncursed.\n" +
+				"_-_ All healing shows as a green +number over whatever was just healed.\n" +
+				"_-_ Since Scrolls of Lullaby don't appear every game anymore, Succubi now drop Stones of Hypnotism instead."));
 
 		changes.addButton(new ChangeButton(new Image(Assets.SPINNER, 144, 0, 16, 16), Messages.get(this, "bugfixes"),
 				"Fixed (Existed Shattered PD):\n" +
@@ -296,7 +406,7 @@ public class ChangesScene extends PixelScene
 				"_-_ Magic Shielding buff not detaching properly if depleted by damage.\n" +
 				"_-_ Overgrowth curse not being able to activate deadnettle.\n" +
 				"_-_ A couple in-game lines of text referring to Shattered Pixel Dungeon instead of Chancel pixel Dungeon.\n" +
-				"_-_ Potions of Might being far too overprices compared to other potions."));
+				"_-_ Potions of Might being far too overpriced compared to other potions."));
 
 		changes = new ChangeInfo("Nerfs", false, "");
 		changes.hardlight(CharSprite.NEGATIVE);
@@ -349,6 +459,10 @@ public class ChangesScene extends PixelScene
 				"The Huntress's Spirit Bow in particular has recieved a new look, which has separate sprites for " +
 				"when you are and aren't aiming with it."));
 
+		changes.addButton(new ChangeButton(new Image(Assets.BUFFS_LARGE, 80, 48, 16, 16), "Hero Bleeding",
+				"The hero once again visibly bleeds on hit, similar to enemies. Also, the slow blood-dropping " +
+				"particle effect when at low health has been restored from Vanilla as well."));
+
 		changes = new ChangeInfo("From Shattered PD", false, "");
 		changes.hardlight(Window.SHPX_COLOR);
 		infos.add(changes);
@@ -364,13 +478,14 @@ public class ChangesScene extends PixelScene
 		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
 				"_-_ If an item is unidentified but confirmed to lack a curse, it will have a blue background.\n" +
 				"_-_ There's a new partial turn indicator to show what percentage of a turn has passed.\n" +
-				"_-_ It now takes a whole turn to drop items, instead of half of a turn."));
+				"_-_ It now takes a whole turn to drop items, instead of half of a turn.\n" +
+				"_-_ Locked laboratory rooms (aka alchemy pot rooms) are now guaranteed to spawn once per chapter."));
 
 		//**********************
 		//    CPD v0.1 BETA 2
 		//**********************
 
-		changes = new ChangeInfo("CPD v0.1 BETA 2", false, "");
+		changes = new ChangeInfo("CPD v0.1 BETA 2", true, "");
 		changes.hardlight(Window.TITLE_COLOR);
 		infos.add(changes);
 
@@ -435,12 +550,10 @@ public class ChangesScene extends PixelScene
 				"increasing the amount of time it takes for players to be able to equip higher tier items."));
 
 		changes.addButton(new ChangeButton(new Image(Assets.BUFFS_LARGE, 48, 80, 16, 16), "Starvation",
-				"Starvation has been reworked to be more punishing to players who tend to avoid eating for very long periods of time." +
-				"At first, starvation will function mostly identically to how it did before. However, if the hero doesn't eat anything" +
-				"at all for a long time, starvation damage will begin to quickly increase without a maximum cap. Additionally, it's" +
-				"not enough to just eat a little bit, as remaining extra damage will take some time to wear off even after eating.\n\n" +
-				"As a bonus, food can now be quickslotted.\n\n" +
-				"Just don't try farming Monks, as they no longer drop rations."));
+				"Starvation has been reworked to be more punishing to players who tend to avoid eating for very long periods of time. " +
+				"At first, starvation will function mostly identically to how it did before. However, if the hero doesn't eat anything " +
+				"at all for a long time, starvation damage will begin to quickly increase without a maximum cap. Additionally, it's " +
+				"not enough to just eat a little bit, as remaining extra damage will take some time to wear off even after eating."));
 
 		changes.addButton(new ChangeButton(new Image(Assets.TILES_SEWERS, 48, 96, 16, 16), "Potion Brewing",
 				"With the new potion system, alchemy has recieved adjustments in regards to potion cooking.\n\n" +
@@ -451,6 +564,10 @@ public class ChangesScene extends PixelScene
 				"Blandfruit will always give the effect of a seed's first preference for potion brewing. This means that because there is " +
 				"no longer any seed that has Potion of Experience as its first preference, blandfruits can no longer be used for easy " +
 				"experience farming."));
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
+				"_-_ Food can now be quickslotted.\n" +
+				"_-_ Monks no longer drop food rations."));
 
 		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.POTION_AMBER, null), "Quickslotted Potions",
 				"Potions now have \"THROW\" as their default action (from tapping them while quickslotted) if they are harmful and identified."));

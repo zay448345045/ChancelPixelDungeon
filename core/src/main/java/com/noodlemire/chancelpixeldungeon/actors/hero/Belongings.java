@@ -175,10 +175,9 @@ public class Belongings implements Iterable<Item>
 
 	public Item getSimilar(Item similar)
 	{
-
 		for(Item item : this)
 		{
-			if(item.isSimilar(similar))
+			if(item != similar && item.isSimilar(similar))
 			{
 				return item;
 			}

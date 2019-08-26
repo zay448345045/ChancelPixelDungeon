@@ -30,7 +30,6 @@ import com.watabou.noosa.Image;
 
 public class Light extends FlavourBuff
 {
-
 	public static final float DURATION = 300f;
 	public static final int DISTANCE = 6;
 
@@ -47,9 +46,7 @@ public class Light extends FlavourBuff
 			return true;
 		}
 		else
-		{
 			return false;
-		}
 	}
 
 	@Override

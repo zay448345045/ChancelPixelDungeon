@@ -21,6 +21,14 @@ public class ScrollOfBalance extends Scroll
 	}
 
 	@Override
+	public void doShout()
+	{
+		Sample.INSTANCE.play(Assets.SND_CHALLENGE);
+		GLog.i(Messages.get(this, "too_loud"));
+		readAnimation();
+	}
+
+	@Override
 	public void empoweredRead()
 	{
 		read(true);

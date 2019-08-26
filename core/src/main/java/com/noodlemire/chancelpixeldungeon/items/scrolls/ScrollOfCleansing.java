@@ -137,6 +137,8 @@ public class ScrollOfCleansing extends InventoryScroll
 		boolean procced = false;
 		for(Item item : items)
 		{
+			if(item != null)
+				item.cursedKnown = true;
 			if(item != null && item.cursed)
 			{
 				item.cursed = false;

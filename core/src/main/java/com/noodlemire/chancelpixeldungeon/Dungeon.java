@@ -116,7 +116,10 @@ public class Dungeon
 		POTION_BANDOLIER,
 		MAGICAL_HOLSTER,
 
-		MISC_LEVELS;
+		MISC_LEVELS,
+
+		//One rare mob per chapter
+		RARE_MOB;
 
 		public int count = 0;
 

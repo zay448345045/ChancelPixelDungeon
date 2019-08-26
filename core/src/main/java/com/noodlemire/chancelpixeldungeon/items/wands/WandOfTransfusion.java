@@ -27,24 +27,16 @@ import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Charm;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.MagicShield;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.effects.Beam;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.effects.particles.BloodParticle;
-import com.noodlemire.chancelpixeldungeon.effects.particles.LeafParticle;
 import com.noodlemire.chancelpixeldungeon.effects.particles.ShadowParticle;
-import com.noodlemire.chancelpixeldungeon.items.Generator;
-import com.noodlemire.chancelpixeldungeon.items.Heap;
-import com.noodlemire.chancelpixeldungeon.items.Item;
-import com.noodlemire.chancelpixeldungeon.items.rings.Ring;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.MagesStaff;
-import com.noodlemire.chancelpixeldungeon.levels.Level;
-import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
-import com.noodlemire.chancelpixeldungeon.plants.Plant;
-import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.tiles.DungeonTilemap;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
@@ -56,7 +48,6 @@ import com.watabou.utils.Random;
 
 public class WandOfTransfusion extends Wand
 {
-
 	{
 		image = ItemSpriteSheet.WAND_TRANSFUSION;
 
@@ -68,35 +59,45 @@ public class WandOfTransfusion extends Wand
 	@Override
 	protected void onZap(Ballistica beam)
 	{
-
 		for(int c : beam.subPath(0, beam.dist))
 			CellEmitter.center(c).burst(BloodParticle.BURST, 1);
 
 		int cell = beam.collisionPos;
 
 		Char ch = Actor.findChar(cell);
-		Heap heap = Dungeon.level.heaps.get(cell);
 
-		//this wand does a bunch of different things depending on what it targets.
-
-		//if we find a character..
-		if(ch != null && ch instanceof Mob)
+		if(ch instanceof Mob)
 		{
+			// 10% of max hp
+			int selfDmg = (int) Math.ceil(curUser.HT() * 0.10f);
+			boolean selfShield = true;
+
 			processSoulMark(ch, chargesPerCast());
 
-			//heals an ally, or a charmed enemy
+			//this wand does different things depending on the target.
+
+			//heals/shields an ally, or a charmed enemy
 			if(ch.alignment == Char.Alignment.ALLY || ch.buff(Charm.class) != null)
 			{
-				int missingHP = ch.HT() - ch.HP();
-				//heals 30%+3%*lvl missing HP.
-				ch.heal((int) Math.ceil((missingHP * (0.30f + (0.03f * level())))));
-				ch.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1 + level() / 2);
-			}
-			else if(ch.properties().contains(Char.Property.UNDEAD)) //harms the undead
-			{
+				int healing = selfDmg + 2 * level();
+				int shielding = (ch.HP() + healing) - ch.HT();
 
-				//deals 30%+5%*lvl total HP.
-				int damage = (int) Math.ceil(ch.HT() * (0.3f + (0.05f * level())));
+				if(shielding > 0)
+				{
+					healing -= shielding;
+					Buff.affect(ch, MagicShield.class).set(shielding);
+				}
+
+				ch.heal(healing);
+				ch.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2 + level() / 2);
+
+				selfShield = false;
+
+				//harms the undead
+			}
+			else if(ch.properties().contains(Char.Property.UNDEAD))
+			{
+				int damage = selfDmg + 2 * level();
 				ch.damage(damage, this);
 				ch.sprite.emitter().start(ShadowParticle.UP, 0.05f, 10 + level());
 				Sample.INSTANCE.play(Assets.SND_BURNING);
@@ -105,92 +106,26 @@ public class WandOfTransfusion extends Wand
 			}
 			else
 			{
-
-				float duration = 5 + level();
-				Buff.affect(ch, Charm.class, duration).object = curUser.id();
-
-				duration *= Random.Float(0.75f, 1f);
-				Buff.affect(curUser, Charm.class, duration).object = ch.id();
+				Buff.affect(ch, Charm.class, 4 + level()).object = curUser.id();
 
 				ch.sprite.centerEmitter().start(Speck.factory(Speck.HEART), 0.2f, 5);
-				curUser.sprite.centerEmitter().start(Speck.factory(Speck.HEART), 0.2f, 5);
-
 			}
 
-
-			//if we find an item...
-		}
-		else if(heap != null && heap.type == Heap.Type.HEAP)
-		{
-			Item item = heap.peek();
-
-			//30% + 10%*lvl chance to uncurse the item and reset it to base level if degraded.
-			if(item != null && Random.Float() <= 0.3f + level() * 0.1f)
-			{
-				if(item.cursed)
-				{
-					item.cursed = false;
-					CellEmitter.get(cell).start(ShadowParticle.UP, 0.05f, 10);
-					Sample.INSTANCE.play(Assets.SND_BURNING);
-				}
-
-				int lvldiffFromBase = item.level() - (item instanceof Ring ? 1 : 0);
-				if(lvldiffFromBase < 0)
-				{
-					item.upgrade(-lvldiffFromBase);
-					CellEmitter.get(cell).start(Speck.factory(Speck.UP), 0.2f, 3);
-					Sample.INSTANCE.play(Assets.SND_BURNING);
-				}
-			}
-
-			//if we find some trampled grass...
-		}
-		else if(Dungeon.level.map[cell] == Terrain.GRASS)
-		{
-
-			//regrow one grass tile, suuuuuper useful...
-			Level.set(cell, Terrain.HIGH_GRASS);
-			GameScene.updateMap(cell);
-			CellEmitter.get(cell).burst(LeafParticle.LEVEL_SPECIFIC, 4);
-
-			//If we find embers...
-		}
-		else if(Dungeon.level.map[cell] == Terrain.EMBERS)
-		{
-
-			//30% + 3%*lvl chance to grow a random plant, or just regrow grass.
-			if(Random.Float() <= 0.3f + level() * 0.03f)
-			{
-				Dungeon.level.plant((Plant.Seed) Generator.random(Generator.Category.SEED), cell);
-				CellEmitter.get(cell).burst(LeafParticle.LEVEL_SPECIFIC, 8);
-				GameScene.updateMap(cell);
-			}
+			if(selfShield)
+				Buff.affect(curUser, MagicShield.class).set(selfDmg);
 			else
 			{
-				Level.set(cell, Terrain.HIGH_GRASS);
-				GameScene.updateMap(cell);
-				CellEmitter.get(cell).burst(LeafParticle.LEVEL_SPECIFIC, 4);
+				if(!freeCharge)
+					damageHero(selfDmg);
+				else
+					freeCharge = false;
 			}
-
-		}
-		else
-			return; //don't damage the hero if we can't find a target;
-
-		if(!freeCharge)
-		{
-			damageHero();
-		}
-		else
-		{
-			freeCharge = false;
 		}
 	}
 
 	//this wand costs health too
-	private void damageHero()
+	private void damageHero(int damage)
 	{
-		// 10% of max hp
-		int damage = (int) Math.ceil(curUser.HT() * 0.10f);
 		curUser.damage(damage, this);
 
 		if(!curUser.isAlive())
@@ -255,5 +190,4 @@ public class WandOfTransfusion extends Wand
 		super.storeInBundle(bundle);
 		bundle.put(FREECHARGE, freeCharge);
 	}
-
 }

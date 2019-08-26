@@ -244,7 +244,7 @@ public class StoneOfIntuition extends InventoryStone
 					{
 						curGuess = all[j];
 						guess.visible = true;
-						guess.text(Messages.get(curGuess, "name"));
+						guess.text(Messages.titleCase(Messages.get(curGuess, "name")));
 						guess.enable(true);
 						super.onClick();
 					}

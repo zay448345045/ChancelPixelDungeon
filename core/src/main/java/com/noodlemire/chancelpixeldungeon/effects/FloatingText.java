@@ -33,7 +33,6 @@ import java.util.ArrayList;
 
 public class FloatingText extends RenderedText
 {
-
 	private static final float LIFESPAN = 1f;
 	private static final float DISTANCE = DungeonTilemap.SIZE;
 
@@ -92,7 +91,6 @@ public class FloatingText extends RenderedText
 
 	public void reset(float x, float y, String text, int color)
 	{
-
 		revive();
 
 		if(cameraZoom != Camera.main.zoom)
@@ -143,7 +141,7 @@ public class FloatingText extends RenderedText
 			ArrayList<FloatingText> stack = stacks.get(key);
 			if(stack == null)
 			{
-				stack = new ArrayList<FloatingText>();
+				stack = new ArrayList<>();
 				stacks.put(key, stack);
 			}
 
@@ -162,9 +160,7 @@ public class FloatingText extends RenderedText
 						aboveIndex--;
 					}
 					else
-					{
 						break;
-					}
 				}
 			}
 

@@ -155,8 +155,12 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.melee.WarHammer;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Whip;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.WornShortsword;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Bolas;
+import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Boomerang;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.FishingSpear;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Javelin;
+import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Knobkerry;
+import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Kpinga;
+import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Kunai;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Shuriken;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.ThrowingHammer;
@@ -389,27 +393,31 @@ public class Generator
 
 			MIS_T2.classes = new Class<?>[]{
 					FishingSpear.class,
-					Shuriken.class
+					Shuriken.class,
+					Kunai.class
 			};
-			MIS_T2.probs = new float[]{4, 3};
+			MIS_T2.probs = new float[]{4, 3, 3};
 
 			MIS_T3.classes = new Class<?>[]{
 					ThrowingSpear.class,
-					Bolas.class
+					Bolas.class,
+					Boomerang.class
 			};
-			MIS_T3.probs = new float[]{4, 3};
+			MIS_T3.probs = new float[]{4, 3, 3};
 
 			MIS_T4.classes = new Class<?>[]{
 					Javelin.class,
-					Tomahawk.class
+					Tomahawk.class,
+					Knobkerry.class
 			};
-			MIS_T4.probs = new float[]{4, 3};
+			MIS_T4.probs = new float[]{4, 3, 3};
 
 			MIS_T5.classes = new Class<?>[]{
 					Trident.class,
-					ThrowingHammer.class
+					ThrowingHammer.class,
+					Kpinga.class
 			};
-			MIS_T5.probs = new float[]{4, 3};
+			MIS_T5.probs = new float[]{4, 3, 3};
 
 			FOOD.classes = new Class<?>[]{
 					Food.class,

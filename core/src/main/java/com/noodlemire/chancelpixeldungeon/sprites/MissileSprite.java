@@ -30,6 +30,7 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Bolas;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Boomerang;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.FishingSpear;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Javelin;
+import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Kunai;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Shuriken;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.ThrowingSpear;
@@ -97,6 +98,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener
 		ANGULAR_SPEEDS.put(Trident.class, 0);
 		ANGULAR_SPEEDS.put(Bow.Arrow.class, 0);
 		ANGULAR_SPEEDS.put(ScrollOfReflection.ReflectionCharge.class, 0);
+		ANGULAR_SPEEDS.put(Kunai.class, 0);
 
 		//720 is default
 

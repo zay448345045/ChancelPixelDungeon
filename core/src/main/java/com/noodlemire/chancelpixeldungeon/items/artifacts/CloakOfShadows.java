@@ -88,7 +88,7 @@ public class CloakOfShadows extends Artifact
 	public ArrayList<String> actions(Hero hero)
 	{
 		ArrayList<String> actions = super.actions(hero);
-		if(isEquipped(hero) && charge > 1)
+		if(isEquipped(hero) && charge > 0)
 			actions.add(AC_STEALTH);
 		return actions;
 	}

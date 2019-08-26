@@ -230,44 +230,48 @@ public class ItemSpriteSheet
 
 	//8 free slots
 
-	private static final int MISSILE_WEP = xy(1, 10);  //16 slots. 3 per tier + boomerang
-	public static final int BOOMERANG = MISSILE_WEP + 0;
+	private static final int MISSILE_WEP = xy(1, 10);  //16 slots, 3 per tier
+	public static final int DART = MISSILE_WEP + 0;
+	public static final int THROWING_KNIFE = MISSILE_WEP + 1;
+	public static final int THROWING_STONE = MISSILE_WEP + 2;
 
-	public static final int DART = MISSILE_WEP + 1;
-	public static final int THROWING_KNIFE = MISSILE_WEP + 2;
-	public static final int THROWING_STONE = MISSILE_WEP + 3;
+	public static final int FISHING_SPEAR = MISSILE_WEP + 3;
+	public static final int SHURIKEN = MISSILE_WEP + 4;
+	public static final int KUNAI = MISSILE_WEP + 5;
 
-	public static final int FISHING_SPEAR = MISSILE_WEP + 4;
-	public static final int SHURIKEN = MISSILE_WEP + 5;
+	public static final int THROWING_SPEAR = MISSILE_WEP + 6;
+	public static final int BOLAS = MISSILE_WEP + 7;
+	public static final int BOOMERANG = MISSILE_WEP + 8;
 
-	public static final int THROWING_SPEAR = MISSILE_WEP + 7;
-	public static final int BOLAS = MISSILE_WEP + 8;
+	public static final int JAVELIN = MISSILE_WEP + 9;
+	public static final int TOMAHAWK = MISSILE_WEP + 10;
+	public static final int KNOBKERRY = MISSILE_WEP + 11;
 
-	public static final int JAVELIN = MISSILE_WEP + 10;
-	public static final int TOMAHAWK = MISSILE_WEP + 11;
-
-	public static final int TRIDENT = MISSILE_WEP + 13;
-	public static final int THROWING_HAMMER = MISSILE_WEP + 14;
+	public static final int TRIDENT = MISSILE_WEP + 12;
+	public static final int THROWING_HAMMER = MISSILE_WEP + 13;
+	public static final int KPINGA = MISSILE_WEP + 14;
 
 	static
 	{
-		assignItemRect(BOOMERANG, 14, 14);
-
 		assignItemRect(DART, 15, 15);
 		assignItemRect(THROWING_KNIFE, 12, 13);
 		assignItemRect(THROWING_STONE, 12, 10);
 
 		assignItemRect(FISHING_SPEAR, 11, 11);
 		assignItemRect(SHURIKEN, 12, 12);
+		assignItemRect(KUNAI, 13, 13);
 
 		assignItemRect(THROWING_SPEAR, 13, 13);
 		assignItemRect(BOLAS, 15, 14);
+		assignItemRect(BOOMERANG, 14, 14);
 
 		assignItemRect(JAVELIN, 16, 16);
 		assignItemRect(TOMAHAWK, 13, 13);
+		assignItemRect(KNOBKERRY, 15, 15);
 
 		assignItemRect(TRIDENT, 16, 16);
 		assignItemRect(THROWING_HAMMER, 12, 12);
+		assignItemRect(KPINGA, 16, 16);
 	}
 
 	public static final int TIPPED_DARTS = xy(1, 11);  //16 slots

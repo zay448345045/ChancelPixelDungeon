@@ -50,7 +50,6 @@ import com.watabou.utils.Random;
 
 public class WandOfPrismaticLight extends DamageWand
 {
-
 	{
 		image = ItemSpriteSheet.WAND_PRISMATIC_LIGHT;
 
@@ -73,16 +72,10 @@ public class WandOfPrismaticLight extends DamageWand
 		affectMap(beam);
 
 		if(Dungeon.level.viewDistance < 6)
-		{
 			if(Dungeon.isChallenged(Challenges.DARKNESS))
-			{
 				Buff.prolong(curUser, Light.class, 2f + level());
-			}
 			else
-			{
 				Buff.prolong(curUser, Light.class, 10f + level() * 5);
-			}
-		}
 
 		Char ch = Actor.findChar(beam.collisionPos);
 		if(ch != null)

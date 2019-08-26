@@ -31,18 +31,21 @@ public class Tomahawk extends MissileWeapon
 	{
 		image = ItemSpriteSheet.TOMAHAWK;
 		tier = 4;
+		baseUses = 5;
 	}
 
 	@Override
 	public int min(int lvl)
 	{
-		return Math.round(super.min(lvl) * 0.75f); //6, down from 8
+		return Math.round(1.5f * tier) +   //6 base, down from 8
+		       2 * lvl;                    //scaling unchanged
 	}
 
 	@Override
 	public int max(int lvl)
 	{
-		return Math.round(super.max(lvl) * 0.75f); //15, down from 20
+		return Math.round(3.75f * tier) +  //15 base, down from 20
+		       (tier - 2) * lvl;               //+2 per level, down from +4
 	}
 
 	@Override
@@ -50,11 +53,5 @@ public class Tomahawk extends MissileWeapon
 	{
 		Buff.affect(defender, Bleeding.class).set(damage);
 		return super.proc(attacker, defender, damage);
-	}
-
-	@Override
-	protected float durabilityPerUse()
-	{
-		return super.durabilityPerUse() * 2f;
 	}
 }

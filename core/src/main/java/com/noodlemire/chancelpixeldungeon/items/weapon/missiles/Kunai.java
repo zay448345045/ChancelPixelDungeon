@@ -21,29 +21,25 @@
 
 package com.noodlemire.chancelpixeldungeon.items.weapon.missiles;
 
-import com.noodlemire.chancelpixeldungeon.actors.Char;
-import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Shuriken extends MissileWeapon
+public class Kunai extends MissileWeapon
 {
 	{
-		image = ItemSpriteSheet.SHURIKEN;
+		image = ItemSpriteSheet.KUNAI;
 		tier = 2;
-		baseUses = 5;
+		baseUses = 20;
+	}
+
+	@Override
+	public int min(int lvl)
+	{
+		return Math.round(super.min(lvl) * 0.75f);
 	}
 
 	@Override
 	public int max(int lvl)
 	{
-		return 4 * tier +                      //8 base, down from 10
-		       (tier == 1 ? 2 * lvl : tier * lvl); //scaling unchanged
-	}
-
-	@Override
-	public float speedFactor(Char owner)
-	{
-		if(owner instanceof Hero && ((Hero) owner).justMoved) return 0;
-		else return super.speedFactor(owner);
+		return Math.round(super.max(lvl) * 0.75f);
 	}
 }

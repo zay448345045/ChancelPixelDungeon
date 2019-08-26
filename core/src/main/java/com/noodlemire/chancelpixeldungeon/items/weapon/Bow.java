@@ -33,6 +33,7 @@ public class Bow extends Weapon
 
 		unique = true;
 		bones = false;
+		cursedKnown = true;
 	}
 
 	@Override

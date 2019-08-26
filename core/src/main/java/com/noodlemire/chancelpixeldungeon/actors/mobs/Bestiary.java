@@ -21,6 +21,7 @@
 
 package com.noodlemire.chancelpixeldungeon.actors.mobs;
 
+import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -28,12 +29,10 @@ import java.util.Arrays;
 
 public class Bestiary
 {
-
 	public static ArrayList<Class<? extends Mob>> getMobRotation(int depth)
 	{
 		ArrayList<Class<? extends Mob>> mobs = standardMobRotation(depth);
 		addRareMobs(depth, mobs);
-		swapMobAlts(mobs);
 		Random.shuffle(mobs);
 		return mobs;
 	}
@@ -50,7 +49,7 @@ public class Bestiary
 				//10x rat
 				return new ArrayList<Class<? extends Mob>>(Arrays.asList(
 						Rat.class, Rat.class, Rat.class, Rat.class, Rat.class,
-						Rat.class, Rat.class, Rat.class, Rat.class, Rat.class//, Warlock.class
+						Rat.class, Rat.class, Rat.class, Rat.class, Rat.class
 				));
 			case 2:
 				//3x rat, 3x gnoll
@@ -170,79 +169,49 @@ public class Bestiary
 
 	}
 
-	//has a chance to add a rarely spawned mobs to the rotation
-	public static void addRareMobs(int depth, ArrayList<Class<? extends Mob>> rotation)
+	//At the last floor of each chapter, a random 'rare' mob will spawn. This only happens once per last floor.
+	private static void addRareMobs(int depth, ArrayList<Class<? extends Mob>> rotation)
 	{
-
-		switch(depth)
+		if(depth / 5 + 1 > Dungeon.LimitedDrops.RARE_MOB.count)
 		{
+			switch(depth)
+			{
+				default:
+					return;
 
-			// Sewers
-			default:
-				return;
-			case 4:
-				if(Random.Float() < 0.01f) rotation.add(Skeleton.class);
-				if(Random.Float() < 0.01f) rotation.add(Thief.class);
-				return;
+				// Sewers
+				case 4:
+					rotation.add(GetRandomRare(Skeleton.class, Thief.class, Albino.class));
 
-			// Prison
-			case 6:
-				if(Random.Float() < 0.2f) rotation.add(Shaman.class);
-				return;
-			case 8:
-				if(Random.Float() < 0.02f) rotation.add(Bat.class);
-				return;
-			case 9:
-				if(Random.Float() < 0.02f) rotation.add(Bat.class);
-				if(Random.Float() < 0.01f) rotation.add(Brute.class);
-				return;
+					break;
 
-			// Caves
-			case 13:
-				if(Random.Float() < 0.02f) rotation.add(Elemental.class);
-				return;
-			case 14:
-				if(Random.Float() < 0.02f) rotation.add(Elemental.class);
-				if(Random.Float() < 0.01f) rotation.add(Monk.class);
-				return;
+				// Prison
+				case 9:
+					rotation.add(GetRandomRare(Bat.class, Brute.class, Bandit.class));
+					break;
 
-			// City
-			case 19:
-				if(Random.Float() < 0.02f) rotation.add(Succubus.class);
-				return;
+				// Caves
+				case 14:
+					rotation.add(GetRandomRare(Elemental.class, Monk.class, Shielded.class));
+					break;
+
+				// City
+				case 19:
+					rotation.add(GetRandomRare(Succubus.class, Senior.class));
+					break;
+
+				case 24:
+					rotation.add(Acidic.class);
+					break;
+			}
+
+			Dungeon.LimitedDrops.RARE_MOB.count++;
 		}
 	}
 
-	//switches out regular mobs for their alt versions when appropriate
-	private static void swapMobAlts(ArrayList<Class<? extends Mob>> rotation)
+	@SafeVarargs
+	private static Class<? extends Mob> GetRandomRare(Class<? extends Mob>... options)
 	{
-		for(int i = 0; i < rotation.size(); i++)
-		{
-			if(Random.Int(50) == 0)
-			{
-				Class<? extends Mob> cl = rotation.get(i);
-				if(cl == Rat.class)
-				{
-					cl = Albino.class;
-				}
-				else if(cl == Thief.class)
-				{
-					cl = Bandit.class;
-				}
-				else if(cl == Brute.class)
-				{
-					cl = Shielded.class;
-				}
-				else if(cl == Monk.class)
-				{
-					cl = Senior.class;
-				}
-				else if(cl == Scorpio.class)
-				{
-					cl = Acidic.class;
-				}
-				rotation.set(i, cl);
-			}
-		}
+		return options[Random.Int(options.length)];
 	}
 }

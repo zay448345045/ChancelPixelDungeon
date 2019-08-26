@@ -214,7 +214,6 @@ public abstract class Scroll extends Item implements Transmutable
 
 				setKnown();
 			}
-
 		}
 	}
 
@@ -237,8 +236,8 @@ public abstract class Scroll extends Item implements Transmutable
 						{
 							if(index == 0)
 							{
-								detach(curUser.belongings.backpack);
-								doRead();
+								curItem = detach(curUser.belongings.backpack);
+								((Scroll)curItem).doRead();
 							}
 						}
 					}
@@ -246,8 +245,8 @@ public abstract class Scroll extends Item implements Transmutable
 		}
 		else
 		{
-			detach(curUser.belongings.backpack);
-			doRead();
+			curItem = detach(curUser.belongings.backpack);
+			((Scroll)curItem).doRead();
 		}
 	}
 
@@ -261,7 +260,8 @@ public abstract class Scroll extends Item implements Transmutable
 		if(isKnown() && (
 				this instanceof ScrollOfUpgrade ||
 				this instanceof ScrollOfCharm ||
-				this instanceof ScrollOfLullaby
+				this instanceof ScrollOfLullaby ||
+				this instanceof ScrollOfBalance
 				))
 		{
 			GameScene.show(

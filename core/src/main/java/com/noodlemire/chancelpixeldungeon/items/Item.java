@@ -30,6 +30,7 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Combo;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Repulsion;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
+import com.noodlemire.chancelpixeldungeon.actors.mobs.Yog;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.items.bags.Bag;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Boomerang;
@@ -172,7 +173,8 @@ public class Item implements Bundlable
 
 	protected void onThrow(int cell)
 	{
-		if(Actor.findChar(cell) != null && Actor.findChar(cell).buff(Repulsion.class) != null)
+		if(Actor.findChar(cell) instanceof Yog ||
+				(Actor.findChar(cell) != null && Actor.findChar(cell).buff(Repulsion.class) != null))
 		{
 			int n;
 			do
@@ -204,21 +206,14 @@ public class Item implements Bundlable
 
 	public boolean collect(Bag container)
 	{
-
 		ArrayList<Item> items = container.items;
 
 		if(items.contains(this))
-		{
 			return true;
-		}
 
 		for(Item item : items)
-		{
 			if(item instanceof Bag && ((Bag) item).grab(this))
-			{
 				return collect((Bag) item);
-			}
-		}
 
 		if(stackable())
 		{
@@ -270,7 +265,6 @@ public class Item implements Bundlable
 
 		try
 		{
-
 			//pssh, who needs copy constructors?
 			Item split = getClass().newInstance();
 			Bundle copy = new Bundle();
@@ -290,23 +284,14 @@ public class Item implements Bundlable
 
 	public final Item detach(Bag container)
 	{
-
 		if(quantity <= 0)
-		{
-
 			return null;
-
-		}
 		else if(quantity == 1)
 		{
-
 			if(stackable() || this instanceof Boomerang)
-			{
 				Dungeon.quickslot.convertToPlaceholder(this);
-			}
 
 			return detachAll(container);
-
 		}
 		else
 		{
@@ -314,7 +299,6 @@ public class Item implements Bundlable
 			updateQuickslot();
 			if(detached != null) detached.onDetach();
 			return detached;
-
 		}
 	}
 
@@ -346,7 +330,7 @@ public class Item implements Bundlable
 
 	public boolean isSimilar(Item item)
 	{
-		return getClass() == item.getClass();
+		return level == item.level && getClass() == item.getClass();
 	}
 
 	protected void onDetach()

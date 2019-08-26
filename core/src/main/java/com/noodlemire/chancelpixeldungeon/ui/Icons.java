@@ -121,7 +121,7 @@ public enum Icons
 				icon.frame(icon.texture.uvRect(0, 45, 13, 58));
 				break;
 			case DEPTH:
-				icon.frame(icon.texture.uvRect(38, 46, 54, 62));
+				icon.frame(icon.texture.uvRect(38, 46, 53, 62));
 				break;
 			case DYNAMIC:
 				icon.frame(icon.texture.uvRect(53, 48, 63, 62));

@@ -35,8 +35,8 @@ import com.noodlemire.chancelpixeldungeon.items.bags.MagicalHolster;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfSharpshooting;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.items.weapon.enchantments.Projecting;
-import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.ui.PinCushionIndicator;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -63,6 +63,7 @@ abstract public class MissileWeapon extends Weapon
 
 	private static final float MAX_DURABILITY = 100;
 	protected float durability = MAX_DURABILITY;
+	protected float baseUses = 10;
 
 	public boolean holster;
 
@@ -149,6 +150,11 @@ abstract public class MissileWeapon extends Weapon
 
 	protected void rangedHit(Char enemy, int cell)
 	{
+		rangedHit(enemy, cell, false);
+	}
+
+	public void rangedHit(Char enemy, int cell, boolean returnToHero)
+	{
 		//if this weapon was thrown from a source stack, degrade that stack.
 		//unless a weapon is about to break, then break the one being thrown
 		if(parent != null)
@@ -167,17 +173,22 @@ abstract public class MissileWeapon extends Weapon
 
 		if(durability > 0)
 		{
+			if(returnToHero)
+			{
+				if(!collect())
+					Dungeon.level.drop(this, Dungeon.hero.pos).sprite.drop();
+
+				return;
+			}
+
 			//attempt to stick the missile weapon to the enemy, just drop it if we can't.
 			if(enemy.isAlive() && sticky)
 			{
 				PinCushion p = Buff.affect(enemy, PinCushion.class);
 				if(p.target == enemy)
-				{
 					p.stick(this);
-					return;
-				}
 			}
-			Dungeon.level.drop(this, enemy.pos).sprite.drop();
+			else super.onThrow(cell);
 		}
 	}
 
@@ -189,30 +200,18 @@ abstract public class MissileWeapon extends Weapon
 
 	protected float durabilityPerUse()
 	{
-		float usage = MAX_DURABILITY / 10f;
+		float usages = baseUses * (float) (Math.pow(3, level()));
 
-		if(Dungeon.hero.heroClass == HeroClass.HUNTRESS) usage /= 1.5f;
-		if(holster) usage /= MagicalHolster.HOLSTER_DURABILITY_FACTOR;
+		if(Dungeon.hero.heroClass == HeroClass.HUNTRESS) usages *= 1.5f;
+		if(holster) usages *= MagicalHolster.HOLSTER_DURABILITY_FACTOR;
 
-		usage /= RingOfSharpshooting.durabilityMultiplier(Dungeon.hero);
+		usages *= RingOfSharpshooting.durabilityMultiplier(Dungeon.hero);
 
-		return usage;
-	}
+		//at 100 uses, items just last forever.
+		if(usages >= 100f) return 0;
 
-	@Override
-	public int damageRoll(Char owner)
-	{
-		int damage = super.damageRoll(owner);
-		damage = Math.round(damage * RingOfSharpshooting.damageMultiplier(owner));
-
-		if(owner instanceof Hero)
-		{
-			int exStr = ((Hero) owner).STR() - STRReq();
-			if(exStr > 0)
-				damage += Random.IntRange(0, exStr);
-		}
-
-		return damage;
+		//add a tiny amount to account for rounding error for calculations like 1/3
+		return (MAX_DURABILITY / usages) + 0.001f;
 	}
 
 	@Override
@@ -223,21 +222,84 @@ abstract public class MissileWeapon extends Weapon
 	}
 
 	@Override
+	public int min()
+	{
+		return Math.max(0, min(level() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)));
+	}
+
+	@Override
 	public int min(int lvl)
 	{
-		return augment.damageFactor(2 * tier);
+		return 2 * tier +                      //base
+		       (tier == 1 ? lvl : 2 * lvl);      //level scaling
+	}
+
+	@Override
+	public int max()
+	{
+		return Math.max(0, max(level() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero)));
 	}
 
 	@Override
 	public int max(int lvl)
 	{
-		return augment.damageFactor(5 * tier);
+		return 5 * tier +                      //base
+		       (tier == 1 ? 2 * lvl : tier * lvl); //level scaling
+	}
+
+	private int dispMin()
+	{
+		return isIdentified() ? augment.damageFactor(min(level())) : min(0);
+	}
+
+	private int dispMax()
+	{
+		return isIdentified() ? augment.damageFactor(max(level())) : max(0);
+	}
+
+	public int STRReq(int lvl){
+		lvl = Math.max(0, lvl);
+		//strength req decreases at +1,+3,+6,+10,etc.
+		return (7 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
 	}
 
 	@Override
-	public int STRReq(int lvl)
+	//FIXME some logic here assumes the items are in the player's inventory. Might need to adjust
+	public Item upgrade()
 	{
-		return 7 + 2 * tier;
+		if(!bundleRestoring)
+		{
+			if(quantity > 1)
+			{
+				MissileWeapon upgraded = (MissileWeapon) split(1);
+				upgraded.parent = null;
+
+				upgraded = (MissileWeapon) upgraded.upgrade();
+
+				//try to put the upgraded into inventory, if it didn't already merge
+				if(upgraded.quantity() == 1 && !upgraded.collect())
+					Dungeon.level.drop(upgraded, Dungeon.hero.pos);
+
+				updateQuickslot();
+				return upgraded;
+			}
+			else
+			{
+				durability = MAX_DURABILITY;
+				super.upgrade();
+
+				Item similar = Dungeon.hero.belongings.getSimilar(this);
+				if(similar != null)
+				{
+					detach(Dungeon.hero.belongings.backpack);
+					return similar.merge(this);
+				}
+				updateQuickslot();
+				return this;
+			}
+		}
+		else
+			return super.upgrade();
 	}
 
 	@Override
@@ -260,7 +322,9 @@ abstract public class MissileWeapon extends Weapon
 	@Override
 	public Item split(int amount)
 	{
+		bundleRestoring = true;
 		Item split = super.split(amount);
+		bundleRestoring = false;
 
 		//unless the thrown weapon will break, split off a max durability item and
 		//have it reduce the durability of the main stack. Cleaner to the player this way
@@ -282,12 +346,6 @@ abstract public class MissileWeapon extends Weapon
 	}
 
 	@Override
-	public boolean isUpgradable()
-	{
-		return false;
-	}
-
-	@Override
 	public boolean isIdentified()
 	{
 		return true;
@@ -298,11 +356,7 @@ abstract public class MissileWeapon extends Weapon
 	{
 		String info = desc();
 
-		info += "\n\n" + Messages.get(MissileWeapon.class, "stats",
-				tier,
-				Math.round(min() * RingOfSharpshooting.damageMultiplier(Dungeon.hero)),
-				Math.round(max() * RingOfSharpshooting.damageMultiplier(Dungeon.hero)),
-				STRReq());
+		info += "\n\n" + Messages.get(MissileWeapon.class, "stats", tier, dispMin(), dispMax(), STRReq());
 
 		if(STRReq() > Dungeon.hero.STR())
 		{
@@ -328,12 +382,14 @@ abstract public class MissileWeapon extends Weapon
 
 		info += "\n\n" + Messages.get(this, "durability");
 
-		if(durabilityPerUse() > 0)
+		if (durabilityPerUse() > 0)
 		{
 			info += " " + Messages.get(this, "uses_left",
 					(int) Math.ceil(durability / durabilityPerUse()),
 					(int) Math.ceil(MAX_DURABILITY / durabilityPerUse()));
 		}
+		else
+			info += " " + Messages.get(this, "unlimited_uses");
 
 		if(preservations() > 0)
 			info += "\n\n" + Messages.get(Weapon.class, "preserved", preservations());
@@ -350,24 +406,16 @@ abstract public class MissileWeapon extends Weapon
 		bundle.put(DURABILITY, durability);
 	}
 
+	private static boolean bundleRestoring = false;
+
 	@Override
 	public void restoreFromBundle(Bundle bundle)
 	{
+		bundleRestoring = true;
 		super.restoreFromBundle(bundle);
-		//compatibility with pre-0.6.3 saves
-		if(bundle.contains(DURABILITY))
-		{
-			durability = bundle.getInt(DURABILITY);
-		}
-		else
-		{
-			durability = 100;
-			//reduces quantity roughly in line with new durability system
-			if(!(this instanceof TippedDart))
-			{
-				quantity = (int) Math.ceil(quantity / 5f);
-			}
-		}
+		bundleRestoring = false;
+
+		durability = bundle.getInt(DURABILITY);
 	}
 
 	@Override

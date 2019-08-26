@@ -24,6 +24,7 @@ package com.noodlemire.chancelpixeldungeon.actors.buffs;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.noodlemire.chancelpixeldungeon.ui.PinCushionIndicator;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
@@ -46,12 +47,40 @@ public class PinCushion extends Buff
 		items.add(projectile);
 	}
 
+	public MissileWeapon getMostRecent()
+	{
+		return items.get(items.size() - 1);
+	}
+
+	public MissileWeapon removeMostRecent()
+	{
+		MissileWeapon last = items.get(items.size() - 1);
+
+		if(last.quantity() == 1)
+			items.remove(items.size() - 1);
+		else
+			last = (MissileWeapon)last.split(1);
+
+		if(items.size() == 0)
+			detach();
+
+		return last;
+	}
+
+	@Override
+	public boolean act()
+	{
+		PinCushionIndicator.updateIcon();
+		return super.act();
+	}
+
 	@Override
 	public void detach()
 	{
 		for(Item item : items)
 			Dungeon.level.drop(item, target.pos).sprite.drop();
 		super.detach();
+		PinCushionIndicator.updateIcon();
 	}
 
 	private static final String ITEMS = "items";
@@ -66,7 +95,7 @@ public class PinCushion extends Buff
 	@Override
 	public void restoreFromBundle(Bundle bundle)
 	{
-		items = new ArrayList<MissileWeapon>((Collection<MissileWeapon>) ((Collection<?>) bundle.getCollection(ITEMS)));
+		items = new ArrayList<>((Collection<MissileWeapon>) ((Collection<?>) bundle.getCollection(ITEMS)));
 		super.restoreFromBundle(bundle);
 	}
 }

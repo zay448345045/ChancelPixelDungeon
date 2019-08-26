@@ -31,7 +31,7 @@ import com.watabou.utils.Random;
 
 abstract public class KindOfWeapon extends EquipableItem
 {
-	protected static final float TIME_TO_EQUIP = 1f;
+	private static final float TIME_TO_EQUIP = 1f;
 
 	@Override
 	public boolean isEquipped(Hero hero)
@@ -105,7 +105,7 @@ abstract public class KindOfWeapon extends EquipableItem
 		{
 			Weapon weapon = (Weapon)this;
 
-			if(weapon.enchantment instanceof Lucky)
+			if(weapon.hasEnchant(Lucky.class))
 				luckFactor = ((Lucky)weapon.enchantment).luckFactor(weapon, owner);
 
 			min = weapon.augment.damageFactor(min) * luckFactor;
