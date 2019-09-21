@@ -25,7 +25,7 @@ import com.noodlemire.chancelpixeldungeon.Challenges;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.EarthImbue;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.CorrosionImbue;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.FireImbue;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Hunger;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.ToxicImbue;
@@ -126,7 +126,7 @@ public class Blandfruit extends Food
 			else if(potionAttrib instanceof PotionOfCorrosivity)
 			{
 				GLog.i(Messages.get(this, "para_msg"));
-				Buff.affect(hero, EarthImbue.class, EarthImbue.DURATION);
+				Buff.affect(hero, CorrosionImbue.class).set(CorrosionImbue.DURATION);
 			}
 			else if(potionAttrib instanceof PotionOfPlacebo)
 			{

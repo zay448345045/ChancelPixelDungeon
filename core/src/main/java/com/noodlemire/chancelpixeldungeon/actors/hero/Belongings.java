@@ -23,6 +23,7 @@ package com.noodlemire.chancelpixeldungeon.actors.hero;
 
 import com.noodlemire.chancelpixeldungeon.Badges;
 import com.noodlemire.chancelpixeldungeon.GamesInProgress;
+import com.noodlemire.chancelpixeldungeon.QuickSlot;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.KindOfWeapon;
 import com.noodlemire.chancelpixeldungeon.items.KindofMisc;
@@ -146,7 +147,7 @@ public class Belongings implements Iterable<Item>
 		}
 	}
 
-	public static void preview(GamesInProgress.Info info, Bundle bundle)
+	static void preview(GamesInProgress.Info info, Bundle bundle)
 	{
 		if(bundle.contains(ARMOR))
 		{
@@ -234,15 +235,12 @@ public class Belongings implements Iterable<Item>
 
 	public void resurrect(int depth)
 	{
-
 		for(Item item : backpack.items.toArray(new Item[0]))
 		{
 			if(item instanceof Key)
 			{
 				if(((Key) item).depth == depth)
-				{
 					item.detachAll(backpack);
-				}
 			}
 			else if(item.unique)
 			{
@@ -254,7 +252,7 @@ public class Belongings implements Iterable<Item>
 				}
 				item.collect();
 			}
-			else if(!item.isEquipped(owner))
+			else if(!item.isEquipped(owner) && !QuickSlot.hasItem(item))
 			{
 				item.detachAll(backpack);
 			}

@@ -10,6 +10,8 @@ import com.watabou.noosa.Image;
 
 public class CorrosionImbue extends DurationBuff implements Expulsion
 {
+	public static final float DURATION = 30f;
+
 	@Override
 	public boolean act()
 	{
@@ -52,7 +54,7 @@ public class CorrosionImbue extends DurationBuff implements Expulsion
 	@Override
 	public Class<? extends Blob> expulse()
 	{
-		return ToxicGas.class;
+		return CorrosiveGas.class;
 	}
 
 	{

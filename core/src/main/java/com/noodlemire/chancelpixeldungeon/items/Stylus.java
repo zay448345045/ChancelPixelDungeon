@@ -22,6 +22,7 @@
 package com.noodlemire.chancelpixeldungeon.items;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
+import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.Enchanting;
 import com.noodlemire.chancelpixeldungeon.effects.particles.PurpleParticle;
@@ -93,7 +94,8 @@ public class Stylus extends Item
 
 		scroll.detach(curUser.belongings.backpack);
 		scroll = (Scroll)scroll.transmute();
-		scroll.collect();
+		if(!scroll.collect())
+			Dungeon.level.drop(scroll, curUser.pos).sprite.drop();
 
 		curUser.sprite.operate(curUser.pos);
 		curUser.sprite.centerEmitter().start(PurpleParticle.BURST, 0.05f, 10);

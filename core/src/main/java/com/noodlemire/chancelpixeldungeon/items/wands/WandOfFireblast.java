@@ -41,6 +41,7 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 import java.util.HashSet;
 
@@ -74,9 +75,12 @@ public class WandOfFireblast extends DamageWand
 	@Override
 	protected void onZap(Ballistica bolt)
 	{
+		int damage = damageRoll();
 
 		for(int cell : affectedCells)
 		{
+			damage += Random.IntRange(-1, 1);
+			damage = Math.min(max(), Math.max(min(), damage));
 
 			//ignore caster cell
 			if(cell == bolt.sourcePos)
@@ -87,16 +91,13 @@ public class WandOfFireblast extends DamageWand
 			//only ignite cells directly near caster if they are flammable
 			if(!Dungeon.level.adjacent(bolt.sourcePos, cell)
 			   || Dungeon.level.flamable[cell])
-			{
 				GameScene.add(Blob.seed(cell, 1 + chargesPerCast(), Fire.class));
-			}
 
 			Char ch = Actor.findChar(cell);
 			if(ch != null)
 			{
-
 				processSoulMark(ch, chargesPerCast());
-				ch.damage(damageRoll(), this);
+				ch.damage(damage, this);
 				Buff.affect(ch, Burning.class).reignite();
 				switch(chargesPerCast())
 				{

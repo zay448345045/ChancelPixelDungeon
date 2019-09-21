@@ -90,7 +90,7 @@ public class ScrollOfTeleportation extends EnvironmentScroll
 			@Override
 			public String prompt()
 			{
-				return Messages.get(this, "prompt");
+				return Messages.get(ScrollOfTeleportation.class, "prompt");
 			}
 		});
 	}

@@ -106,7 +106,7 @@ abstract public class KindOfWeapon extends EquipableItem
 			Weapon weapon = (Weapon)this;
 
 			if(weapon.hasEnchant(Lucky.class))
-				luckFactor = ((Lucky)weapon.enchantment).luckFactor(weapon, owner);
+				luckFactor = ((Lucky) weapon.enchantment).luckFactor(weapon, owner);
 
 			min = weapon.augment.damageFactor(min) * luckFactor;
 			max = weapon.augment.damageFactor(max) * luckFactor;

@@ -65,6 +65,15 @@ public class QuickSlot
 	}
 
 
+	public static boolean hasItem(Item item)
+	{
+		for(int i = 0; i < 4; i++)
+			if(item.equals(Dungeon.quickslot.getItem(i)))
+				return true;
+
+		return false;
+	}
+
 	//utility methods, for easier use of the internal array.
 	public int getSlot(Item item)
 	{
@@ -104,12 +113,14 @@ public class QuickSlot
 
 	public void convertToPlaceholder(Item item)
 	{
-		Item placeholder = Item.virtual(item.getClass());
+		if (contains(item))
+		{
+			Item placeholder = item.virtual();
+			if (placeholder == null) return;
 
-		if(placeholder != null && contains(item))
-			for(int i = 0; i < SIZE; i++)
-				if(getItem(i) == item)
-					setSlot(i, placeholder);
+			for (int i = 0; i < SIZE; i++)
+				if (getItem(i) == item) setSlot(i, placeholder);
+		}
 	}
 
 	public Item randomNonePlaceholder()

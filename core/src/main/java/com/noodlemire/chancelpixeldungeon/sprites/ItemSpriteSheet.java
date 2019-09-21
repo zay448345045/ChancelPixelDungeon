@@ -47,7 +47,13 @@ public class ItemSpriteSheet
 	public static final int ARTIFACT_HOLDER = PLACEHOLDERS + 5;
 	public static final int POTION_HOLDER = PLACEHOLDERS + 6;
 	public static final int SCROLL_HOLDER = PLACEHOLDERS + 7;
-	public static final int SOMETHING = PLACEHOLDERS + 8;
+	public static final int SEED_HOLDER = PLACEHOLDERS + 8;
+	public static final int STONE_HOLDER = PLACEHOLDERS + 9;
+	public static final int FOOD_HOLDER = PLACEHOLDERS + 10;
+	public static final int KEY_HOLDER = PLACEHOLDERS + 11;
+	public static final int BAG_HOLDER = PLACEHOLDERS + 12;
+	public static final int MISSILE_HOLDER = PLACEHOLDERS + 13;
+	public static final int SOMETHING = PLACEHOLDERS + 14;
 
 	static
 	{
@@ -59,6 +65,12 @@ public class ItemSpriteSheet
 		assignItemRect(ARTIFACT_HOLDER, 15, 15);
 		assignItemRect(POTION_HOLDER, 10, 14);
 		assignItemRect(SCROLL_HOLDER, 15, 14);
+		assignItemRect(SEED_HOLDER, 10, 10);
+		assignItemRect(STONE_HOLDER, 14, 14);
+		assignItemRect(FOOD_HOLDER, 16, 12);
+		assignItemRect(KEY_HOLDER, 8, 14);
+		assignItemRect(BAG_HOLDER, 14, 15);
+		assignItemRect(MISSILE_HOLDER, 15, 15);
 		assignItemRect(SOMETHING, 8, 13);
 	}
 

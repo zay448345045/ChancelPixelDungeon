@@ -50,7 +50,6 @@ import com.watabou.utils.ColorMath;
 
 public class StatusPane extends Component
 {
-
 	private NinePatch bg;
 	private Image avatar;
 	private Emitter blood;
@@ -85,7 +84,6 @@ public class StatusPane extends Component
 	@Override
 	protected void createChildren()
 	{
-
 		bg = new NinePatch(Assets.STATUS, 0, 0, 128, 36, 85, 0, 45, 0);
 		add(bg);
 
@@ -306,7 +304,6 @@ public class StatusPane extends Component
 
 	private static class JournalButton extends Button
 	{
-
 		private Image bg;
 		private Image journalIcon;
 		private KeyDisplay keyIcon;

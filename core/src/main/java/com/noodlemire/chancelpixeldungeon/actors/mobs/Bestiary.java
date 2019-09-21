@@ -42,7 +42,6 @@ public class Bestiary
 	{
 		switch(depth)
 		{
-
 			// Sewers
 			case 1:
 			default:

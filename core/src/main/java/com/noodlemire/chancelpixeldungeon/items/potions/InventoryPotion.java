@@ -41,6 +41,7 @@ public abstract class InventoryPotion extends Potion
 	public void drink(Hero hero)
 	{
 		identifiedByUse = !isKnown();
+		setKnown();
 
 		curUser = hero;
 		curItem = detach(hero.belongings.backpack);

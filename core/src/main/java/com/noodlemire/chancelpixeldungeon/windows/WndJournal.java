@@ -28,6 +28,7 @@ import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.potions.Potion;
 import com.noodlemire.chancelpixeldungeon.items.rings.Ring;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.Scroll;
+import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfIntuition;
 import com.noodlemire.chancelpixeldungeon.journal.Catalog;
 import com.noodlemire.chancelpixeldungeon.journal.Document;
 import com.noodlemire.chancelpixeldungeon.journal.Notes;
@@ -53,7 +54,6 @@ import java.util.HashMap;
 //FIXME a lot of cleanup and improvements to do here
 public class WndJournal extends WndTabbed
 {
-
 	private static final int WIDTH_P = 120;
 	private static final int HEIGHT_P = 160;
 
@@ -70,7 +70,6 @@ public class WndJournal extends WndTabbed
 
 	public WndJournal()
 	{
-
 		int width = CPDSettings.landscape() ? WIDTH_L : WIDTH_P;
 		int height = CPDSettings.landscape() ? HEIGHT_L : HEIGHT_P;
 
@@ -122,9 +121,7 @@ public class WndJournal extends WndTabbed
 		};
 
 		for(Tab tab : tabs)
-		{
 			add(tab);
-		}
 
 		layoutTabs();
 
@@ -133,7 +130,6 @@ public class WndJournal extends WndTabbed
 
 	private static class ListItem extends Component
 	{
-
 		protected RenderedTextMultiline label;
 		protected BitmapText depth;
 		protected ColorBlock line;
@@ -179,13 +175,11 @@ public class WndJournal extends WndTabbed
 
 			line = new ColorBlock(1, 1, 0xFF222222);
 			add(line);
-
 		}
 
 		@Override
 		protected void layout()
 		{
-
 			icon.y = y + 1 + (height() - 1 - icon.height()) / 2f;
 			PixelScene.align(icon);
 
@@ -205,7 +199,6 @@ public class WndJournal extends WndTabbed
 
 	private static class GuideTab extends Component
 	{
-
 		private ScrollPane list;
 		private ArrayList<GuideItem> pages = new ArrayList<>();
 
@@ -219,12 +212,8 @@ public class WndJournal extends WndTabbed
 				{
 					int size = pages.size();
 					for(int i = 0; i < size; i++)
-					{
 						if(pages.get(i).onClick(x, y))
-						{
 							break;
-						}
-					}
 				}
 			};
 			add(list);
@@ -273,8 +262,7 @@ public class WndJournal extends WndTabbed
 
 		private static class GuideItem extends ListItem
 		{
-
-			private boolean found = false;
+			private boolean found;
 			private String page;
 
 			public GuideItem(String page)
@@ -302,18 +290,13 @@ public class WndJournal extends WndTabbed
 					return true;
 				}
 				else
-				{
 					return false;
-				}
 			}
-
 		}
-
 	}
 
 	private static class NotesTab extends Component
 	{
-
 		private ScrollPane list;
 
 		@Override
@@ -398,7 +381,6 @@ public class WndJournal extends WndTabbed
 
 	private static class CatalogTab extends Component
 	{
-
 		private RedButton[] itemButtons;
 		private static final int NUM_BUTTONS = 7;
 
@@ -593,7 +575,13 @@ public class WndJournal extends WndTabbed
 				this.item = item;
 				this.seen = seen;
 
-				if(!seen)
+				if(!IDed && StoneOfIntuition.confirmedNonexistent(item))
+				{
+					icon.copy(new ItemSprite(currentItemIdx == POTION_IDX ? ItemSpriteSheet.POTION_UNSTABLE
+							: ItemSpriteSheet.SCROLL_MYSTERY, null));
+					label.hardlight(0x999999);
+				}
+				else if(!seen)
 				{
 					icon.copy(new ItemSprite(ItemSpriteSheet.WEAPON_HOLDER + currentItemIdx, null));
 					label.text("???");

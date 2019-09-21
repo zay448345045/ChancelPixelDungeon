@@ -22,6 +22,7 @@
 package com.noodlemire.chancelpixeldungeon.items.stones;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
+import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.effects.Identification;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.potions.Potion;
@@ -79,11 +80,17 @@ import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.noodlemire.chancelpixeldungeon.windows.IconTitle;
 import com.noodlemire.chancelpixeldungeon.windows.WndBag;
 import com.watabou.noosa.Image;
+import com.watabou.utils.Bundlable;
+import com.watabou.utils.Bundle;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 
 public class StoneOfIntuition extends InventoryStone
 {
+	private static Collection<Bundlable> confirmedNonexistents = new ArrayList<>();
+
 	{
 		mode = WndBag.Mode.UNIDED_POTION_OR_SCROLL;
 		image = ItemSpriteSheet.STONE_ISAZ;
@@ -147,6 +154,33 @@ public class StoneOfIntuition extends InventoryStone
 
 	static Class curGuess = null;
 
+	private static final String CONFIRMED_NONEXISTENTS = "CONFIRMED_NONEXISTENTS";
+
+	public static boolean confirmedNonexistent(Item i)
+	{
+		for(Bundlable b : confirmedNonexistents)
+			if(i.getClass().equals(b.getClass()))
+				return true;
+
+		return false;
+	}
+
+	@Override
+	public void storeInBundle(Bundle bundle)
+	{
+		super.storeInBundle(bundle);
+
+		bundle.put(CONFIRMED_NONEXISTENTS, confirmedNonexistents);
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle)
+	{
+		super.restoreFromBundle(bundle);
+
+		confirmedNonexistents = bundle.getCollection(CONFIRMED_NONEXISTENTS);
+	}
+
 	public class WndGuess extends Window
 	{
 		private static final int WIDTH = 120;
@@ -161,7 +195,7 @@ public class StoneOfIntuition extends InventoryStone
 			add(titlebar);
 
 			RenderedTextMultiline text = PixelScene.renderMultiline(6);
-			text.text(Messages.get(this, "text"));
+			text.text(Messages.get(WndGuess.class, "text"));
 			text.setPos(0, titlebar.bottom());
 			text.maxWidth(WIDTH);
 			add(text);
@@ -173,11 +207,28 @@ public class StoneOfIntuition extends InventoryStone
 				{
 					super.onClick();
 					useAnimation();
+
+					Item example = null;
+					try
+					{
+						example = (Item)curGuess.newInstance();
+					}
+					catch(Exception e)
+					{
+						ChancelPixelDungeon.reportException(e);
+					}
+
 					if(item.getClass() == curGuess)
 					{
 						item.identify();
 						GLog.p(Messages.get(WndGuess.class, "correct"));
 						curUser.sprite.parent.add(new Identification(curUser.sprite.center().offset(0, -16)));
+					}
+					else if(example != null && (example.image == ItemSpriteSheet.POTION_UNSTABLE ||
+					        example.image == ItemSpriteSheet.SCROLL_MYSTERY))
+					{
+						confirmedNonexistents.add(example);
+						GLog.h(Messages.get(WndGuess.class, "nonexistent"));
 					}
 					else
 						GLog.n(Messages.get(WndGuess.class, "incorrect"));
@@ -209,13 +260,35 @@ public class StoneOfIntuition extends InventoryStone
 			}
 			else if(item instanceof Potion)
 			{
-				unIDed.addAll(Potion.getUnknown());
+				for(Class<? extends Potion> p : Potion.getUnknown())
+				{
+					boolean matched = false;
+
+					for(Bundlable b : confirmedNonexistents)
+						if(p.equals(b.getClass()))
+							matched = true;
+
+					if(!matched)
+						unIDed.add(p);
+				}
+
 				all = potions.clone();
 				row = 0;
 			}
 			else if(item instanceof Scroll)
 			{
-				unIDed.addAll(Scroll.getUnknown());
+				for(Class<? extends Scroll> p : Scroll.getUnknown())
+				{
+					boolean matched = false;
+
+					for(Bundlable b : confirmedNonexistents)
+						if(p.equals(b.getClass()))
+							matched = true;
+
+					if(!matched)
+						unIDed.add(p);
+				}
+
 				all = scrolls.clone();
 				row = 7;
 			}

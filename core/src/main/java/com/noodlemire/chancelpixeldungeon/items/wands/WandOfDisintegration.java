@@ -61,7 +61,7 @@ public class WandOfDisintegration extends DamageWand
 	{
 		boolean terrainAffected = false;
 
-		int level = level();
+		int damage = damageRoll();
 
 		int maxDistance = Math.min(distance(), beam.dist);
 
@@ -97,11 +97,14 @@ public class WandOfDisintegration extends DamageWand
 		if(terrainAffected)
 			Dungeon.observe();
 
-		int lvl = level + (chars.size() - 1) + terrainBonus;
+		int dmg = damage + 3 * ((chars.size() - 1) + terrainBonus);
+		if(chars.size() > 1 && terrainBonus > 0)
+			dmg += Random.IntRange(-1, 1);
+
 		for(Char ch : chars)
 		{
 			processSoulMark(ch, chargesPerCast());
-			ch.damage(damageRoll(lvl), this);
+			ch.damage(dmg, this);
 			ch.sprite.centerEmitter().burst(PurpleParticle.BURST, Random.IntRange(1, 2));
 			ch.sprite.flash();
 		}

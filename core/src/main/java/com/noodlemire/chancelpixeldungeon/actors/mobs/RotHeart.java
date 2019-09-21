@@ -24,7 +24,8 @@ package com.noodlemire.chancelpixeldungeon.actors.mobs;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
-import com.noodlemire.chancelpixeldungeon.actors.blobs.ToxicGas;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.CorrosiveGas;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.EnticementGas;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Amok;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Burning;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
@@ -62,15 +63,14 @@ public class RotHeart extends Mob
 			sprite.die();
 		}
 		else
-		{
 			super.damage(dmg, src);
-		}
 	}
 
 	@Override
 	public int defenseProc(Char enemy, int damage)
 	{
-		GameScene.add(Blob.seed(pos, 20, ToxicGas.class));
+		GameScene.add(Blob.seed(pos, 20, CorrosiveGas.class));
+		GameScene.add(Blob.seed(pos, 20, EnticementGas.class));
 
 		return super.defenseProc(enemy, damage);
 	}
@@ -94,9 +94,7 @@ public class RotHeart extends Mob
 		for(Mob mob : Dungeon.level.mobs.toArray(new Mob[Dungeon.level.mobs.size()]))
 		{
 			if(mob instanceof RotLasher)
-			{
 				mob.die(null);
-			}
 		}
 	}
 
@@ -135,9 +133,8 @@ public class RotHeart extends Mob
 		immunities.add(Paralysis.class);
 		immunities.add(Amok.class);
 		immunities.add(Sleep.class);
-		immunities.add(ToxicGas.class);
+		immunities.add(CorrosiveGas.class);
 		immunities.add(Terror.class);
 		immunities.add(Vertigo.class);
 	}
-
 }

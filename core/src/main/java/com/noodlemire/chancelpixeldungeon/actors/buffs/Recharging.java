@@ -32,6 +32,7 @@ import com.noodlemire.chancelpixeldungeon.items.wands.Wand;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.MagesStaff;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
+import com.noodlemire.chancelpixeldungeon.ui.QuickSlotButton;
 import com.watabou.noosa.Image;
 
 public class Recharging extends DurationBuff implements Expulsion
@@ -83,6 +84,8 @@ public class Recharging extends DurationBuff implements Expulsion
 
 		shorten(TICK);
 		spend(TICK);
+
+		QuickSlotButton.refresh();
 
 		return true;
 	}

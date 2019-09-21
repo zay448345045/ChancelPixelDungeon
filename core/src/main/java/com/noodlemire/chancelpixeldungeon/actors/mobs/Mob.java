@@ -371,7 +371,6 @@ public abstract class Mob extends Char
 
 	protected boolean getCloser(int target)
 	{
-
 		if(rooted || target == pos)
 		{
 			return false;
@@ -381,18 +380,13 @@ public abstract class Mob extends Char
 
 		if(Dungeon.level.adjacent(pos, target))
 		{
-
 			path = null;
 
 			if(Actor.findChar(target) == null && Dungeon.level.passable[target])
-			{
 				step = target;
-			}
-
 		}
 		else
 		{
-
 			boolean newPath = false;
 			//scrap the current path if it's empty, no longer connects to the current location
 			//or if it's extremely inefficient and checking again may result in a much better path
@@ -410,7 +404,6 @@ public abstract class Mob extends Char
 
 					if(path.isEmpty())
 					{
-
 						//shorten for a closer one
 						if(Dungeon.level.adjacent(target, pos))
 						{
@@ -422,14 +415,12 @@ public abstract class Mob extends Char
 							path.add(last);
 							path.add(target);
 						}
-
 					}
 					else if(!path.isEmpty())
 					{
 						//if the new target is simply 1 earlier in the path shorten the path
 						if(path.getLast() == target)
 						{
-
 							//if the new target is closer/same, need to modify end of path
 						}
 						else if(Dungeon.level.adjacent(target, path.getLast()))
@@ -444,15 +435,10 @@ public abstract class Mob extends Char
 							path.add(target);
 						}
 					}
-
 				}
 				else
-				{
 					newPath = true;
-				}
-
 			}
-
 
 			if(!newPath)
 			{

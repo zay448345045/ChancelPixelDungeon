@@ -138,7 +138,48 @@ public class ChangesScene extends PixelScene
 		//    CPD v0.1 BETA 4
 		//************************
 
-		ChangeInfo changes = new ChangeInfo("CPD v0.1 BETA 4", true, "");
+		ChangeInfo changes = new ChangeInfo("CPD v0.1 BETA 5", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		infos.add(changes);
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
+				"_-_ Missiles now warn when they're one use away from breaking.\n" +
+				"_-_ Maximum dynamic strength scaling per level up has been decreased by 33%. This means that in " +
+				"the mid and late game, it will take fewer attacks to drain dynamic strength to minimum.\n" +
+				"_-_ Unblessed ankhs have been buffed and now preserve all quickslotted items after resurrection.\n" +
+				"_-_ Due to the greater number of potions and scrolls, Stones of Intuition were indirectly " +
+				"nerfed. To compensate, they now tell you if the potion type you guessed does not exist. " +
+				"When this happens, that potion type will permanently be removed from the list, making future " +
+				"intuitions more likely to be correct. This also affects the Catalog."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.SPINNER, 144, 0, 16, 16), Messages.get(this, "bugfixes") + " 1",
+				"Fixed (Caused by BETA):\n" +
+				"_-_ Lucky Spirit Bow crashes the game upon hitting an enemy.\n" +
+				"_-_ Missing text from enhanced Teleport scrolls, the Talisman's fully charged message, and " +
+				"descriptions of weapon curses.\n" +
+				"_-_ Some artifacts not updating their quickslotted charge level during Recharging buff.\n" +
+				"_-_ Missile weapon prices not increasing with level.\n" +
+				"_-_ Rare cases where arcane styli would delete the rewritten scroll.\n" +
+				"_-_ Huntress's description incorrectly referring to Knuckledusters.\n" +
+				"_-_ Runestone creation missing from alchemy pots' recipe lists.\n" +
+				"_-_ Potions of Placebo failing to be identified when consumed.\n" +
+				"_-_ Tipped darts.\n" +
+				"_-_ Missile weapons incorrectly showing no damage difference when Rings of Sharpshooting are equipped.\n" +
+				"_-_ Rings of Sharpshooting having no effect on the Spirit Bow at all."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.SPINNER, 144, 0, 16, 16), Messages.get(this, "bugfixes") + " 2",
+				"Fixed (Caused by BETA):\n" +
+				"_-_ Sniper's specials not working properly.\n" +
+				"_-_ Upgraded missile weapons not returning to the quickslot once thrown.\n" +
+				"_-_ Boomerangs being selectable by Scrolls of Blessing.\n" +
+				"_-_ Stones of Intuition could be used to try and identify non-existent items in the inventory.\n" +
+				"_-_ The Rot Heart still using toxic gas.\n" +
+				"_-_ Rotfruits granting Earth Imbuement instead of Corrosive Imbuement when eaten.\n" +
+				"_-_ Stones of Challenge not working properly on Piranhas\n" +
+				"_-_ Most multi-target wands being severely weakened because dynamic strength would decrease the instant " +
+				"each enemy is damaged."));
+
+		changes = new ChangeInfo("CPD v0.1 BETA 4", true, "");
 		changes.hardlight(Window.TITLE_COLOR);
 		infos.add(changes);
 

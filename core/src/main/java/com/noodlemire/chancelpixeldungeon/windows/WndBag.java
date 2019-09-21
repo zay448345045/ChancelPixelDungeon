@@ -431,7 +431,7 @@ public class WndBag extends WndTabbed
 							(mode == Mode.QUICKSLOT && (item.defaultAction != null)) ||
 							(mode == Mode.WEAPON && (item instanceof MeleeWeapon || item instanceof Boomerang)) ||
 							(mode == Mode.ARMOR && item instanceof Armor) ||
-							(mode == Mode.ENCHANTABLE && (item instanceof MeleeWeapon || item instanceof Bow || item instanceof Boomerang || item instanceof Armor)) ||
+							(mode == Mode.ENCHANTABLE && (item instanceof MeleeWeapon || item instanceof Bow || item instanceof Armor)) ||
 							(mode == Mode.ENCHANTABLE_IDED && item.isIdentified() && (item instanceof MeleeWeapon || item instanceof Bow || item instanceof Boomerang || item instanceof Armor)) ||
 							(mode == Mode.ENCHANTED && !(item instanceof Bow) && (item instanceof Weapon && (((Weapon) item).enchantment != null) || (item instanceof Armor && (((Armor) item).glyph != null)))) ||
 							(mode == Mode.WAND && item instanceof Wand) ||
@@ -439,7 +439,7 @@ public class WndBag extends WndTabbed
 							(mode == Mode.FOOD && item instanceof Food) ||
 							(mode == Mode.POTION && item instanceof Potion) ||
 							(mode == Mode.SCROLL && item instanceof Scroll) ||
-							(mode == Mode.UNIDED_POTION_OR_SCROLL && (!item.isIdentified() && (item instanceof Scroll || item instanceof Potion))) ||
+							(mode == Mode.UNIDED_POTION_OR_SCROLL && (!item.isIdentified() && (item instanceof Scroll || item instanceof Potion) && item.image != ItemSpriteSheet.POTION_UNSTABLE && item.image != ItemSpriteSheet.SCROLL_MYSTERY)) ||
 							(mode == Mode.IDED_POTION && (item.isIdentified() && item instanceof Potion)) ||
 							(mode == Mode.EQUIPMENT && item instanceof EquipableItem) ||
 							(mode == Mode.ALCHEMY && item.isIdentified() && (item instanceof Seed || item instanceof Scroll || (item instanceof Blandfruit && ((Blandfruit) item).potionAttrib == null) || (item.getClass() == Dart.class))) ||

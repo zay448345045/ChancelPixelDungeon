@@ -6,6 +6,8 @@ import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.Splash;
+import com.noodlemire.chancelpixeldungeon.items.rings.RingOfFuror;
+import com.noodlemire.chancelpixeldungeon.items.rings.RingOfSharpshooting;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.CellSelector;
@@ -70,6 +72,25 @@ public class Bow extends Weapon
 	}
 
 	@Override
+	public float speedFactor(Char owner)
+	{
+		if (sniperSpecial)
+		{
+			switch (augment)
+			{
+				case NONE:
+					return 0f;
+				case SPEED:
+					return 1f * RingOfFuror.modifyAttackDelay(owner);
+				case DAMAGE:
+					return 2f * RingOfFuror.modifyAttackDelay(owner);
+			}
+		}
+
+		return super.speedFactor(owner);
+	}
+
+	@Override
 	public void execute(Hero hero, String action)
 	{
 		super.execute(hero, action);
@@ -86,12 +107,12 @@ public class Bow extends Weapon
 
 	private int dispMin()
 	{
-		return isIdentified() ? augment.damageFactor(min(level())) : min(0);
+		return isIdentified() ? augment.damageFactor(min()) : min(0);
 	}
 
 	private int dispMax()
 	{
-		return isIdentified() ? augment.damageFactor(max(level())) : max(0);
+		return isIdentified() ? augment.damageFactor(max()) : max(0);
 	}
 
 	@Override
@@ -142,13 +163,13 @@ public class Bow extends Weapon
 	@Override
 	public int min(int lvl)
 	{
-		return 1 + level();
+		return 1 + level() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero) / 2;
 	}
 
 	@Override
 	public int max(int lvl)
 	{
-		return 6 + visiblyUpgraded();
+		return 6 + visiblyUpgraded() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
 	}
 
 	@Override
@@ -264,6 +285,7 @@ public class Bow extends Weapon
 		@Override
 		public boolean hasEnchant(Class<? extends Enchantment> type)
 		{
+			enchantment = Bow.this.enchantment;
 			return Bow.this.hasEnchant(type);
 		}
 
@@ -277,6 +299,20 @@ public class Bow extends Weapon
 		public int max(int lvl)
 		{
 			return Bow.this.max(lvl);
+		}
+
+		@Override
+		public float speedFactor(Char user) {
+			return Bow.this.speedFactor(user);
+		}
+
+		@Override
+		public float accuracyFactor(Char owner) {
+			if (sniperSpecial && Bow.this.augment == Augment.DAMAGE){
+				return Float.POSITIVE_INFINITY;
+			} else {
+				return super.accuracyFactor(owner);
+			}
 		}
 
 		@Override

@@ -25,6 +25,7 @@ import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Badges;
 import com.noodlemire.chancelpixeldungeon.Challenges;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
+import com.noodlemire.chancelpixeldungeon.items.Amulet;
 import com.noodlemire.chancelpixeldungeon.items.BrokenSeal;
 import com.noodlemire.chancelpixeldungeon.items.armor.ClothArmor;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.CloakOfShadows;
@@ -35,7 +36,6 @@ import com.noodlemire.chancelpixeldungeon.items.food.Food;
 import com.noodlemire.chancelpixeldungeon.items.food.SmallRation;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfHealing;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfInvisibility;
-import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfTelepathy;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.noodlemire.chancelpixeldungeon.items.wands.WandOfMagicMissile;
@@ -44,7 +44,6 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Dagger;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Gloves;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.MagesStaff;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.WornShortsword;
-import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Shuriken;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.noodlemire.chancelpixeldungeon.journal.Catalog;
@@ -101,6 +100,9 @@ public enum HeroClass
 			new SmallRation().collect();
 		else
 			new Food().collect();
+
+		if(Amulet.DEBUG)
+			new Amulet().collect();
 	}
 
 	public Badges.Badge masteryBadge()

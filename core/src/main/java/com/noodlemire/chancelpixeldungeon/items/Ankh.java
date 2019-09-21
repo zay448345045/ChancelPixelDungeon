@@ -36,7 +36,6 @@ import java.util.ArrayList;
 
 public class Ankh extends Item
 {
-
 	public static final String AC_BLESS = "BLESS";
 
 	{
@@ -74,12 +73,10 @@ public class Ankh extends Item
 	@Override
 	public void execute(final Hero hero, String action)
 	{
-
 		super.execute(hero, action);
 
 		if(action.equals(AC_BLESS))
 		{
-
 			DewVial vial = hero.belongings.getItem(DewVial.class);
 			if(vial != null)
 			{
@@ -88,7 +85,6 @@ public class Ankh extends Item
 				GLog.p(Messages.get(this, "bless"));
 				hero.spend(1f);
 				hero.busy();
-
 
 				Sample.INSTANCE.play(Assets.SND_DRINK);
 				CellEmitter.get(hero.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);

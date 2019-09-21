@@ -53,7 +53,6 @@ import java.util.Iterator;
 
 public class WandOfRegrowth extends Wand
 {
-
 	{
 		image = ItemSpriteSheet.WAND_REGROWTH;
 
@@ -69,7 +68,6 @@ public class WandOfRegrowth extends Wand
 	@Override
 	protected void onZap(Ballistica bolt)
 	{
-
 		//ignore tiles which can't have anything grow in them.
 		for(Iterator<Integer> i = affectedCells.iterator(); i.hasNext(); )
 		{
@@ -79,9 +77,7 @@ public class WandOfRegrowth extends Wand
 			     c == Terrain.EMPTY_DECO ||
 			     c == Terrain.GRASS ||
 			     c == Terrain.HIGH_GRASS))
-			{
 				i.remove();
-			}
 		}
 
 		float numPlants, numDews, numPods, numStars;
@@ -111,7 +107,6 @@ public class WandOfRegrowth extends Wand
 			}
 
 			GameScene.add(Blob.seed(i, 10, Regrowth.class));
-
 		}
 	}
 

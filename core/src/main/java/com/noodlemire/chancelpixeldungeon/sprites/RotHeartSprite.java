@@ -30,7 +30,6 @@ import com.watabou.noosa.particles.Emitter;
 
 public class RotHeartSprite extends MobSprite
 {
-
 	private Emitter cloud;
 
 	public RotHeartSprite()
@@ -68,7 +67,7 @@ public class RotHeartSprite extends MobSprite
 		if(cloud == null)
 		{
 			cloud = emitter();
-			cloud.pour(Speck.factory(Speck.TOXIC), 0.7f);
+			cloud.pour(Speck.factory(Speck.CORROSION), 0.7f);
 		}
 	}
 

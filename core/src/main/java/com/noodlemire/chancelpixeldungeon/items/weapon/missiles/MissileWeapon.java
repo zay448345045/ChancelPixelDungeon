@@ -37,6 +37,7 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.items.weapon.enchantments.Projecting;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.PinCushionIndicator;
+import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -157,7 +158,7 @@ abstract public class MissileWeapon extends Weapon
 	{
 		//if this weapon was thrown from a source stack, degrade that stack.
 		//unless a weapon is about to break, then break the one being thrown
-		if(parent != null)
+		if (parent != null)
 		{
 			if(parent.durability <= parent.durabilityPerUse())
 			{
@@ -165,11 +166,30 @@ abstract public class MissileWeapon extends Weapon
 				parent.durability = MAX_DURABILITY;
 			}
 			else
+			{
 				parent.durability -= parent.durabilityPerUse();
+				if(parent.durability > 0 && parent.durability <= parent.durabilityPerUse())
+				{
+					if(level() <= 0)
+						GLog.w(Messages.get(this, "about_to_break"));
+					else
+						GLog.n(Messages.get(this, "about_to_break"));
+				}
+			}
+
 			parent = null;
 		}
 		else
+		{
 			durability -= durabilityPerUse();
+			if(durability > 0 && durability <= durabilityPerUse())
+			{
+				if(level() <= 0)
+					GLog.w(Messages.get(this, "about_to_break"));
+				else
+					GLog.n(Messages.get(this, "about_to_break"));
+			}
+		}
 
 		if(durability > 0)
 		{
@@ -249,12 +269,12 @@ abstract public class MissileWeapon extends Weapon
 
 	private int dispMin()
 	{
-		return isIdentified() ? augment.damageFactor(min(level())) : min(0);
+		return isIdentified() ? augment.damageFactor(min()) : min(0);
 	}
 
 	private int dispMax()
 	{
-		return isIdentified() ? augment.damageFactor(max(level())) : max(0);
+		return isIdentified() ? augment.damageFactor(max()) : max(0);
 	}
 
 	public int STRReq(int lvl){
@@ -421,6 +441,6 @@ abstract public class MissileWeapon extends Weapon
 	@Override
 	public int price()
 	{
-		return 6 * tier * quantity;
+		return 6 * tier * quantity * (level()+1);
 	}
 }

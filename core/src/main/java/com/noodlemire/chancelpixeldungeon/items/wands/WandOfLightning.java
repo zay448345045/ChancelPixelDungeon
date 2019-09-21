@@ -50,7 +50,7 @@ public class WandOfLightning extends DamageWand
 
 	private ArrayList<Char> affected = new ArrayList<>();
 
-	ArrayList<Lightning.Arc> arcs = new ArrayList<>();
+	private ArrayList<Lightning.Arc> arcs = new ArrayList<>();
 
 	public int min(int lvl)
 	{
@@ -65,18 +65,20 @@ public class WandOfLightning extends DamageWand
 	@Override
 	protected void onZap(Ballistica bolt)
 	{
+		int damage = damageRoll();
+
 		//lightning deals less damage per-target, the more targets that are hit.
 		float multipler = 0.4f + (0.6f / affected.size());
 		//if the main target is in water, all affected take full damage
 		if(Dungeon.level.water[bolt.collisionPos]) multipler = 1f;
 
-		int min = 5 + level();
-		int max = 10 + 5 * level();
-
 		for(Char ch : affected)
 		{
+			damage += Random.IntRange(-1, 1);
+			damage = Math.min(max(), Math.max(min(), damage));
+
 			processSoulMark(ch, chargesPerCast());
-			ch.damage(Math.round(damageRoll() * multipler), this);
+			ch.damage(Math.round(damage * multipler), this);
 
 			if(ch == Dungeon.hero) Camera.main.shake(2, 0.3f);
 			ch.sprite.centerEmitter().burst(SparkParticle.FACTORY, 3);

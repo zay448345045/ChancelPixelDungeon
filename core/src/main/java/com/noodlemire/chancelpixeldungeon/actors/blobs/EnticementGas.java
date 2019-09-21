@@ -11,7 +11,6 @@ import com.watabou.utils.Random;
 
 public class EnticementGas extends GasBlob
 {
-
 	@Override
 	protected void evolve()
 	{
@@ -19,8 +18,11 @@ public class EnticementGas extends GasBlob
 
 		for(Mob mob : Dungeon.level.mobs)
 		{
-			Point cell = (Point) Random.element(area.getPoints().toArray());
-			mob.beckon(cell.x + cell.y * Dungeon.level.width());
+			Point p = (Point) Random.element(area.getPoints().toArray());
+			int cell = p.x + p.y * Dungeon.level.width();
+
+			if(Dungeon.level.distance(cell, mob.pos) <= volume / 4)
+				mob.beckon(cell);
 		}
 	}
 

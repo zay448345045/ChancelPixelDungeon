@@ -225,7 +225,7 @@ public class Hero extends Char
 
 	public int dynamax()
 	{
-		return 7 + lvl * 3;
+		return Math.round(7 + lvl * 2.1f);
 	}
 
 	public float dynamicFactor()
@@ -766,13 +766,9 @@ public class Hero extends Char
 						boolean important =
 								((item instanceof ScrollOfUpgrade || item instanceof ScrollOfBlessing) && ((Scroll) item).isKnown());
 						if(important)
-						{
 							GLog.p(Messages.get(this, "you_now_have", item.name()));
-						}
 						else
-						{
 							GLog.i(Messages.get(this, "you_now_have", item.name()));
-						}
 					}
 
 					curAction = null;

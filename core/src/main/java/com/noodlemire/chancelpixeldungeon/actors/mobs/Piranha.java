@@ -26,6 +26,7 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.Statistics;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Burning;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Challenged;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Vertigo;
 import com.noodlemire.chancelpixeldungeon.items.food.MysteryMeat;
 import com.noodlemire.chancelpixeldungeon.levels.RegularLevel;
@@ -36,7 +37,6 @@ import com.watabou.utils.Random;
 
 public class Piranha extends Mob
 {
-
 	{
 		spriteClass = PiranhaSprite.class;
 
@@ -109,6 +109,9 @@ public class Piranha extends Mob
 	@Override
 	protected boolean getCloser(int target)
 	{
+		if(buff(Challenged.class) != null)
+			return super.getCloser(target);
+
 		if(rooted)
 			return false;
 

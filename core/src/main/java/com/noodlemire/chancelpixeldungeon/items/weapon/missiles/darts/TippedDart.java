@@ -26,6 +26,7 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.PinCushion;
+import com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.Recipe;
@@ -49,28 +50,54 @@ import java.util.HashMap;
 public abstract class TippedDart extends Dart
 {
 	{
-		bones = true;
+		tier = 2;
+
+		//so that slightly more than 1.5x durability is needed for 2 uses
+		baseUses = 0.65f;
 	}
 
-	@Override
-	public int STRReq(int lvl)
-	{
-		return 11;
-	}
+	//exact same damage as regular darts, despite being higher tier.
 
 	@Override
 	protected void rangedHit(Char enemy, int cell)
 	{
-		if(enemy.isAlive())
-			Buff.affect(enemy, PinCushion.class).stick(new Dart());
-		else
-			Dungeon.level.drop(new Dart(), enemy.pos).sprite.drop();
+		super.rangedHit( enemy, cell);
+
+		//need to spawn a dart
+		if (durability <= 0)
+		{
+			//attempt to stick the dart to the enemy, just drop it if we can't.
+			Dart d = new Dart();
+			if (enemy.isAlive() && sticky)
+			{
+				PinCushion p = Buff.affect(enemy, PinCushion.class);
+				if (p.target == enemy)
+				{
+					p.stick(d);
+					return;
+				}
+			}
+
+			Dungeon.level.drop( d, enemy.pos ).sprite.drop();
+		}
+	}
+
+	@Override
+	protected float durabilityPerUse()
+	{
+		float use = super.durabilityPerUse();
+
+		if (Dungeon.hero.subClass == HeroSubClass.WARDEN)
+			use /= 2f;
+
+		return use;
 	}
 
 	@Override
 	public int price()
 	{
-		return 6 * quantity;
+		//value of regular dart plus half of the seed
+		return 8 * quantity;
 	}
 
 	private static HashMap<Class<? extends Plant.Seed>, Class<? extends TippedDart>> types = new HashMap<>();

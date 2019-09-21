@@ -33,7 +33,6 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Yog;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.items.bags.Bag;
-import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Boomerang;
 import com.noodlemire.chancelpixeldungeon.journal.Catalog;
 import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
@@ -230,7 +229,6 @@ public class Item implements Bundlable
 
 		if(items.size() < container.size)
 		{
-
 			if(Dungeon.hero != null && Dungeon.hero.isAlive())
 			{
 				Badges.validateItemLevelAquired(this);
@@ -241,14 +239,11 @@ public class Item implements Bundlable
 			updateQuickslot();
 			Collections.sort(items, itemComparator);
 			return true;
-
 		}
 		else
 		{
-
 			GLog.n(Messages.get(Item.class, "pack_full", name()));
 			return false;
-
 		}
 	}
 
@@ -288,7 +283,7 @@ public class Item implements Bundlable
 			return null;
 		else if(quantity == 1)
 		{
-			if(stackable() || this instanceof Boomerang)
+			if(stackable())
 				Dungeon.quickslot.convertToPlaceholder(this);
 
 			return detachAll(container);
@@ -562,12 +557,13 @@ public class Item implements Bundlable
 		return 0;
 	}
 
-	public static Item virtual(Class<? extends Item> cl)
+	public Item virtual()
 	{
 		try
 		{
-			Item item = cl.newInstance();
+			Item item = getClass().newInstance();
 			item.quantity = 0;
+			item.level(level);
 			return item;
 		}
 		catch(Exception e)

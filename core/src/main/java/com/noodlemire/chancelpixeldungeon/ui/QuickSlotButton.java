@@ -37,7 +37,6 @@ import com.watabou.utils.PathFinder;
 
 public class QuickSlotButton extends Button implements WndBag.Listener
 {
-
 	private static QuickSlotButton[] instance = new QuickSlotButton[4];
 	private int slotNum;
 

@@ -31,46 +31,45 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Dart extends MissileWeapon
 {
+	private static Crossbow bow;
+
 	{
 		image = ItemSpriteSheet.DART;
+
+		tier = 1;
+
+		//infinite, even with penalties
+		baseUses = 1000;
 	}
 
 	@Override
 	public int min(int lvl)
 	{
-		return bow != null ? 4 + bow.level() : 1;
+		if (bow != null)
+			return  4 +                 //4 base
+			        bow.level() + lvl;  //+1 per level or bow level
+		else
+			return  1 +     //1 base, down from 2
+			        lvl;    //scaling unchanged
 	}
 
 	@Override
 	public int max(int lvl)
 	{
-		return bow != null ? 12 + 3 * bow.level() : 2;
+		if (bow != null)
+			return  12 +                    //12 base
+			        3*bow.level() + 2*lvl;  //+3 per bow level, +2 per level (default scaling +2)
+		else
+			return  2 +     //2 base, down from 5
+			        2*lvl;  //scaling unchanged
 	}
-
-	@Override
-	public int STRReq(int lvl)
-	{
-		return 9;
-	}
-
-	@Override
-	protected float durabilityPerUse()
-	{
-		return 0;
-	}
-
-	private static Crossbow bow;
 
 	private void updateCrossbow()
 	{
 		if(Dungeon.hero.belongings.weapon instanceof Crossbow)
-		{
 			bow = (Crossbow) Dungeon.hero.belongings.weapon;
-		}
 		else
-		{
 			bow = null;
-		}
 	}
 
 	@Override
@@ -78,22 +77,17 @@ public class Dart extends MissileWeapon
 	{
 		if(bow != null && bow.hasEnchant(Projecting.class)
 		   && !Dungeon.level.solid[dst] && Dungeon.level.distance(user.pos, dst) <= 4)
-		{
 			return dst;
-		}
 		else
-		{
 			return super.throwPos(user, dst);
-		}
 	}
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage)
 	{
 		if(bow != null && bow.enchantment != null)
-		{
 			damage = bow.enchantment.proc(bow, attacker, defender, damage);
-		}
+
 		return super.proc(attacker, defender, damage);
 	}
 
@@ -114,6 +108,6 @@ public class Dart extends MissileWeapon
 	@Override
 	public int price()
 	{
-		return 4 * quantity;
+		return super.price()/2; //half normal value
 	}
 }

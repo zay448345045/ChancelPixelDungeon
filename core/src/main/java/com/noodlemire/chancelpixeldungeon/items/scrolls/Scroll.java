@@ -366,7 +366,7 @@ public abstract class Scroll extends Item implements Transmutable
 		return handler.known();
 	}
 
-	public static HashSet<? extends Class<? extends Item>> getUnknown()
+	public static HashSet<Class<? extends Scroll>> getUnknown()
 	{
 		return handler.unknown();
 	}

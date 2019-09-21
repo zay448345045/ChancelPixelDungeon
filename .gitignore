@@ -18,3 +18,7 @@ local.properties
 #intellij project files
 *.iml
 *.idea
+
+# personal planner files
+.idea.txt.swp
+idea.txt
