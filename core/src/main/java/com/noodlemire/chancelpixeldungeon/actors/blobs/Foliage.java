@@ -34,11 +34,9 @@ import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 
 public class Foliage extends Blob
 {
-
 	@Override
 	protected void evolve()
 	{
-
 		int[] map = Dungeon.level.map;
 
 		boolean visible = false;
@@ -65,22 +63,16 @@ public class Foliage extends Blob
 
 				}
 				else
-				{
 					off[cell] = 0;
-				}
 			}
 		}
 
 		Hero hero = Dungeon.hero;
-		if(hero.isAlive() && hero.visibleEnemies() == 0 && cur[hero.pos] > 0)
-		{
+		if(hero.isAlive() && hero.visibleDangers() == 0 && cur[hero.pos] > 0)
 			Buff.affect(hero, Shadows.class).prolong();
-		}
 
 		if(visible)
-		{
 			Notes.add(Notes.Landmark.GARDEN);
-		}
 	}
 
 	@Override

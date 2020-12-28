@@ -43,7 +43,7 @@ public class AboutScene extends PixelScene
 {
 	private static final String TTL_NDMR = "Chancel Pixel Dungeon",
 			TXT_NDMR = "Design, Code, & Graphics: Noodlemire",
-			LNK_NDMR = "github.com/Noodlemire",
+			LNK_NDMR = "https://discord.gg/RuFGsTHTBH",
 
 	TTL_SHPX = "Shattered Pixel Dungeon",
 			TXT_SHPX = "Design, Code, & Graphics: Evan",
@@ -100,7 +100,7 @@ public class AboutScene extends PixelScene
 			@Override
 			protected void onClick(Touch touch)
 			{
-				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + LNK_NDMR + "/ChancelPixelDungeon"));
+				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(LNK_NDMR));
 				Game.instance.startActivity(intent);
 			}
 		};

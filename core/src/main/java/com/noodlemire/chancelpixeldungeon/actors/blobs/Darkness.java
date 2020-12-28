@@ -13,6 +13,10 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 
 public class Darkness extends GasBlob
 {
+	{
+		harmful = true;
+	}
+
 	@Override
 	void affect(Char ch, int cell)
 	{

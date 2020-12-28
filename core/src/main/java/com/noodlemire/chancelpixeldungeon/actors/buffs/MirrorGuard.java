@@ -23,6 +23,7 @@ package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
+import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.npcs.MirrorImage;
@@ -48,10 +49,15 @@ public class MirrorGuard extends Buff
 		Hero hero = (Hero) target;
 
 		Mob closest = null;
-		int v = hero.visibleEnemies();
+		int v = hero.visibleDangers();
 		for(int i = 0; i < v; i++)
 		{
-			Mob mob = hero.visibleEnemy(i);
+			Char ch = hero.visibleDanger(i);
+			if(!(ch instanceof Mob))
+				continue;
+
+			Mob mob = (Mob)ch;
+
 			if(mob.isAlive() && mob.state != mob.PASSIVE && !hero.mindVisionEnemies.contains(mob)
 			   && (closest == null || Dungeon.level.distance(hero.pos, mob.pos) < Dungeon.level.distance(hero.pos, closest.pos)))
 			{

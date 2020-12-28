@@ -22,18 +22,18 @@
 package com.noodlemire.chancelpixeldungeon.effects;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
+import com.noodlemire.chancelpixeldungeon.Dungeon;
+import com.noodlemire.chancelpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PointF;
 
 public class Beam extends Image
 {
-
 	private static final double A = 180 / Math.PI;
 
-	private float duration;
+	private final float duration;
 
 	private float timeLeft;
 
@@ -51,7 +51,7 @@ public class Beam extends Image
 		angle = (float) (Math.atan2(dy, dx) * A);
 		scale.x = (float) Math.sqrt(dx * dx + dy * dy) / width;
 
-		Sample.INSTANCE.play(Assets.SND_RAY);
+		Dungeon.playAt(Assets.SND_RAY, DungeonTilemap.worldToRaisedTileCenter(x, y));
 
 		timeLeft = this.duration = duration;
 	}

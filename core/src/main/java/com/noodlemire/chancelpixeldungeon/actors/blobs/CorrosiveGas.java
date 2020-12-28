@@ -31,6 +31,10 @@ import com.watabou.utils.Bundle;
 
 public class CorrosiveGas extends GasBlob
 {
+	{
+		harmful = true;
+	}
+
 	private int strength = 0;
 
 	@Override

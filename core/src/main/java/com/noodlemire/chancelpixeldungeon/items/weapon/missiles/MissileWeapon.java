@@ -29,6 +29,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.PinCushion;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.SnipersMark;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.hero.HeroClass;
+import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.bags.Bag;
 import com.noodlemire.chancelpixeldungeon.items.bags.MagicalHolster;
@@ -36,7 +37,6 @@ import com.noodlemire.chancelpixeldungeon.items.rings.RingOfSharpshooting;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.items.weapon.enchantments.Projecting;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
-import com.noodlemire.chancelpixeldungeon.ui.PinCushionIndicator;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -77,6 +77,12 @@ abstract public class MissileWeapon extends Weapon
 		ArrayList<String> actions = super.actions(hero);
 		actions.remove(AC_EQUIP);
 		return actions;
+	}
+
+	@Override
+	public boolean canBeCursed()
+	{
+		return false;
 	}
 
 	@Override
@@ -202,7 +208,7 @@ abstract public class MissileWeapon extends Weapon
 			}
 
 			//attempt to stick the missile weapon to the enemy, just drop it if we can't.
-			if(enemy.isAlive() && sticky)
+			if(enemy.isAlive() && enemy instanceof Mob && sticky)
 			{
 				PinCushion p = Buff.affect(enemy, PinCushion.class);
 				if(p.target == enemy)
@@ -269,12 +275,12 @@ abstract public class MissileWeapon extends Weapon
 
 	private int dispMin()
 	{
-		return isIdentified() ? augment.damageFactor(min()) : min(0);
+		return augment.damageFactor(min());
 	}
 
 	private int dispMax()
 	{
-		return isIdentified() ? augment.damageFactor(max()) : max(0);
+		return augment.damageFactor(max());
 	}
 
 	public int STRReq(int lvl){
@@ -369,6 +375,12 @@ abstract public class MissileWeapon extends Weapon
 	public boolean isIdentified()
 	{
 		return true;
+	}
+
+	@Override
+	public int visiblyUpgraded()
+	{
+		return level();
 	}
 
 	@Override

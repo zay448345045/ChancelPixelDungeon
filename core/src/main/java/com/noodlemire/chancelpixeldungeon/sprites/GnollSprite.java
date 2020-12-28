@@ -26,7 +26,6 @@ import com.watabou.noosa.TextureFilm;
 
 public class GnollSprite extends MobSprite
 {
-
 	public GnollSprite()
 	{
 		super();

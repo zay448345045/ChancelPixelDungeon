@@ -5,7 +5,6 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Repulsion;
-import com.watabou.noosa.audio.Sample;
 
 public class PotionOfRepulsion extends Potion
 {
@@ -17,10 +16,9 @@ public class PotionOfRepulsion extends Potion
 	public void shatter(int cell)
 	{
 		if(Dungeon.level.heroFOV[cell])
-		{
 			splash(cell);
-			Sample.INSTANCE.play(Assets.SND_SHATTER);
-		}
+
+		Dungeon.playAt(Assets.SND_SHATTER, cell);
 
 		super.shatter(cell);
 		if(Actor.findChar(cell) != null)

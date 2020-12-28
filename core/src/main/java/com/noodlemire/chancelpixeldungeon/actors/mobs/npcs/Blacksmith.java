@@ -50,7 +50,6 @@ import java.util.ArrayList;
 
 public class Blacksmith extends NPC
 {
-
 	{
 		spriteClass = BlacksmithSprite.class;
 
@@ -67,16 +66,13 @@ public class Blacksmith extends NPC
 	@Override
 	public boolean interact()
 	{
-
 		sprite.turnTo(pos, Dungeon.hero.pos);
 
 		if(!Quest.given)
 		{
-
 			GameScene.show(new WndQuest(this,
 					Quest.alternative ? Messages.get(this, "blood_1") : Messages.get(this, "gold_1"))
 			{
-
 				@Override
 				public void onBackPressed()
 				{
@@ -216,8 +212,8 @@ public class Blacksmith extends NPC
 
 	public static void upgrade(Item item1, Item item2)
 	{
-
 		Item first, second;
+
 		if(item2.level() > item1.level())
 		{
 			first = item2;

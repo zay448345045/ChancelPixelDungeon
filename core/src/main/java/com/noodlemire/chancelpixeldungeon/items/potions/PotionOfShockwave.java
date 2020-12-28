@@ -34,7 +34,6 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 public class PotionOfShockwave extends Potion implements Hero.Doom
@@ -50,7 +49,7 @@ public class PotionOfShockwave extends Potion implements Hero.Doom
 	public void shatter(int cell)
 	{
 		splash(cell);
-		Sample.INSTANCE.play(Assets.SND_SHATTER);
+		Dungeon.playAt(Assets.SND_SHATTER, cell);
 
 		for(int x = -4; x < 4; x++)
 		{
@@ -78,7 +77,7 @@ public class PotionOfShockwave extends Potion implements Hero.Doom
 		}
 
 		Camera.main.shake(3, 0.7f);
-		Sample.INSTANCE.play(Assets.SND_ROCKS);
+		Dungeon.playAt(Assets.SND_ROCKS, cell);
 	}
 
 	@Override

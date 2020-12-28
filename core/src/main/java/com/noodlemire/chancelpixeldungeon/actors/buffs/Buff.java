@@ -24,6 +24,7 @@ package com.noodlemire.chancelpixeldungeon.actors.buffs;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 
@@ -32,6 +33,8 @@ import java.util.HashSet;
 
 public class Buff extends Actor
 {
+	public boolean geyserCompatable = false;
+
 	public Char target;
 
 	{
@@ -63,7 +66,8 @@ public class Buff extends Actor
 
 	public boolean attachTo(Char target)
 	{
-		if(target.isImmune(getClass()))
+		if(target.isImmune(getClass()) ||
+		   (target instanceof Geyser && !geyserCompatable))
 			return false;
 
 		this.target = target;

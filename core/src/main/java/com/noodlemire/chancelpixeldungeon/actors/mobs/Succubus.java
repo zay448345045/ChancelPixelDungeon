@@ -34,7 +34,6 @@ import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfHypnotism;
 import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.sprites.SuccubusSprite;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -77,7 +76,7 @@ public class Succubus extends Mob
 		{
 			Buff.affect(enemy, Charm.class, Random.IntRange(3, 7)).object = id();
 			enemy.sprite.centerEmitter().start(Speck.factory(Speck.HEART), 0.2f, 5);
-			Sample.INSTANCE.play(Assets.SND_CHARMS);
+			Dungeon.playAt(Assets.SND_CHARMS, enemy.pos);
 		}
 
 		return damage;

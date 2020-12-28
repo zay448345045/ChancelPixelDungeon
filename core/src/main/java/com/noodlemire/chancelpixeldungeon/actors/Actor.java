@@ -27,6 +27,7 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.Statistics;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.watabou.utils.Bundlable;
@@ -48,7 +49,7 @@ public abstract class Actor implements Bundlable
 	protected static final int VFX_PRIO = 100;   //visual effects take priority
 	protected static final int HERO_PRIO = 0;     //positive is before hero, negative after
 	protected static final int BLOB_PRIO = -10;   //blobs act after hero, before mobs
-	protected static final int MOB_PRIO = -20;   //mobs act between buffs and blobd
+	protected static final int MOB_PRIO = -20;   //mobs act between buffs and blobs
 	protected static final int BUFF_PRIO = -30;   //buffs act last in a turn
 	private static final int DEFAULT = -100;  //if no priority is given, act after all else
 
@@ -178,6 +179,9 @@ public abstract class Actor implements Bundlable
 
 		for(Mob mob : Dungeon.level.mobs)
 			add(mob);
+
+		for(Geyser geyser : Dungeon.level.geysers)
+			add(geyser);
 
 		for(Blob blob : Dungeon.level.blobs.values())
 			add(blob);

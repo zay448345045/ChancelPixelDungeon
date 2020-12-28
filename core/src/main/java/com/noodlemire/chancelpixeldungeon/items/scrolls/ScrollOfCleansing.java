@@ -44,6 +44,7 @@ import com.noodlemire.chancelpixeldungeon.windows.WndBag;
 import com.noodlemire.chancelpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
+import com.watabou.utils.Random;
 
 public class ScrollOfCleansing extends InventoryScroll
 {
@@ -118,11 +119,11 @@ public class ScrollOfCleansing extends InventoryScroll
 
 	private void uncurseEnemy(Char enemy)
 	{
-		if(enemy.properties().contains(Char.Property.BOSS) ||
-		   enemy.properties().contains(Char.Property.MINIBOSS))
+		if(!enemy.properties().contains(Char.Property.BOSS) && !enemy.properties().contains(Char.Property.MINIBOSS))
+			enemy.damage(Random.NormalIntRange(enemy.HP() / 2, enemy.HT() / 4), this);
+
+		if(enemy.isAlive())
 			Buff.affect(enemy, Weakness.class, Weakness.DURATION);
-		else
-			enemy.damage(enemy.HT(), this);
 
 		visual(enemy.pos, true, true);
 	}

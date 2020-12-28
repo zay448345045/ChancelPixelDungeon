@@ -26,12 +26,10 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.watabou.noosa.TextureFilm;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 
 public class BlacksmithSprite extends MobSprite
 {
-
 	private Emitter emitter;
 
 	public BlacksmithSprite()
@@ -81,11 +79,12 @@ public class BlacksmithSprite extends MobSprite
 	{
 		super.onComplete(anim);
 
-		if(visible && emitter != null && anim == idle)
+		if(emitter != null && anim == idle)
 		{
-			emitter.burst(Speck.factory(Speck.FORGE), 3);
-			float volume = 0.2f / (Dungeon.level.distance(ch.pos, Dungeon.hero.pos));
-			Sample.INSTANCE.play(Assets.SND_EVOKE, volume, volume, 0.8f);
+			if (visible)
+				emitter.burst(Speck.factory(Speck.FORGE), 3);
+
+			Dungeon.playAt(Assets.SND_EVOKE, ch.pos);
 		}
 	}
 

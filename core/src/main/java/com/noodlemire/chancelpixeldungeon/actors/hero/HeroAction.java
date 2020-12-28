@@ -26,7 +26,6 @@ import com.noodlemire.chancelpixeldungeon.actors.mobs.npcs.NPC;
 
 public class HeroAction
 {
-
 	public int dst;
 
 	public static class Move extends HeroAction

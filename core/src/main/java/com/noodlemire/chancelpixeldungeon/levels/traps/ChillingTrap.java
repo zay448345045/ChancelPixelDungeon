@@ -27,7 +27,6 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Freezing;
 import com.noodlemire.chancelpixeldungeon.effects.Splash;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 
 public class ChillingTrap extends Trap
@@ -42,10 +41,9 @@ public class ChillingTrap extends Trap
 	public void activate()
 	{
 		if(Dungeon.level.heroFOV[pos])
-		{
 			Splash.at(pos, 0xFFB2D6FF, 5);
-			Sample.INSTANCE.play(Assets.SND_SHATTER);
-		}
+
+		Dungeon.playAt(Assets.SND_SHATTER, pos);
 
 		for(int i : PathFinder.NEIGHBOURS9)
 		{

@@ -34,7 +34,6 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Vertigo;
 import com.noodlemire.chancelpixeldungeon.effects.Flare;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
-import com.noodlemire.chancelpixeldungeon.items.ArmorKit;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.LloydsBeacon;
 import com.noodlemire.chancelpixeldungeon.items.keys.SkeletonKey;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -46,7 +45,6 @@ import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.sprites.KingSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.UndeadSprite;
 import com.noodlemire.chancelpixeldungeon.ui.BossHealthBar;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -166,7 +164,6 @@ public class King extends Mob
 	{
 
 		GameScene.bossSlain();
-		Dungeon.level.drop(new ArmorKit(), pos).sprite.drop();
 		Dungeon.level.drop(new SkeletonKey(Dungeon.depth), pos).sprite.drop();
 
 		super.die(cause);
@@ -205,7 +202,7 @@ public class King extends Mob
 		nextPedestal = !nextPedestal;
 
 		sprite.centerEmitter().start(Speck.factory(Speck.SCREAM), 0.4f, 2);
-		Sample.INSTANCE.play(Assets.SND_CHALLENGE);
+		Dungeon.playAt(Assets.SND_CHALLENGE, pos);
 
 		boolean[] passable = Dungeon.level.passable.clone();
 		for(Char c : Actor.chars())
@@ -338,10 +335,7 @@ public class King extends Mob
 		{
 			super.die(cause);
 
-			if(Dungeon.level.heroFOV[pos])
-			{
-				Sample.INSTANCE.play(Assets.SND_BONES);
-			}
+			Dungeon.playAt(Assets.SND_BONES, pos);
 		}
 
 		@Override

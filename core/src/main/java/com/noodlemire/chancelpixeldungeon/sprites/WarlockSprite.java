@@ -22,15 +22,14 @@
 package com.noodlemire.chancelpixeldungeon.sprites;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
+import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Warlock;
 import com.noodlemire.chancelpixeldungeon.effects.MagicMissile;
 import com.watabou.noosa.TextureFilm;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
 public class WarlockSprite extends MobSprite
 {
-
 	public WarlockSprite()
 	{
 		super();
@@ -58,7 +57,6 @@ public class WarlockSprite extends MobSprite
 
 	public void zap(int cell)
 	{
-
 		turnTo(ch.pos, cell);
 		play(zap);
 
@@ -74,7 +72,8 @@ public class WarlockSprite extends MobSprite
 						((Warlock) ch).onZapComplete();
 					}
 				});
-		Sample.INSTANCE.play(Assets.SND_ZAP);
+
+		Dungeon.playAt(Assets.SND_ZAP, ch.pos);
 	}
 
 	@Override

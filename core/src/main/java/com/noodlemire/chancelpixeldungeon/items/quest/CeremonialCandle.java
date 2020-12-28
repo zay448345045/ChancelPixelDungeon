@@ -33,7 +33,6 @@ import com.noodlemire.chancelpixeldungeon.items.Heap;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -98,13 +97,11 @@ public class CeremonialCandle extends Item
 		   heapBottom != null &&
 		   heapLeft != null)
 		{
-
 			if(heapTop.peek() instanceof CeremonialCandle &&
 			   heapRight.peek() instanceof CeremonialCandle &&
 			   heapBottom.peek() instanceof CeremonialCandle &&
 			   heapLeft.peek() instanceof CeremonialCandle)
 			{
-
 				heapTop.pickUp();
 				heapRight.pickUp();
 				heapBottom.pickUp();
@@ -143,9 +140,9 @@ public class CeremonialCandle extends Item
 				{
 					CellEmitter.get(ritualPos + i).burst(ElmoParticle.FACTORY, 10);
 				}
-				Sample.INSTANCE.play(Assets.SND_BURNING);
+
+				Dungeon.playAt(Assets.SND_BURNING, ritualPos);
 			}
 		}
-
 	}
 }

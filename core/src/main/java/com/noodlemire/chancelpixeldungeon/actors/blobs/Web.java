@@ -32,11 +32,9 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 
 public class Web extends Blob
 {
-
 	@Override
 	protected void evolve()
 	{
-
 		int cell;
 
 		for(int i = area.left; i < area.right; i++)
@@ -48,14 +46,11 @@ public class Web extends Blob
 
 				if(off[cell] > 0)
 				{
-
 					volume += off[cell];
 
 					Char ch = Actor.findChar(cell);
 					if(ch != null && !ch.isImmune(this.getClass()))
-					{
 						Buff.prolong(ch, Roots.class, TICK);
-					}
 				}
 			}
 		}

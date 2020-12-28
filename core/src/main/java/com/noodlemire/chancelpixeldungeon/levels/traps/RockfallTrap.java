@@ -35,7 +35,6 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.BArray;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
@@ -60,7 +59,6 @@ public class RockfallTrap extends Trap
 	@Override
 	public void activate()
 	{
-
 		ArrayList<Integer> rockCells = new ArrayList<>();
 
 		if(Dungeon.level instanceof RegularLevel)
@@ -93,7 +91,6 @@ public class RockfallTrap extends Trap
 		boolean seen = false;
 		for(int cell : rockCells)
 		{
-
 			if(Dungeon.level.heroFOV[cell])
 			{
 				CellEmitter.get(cell - Dungeon.level.width()).start(Speck.factory(Speck.ROCK), 0.07f, 10);
@@ -119,10 +116,8 @@ public class RockfallTrap extends Trap
 		}
 
 		if(seen)
-		{
 			Camera.main.shake(3, 0.7f);
-			Sample.INSTANCE.play(Assets.SND_ROCKS);
-		}
 
+		Dungeon.playAt(Assets.SND_ROCKS, pos);
 	}
 }

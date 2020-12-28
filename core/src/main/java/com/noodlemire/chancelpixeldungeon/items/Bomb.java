@@ -36,7 +36,6 @@ import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -134,7 +133,7 @@ public class Bomb extends Item
 		//We're blowing up, so no need for a fuse anymore.
 		this.fuse = null;
 
-		Sample.INSTANCE.play(Assets.SND_BLAST);
+		Dungeon.playAt(Assets.SND_BLAST, cell);
 
 		if(Dungeon.level.heroFOV[cell])
 		{

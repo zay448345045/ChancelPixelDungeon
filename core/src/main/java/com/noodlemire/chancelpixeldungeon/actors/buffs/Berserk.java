@@ -120,7 +120,6 @@ public class Berserk extends Buff
 	{
 		if(target.HP() == 0 && state == State.NORMAL && power >= 1f)
 		{
-
 			WarriorShield shield = target.buff(WarriorShield.class);
 			if(shield != null)
 			{

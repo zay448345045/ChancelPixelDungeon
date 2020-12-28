@@ -165,6 +165,16 @@ public abstract class DungeonTilemap extends Tilemap
 				(pos / Dungeon.level.width() + 0.1f) * SIZE);
 	}
 
+	public static int worldToRaisedTileCenter(PointF pos)
+	{
+		return worldToRaisedTileCenter(pos.x, pos.y);
+	}
+
+	public static int worldToRaisedTileCenter(float x, float y)
+	{
+		return (int)((y - 0.1f) * Dungeon.level.width() / SIZE + (x - 0.5f) / SIZE);
+	}
+
 	@Override
 	public boolean overlapsScreenPoint(int x, int y)
 	{

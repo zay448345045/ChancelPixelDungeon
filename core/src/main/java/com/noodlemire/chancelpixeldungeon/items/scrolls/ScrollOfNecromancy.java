@@ -28,6 +28,8 @@ public class ScrollOfNecromancy extends EnvironmentScroll
 	public void doRead()
 	{
 		summonWraiths(false, curUser.pos);
+		readAnimation();
+		Sample.INSTANCE.play(Assets.SND_READ);
 	}
 
 	@Override
@@ -40,6 +42,8 @@ public class ScrollOfNecromancy extends EnvironmentScroll
 	public void empoweredRead()
 	{
 		summonWraiths(true, curUser.pos);
+		readAnimation();
+		Sample.INSTANCE.play(Assets.SND_READ);
 	}
 
 	private void summonWraiths(boolean empower, int center)
@@ -49,7 +53,8 @@ public class ScrollOfNecromancy extends EnvironmentScroll
 		int wraithCount = 1 + wraithRate;
 
 		Char centerChar = Actor.findChar(center);
-		if(center != curUser.pos && centerChar != null && centerChar.buff(Corruption.class) == null)
+		if(center != curUser.pos && centerChar != null && centerChar.buff(Corruption.class) == null
+				&& !centerChar.properties().contains(Char.Property.BOSS) && !centerChar.properties().contains(Char.Property.MINIBOSS))
 			Buff.affect(centerChar, Corruption.class);
 
 		for(int p : PathFinder.NEIGHBOURS9)
@@ -82,10 +87,6 @@ public class ScrollOfNecromancy extends EnvironmentScroll
 				Buff.affect(Wraith.spawnAt(e), Corruption.class);
 				emptyPos.remove(e);
 			}
-
-		Sample.INSTANCE.play(Assets.SND_READ);
-
-		readAnimation();
 	}
 
 	private boolean heapCursed(Heap heap)

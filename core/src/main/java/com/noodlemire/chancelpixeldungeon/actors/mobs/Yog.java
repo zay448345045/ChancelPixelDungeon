@@ -26,13 +26,13 @@ import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Fire;
-import com.noodlemire.chancelpixeldungeon.actors.blobs.ThunderCloud;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.ToxicGas;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Amok;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Burning;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Charm;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.MagicImmunity;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Ooze;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Poison;
@@ -330,6 +330,9 @@ public class Yog extends Mob
 		@Override
 		protected boolean canAttack(Char enemy)
 		{
+			if(buff(MagicImmunity.class) != null)
+				return super.canAttack(enemy);
+
 			return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 		}
 

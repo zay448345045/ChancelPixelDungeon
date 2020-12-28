@@ -43,7 +43,6 @@ public class MobSprite extends CharSprite
 	@Override
 	public void onComplete(Animation anim)
 	{
-
 		super.onComplete(anim);
 
 		if(anim == die)
@@ -62,7 +61,6 @@ public class MobSprite extends CharSprite
 
 	public void fall()
 	{
-
 		origin.set(width / 2, height - DungeonTilemap.SIZE / 2);
 		angularSpeed = Random.Int(2) == 0 ? -720 : 720;
 

@@ -22,14 +22,13 @@
 package com.noodlemire.chancelpixeldungeon.effects;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
+import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Gizmo;
-import com.watabou.noosa.audio.Sample;
 
 public class IceBlock extends Gizmo
 {
-
 	private float phase;
 
 	private CharSprite target;
@@ -59,15 +58,13 @@ public class IceBlock extends Gizmo
 
 	public void melt()
 	{
-
 		target.resetColor();
 		killAndErase();
 
 		if(visible)
-		{
 			Splash.at(target.center(), 0xFFB2D6FF, 5);
-			Sample.INSTANCE.play(Assets.SND_SHATTER);
-		}
+
+		Dungeon.playAt(Assets.SND_SHATTER, target.ch.pos);
 	}
 
 	public static IceBlock freeze(CharSprite sprite)

@@ -470,33 +470,33 @@ public class DriedRose extends Artifact
 				yell(Random.element(VOICE_AMBIENT[i]));
 			else
 				yell(Random.element(VOICE_ENEMIES[i][Dungeon.bossLevel() ? 1 : 0]));
-			Sample.INSTANCE.play(Assets.SND_GHOST);
+			Dungeon.playAt(Assets.SND_GHOST, pos);
 		}
 
 		public void sayAnhk()
 		{
 			yell(Random.element(VOICE_BLESSEDANKH));
-			Sample.INSTANCE.play(Assets.SND_GHOST);
+			Dungeon.playAt(Assets.SND_GHOST, pos);
 		}
 
 		public void sayDefeated()
 		{
 			if(Messages.lang() != Languages.ENGLISH) return; //don't say anything if not on english
 			yell(Random.element(VOICE_DEFEATED[Dungeon.bossLevel() ? 1 : 0]));
-			Sample.INSTANCE.play(Assets.SND_GHOST);
+			Dungeon.playAt(Assets.SND_GHOST, pos);
 		}
 
 		public void sayHeroKilled()
 		{
 			if(Messages.lang() != Languages.ENGLISH) return; //don't say anything if not on english
 			yell(Random.element(VOICE_HEROKILLED));
-			Sample.INSTANCE.play(Assets.SND_GHOST);
+			Dungeon.playAt(Assets.SND_GHOST, pos);
 		}
 
 		public void sayBossBeaten()
 		{
 			yell(Random.element(VOICE_BOSSBEATEN[Dungeon.depth == 25 ? 1 : 0]));
-			Sample.INSTANCE.play(Assets.SND_GHOST);
+			Dungeon.playAt(Assets.SND_GHOST, pos);
 		}
 
 		@Override

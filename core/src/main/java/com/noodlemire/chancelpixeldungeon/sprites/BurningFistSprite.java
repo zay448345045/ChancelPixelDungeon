@@ -67,7 +67,6 @@ public class BurningFistSprite extends MobSprite
 	{
 		if(anim == attack)
 		{
-
 			Sample.INSTANCE.play(Assets.SND_ZAP);
 			MagicMissile.boltFromChar(parent,
 					MagicMissile.SHADOW,
@@ -83,11 +82,8 @@ public class BurningFistSprite extends MobSprite
 					});
 
 			idle();
-
 		}
 		else
-		{
 			super.onComplete(anim);
-		}
 	}
 }

@@ -43,7 +43,6 @@ import com.watabou.utils.Random;
 
 public class HallsBossLevel extends Level
 {
-
 	{
 		color1 = 0x801500;
 		color2 = 0xa68521;
@@ -100,7 +99,6 @@ public class HallsBossLevel extends Level
 	@Override
 	protected boolean build()
 	{
-
 		setSize(32, 32);
 
 		for(int i = 0; i < 5; i++)
@@ -164,6 +162,11 @@ public class HallsBossLevel extends Level
 
 	@Override
 	protected void createMobs()
+	{
+	}
+
+	@Override
+	protected void createGeysers()
 	{
 	}
 

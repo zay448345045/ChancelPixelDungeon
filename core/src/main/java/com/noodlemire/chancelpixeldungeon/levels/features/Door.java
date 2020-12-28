@@ -26,7 +26,6 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.levels.Level;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
-import com.watabou.noosa.audio.Sample;
 
 public class Door
 {
@@ -37,10 +36,9 @@ public class Door
 		GameScene.updateMap(pos);
 
 		if(Dungeon.level.heroFOV[pos])
-		{
 			Dungeon.observe();
-			Sample.INSTANCE.play(Assets.SND_OPEN);
-		}
+
+		Dungeon.playAt(Assets.SND_OPEN, pos);
 	}
 
 	public static void leave(int pos)

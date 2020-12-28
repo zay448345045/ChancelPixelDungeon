@@ -26,6 +26,7 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Blindness;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
+import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
@@ -87,6 +88,21 @@ public class ScrollOfSupernova extends Scroll
 					Buff.prolong(mob, Paralysis.class, Paralysis.DURATION * (float) Math.pow(0.9, terrainPassed));
 					Buff.prolong(mob, Blindness.class, 2 * Paralysis.DURATION * (float) Math.pow(0.95, terrainPassed));
 				}
+			}
+		}
+
+		for(Geyser geyser : Dungeon.level.geysers.toArray(new Geyser[0]))
+		{
+			if(Dungeon.level.heroFOV[geyser.pos])
+			{
+				Ballistica wallDetect = new Ballistica(curUser.pos, geyser.pos, Ballistica.STOP_TARGET);
+				int terrainPassed = 1;
+
+				for(int p : wallDetect.subPath(1, wallDetect.dist))
+					if(Dungeon.level.solid[p])
+						terrainPassed++;
+
+				geyser.damage(geyser.HP() / terrainPassed, this);
 			}
 		}
 

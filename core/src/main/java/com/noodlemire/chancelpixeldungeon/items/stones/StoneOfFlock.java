@@ -8,7 +8,6 @@ import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -38,6 +37,6 @@ public class StoneOfFlock extends Runestone
 			}
 		}
 		CellEmitter.get(cell).burst(Speck.factory(Speck.WOOL), 4);
-		Sample.INSTANCE.play(Assets.SND_PUFF);
+		Dungeon.playAt(Assets.SND_PUFF, cell);
 	}
 }

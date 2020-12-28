@@ -35,6 +35,10 @@ import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 
 public class Fire extends Blob
 {
+	{
+		harmful = true;
+	}
+
 	@Override
 	protected void evolve()
 	{

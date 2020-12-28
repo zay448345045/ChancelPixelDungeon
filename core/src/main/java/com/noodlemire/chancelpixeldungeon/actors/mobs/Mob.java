@@ -28,6 +28,7 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.Statistics;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Amok;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Corruption;
@@ -101,7 +102,6 @@ public abstract class Mob extends Char
 	@Override
 	public void storeInBundle(Bundle bundle)
 	{
-
 		super.storeInBundle(bundle);
 
 		if(state == SLEEPING)
@@ -131,7 +131,6 @@ public abstract class Mob extends Char
 	@Override
 	public void restoreFromBundle(Bundle bundle)
 	{
-
 		super.restoreFromBundle(bundle);
 
 		String state = bundle.getString(STATE);
@@ -161,6 +160,7 @@ public abstract class Mob extends Char
 		target = bundle.getInt(TARGET);
 	}
 
+	@Override
 	public CharSprite sprite()
 	{
 		CharSprite sprite = null;
@@ -447,7 +447,7 @@ public abstract class Mob extends Char
 				for(int i = 0; i < lookAhead; i++)
 				{
 					int cell = path.get(i);
-					if(!Dungeon.level.passable[cell] || (fieldOfView[cell] && Actor.findChar(cell) != null))
+					if(!Dungeon.level.passable[cell] || (fieldOfView[cell] && (Actor.findChar(cell) != null || (!Dungeon.level.adjacent(pos, target) && Blob.harmfulAt(pos, cell)))))
 					{
 						newPath = true;
 						break;
@@ -752,7 +752,6 @@ public abstract class Mob extends Char
 
 	public void beckon(int cell)
 	{
-
 		notice();
 
 		if(state != HUNTING)
@@ -760,11 +759,6 @@ public abstract class Mob extends Char
 			state = WANDERING;
 		}
 		target = cell;
-	}
-
-	public String description()
-	{
-		return Messages.get(this, "desc");
 	}
 
 	public void notice()
@@ -777,12 +771,6 @@ public abstract class Mob extends Char
 		GLog.n("%s: \"%s\" ", name, str);
 	}
 
-	//returns true when a mob sees the hero, and is currently targeting them.
-	public boolean focusingHero()
-	{
-		return enemySeen && (target == Dungeon.hero.pos);
-	}
-
 	public interface AiState
 	{
 		boolean act(boolean enemyInFOV, boolean justAlerted);
@@ -790,7 +778,6 @@ public abstract class Mob extends Char
 
 	protected class Sleeping implements AiState
 	{
-
 		public static final String TAG = "SLEEPING";
 
 		@Override
@@ -798,7 +785,6 @@ public abstract class Mob extends Char
 		{
 			if(enemyInFOV && Random.Int(distance(enemy) + enemy.stealth() + (enemy.flying ? 2 : 0)) == 0)
 			{
-
 				enemySeen = true;
 
 				notice();

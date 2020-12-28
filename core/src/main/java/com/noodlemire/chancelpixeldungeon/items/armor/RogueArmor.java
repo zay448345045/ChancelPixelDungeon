@@ -52,33 +52,30 @@ public class RogueArmor extends ClassArmor
 
 	private static CellSelector.Listener teleporter = new CellSelector.Listener()
 	{
-
 		@Override
 		public void onSelect(Integer target)
 		{
-			if(target != null)
+			if (target != null)
 			{
-
 				PathFinder.buildDistanceMap(curUser.pos, Dungeon.level.passable, 8);
 
-				if(PathFinder.distance[target] == Integer.MAX_VALUE ||
-				   !Dungeon.level.heroFOV[target] ||
-				   !(Dungeon.level.passable[target] || Dungeon.level.avoid[target]) ||
-				   Actor.findChar(target) != null)
+				if (PathFinder.distance[target] == Integer.MAX_VALUE ||
+						!Dungeon.level.heroFOV[target] ||
+						!(Dungeon.level.passable[target] || Dungeon.level.avoid[target]) ||
+						Actor.findChar(target) != null)
 				{
-
 					GLog.w(Messages.get(RogueArmor.class, "fov"));
 					return;
 				}
 
-				curUser.damage(curUser.HP() / 3, this);
+				curUser.dynamic(0, false);
 
-				for(Mob mob : Dungeon.level.mobs.toArray(new Mob[Dungeon.level.mobs.size()]))
+				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[Dungeon.level.mobs.size()]))
 				{
-					if(Dungeon.level.heroFOV[mob.pos])
+					if (Dungeon.level.heroFOV[mob.pos])
 					{
 						Buff.prolong(mob, Blindness.class, 2);
-						if(mob.state == mob.HUNTING) mob.state = mob.WANDERING;
+						if (mob.state == mob.HUNTING) mob.state = mob.WANDERING;
 						mob.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 4);
 					}
 				}

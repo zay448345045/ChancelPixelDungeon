@@ -27,7 +27,6 @@ import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 
 public class DeadEndLevel extends Level
 {
-
 	private static final int SIZE = 5;
 
 	{
@@ -50,7 +49,6 @@ public class DeadEndLevel extends Level
 	@Override
 	protected boolean build()
 	{
-
 		setSize(7, 7);
 
 		for(int i = 2; i < SIZE; i++)
@@ -86,6 +84,11 @@ public class DeadEndLevel extends Level
 
 	@Override
 	protected void createMobs()
+	{
+	}
+
+	@Override
+	protected void createGeysers()
 	{
 	}
 

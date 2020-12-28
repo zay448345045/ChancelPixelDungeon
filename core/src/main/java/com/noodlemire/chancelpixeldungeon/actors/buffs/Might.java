@@ -9,7 +9,7 @@ import com.watabou.utils.Bundle;
 
 public class Might extends FlavourBuff
 {
-	public static final float DURATION = 200f;
+	public static final float DURATION = 300f;
 	private static final String HTGAIN = "htgain";
 	private int HTGain;
 

@@ -29,6 +29,7 @@ import com.noodlemire.chancelpixeldungeon.GamesInProgress;
 import com.noodlemire.chancelpixeldungeon.Statistics;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Awareness;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Barkskin;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Berserk;
@@ -50,6 +51,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Slow;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.SnipersMark;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Vertigo;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Weakness;
+import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.npcs.NPC;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
@@ -165,7 +167,7 @@ public class Hero extends Char
 	private float dynamic = 0;
 	private boolean attacked = false;
 
-	private ArrayList<Mob> visibleEnemies;
+	private ArrayList<Char> visibleDangers;
 
 	//This list is maintained so that some logic checks can be skipped
 	// for enemies we know we aren't seeing normally, resulting in better performance
@@ -180,7 +182,7 @@ public class Hero extends Char
 
 		belongings = new Belongings(this);
 
-		visibleEnemies = new ArrayList<>();
+		visibleDangers = new ArrayList<>();
 	}
 
 	public void updateHT(boolean boostHP)
@@ -265,7 +267,7 @@ public class Hero extends Char
 		dynamic(change, true);
 	}
 
-	private void dynamic(float change, boolean add)
+	public void dynamic(float change, boolean add)
 	{
 		dynamic = add ? dynamic + change : change;
 		int max = dynamax() + RingOfForce.dynamicBonus(this) + RingOfForce.dynamicExtension(this);
@@ -502,6 +504,8 @@ public class Hero extends Char
 			boolean[] passable = BArray.not(Dungeon.level.solid, null);
 			for(Mob m : Dungeon.level.mobs)
 				passable[m.pos] = false;
+			for(Geyser g : Dungeon.level.geysers)
+				passable[g.pos] = false;
 
 			PathFinder.buildDistanceMap(enemy.pos, passable, wep.reachFactor(this));
 
@@ -568,7 +572,7 @@ public class Hero extends Char
 				//otherwise just directly re-calculate FOV
 				Dungeon.level.updateFieldOfView(this, fieldOfView);
 
-		checkVisibleMobs();
+		checkVisibleDangers();
 		if(buff(FlavourBuff.class) != null)
 			BuffIndicator.refreshHero();
 
@@ -997,8 +1001,11 @@ public class Hero extends Char
 	@Override
 	public int attackProc(final Char enemy, int damage)
 	{
-		KindOfWeapon wep = belongings.weapon;
+		return attackProc(enemy, damage, belongings.weapon);
+	}
 
+	public int attackProc(final Char enemy, int damage, KindOfWeapon wep)
+	{
 		if(wep != null) damage = wep.proc(this, enemy, damage);
 
 		switch (subClass) {
@@ -1081,20 +1088,20 @@ public class Hero extends Char
 		super.damage(dmg, src);
 	}
 
-	public void checkVisibleMobs()
+	public void checkVisibleDangers()
 	{
-		ArrayList<Mob> visible = new ArrayList<>();
+		ArrayList<Char> visible = new ArrayList<>();
 
-		boolean newMob = false;
+		boolean newChar = false;
 
-		Mob target = null;
+		Char target = null;
 		for(Mob m : Dungeon.level.mobs.toArray(new Mob[0]))
 		{
 			if(fieldOfView[m.pos] && m.alignment == Alignment.ENEMY)
 			{
 				visible.add(m);
-				if(!visibleEnemies.contains(m))
-					newMob = true;
+				if(!visibleDangers.contains(m))
+					newChar = true;
 
 				if(!mindVisionEnemies.contains(m) && QuickSlotButton.autoAim(m) != -1)
 					if(target == null)
@@ -1104,28 +1111,38 @@ public class Hero extends Char
 			}
 		}
 
+		for(Geyser g : Dungeon.level.geysers.toArray(new Geyser[0]))
+		{
+			if(fieldOfView[g.pos])
+			{
+				visible.add(g);
+				if(!visibleDangers.contains(g))
+					newChar = true;
+			}
+		}
+
 		if(target != null && (QuickSlotButton.lastTarget == null ||
 		                      !QuickSlotButton.lastTarget.isAlive() ||
 		                      !fieldOfView[QuickSlotButton.lastTarget.pos]))
 			QuickSlotButton.target(target);
 
-		if(newMob)
+		if(newChar)
 		{
 			interrupt();
 			resting = false;
 		}
 
-		visibleEnemies = visible;
+		visibleDangers = visible;
 	}
 
-	public int visibleEnemies()
+	public int visibleDangers()
 	{
-		return visibleEnemies.size();
+		return visibleDangers.size();
 	}
 
-	public Mob visibleEnemy(int index)
+	public Char visibleDanger(int index)
 	{
-		return visibleEnemies.get(index % visibleEnemies.size());
+		return visibleDangers.get(index % visibleDangers.size());
 	}
 
 	private boolean getCloser(final int target)
@@ -1177,7 +1194,7 @@ public class Hero extends Char
 				for(int i = 0; i < lookAhead; i++)
 				{
 					int cell = path.get(i);
-					if(!Dungeon.level.passable[cell] || (fieldOfView[cell] && Actor.findChar(cell) != null))
+					if(!Dungeon.level.passable[cell] || (fieldOfView[cell] && (Actor.findChar(cell) != null || Blob.harmfulAt(pos, cell))))
 					{
 						newPath = true;
 						break;
@@ -1187,7 +1204,6 @@ public class Hero extends Char
 
 			if(newPath)
 			{
-
 				int len = Dungeon.level.length();
 				boolean[] p = Dungeon.level.passable;
 				boolean[] v = Dungeon.level.visited;
@@ -1236,15 +1252,15 @@ public class Hero extends Char
 
 		if(Dungeon.level.map[cell] == Terrain.ALCHEMY && cell != pos)
 			curAction = new HeroAction.Alchemy(cell);
-		else if(fieldOfView[cell] && (ch = Actor.findChar(cell)) instanceof Mob)
+		else if(fieldOfView[cell] && (ch = Actor.findChar(cell)) != null && ch != this)
 			if(ch instanceof NPC)
 				curAction = new HeroAction.Interact((NPC) ch);
 			else
 				curAction = new HeroAction.Attack(ch);
 		else if((heap = Dungeon.level.heaps.get(cell)) != null
 		        //moving to an item doesn't auto-pickup when enemies are near...
-		        && (visibleEnemies.size() == 0 || cell == pos ||
-		            //...but only for standard heaps, chests and similar open as normal.
+		        && (visibleDangers.size() == 0 || cell == pos ||
+		            //...but only for standard heaps; chests and similar open as normal.
 		            (heap.type != Type.HEAP && heap.type != Type.FOR_SALE)))
 		{
 			switch(heap.type)
@@ -1668,7 +1684,6 @@ public class Hero extends Char
 				}
 			}
 		}
-
 
 		if(intentional)
 		{

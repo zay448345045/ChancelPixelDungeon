@@ -31,7 +31,6 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Cripple;
 import com.noodlemire.chancelpixeldungeon.effects.Wound;
 import com.noodlemire.chancelpixeldungeon.levels.Level;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
-import com.watabou.noosa.audio.Sample;
 
 public class GrippingTrap extends Trap
 {
@@ -44,10 +43,8 @@ public class GrippingTrap extends Trap
 	@Override
 	public void trigger()
 	{
-		if(Dungeon.level.heroFOV[pos])
-		{
-			Sample.INSTANCE.play(Assets.SND_TRAP);
-		}
+		Dungeon.playAt(Assets.SND_TRAP, pos);
+
 		//this trap is not disarmed by being triggered
 		reveal();
 		Level.set(pos, Terrain.TRAP);

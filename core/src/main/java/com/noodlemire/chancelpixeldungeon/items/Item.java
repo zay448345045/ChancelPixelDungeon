@@ -30,7 +30,6 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Combo;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Repulsion;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
-import com.noodlemire.chancelpixeldungeon.actors.mobs.Yog;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.items.bags.Bag;
 import com.noodlemire.chancelpixeldungeon.journal.Catalog;
@@ -172,8 +171,10 @@ public class Item implements Bundlable
 
 	protected void onThrow(int cell)
 	{
-		if(Actor.findChar(cell) instanceof Yog ||
-				(Actor.findChar(cell) != null && Actor.findChar(cell).buff(Repulsion.class) != null))
+		Char ch = Actor.findChar(cell);
+
+		if(ch != null && (ch.properties().contains(Char.Property.IMMOVABLE) ||
+				ch.buff(Repulsion.class) != null))
 		{
 			int n;
 			do
@@ -450,6 +451,10 @@ public class Item implements Bundlable
 				updateQuickslot();
 			}
 		}
+	}
+
+	public boolean canBeCursed() {
+		return isUpgradable();
 	}
 
 	public boolean isUpgradable()

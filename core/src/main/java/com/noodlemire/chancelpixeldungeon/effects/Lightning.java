@@ -37,7 +37,6 @@ import java.util.List;
 
 public class Lightning extends Group
 {
-
 	private static final float DURATION = 0.3f;
 
 	private float life;
@@ -68,7 +67,6 @@ public class Lightning extends Group
 
 	public Lightning(List<Arc> arcs, Callback callback)
 	{
-
 		super();
 
 		this.arcs = arcs;
@@ -79,7 +77,8 @@ public class Lightning extends Group
 
 		life = DURATION;
 
-		Sample.INSTANCE.play(Assets.SND_LIGHTNING);
+		if(visible)
+			Sample.INSTANCE.play(Assets.SND_LIGHTNING);
 	}
 
 	private static final double A = 180 / Math.PI;
@@ -89,17 +88,14 @@ public class Lightning extends Group
 	{
 		if((life -= Game.elapsed) < 0)
 		{
-
 			killAndErase();
 			if(callback != null)
 			{
 				callback.call();
 			}
-
 		}
 		else
 		{
-
 			float alpha = life / DURATION;
 
 			for(Arc arc : arcs)
@@ -123,7 +119,6 @@ public class Lightning extends Group
 	//these act as a means of easily expressing lighting between two points.
 	public static class Arc extends Group
 	{
-
 		private Image arc1, arc2;
 
 		//starting and ending x/y values

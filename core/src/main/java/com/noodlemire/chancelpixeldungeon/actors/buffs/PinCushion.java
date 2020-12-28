@@ -32,6 +32,10 @@ import java.util.Collection;
 
 public class PinCushion extends Buff
 {
+	{
+		geyserCompatable = true;
+	}
+
 	private ArrayList<MissileWeapon> items = new ArrayList<>();
 
 	public void stick(MissileWeapon projectile)

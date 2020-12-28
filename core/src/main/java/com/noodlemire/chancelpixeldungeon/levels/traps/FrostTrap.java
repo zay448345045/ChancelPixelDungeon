@@ -28,7 +28,6 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Freezing;
 import com.noodlemire.chancelpixeldungeon.effects.Splash;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.utils.BArray;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 
 public class FrostTrap extends Trap
@@ -42,17 +41,15 @@ public class FrostTrap extends Trap
 	@Override
 	public void activate()
 	{
-
-		if(Dungeon.level.heroFOV[pos])
-		{
+		if (Dungeon.level.heroFOV[pos])
 			Splash.at(pos, 0xFFB2D6FF, 5);
-			Sample.INSTANCE.play(Assets.SND_SHATTER);
-		}
+
+		Dungeon.playAt(Assets.SND_SHATTER, pos);
 
 		PathFinder.buildDistanceMap(pos, BArray.not(Dungeon.level.solid, null), 2);
-		for(int i = 0; i < PathFinder.distance.length; i++)
+		for (int i = 0; i < PathFinder.distance.length; i++)
 		{
-			if(PathFinder.distance[i] < Integer.MAX_VALUE)
+			if (PathFinder.distance[i] < Integer.MAX_VALUE)
 			{
 				GameScene.add(Blob.seed(i, 20, Freezing.class));
 			}

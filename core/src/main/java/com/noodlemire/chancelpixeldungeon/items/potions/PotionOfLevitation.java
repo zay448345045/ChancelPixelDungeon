@@ -31,7 +31,6 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 
 public class PotionOfLevitation extends Potion
 {
@@ -43,10 +42,9 @@ public class PotionOfLevitation extends Potion
 	public void shatter(int cell)
 	{
 		if(Dungeon.level.heroFOV[cell])
-		{
 			splash(cell);
-			Sample.INSTANCE.play(Assets.SND_SHATTER);
-		}
+
+		Dungeon.playAt(Assets.SND_SHATTER, cell);
 
 		GameScene.add(Blob.seed(cell, 1000, ConfusionGas.class));
 	}

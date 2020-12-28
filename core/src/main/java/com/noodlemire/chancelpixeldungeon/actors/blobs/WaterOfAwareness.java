@@ -42,11 +42,9 @@ import com.watabou.noosa.audio.Sample;
 
 public class WaterOfAwareness extends WellWater
 {
-
 	@Override
 	protected boolean affectHero(Hero hero)
 	{
-
 		Sample.INSTANCE.play(Assets.SND_DRINK);
 		emitter.parent.add(new Identification(hero.sprite.center()));
 
@@ -58,13 +56,10 @@ public class WaterOfAwareness extends WellWater
 			int terr = Dungeon.level.map[i];
 			if((Terrain.flags[terr] & Terrain.SECRET) != 0)
 			{
-
 				Dungeon.level.discover(i);
 
 				if(Dungeon.level.heroFOV[i])
-				{
 					GameScene.discoverTile(i, terr);
-				}
 			}
 		}
 

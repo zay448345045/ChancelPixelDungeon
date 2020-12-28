@@ -22,6 +22,7 @@
 package com.noodlemire.chancelpixeldungeon.actors;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
+import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Electricity;
@@ -69,7 +70,6 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
@@ -165,6 +165,11 @@ public abstract class Char extends Actor
 		}
 	}
 
+	public String description()
+	{
+		return Messages.get(this, "desc");
+	}
+
 	public int HP()
 	{
 		return HP;
@@ -201,7 +206,7 @@ public abstract class Char extends Actor
 		if(fullHealth)
 			HP = HT;
 		else
-			HP = Math.min(HT, HP + (HT - oldHT));
+			HP = (int)GameMath.gate(0,HP + (HT - oldHT), HT);
 	}
 
 	public int SHLD()
@@ -249,17 +254,12 @@ public abstract class Char extends Actor
 			effectiveDamage = Math.max(effectiveDamage - dr, 0);
 			effectiveDamage = attackProc(enemy, effectiveDamage);
 
-			if(visibleFight)
-			{
-				Sample.INSTANCE.play(Assets.SND_HIT, 1, 1, Random.Float(0.8f, 1.25f));
-			}
+			Dungeon.playAt(Assets.SND_HIT, enemy.pos);
 
 			// If the enemy is already dead, interrupt the attack.
 			// This matters as defence procs can sometimes inflict self-damage, such as armor glyphs.
 			if(!enemy.isAlive())
-			{
 				return true;
-			}
 
 			//TODO: consider revisiting this and shaking in more cases.
 			float shake = 0f;
@@ -315,21 +315,15 @@ public abstract class Char extends Actor
 			}
 
 			return true;
-
 		}
 		else
 		{
-
 			if(visibleFight)
-			{
-				String defense = enemy.defenseVerb();
-				enemy.sprite.showStatus(CharSprite.NEUTRAL, defense);
+				enemy.sprite.showStatus(CharSprite.NEUTRAL, enemy.defenseVerb());
 
-				Sample.INSTANCE.play(Assets.SND_MISS);
-			}
+			Dungeon.playAt(Assets.SND_MISS, enemy.pos);
 
 			return false;
-
 		}
 	}
 
@@ -532,7 +526,6 @@ public abstract class Char extends Actor
 
 	public synchronized void add(Buff buff)
 	{
-
 		buffs.add(buff);
 		Actor.add(buff);
 
@@ -552,7 +545,6 @@ public abstract class Char extends Actor
 				default:
 					break; //show nothing
 			}
-
 	}
 
 	public synchronized void remove(Buff buff)
@@ -584,6 +576,19 @@ public abstract class Char extends Actor
 			buff.fx(true);
 	}
 
+	public CharSprite sprite()
+	{
+		try
+		{
+			return sprite.getClass().newInstance();
+		}
+		catch(Exception e)
+		{
+			ChancelPixelDungeon.reportException(e);
+			return null;
+		}
+	}
+
 	public int stealth()
 	{
 		return 0;
@@ -591,7 +596,6 @@ public abstract class Char extends Actor
 
 	public void move(int step)
 	{
-
 		if(Dungeon.level.adjacent(step, pos) && buff(Vertigo.class) != null)
 		{
 			sprite.interruptMotion();
@@ -726,7 +730,8 @@ public abstract class Char extends Actor
 				new HashSet<Class>(Arrays.asList(Ooze.class))),
 		ELECTRIC(new HashSet<Class>(Arrays.asList(WandOfLightning.class, Shocking.class, Potential.class, Electricity.class, ShockingDart.class)),
 				new HashSet<Class>()),
-		IMMOVABLE;
+		IMMOVABLE,
+		METALLIC;
 
 		private HashSet<Class> resistances;
 		private HashSet<Class> immunities;

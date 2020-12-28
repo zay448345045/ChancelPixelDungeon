@@ -110,15 +110,14 @@ public class AttackIndicator extends Tag
 
 	private synchronized void checkEnemies()
 	{
-
 		candidates.clear();
-		int v = Dungeon.hero.visibleEnemies();
+		int v = Dungeon.hero.visibleDangers();
 		for(int i = 0; i < v; i++)
 		{
-			Mob mob = Dungeon.hero.visibleEnemy(i);
-			if(Dungeon.hero.canAttack(mob))
+			Char ch = Dungeon.hero.visibleDanger(i);
+			if(ch instanceof Mob && Dungeon.hero.canAttack(ch))
 			{
-				candidates.add(mob);
+				candidates.add((Mob)ch);
 			}
 		}
 
@@ -151,7 +150,6 @@ public class AttackIndicator extends Tag
 
 	private synchronized void updateImage()
 	{
-
 		if(sprite != null)
 		{
 			sprite.killAndErase();
@@ -211,8 +209,11 @@ public class AttackIndicator extends Tag
 
 	public static void target(Char target)
 	{
-		lastTarget = (Mob) target;
-		instance.updateImage();
+		if(target instanceof Mob)
+		{
+			lastTarget = (Mob) target;
+			instance.updateImage();
+		}
 
 		TargetHealthIndicator.instance.target(target);
 	}

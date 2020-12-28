@@ -33,7 +33,6 @@ import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.levels.Level;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
-import com.watabou.noosa.audio.Sample;
 
 public class FlashingTrap extends Trap
 {
@@ -46,10 +45,8 @@ public class FlashingTrap extends Trap
 	@Override
 	public void trigger()
 	{
-		if(Dungeon.level.heroFOV[pos])
-		{
-			Sample.INSTANCE.play(Assets.SND_TRAP);
-		}
+		Dungeon.playAt(Assets.SND_TRAP, pos);
+
 		//this trap is not disarmed by being triggered
 		reveal();
 		Level.set(pos, Terrain.TRAP);
@@ -77,11 +74,8 @@ public class FlashingTrap extends Trap
 		}
 
 		if(Dungeon.level.heroFOV[pos])
-		{
 			GameScene.flash(0xFFFFFF);
-			Sample.INSTANCE.play(Assets.SND_BLAST);
-		}
 
+		Dungeon.playAt(Assets.SND_BLAST, pos);
 	}
-
 }

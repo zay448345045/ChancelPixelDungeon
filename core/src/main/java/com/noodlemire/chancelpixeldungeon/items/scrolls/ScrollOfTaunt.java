@@ -23,6 +23,7 @@ public class ScrollOfTaunt extends Scroll
 	public void doRead()
 	{
 		taunt(false, false);
+		readAnimation();
 	}
 
 	@Override
@@ -35,6 +36,7 @@ public class ScrollOfTaunt extends Scroll
 	public void empoweredRead()
 	{
 		taunt(false, true);
+		readAnimation();
 	}
 
 	private void taunt(boolean shouted, boolean empowered)
@@ -59,7 +61,6 @@ public class ScrollOfTaunt extends Scroll
 		}
 
 		Sample.INSTANCE.play(Assets.SND_MIMIC);
-		readAnimation();
 		GLog.i(Messages.get(this, "taunt"));
 	}
 }

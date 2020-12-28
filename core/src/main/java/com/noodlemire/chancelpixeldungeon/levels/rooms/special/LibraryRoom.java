@@ -37,7 +37,6 @@ public class LibraryRoom extends SpecialRoom
 {
 	public void paint(Level level)
 	{
-
 		Painter.fill(level, this, Terrain.WALL);
 		Painter.fill(level, this, 1, Terrain.EMPTY_SP);
 

@@ -44,7 +44,6 @@ public class ItemSlot extends Button
 
 	public static final int DEGRADED = 0xFF4444;
 	public static final int UPGRADED = 0x44FF44;
-	public static final int FADED = 0x999999;
 	public static final int WARNING = 0xFF8800;
 
 	private static final float ENABLED = 1.0f;
@@ -246,35 +245,26 @@ public class ItemSlot extends Button
 
 		boolean isArmor = item instanceof Armor;
 		boolean isWeapon = item instanceof Weapon;
+
 		if(isArmor || isWeapon)
 		{
-
 			if(item.levelKnown || (isWeapon && !(item instanceof MeleeWeapon)))
 			{
-
 				int str = isArmor ? ((Armor) item).STRReq() : ((Weapon) item).STRReq();
 				topRight.text(Messages.format(TXT_STRENGTH, str));
 				if(str > Dungeon.hero.STR())
-				{
 					topRight.hardlight(DEGRADED);
-				}
 				else
-				{
 					topRight.resetColor();
-				}
-
 			}
 			else
 			{
-
 				topRight.text(Messages.format(TXT_TYPICAL_STR, isArmor ?
 						((Armor) item).STRReq(0) :
 						((Weapon) item).STRReq(0)));
 				topRight.hardlight(WARNING);
-
 			}
 			topRight.measure();
-
 		}
 		else if(item instanceof Key && !(item instanceof SkeletonKey))
 		{

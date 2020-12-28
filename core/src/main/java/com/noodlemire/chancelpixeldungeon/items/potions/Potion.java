@@ -281,9 +281,10 @@ public abstract class Potion extends Item implements Transmutable
 		if(Dungeon.level.heroFOV[cell])
 		{
 			GLog.i(Messages.get(Potion.class, "shatter"));
-			Sample.INSTANCE.play(Assets.SND_SHATTER);
 			splash(cell);
 		}
+
+		Dungeon.playAt(Assets.SND_SHATTER, cell);
 	}
 
 	@Override

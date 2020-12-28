@@ -123,6 +123,11 @@ public class LastShopLevel extends RegularLevel
 	{
 	}
 
+	@Override
+	protected void createGeysers()
+	{
+	}
+
 	public Actor respawner()
 	{
 		return null;

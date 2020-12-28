@@ -22,7 +22,7 @@
 package com.noodlemire.chancelpixeldungeon.ui;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
-import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
+import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.scenes.PixelScene;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Camera;
@@ -30,7 +30,6 @@ import com.watabou.noosa.Image;
 
 public class DangerIndicator extends Tag
 {
-
 	public static final int COLOR = 0xFF4C4C;
 
 	private BitmapText number;
@@ -85,7 +84,7 @@ public class DangerIndicator extends Tag
 
 		if(Dungeon.hero.isAlive())
 		{
-			int v = Dungeon.hero.visibleEnemies();
+			int v = Dungeon.hero.visibleDangers();
 			if(v != lastNumber)
 			{
 				lastNumber = v;
@@ -110,10 +109,9 @@ public class DangerIndicator extends Tag
 	@Override
 	protected void onClick()
 	{
-		if(Dungeon.hero.visibleEnemies() > 0)
+		if(Dungeon.hero.visibleDangers() > 0)
 		{
-
-			Mob target = Dungeon.hero.visibleEnemy(enemyIndex++);
+			Char target = Dungeon.hero.visibleDanger(enemyIndex++);
 
 			TargetHealthIndicator.instance.target(target == TargetHealthIndicator.instance.target() ? null : target);
 

@@ -21,6 +21,7 @@
 
 package com.noodlemire.chancelpixeldungeon.ui;
 
+import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
@@ -192,18 +193,22 @@ public class PinCushionIndicator extends Tag
 				int damage = mw.damageRoll(Dungeon.hero);
 
 				mw.rangedHit(ch, target, true);
-				damage = Dungeon.hero.attackProc(ch, damage);
+				damage = Dungeon.hero.attackProc(ch, damage, mw);
 				damage = ch.defenseProc(Dungeon.hero, damage);
 				ch.damage(damage, Dungeon.hero);
 
 				ch.sprite.flash();
 				ch.sprite.bloodBurstB(ch.sprite.origin, damage);
+				Dungeon.playAt(Assets.SND_HIT, ch.pos);
 
 				if(!ch.isAlive())
 					AttackIndicator.updateState();
 			}
 			else
+			{
 				ch.sprite.showStatus(CharSprite.NEUTRAL, ch.defenseVerb());
+				Dungeon.playAt(Assets.SND_MISS, ch.pos);
+			}
 
 			Dungeon.hero.spendAndNext(TIME_TO_REMOVE);
 			Invisibility.dispel();

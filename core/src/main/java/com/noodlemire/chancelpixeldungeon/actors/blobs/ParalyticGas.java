@@ -30,6 +30,9 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 
 public class ParalyticGas extends GasBlob
 {
+	{
+		harmful = true;
+	}
 
 	{
 		//acts after mobs, to give them a chance to resist paralysis

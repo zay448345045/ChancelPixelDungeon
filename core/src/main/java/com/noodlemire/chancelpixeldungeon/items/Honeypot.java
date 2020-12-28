@@ -31,7 +31,6 @@ import com.noodlemire.chancelpixeldungeon.effects.Pushing;
 import com.noodlemire.chancelpixeldungeon.effects.Splash;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
@@ -102,10 +101,9 @@ public class Honeypot extends Item
 	{
 
 		if(Dungeon.level.heroFOV[pos])
-		{
-			Sample.INSTANCE.play(Assets.SND_SHATTER);
 			Splash.at(pos, 0xffd500, 5);
-		}
+
+		Dungeon.playAt(Assets.SND_SHATTER, pos);
 
 		int newPos = pos;
 		if(Actor.findChar(pos) != null)
@@ -138,7 +136,7 @@ public class Honeypot extends Item
 			bee.sprite.alpha(0);
 			bee.sprite.parent.add(new AlphaTweener(bee.sprite, 1, 0.15f));
 
-			Sample.INSTANCE.play(Assets.SND_BEE);
+			Dungeon.playAt(Assets.SND_BEE, bee.pos);
 			return new ShatteredPot().setBee(bee);
 		}
 		else

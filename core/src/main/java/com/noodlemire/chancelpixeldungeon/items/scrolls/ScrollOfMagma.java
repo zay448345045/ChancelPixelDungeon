@@ -37,6 +37,9 @@ public class ScrollOfMagma extends EnvironmentScroll
 		for(Mob mob : Dungeon.level.mobs)
 			if(Dungeon.level.heroFOV[mob.pos])
 				GameScene.add(Blob.seed(mob.pos, 250, Magma.class));
+
+		readAnimation();
+		Sample.INSTANCE.play(Assets.SND_READ);
 	}
 
 	@Override

@@ -43,6 +43,8 @@ public class Brute extends Mob
 
 		loot = Gold.class;
 		lootChance = 0.5f;
+
+		properties.add(Property.METALLIC);
 	}
 
 	private boolean enraged = false;

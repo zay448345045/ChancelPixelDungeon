@@ -35,6 +35,8 @@ public class ScrollOfDecay extends EnvironmentScroll
 	public void doRead()
 	{
 		decay(curUser.pos, false);
+		readAnimation();
+		Sample.INSTANCE.play(Assets.SND_READ);
 	}
 
 	@Override
@@ -42,6 +44,8 @@ public class ScrollOfDecay extends EnvironmentScroll
 	{
 		//Will target enemies through walls, but at reduced damage per wall in the way
 		decay(curUser.pos, true);
+		readAnimation();
+		Sample.INSTANCE.play(Assets.SND_READ);
 	}
 
 	private void decay(int pos, boolean empowered)
@@ -74,7 +78,8 @@ public class ScrollOfDecay extends EnvironmentScroll
 						ch.damage(Math.round(0.75f * ch.HP() / terrainPassed), this);
 						Buff.affect(ch, Weakness.class, Weakness.DURATION);
 
-						if(i == pos && !(ch instanceof Hero))
+						if(i == pos && !(ch instanceof Hero) && !ch.properties().contains(Char.Property.BOSS)
+								&& !ch.properties().contains(Char.Property.MINIBOSS))
 							Buff.affect(ch, Doom.class);
 					}
 				}
@@ -89,8 +94,6 @@ public class ScrollOfDecay extends EnvironmentScroll
 
 		if(curUser.isAlive())
 			Dungeon.observe();
-
-		readAnimation();
 
 		if(!curUser.isAlive())
 		{

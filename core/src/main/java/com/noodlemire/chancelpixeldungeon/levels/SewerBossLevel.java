@@ -41,7 +41,6 @@ import java.util.ArrayList;
 
 public class SewerBossLevel extends SewerLevel
 {
-
 	{
 		color1 = 0x48763c;
 		color2 = 0x59994a;
@@ -120,6 +119,11 @@ public class SewerBossLevel extends SewerLevel
 		while(room == roomEntrance);
 		boss.pos = pointToCell(room.random());
 		mobs.add(boss);
+	}
+
+	@Override
+	protected void createGeysers()
+	{
 	}
 
 	public Actor respawner()

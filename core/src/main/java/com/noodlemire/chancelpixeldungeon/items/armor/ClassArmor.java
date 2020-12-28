@@ -105,7 +105,7 @@ abstract public class ClassArmor extends Armor
 	public ArrayList<String> actions(Hero hero)
 	{
 		ArrayList<String> actions = super.actions(hero);
-		if(hero.HP() >= 3 && isEquipped(hero))
+		if(hero.dynamicFactor() >= 1 && isEquipped(hero))
 		{
 			actions.add(AC_SPECIAL);
 		}
@@ -119,10 +119,10 @@ abstract public class ClassArmor extends Armor
 
 		if(action.equals(AC_SPECIAL))
 		{
-			if(hero.HP() < 3)
-				GLog.w(Messages.get(this, "low_hp"));
-			else if(!isEquipped(hero))
+			if(!isEquipped(hero))
 				GLog.w(Messages.get(this, "not_equipped"));
+			else if(hero.dynamicFactor() < 1)
+				GLog.w(Messages.get(this, "low_ds"));
 			else
 			{
 				curUser = hero;

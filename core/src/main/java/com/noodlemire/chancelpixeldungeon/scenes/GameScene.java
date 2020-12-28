@@ -28,7 +28,9 @@ import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.Statistics;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
+import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.effects.BannerSprites;
 import com.noodlemire.chancelpixeldungeon.effects.BlobEmitter;
@@ -86,8 +88,8 @@ import com.noodlemire.chancelpixeldungeon.windows.WndBag.Mode;
 import com.noodlemire.chancelpixeldungeon.windows.WndGame;
 import com.noodlemire.chancelpixeldungeon.windows.WndHero;
 import com.noodlemire.chancelpixeldungeon.windows.WndInfoCell;
+import com.noodlemire.chancelpixeldungeon.windows.WndInfoChar;
 import com.noodlemire.chancelpixeldungeon.windows.WndInfoItem;
-import com.noodlemire.chancelpixeldungeon.windows.WndInfoMob;
 import com.noodlemire.chancelpixeldungeon.windows.WndInfoPlant;
 import com.noodlemire.chancelpixeldungeon.windows.WndInfoTrap;
 import com.noodlemire.chancelpixeldungeon.windows.WndMessage;
@@ -139,10 +141,9 @@ public class GameScene extends PixelScene
 	private Group levelVisuals;
 	private Group customWalls;
 	private Group ripples;
-	private Group plants;
-	private Group traps;
 	private Group heaps;
 	private Group mobs;
+	private Group geysers;
 	private Group emitters;
 	private Group effects;
 	private Group gases;
@@ -246,6 +247,9 @@ public class GameScene extends PixelScene
 		mobs = new Group();
 		add(mobs);
 
+		geysers = new Group();
+		add(geysers);
+
 		for(Mob mob : Dungeon.level.mobs)
 		{
 			addMobSprite(mob);
@@ -254,6 +258,9 @@ public class GameScene extends PixelScene
 				mob.beckon(Dungeon.hero.pos);
 			}
 		}
+
+		for(Geyser geyser : Dungeon.level.geysers)
+			addGeyserSprite(geyser);
 
 		walls = new DungeonWallsTilemap();
 		add(walls);
@@ -716,6 +723,14 @@ public class GameScene extends PixelScene
 		sprite.link(mob);
 	}
 
+	private void addGeyserSprite(Geyser geyser)
+	{
+		CharSprite sprite = geyser.sprite();
+		sprite.visible = Dungeon.level.heroFOV[geyser.pos];
+		geysers.add(sprite);
+		sprite.link(geyser);
+	}
+
 	private synchronized void prompt(String text)
 	{
 
@@ -974,9 +989,15 @@ public class GameScene extends PixelScene
 	public static void afterObserve()
 	{
 		if(scene != null)
+		{
 			for(Mob mob : Dungeon.level.mobs)
 				if(mob.sprite != null)
 					mob.sprite.visible = Dungeon.level.heroFOV[mob.pos];
+
+			for(Geyser geyser : Dungeon.level.geysers)
+				if(geyser.sprite != null)
+					geyser.sprite.visible = Dungeon.level.heroFOV[geyser.pos];
+		}
 	}
 
 	public static void flash(int color)
@@ -1089,11 +1110,11 @@ public class GameScene extends PixelScene
 		{
 			if(Dungeon.level.heroFOV[cell])
 			{
-				Mob mob = (Mob) Actor.findChar(cell);
-				if(mob != null)
+				Char ch = Actor.findChar(cell);
+				if(ch != null)
 				{
-					objects.add(mob);
-					names.add(Messages.titleCase(mob.name));
+					objects.add(ch);
+					names.add(Messages.titleCase(ch.name));
 				}
 			}
 		}
@@ -1148,9 +1169,9 @@ public class GameScene extends PixelScene
 		{
 			GameScene.show(new WndHero());
 		}
-		else if(o instanceof Mob)
+		else if(o instanceof Char)
 		{
-			GameScene.show(new WndInfoMob((Mob) o));
+			GameScene.show(new WndInfoChar((Char) o));
 		}
 		else if(o instanceof Heap)
 		{

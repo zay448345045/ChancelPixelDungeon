@@ -65,7 +65,7 @@ public class WandOfBlastWave extends DamageWand
 	@Override
 	protected void onZap(Ballistica bolt)
 	{
-		Sample.INSTANCE.play(Assets.SND_BLAST);
+		Dungeon.playAt(Assets.SND_BLAST, bolt.collisionPos);
 		BlastWave.blast(bolt.collisionPos);
 
 		int damage = damageRoll();

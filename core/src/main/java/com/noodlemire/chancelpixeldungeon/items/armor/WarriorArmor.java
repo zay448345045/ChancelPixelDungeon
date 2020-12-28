@@ -70,7 +70,7 @@ public class WarriorArmor extends ClassArmor
 					cell = route.path.get(route.dist - 1);
 
 
-				curUser.damage(curUser.HP() / 3, this);
+				curUser.dynamic(0, false);
 
 				final int dest = cell;
 				curUser.busy();

@@ -43,7 +43,6 @@ import com.noodlemire.chancelpixeldungeon.ui.BossHealthBar;
 import com.noodlemire.chancelpixeldungeon.utils.BArray;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -57,7 +56,7 @@ public class Goo extends Mob
 		spriteClass = GooSprite.class;
 
 		loot = new LloydsBeacon();
-		lootChance = 0.333f;
+		lootChance = 1f;
 
 		properties.add(Property.BOSS);
 		properties.add(Property.DEMONIC);
@@ -80,7 +79,7 @@ public class Goo extends Mob
 				if(PathFinder.distance[i] < Integer.MAX_VALUE)
 					CellEmitter.get(i).burst(ElmoParticle.FACTORY, 10);
 			}
-			Sample.INSTANCE.play(Assets.SND_BURNING);
+			Dungeon.playAt(Assets.SND_BURNING, pos);
 			return Random.NormalIntRange(min * 3, max * 3);
 		}
 		else

@@ -26,7 +26,6 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Freezing;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 
 public class PotionOfFrost extends Potion
@@ -41,10 +40,9 @@ public class PotionOfFrost extends Potion
 	public void shatter(int cell)
 	{
 		if(Dungeon.level.heroFOV[cell])
-		{
 			splash(cell);
-			Sample.INSTANCE.play(Assets.SND_SHATTER);
-		}
+
+		Dungeon.playAt(Assets.SND_SHATTER, cell);
 
 		for(int offset : PathFinder.NEIGHBOURS9)
 			if(!Dungeon.level.solid[cell + offset])

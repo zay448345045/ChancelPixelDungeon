@@ -24,6 +24,7 @@ package com.noodlemire.chancelpixeldungeon.actors.mobs;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.MagicImmunity;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Weakness;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.items.Item;
@@ -77,6 +78,9 @@ public class Warlock extends Mob implements Callback
 	@Override
 	protected boolean canAttack(Char enemy)
 	{
+		if(buff(MagicImmunity.class) != null)
+			return super.canAttack(enemy);
+
 		return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 	}
 

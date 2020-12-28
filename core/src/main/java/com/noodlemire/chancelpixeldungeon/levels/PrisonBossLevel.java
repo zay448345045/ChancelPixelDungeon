@@ -162,6 +162,11 @@ public class PrisonBossLevel extends Level
 		tengu = new Tengu(); //We want to keep track of tengu independently of other mobs, he's not always in the level.
 	}
 
+	@Override
+	protected void createGeysers()
+	{
+	}
+
 	public Actor respawner()
 	{
 		return null;

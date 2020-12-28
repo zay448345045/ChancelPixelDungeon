@@ -22,21 +22,21 @@
 package com.noodlemire.chancelpixeldungeon.items.armor;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
+import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.items.Item;
-import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Shuriken;
-import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
+import com.noodlemire.chancelpixeldungeon.scenes.CellSelector;
+import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.sprites.MissileSprite;
-import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.utils.Callback;
 
 import java.util.HashMap;
 
 public class HuntressArmor extends ClassArmor
 {
-
-
 	{
 		image = ItemSpriteSheet.ARMOR_HUNTRESS;
 	}
@@ -46,46 +46,87 @@ public class HuntressArmor extends ClassArmor
 	@Override
 	public void doSpecial()
 	{
+		GameScene.selectCell( dasher );
+	}
 
-		Item proto = new Shuriken();
-
-		for(Mob mob : Dungeon.level.mobs)
+	protected CellSelector.Listener dasher = new CellSelector.Listener()
+	{
+		@Override
+		public void onSelect( Integer target )
 		{
-			if(Dungeon.level.distance(curUser.pos, mob.pos) <= 12
-			   && Dungeon.level.heroFOV[mob.pos])
+			if (target != null && target != curUser.pos)
 			{
+				Ballistica route = new Ballistica(curUser.pos, target, Ballistica.PROJECTILE);
+				int cell = route.collisionPos;
 
-				Callback callback = new Callback()
+				//can't occupy the same cell as another char, so move back one.
+				if(Actor.findChar(cell) != null && cell != curUser.pos)
+					cell = route.path.get(route.dist - 1);
+
+				final int dest = cell;
+
+				curUser.sprite.jump( curUser.pos, cell, new Callback()
 				{
 					@Override
 					public void call()
 					{
-						curUser.attack(targets.get(this));
-						targets.remove(this);
-						if(targets.isEmpty())
-						{
-							curUser.spendAndNext(curUser.attackDelay());
+						curUser.move( dest );
+						Dungeon.level.press( dest, curUser );
+						Dungeon.observe();
+
+						Item proto = new Arrow();
+
+						for (Mob mob : Dungeon.level.mobs) {
+							if(Dungeon.level.distance(curUser.pos, mob.pos) <= 12
+									&& Dungeon.level.heroFOV[mob.pos])
+							{
+								Callback callback = new Callback() {
+									@Override
+									public void call() {
+										float old_factor = curUser.dynamicFactor();
+										curUser.attack( targets.get( this ) );
+										targets.remove( this );
+
+										if(targets.isEmpty())
+											curUser.dynamic(0, false);
+										else
+											curUser.dynamic(curUser.dynamax() * old_factor, false);
+
+									}
+								};
+
+								((MissileSprite)curUser.sprite.parent.recycle( MissileSprite.class )).
+										reset( curUser.pos, mob.pos, proto, callback );
+
+								targets.put(callback, mob);
+							}
 						}
+
+						if (targets.size() == 0)
+						{
+							curUser.sprite.idle();
+							return;
+						}
+
+						curUser.spendAndNext(curUser.attackDelay());
+						curUser.sprite.zap(curUser.pos);
+						curUser.busy();
 					}
-				};
-
-				((MissileSprite) curUser.sprite.parent.recycle(MissileSprite.class)).
-						reset(curUser.pos, mob.pos, proto, callback);
-
-				targets.put(callback, mob);
+				} );
 			}
 		}
 
-		if(targets.size() == 0)
-		{
-			GLog.w(Messages.get(this, "no_enemies"));
-			return;
+		@Override
+		public String prompt() {
+			return "Choose direction to dash";
 		}
+	};
 
-		curUser.damage(curUser.HP() / 3, this);
-
-		curUser.sprite.zap(curUser.pos);
-		curUser.busy();
+	private static class Arrow extends MissileWeapon
+	{
+		public Arrow()
+		{
+			image = ItemSpriteSheet.ARROW;
+		}
 	}
-
 }

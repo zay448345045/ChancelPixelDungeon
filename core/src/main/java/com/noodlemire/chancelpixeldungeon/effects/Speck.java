@@ -373,7 +373,7 @@ public class Speck extends Image
 				break;
 
 			case STORMCLOUD:
-				hardlight(0x444444);
+				hardlight(0xAAAAAA);
 				angularSpeed = -45;
 				angle = Random.Float(360);
 				lifespan = Random.Float(1f, 3f);
@@ -494,13 +494,14 @@ public class Speck extends Image
 					am = p < 0.2f ? p * 5 : 1;
 					break;
 
+				case STORMCLOUD:
+					hardlight(ColorMath.interpolate(0xAAAAAA, 0x444444, p));
 				case STEAM:
 				case TOXIC:
 				case PARALYSIS:
 				case CONFUSION:
 				case DUST:
 				case ENTICE:
-				case STORMCLOUD:
 				case DARKNESS:
 				case MAGMA:
 					am = (float) Math.sqrt((p < 0.5f ? p : 1 - p) * 0.5f);

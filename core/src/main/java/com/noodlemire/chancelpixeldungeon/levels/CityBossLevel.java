@@ -43,7 +43,6 @@ import com.watabou.utils.Random;
 
 public class CityBossLevel extends Level
 {
-
 	{
 		color1 = 0x4b6636;
 		color2 = 0xf2f2f2;
@@ -100,7 +99,6 @@ public class CityBossLevel extends Level
 	@Override
 	protected boolean build()
 	{
-
 		setSize(32, 32);
 
 		Painter.fill(this, LEFT, TOP, HALL_WIDTH, HALL_HEIGHT, Terrain.EMPTY);
@@ -174,6 +172,11 @@ public class CityBossLevel extends Level
 
 	@Override
 	protected void createMobs()
+	{
+	}
+
+	@Override
+	protected void createGeysers()
 	{
 	}
 

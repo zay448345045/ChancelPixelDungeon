@@ -25,6 +25,10 @@ import com.noodlemire.chancelpixeldungeon.Bones;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
+import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.geysers.FlameGeyser;
+import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
+import com.noodlemire.chancelpixeldungeon.actors.geysers.InfernalGeyser;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Bestiary;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
@@ -74,7 +78,6 @@ public abstract class RegularLevel extends Level
 	@Override
 	protected boolean build()
 	{
-
 		builder = builder();
 
 		ArrayList<Room> initRooms = initRooms();
@@ -197,6 +200,19 @@ public abstract class RegularLevel extends Level
 		}
 	}
 
+	@Override
+	public int nGeysers()
+	{
+		switch(Dungeon.depth)
+		{
+			case 1:
+				//geysers are not randomly spawned on floor 1
+				return 0;
+			default:
+				return (Dungeon.depth-1) / 5 + Random.Int(3);
+		}
+	}
+
 	private ArrayList<Class<? extends Mob>> mobsToSpawn = new ArrayList<>();
 
 	@Override
@@ -272,16 +288,77 @@ public abstract class RegularLevel extends Level
 				map[m.pos] = Terrain.GRASS;
 				losBlocking[m.pos] = false;
 			}
-
 		}
+	}
 
+	@Override
+	protected void createGeysers()
+	{
+		//on floor 1, one geyser is always spawned.
+		int geysersToSpawn = Dungeon.depth == 1 ? 1 : nGeysers();
+
+		ArrayList<Room> stdRooms = new ArrayList<>();
+		for(Room room : rooms)
+			if(room instanceof StandardRoom && room != roomEntrance && room != roomExit)
+				for(int i = 0; i < ((StandardRoom) room).sizeCat.roomValue; i++)
+					stdRooms.add(room);
+
+		Random.shuffle(stdRooms);
+		Iterator<Room> stdRoomIter = stdRooms.iterator();
+
+		while(geysersToSpawn > 0)
+		{
+			if(!stdRoomIter.hasNext())
+				stdRoomIter = stdRooms.iterator();
+			Room roomToSpawn = stdRoomIter.next();
+
+			Geyser geyser = Geyser.createGeyser();
+			geyser.pos = pointToCell(roomToSpawn.random());
+
+			boolean nearMob = false;
+
+			for(Mob m : mobs)
+			{
+				if(distance(m.pos, geyser.pos) <= 1)
+				{
+					nearMob = true;
+					break;
+				}
+			}
+
+			if(!nearMob && findGeyser(geyser.pos) == null && passable[geyser.pos]
+					&& !avoid[geyser.pos] && map[geyser.pos] != Terrain.EMPTY_SP && map[geyser.pos] != Terrain.PEDESTAL)
+			{
+				geysersToSpawn--;
+				geysers.add(geyser);
+
+				if(map[geyser.pos] == Terrain.HIGH_GRASS)
+					losBlocking[geyser.pos] = false;
+
+				if(geyser instanceof FlameGeyser || geyser instanceof InfernalGeyser)
+				{
+					for(int a = -2; a <= 2; a++)
+					{
+						for(int b = -2; b <= 2; b++)
+						{
+							int i = geyser.pos + a + b * width;
+
+							if(flamable[i] || i == geyser.pos)
+								map[i] = Terrain.EMBERS;
+						}
+					}
+				}
+				else
+					map[geyser.pos] = Terrain.EMPTY;
+			}
+		}
 	}
 
 	@Override
 	public int randomRespawnCell()
 	{
 		int count = 0;
-		int cell = -1;
+		int cell;
 
 		while(true)
 		{
@@ -342,7 +419,6 @@ public abstract class RegularLevel extends Level
 	@Override
 	protected void createItems()
 	{
-
 		// drops 3/4/5 items 60%/30%/10% of the time
 		int nItems = 3 + Random.chances(new float[]{6, 3, 1});
 
@@ -391,7 +467,6 @@ public abstract class RegularLevel extends Level
 			{
 				drop(toDrop, cell).type = type;
 			}
-
 		}
 
 		for(Item item : itemsToSpawn)
@@ -447,7 +522,6 @@ public abstract class RegularLevel extends Level
 			}
 			drop(p, cell);
 		}
-
 	}
 
 	protected Room randomRoom(Class<? extends Room> type)
@@ -476,6 +550,20 @@ public abstract class RegularLevel extends Level
 		return null;
 	}
 
+	//Can't just use Actor.findChar because Actor hasn't been initialized yet.
+	private Char checkForImmobile(int pos)
+	{
+		for(Geyser g : geysers)
+			if(g.pos == pos)
+				return g;
+
+		for(Mob m : mobs)
+			if(m.pos == pos && m.properties().contains(Char.Property.IMMOVABLE))
+				return m;
+
+		return null;
+	}
+
 	protected int randomDropCell()
 	{
 		while(true)
@@ -488,18 +576,13 @@ public abstract class RegularLevel extends Level
 				   && pos != exit
 				   && heaps.get(pos) == null)
 				{
-
 					Trap t = traps.get(pos);
+					Char c = checkForImmobile(pos);
 
-					//items cannot spawn on traps which destroy items
-					if(t == null ||
-					   !(t instanceof BurningTrap || t instanceof BlazingTrap
-					     || t instanceof ChillingTrap || t instanceof FrostTrap
-					     || t instanceof ExplosiveTrap || t instanceof DisintegrationTrap))
-					{
-
+					//items cannot spawn on traps which destroy items, or underneath immovable characters.
+					if(!(t instanceof BurningTrap || t instanceof BlazingTrap || t instanceof ChillingTrap
+							|| t instanceof FrostTrap || t instanceof ExplosiveTrap || t instanceof DisintegrationTrap || c != null))
 						return pos;
-					}
 				}
 			}
 		}

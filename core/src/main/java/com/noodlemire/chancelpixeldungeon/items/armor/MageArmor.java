@@ -21,16 +21,20 @@
 
 package com.noodlemire.chancelpixeldungeon.items.armor;
 
-import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Magma;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Burning;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Roots;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
-import com.noodlemire.chancelpixeldungeon.effects.particles.ElmoParticle;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.scenes.CellSelector;
+import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
-import com.watabou.noosa.audio.Sample;
+import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
 public class MageArmor extends ClassArmor
 {
@@ -42,24 +46,48 @@ public class MageArmor extends ClassArmor
 	@Override
 	public void doSpecial()
 	{
+		GameScene.selectCell(blinker);
+	}
 
-		for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
+	protected CellSelector.Listener blinker = new CellSelector.Listener()
+	{
+		@Override
+		public void onSelect(Integer target)
 		{
-			if(Dungeon.level.heroFOV[mob.pos])
+			if (target != null)
 			{
-				Buff.affect(mob, Burning.class).reignite();
-				Buff.prolong(mob, Roots.class, 3);
+				if (!Dungeon.level.heroFOV[target] ||
+						!(Dungeon.level.passable[target] || Dungeon.level.avoid[target]) ||
+						Actor.findChar(target) != null)
+				{
+					GLog.w(Messages.get(MageArmor.class, "fov"));
+					return;
+				}
+
+				curUser.dynamic(0, false);
+
+				for (Mob mob : Dungeon.level.mobs)
+				{
+					if (Dungeon.level.heroFOV[mob.pos])
+					{
+						Buff.affect(mob, Burning.class).reignite();
+						Buff.prolong(mob, Roots.class, 3);
+						Blob.seed(mob.pos, 400, Magma.class);
+					}
+				}
+
+				ScrollOfTeleportation.appear(curUser, target);
+				Dungeon.observe();
+				GameScene.updateFog();
+
+				curUser.spendAndNext(Actor.TICK);
 			}
 		}
 
-		curUser.damage(curUser.HP() / 3, this);
-
-		curUser.spend(Actor.TICK);
-		curUser.sprite.operate(curUser.pos);
-		curUser.busy();
-
-		curUser.sprite.centerEmitter().start(ElmoParticle.FACTORY, 0.15f, 4);
-		Sample.INSTANCE.play(Assets.SND_READ);
-	}
-
+		@Override
+		public String prompt()
+		{
+			return Messages.get(MageArmor.this, "prompt");
+		}
+	};
 }

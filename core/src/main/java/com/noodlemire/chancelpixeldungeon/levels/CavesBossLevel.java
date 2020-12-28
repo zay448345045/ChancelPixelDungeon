@@ -49,7 +49,6 @@ import com.watabou.utils.Rect;
 
 public class CavesBossLevel extends Level
 {
-
 	{
 		color1 = 0x534f3e;
 		color2 = 0xb9d661;
@@ -106,7 +105,6 @@ public class CavesBossLevel extends Level
 	@Override
 	protected boolean build()
 	{
-
 		setSize(WIDTH, HEIGHT);
 
 		Rect space = new Rect();
@@ -208,6 +206,11 @@ public class CavesBossLevel extends Level
 
 	@Override
 	protected void createMobs()
+	{
+	}
+
+	@Override
+	protected void createGeysers()
 	{
 	}
 

@@ -57,6 +57,7 @@ public class Guard extends Mob
 		lootChance = 1f;
 
 		properties.add(Property.UNDEAD);
+		properties.add(Property.METALLIC);
 
 		HUNTING = new Hunting();
 	}

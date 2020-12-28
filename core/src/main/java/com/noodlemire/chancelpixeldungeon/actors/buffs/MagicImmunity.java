@@ -22,6 +22,8 @@ public class MagicImmunity extends FlavourBuff implements Expulsion
 		immunities.add(Scroll.class);
 		immunities.add(Armor.Glyph.class);
 		immunities.add(Weapon.Enchantment.class);
+
+		type = buffType.NEUTRAL;
 	}
 
 	@Override

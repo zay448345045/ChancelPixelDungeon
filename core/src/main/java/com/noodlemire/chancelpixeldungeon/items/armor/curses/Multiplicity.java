@@ -48,7 +48,7 @@ public class Multiplicity extends Armor.Glyph
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage)
 	{
-		if(Random.Int(20) == 0)
+		if(Random.Int(0) == 0)
 		{
 			ArrayList<Integer> spawnPoints = new ArrayList<>();
 

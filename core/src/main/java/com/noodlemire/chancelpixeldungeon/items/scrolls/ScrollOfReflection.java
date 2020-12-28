@@ -55,6 +55,8 @@ public class ScrollOfReflection extends EnvironmentScroll
 	public void doRead()
 	{
 		reflect(false);
+		readAnimation();
+		Sample.INSTANCE.play(Assets.SND_READ);
 	}
 
 	@Override
@@ -73,6 +75,8 @@ public class ScrollOfReflection extends EnvironmentScroll
 	public void empoweredRead()
 	{
 		reflect(true);
+		readAnimation();
+		Sample.INSTANCE.play(Assets.SND_READ);
 	}
 
 	private void reflect(boolean empowered)
@@ -93,10 +97,6 @@ public class ScrollOfReflection extends EnvironmentScroll
 
 		if(!found)
 			Buff.affect(curUser, MirrorGuard.class).set(MirrorGuard.maxHP(curUser));
-
-		Sample.INSTANCE.play(Assets.SND_READ);
-
-		readAnimation();
 	}
 
 	public static class ReflectionCharge extends MissileWeapon

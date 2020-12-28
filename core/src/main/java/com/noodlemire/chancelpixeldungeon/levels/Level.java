@@ -40,6 +40,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.MindVision;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Shadows;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Slow;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Transparency;
+import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.hero.HeroClass;
 import com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass;
@@ -71,7 +72,6 @@ import com.noodlemire.chancelpixeldungeon.utils.BArray;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
@@ -132,6 +132,7 @@ public abstract class Level implements Bundlable
 	public boolean locked = false;
 
 	public HashSet<Mob> mobs;
+	public HashSet<Geyser> geysers;
 	public SparseArray<Heap> heaps;
 	public HashMap<Class<? extends Blob>, Blob> blobs;
 	public SparseArray<Plant> plants;
@@ -162,6 +163,7 @@ public abstract class Level implements Bundlable
 	private static final String CUSTOM_TILES = "customTiles";
 	private static final String CUSTOM_WALLS = "customWalls";
 	private static final String MOBS = "mobs";
+	private static final String GEYSERS = "geysers";
 	private static final String BLOBS = "blobs";
 	private static final String FEELING = "feeling";
 
@@ -171,7 +173,6 @@ public abstract class Level implements Bundlable
 
 		if(!(Dungeon.bossLevel() || Dungeon.depth == 21) /*final shop floor*/)
 		{
-
 			if(Dungeon.isChallenged(Challenges.NO_FOOD))
 				addItemToSpawn(new SmallRation());
 			else
@@ -243,6 +244,7 @@ public abstract class Level implements Bundlable
 			width = height = length = 0;
 
 			mobs = new HashSet<>();
+			geysers = new HashSet<>();
 			heaps = new SparseArray<>();
 			blobs = new HashMap<>();
 			plants = new SparseArray<>();
@@ -257,6 +259,7 @@ public abstract class Level implements Bundlable
 		cleanWalls();
 
 		createMobs();
+		createGeysers();
 		createItems();
 
 		Random.seed();
@@ -295,7 +298,11 @@ public abstract class Level implements Bundlable
 			if(!mob.reset())
 				mobs.remove(mob);
 
+		for(Geyser geyser : geysers.toArray(new Geyser[0]))
+			geysers.remove(geyser);
+
 		createMobs();
+		createGeysers();
 	}
 
 	@Override
@@ -306,6 +313,7 @@ public abstract class Level implements Bundlable
 		setSize(bundle.getInt(WIDTH), bundle.getInt(HEIGHT));
 
 		mobs = new HashSet<>();
+		geysers = new HashSet<>();
 		heaps = new SparseArray<>();
 		blobs = new HashMap<>();
 		plants = new SparseArray<>();
@@ -370,6 +378,14 @@ public abstract class Level implements Bundlable
 			}
 		}
 
+		collection = bundle.getCollection(GEYSERS);
+		for(Bundlable g : collection)
+		{
+			Geyser geyser = (Geyser)g;
+			if(geyser != null)
+				geysers.add(geyser);
+		}
+
 		collection = bundle.getCollection(BLOBS);
 		for(Bundlable b : collection)
 		{
@@ -404,6 +420,7 @@ public abstract class Level implements Bundlable
 		bundle.put(CUSTOM_TILES, customTiles);
 		bundle.put(CUSTOM_WALLS, customWalls);
 		bundle.put(MOBS, mobs);
+		bundle.put(GEYSERS, geysers);
 		bundle.put(BLOBS, blobs.values());
 		bundle.put(FEELING, feeling);
 	}
@@ -443,6 +460,8 @@ public abstract class Level implements Bundlable
 	abstract public Mob createMob();
 
 	abstract protected void createMobs();
+
+	abstract protected void createGeysers();
 
 	abstract protected void createItems();
 
@@ -504,15 +523,26 @@ public abstract class Level implements Bundlable
 		return 0;
 	}
 
+	public int nGeysers()
+	{
+		return 0;
+	}
+
 	public Mob findMob(int pos)
 	{
 		for(Mob mob : mobs)
-		{
 			if(mob.pos == pos)
-			{
 				return mob;
-			}
-		}
+
+		return null;
+	}
+
+	public Geyser findGeyser(int pos)
+	{
+		for(Geyser geyser : geysers)
+			if(geyser.pos == pos)
+				return geyser;
+
 		return null;
 	}
 
@@ -536,7 +566,6 @@ public abstract class Level implements Bundlable
 
 				if(count < nMobs())
 				{
-
 					Mob mob = createMob();
 					mob.state = mob.WANDERING;
 					mob.pos = randomRespawnCell();
@@ -927,7 +956,7 @@ public abstract class Level implements Bundlable
 			}
 			else
 			{
-				Sample.INSTANCE.play(Assets.SND_TRAP);
+				Dungeon.playAt(Assets.SND_TRAP, cell);
 
 				discover(cell);
 

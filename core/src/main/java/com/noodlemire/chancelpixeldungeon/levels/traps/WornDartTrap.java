@@ -26,6 +26,7 @@ import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.sprites.MissileSprite;
@@ -58,6 +59,10 @@ public class WornDartTrap extends Trap
 		{
 			for(Char ch : Actor.chars())
 			{
+				//But exclude geysers.
+				if(ch instanceof Geyser)
+					continue;
+
 				Ballistica bolt = new Ballistica(pos, ch.pos, Ballistica.PROJECTILE);
 				if(bolt.collisionPos == ch.pos &&
 				   (target == null || Dungeon.level.trueDistance(pos, ch.pos) < Dungeon.level.trueDistance(pos, target.pos)))

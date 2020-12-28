@@ -22,13 +22,13 @@
 package com.noodlemire.chancelpixeldungeon.sprites;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
+import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.effects.Halo;
 import com.noodlemire.chancelpixeldungeon.effects.particles.ElmoParticle;
 import com.watabou.glwrap.Blending;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.TextureFilm;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PointF;
 
 public class WandmakerSprite extends MobSprite
@@ -78,10 +78,7 @@ public class WandmakerSprite extends MobSprite
 		}
 		emitter().start(ElmoParticle.FACTORY, 0.03f, 60);
 
-		if(visible)
-		{
-			Sample.INSTANCE.play(Assets.SND_BURNING);
-		}
+		Dungeon.playAt(Assets.SND_BURNING, ch.pos);
 	}
 
 	public class Shield extends Halo

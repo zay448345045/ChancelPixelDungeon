@@ -47,7 +47,6 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.MovieClip;
 import com.watabou.noosa.NoosaScript;
 import com.watabou.noosa.Visual;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.noosa.tweeners.PosTweener;
@@ -361,7 +360,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				burning = emitter();
 				burning.pour(FlameParticle.FACTORY, 0.06f);
 				if(visible)
-					Sample.INSTANCE.play(Assets.SND_BURNING);
+					Dungeon.playAt(Assets.SND_BURNING, ch.pos);
 				break;
 			case LEVITATING:
 				levitation = emitter();
@@ -706,7 +705,6 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	@Override
 	public void onComplete(Animation anim)
 	{
-
 		if(animCallback != null)
 		{
 			Callback executing = animCallback;
@@ -715,22 +713,16 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		}
 		else
 		{
-
 			if(anim == attack)
 			{
-
 				idle();
 				ch.onAttackComplete();
-
 			}
 			else if(anim == operate)
 			{
-
 				idle();
 				ch.onOperateComplete();
-
 			}
-
 		}
 	}
 

@@ -36,7 +36,6 @@ import java.util.Arrays;
 
 public class LastLevel extends Level
 {
-
 	{
 		color1 = 0x801500;
 		color2 = 0xa68521;
@@ -128,6 +127,11 @@ public class LastLevel extends Level
 
 	@Override
 	protected void createMobs()
+	{
+	}
+
+	@Override
+	protected void createGeysers()
 	{
 	}
 

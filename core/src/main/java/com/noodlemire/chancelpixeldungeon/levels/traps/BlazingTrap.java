@@ -29,7 +29,6 @@ import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.particles.FlameParticle;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.utils.BArray;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 
 public class BlazingTrap extends Trap
@@ -56,6 +55,7 @@ public class BlazingTrap extends Trap
 				CellEmitter.get(i).burst(FlameParticle.FACTORY, 5);
 			}
 		}
-		Sample.INSTANCE.play(Assets.SND_BURNING);
+
+		Dungeon.playAt(Assets.SND_BURNING, pos);
 	}
 }

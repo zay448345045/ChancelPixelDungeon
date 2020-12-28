@@ -39,7 +39,6 @@ import com.noodlemire.chancelpixeldungeon.items.Transmutable;
 import com.noodlemire.chancelpixeldungeon.levels.Level;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 
@@ -169,10 +168,9 @@ public abstract class Plant implements Bundlable
 		{
 			try
 			{
-				if(level != null && level.heroFOV != null && level.heroFOV[pos])
-				{
-					Sample.INSTANCE.play(Assets.SND_PLANT);
-				}
+				if(level != null)
+					Dungeon.playAt(Assets.SND_PLANT, pos);
+
 				Plant plant = plantClass.newInstance();
 				plant.pos = pos;
 				return plant;

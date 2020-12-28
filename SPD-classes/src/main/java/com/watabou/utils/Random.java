@@ -99,7 +99,7 @@ public class Random
 		return result % max;
 	}
 
-	//returns an index from chances, the probability of each index is the weight values in changes
+	//returns an index from chances, the probability of each index is the weight values in chances
 	public static int chances(float[] chances)
 	{
 		int length = chances.length;

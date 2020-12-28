@@ -195,7 +195,7 @@ public class Bones
 					}
 				}
 
-				if(item.isUpgradable())
+				if(item.canBeCursed())
 				{
 					item.cursed = true;
 					item.cursedKnown = true;

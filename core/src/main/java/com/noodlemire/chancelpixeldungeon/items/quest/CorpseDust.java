@@ -32,7 +32,6 @@ import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -120,7 +119,7 @@ public class CorpseDust extends Item
 				}
 				while(!Dungeon.level.heroFOV[pos] || !Dungeon.level.passable[pos] || Actor.findChar(pos) != null);
 				Wraith.spawnAt(pos);
-				Sample.INSTANCE.play(Assets.SND_CURSED);
+				Dungeon.playAt(Assets.SND_CURSED, pos);
 			}
 
 			spend(TICK);

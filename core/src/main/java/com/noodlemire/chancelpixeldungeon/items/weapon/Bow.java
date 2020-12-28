@@ -107,12 +107,12 @@ public class Bow extends Weapon
 
 	private int dispMin()
 	{
-		return isIdentified() ? augment.damageFactor(min()) : min(0);
+		return augment.damageFactor(min());
 	}
 
 	private int dispMax()
 	{
-		return isIdentified() ? augment.damageFactor(max()) : max(0);
+		return augment.damageFactor(max());
 	}
 
 	@Override

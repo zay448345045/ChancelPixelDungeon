@@ -25,6 +25,7 @@ import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.MagicMissile;
 import com.noodlemire.chancelpixeldungeon.effects.particles.ShadowParticle;
@@ -60,6 +61,10 @@ public class GrimTrap extends Trap
 		{
 			for(Char ch : Actor.chars())
 			{
+				//But exclude geysers.
+				if(ch instanceof Geyser)
+					continue;
+
 				Ballistica bolt = new Ballistica(pos, ch.pos, Ballistica.PROJECTILE);
 				if(bolt.collisionPos == ch.pos &&
 				   (target == null || Dungeon.level.trueDistance(pos, ch.pos) < Dungeon.level.trueDistance(pos, target.pos)))
@@ -115,9 +120,8 @@ public class GrimTrap extends Trap
 										}
 									}
 									else
-									{
-										Sample.INSTANCE.play(Assets.SND_BURNING);
-									}
+										Dungeon.playAt(Assets.SND_BURNING, finalTarget.pos);
+
 									finalTarget.sprite.emitter().burst(ShadowParticle.UP, 10);
 									Actor.remove(toRemove);
 									next();
@@ -130,7 +134,7 @@ public class GrimTrap extends Trap
 		else
 		{
 			CellEmitter.get(pos).burst(ShadowParticle.UP, 10);
-			Sample.INSTANCE.play(Assets.SND_BURNING);
+			Dungeon.playAt(Assets.SND_BURNING, pos);
 		}
 	}
 }

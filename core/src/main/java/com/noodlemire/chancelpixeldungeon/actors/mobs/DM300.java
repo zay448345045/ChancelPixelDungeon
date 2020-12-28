@@ -27,6 +27,7 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.ThunderCloud;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.ToxicGas;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
@@ -35,7 +36,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Terror;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.effects.particles.ElmoParticle;
-import com.noodlemire.chancelpixeldungeon.items.artifacts.CapeOfThorns;
+import com.noodlemire.chancelpixeldungeon.items.ArmorKit;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.LloydsBeacon;
 import com.noodlemire.chancelpixeldungeon.items.keys.SkeletonKey;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfDecay;
@@ -47,7 +48,6 @@ import com.noodlemire.chancelpixeldungeon.sprites.DM300Sprite;
 import com.noodlemire.chancelpixeldungeon.ui.BossHealthBar;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
@@ -60,11 +60,12 @@ public class DM300 extends Mob
 		EXP = 30;
 		defenseSkill = 18;
 
-		loot = new CapeOfThorns();
-		lootChance = 0.333f;
+		loot = new ArmorKit();
+		lootChance = 1f;
 
 		properties.add(Property.BOSS);
 		properties.add(Property.INORGANIC);
+		properties.add(Property.METALLIC);
 	}
 
 	@Override
@@ -123,7 +124,7 @@ public class DM300 extends Mob
 		{
 			CellEmitter.get(cell).start(Speck.factory(Speck.ROCK), 0.07f, 10);
 			Camera.main.shake(3, 0.7f);
-			Sample.INSTANCE.play(Assets.SND_ROCKS);
+			Dungeon.playAt(Assets.SND_ROCKS, pos);
 
 			if(Dungeon.level.water[cell])
 			{
@@ -180,6 +181,8 @@ public class DM300 extends Mob
 	}
 
 	{
+		resistances.add(ThunderCloud.class);
+
 		immunities.add(ToxicGas.class);
 		immunities.add(Terror.class);
 		immunities.add(ScrollOfDecay.class);

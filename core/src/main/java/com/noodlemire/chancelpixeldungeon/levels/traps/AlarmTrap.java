@@ -32,7 +32,6 @@ import com.watabou.noosa.audio.Sample;
 
 public class AlarmTrap extends Trap
 {
-
 	{
 		color = RED;
 		shape = DOTS;
@@ -41,7 +40,6 @@ public class AlarmTrap extends Trap
 	@Override
 	public void activate()
 	{
-
 		for(Mob mob : Dungeon.level.mobs)
 		{
 			mob.beckon(pos);

@@ -26,6 +26,7 @@ import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.Beam;
 import com.noodlemire.chancelpixeldungeon.items.Heap;
@@ -35,7 +36,6 @@ import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.tiles.DungeonTilemap;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 public class DisintegrationTrap extends Trap
@@ -63,6 +63,10 @@ public class DisintegrationTrap extends Trap
 		{
 			for(Char ch : Actor.chars())
 			{
+				//But exclude geysers.
+				if(ch instanceof Geyser)
+					continue;
+
 				Ballistica bolt = new Ballistica(pos, ch.pos, Ballistica.PROJECTILE);
 				if(bolt.collisionPos == ch.pos &&
 				   (target == null || Dungeon.level.trueDistance(pos, ch.pos) < Dungeon.level.trueDistance(pos, target.pos)))
@@ -78,10 +82,10 @@ public class DisintegrationTrap extends Trap
 		if(target != null)
 		{
 			if(Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[target.pos])
-			{
-				Sample.INSTANCE.play(Assets.SND_RAY);
 				ChancelPixelDungeon.scene().add(new Beam.DeathRay(DungeonTilemap.tileCenterToWorld(pos), target.sprite.center()));
-			}
+
+			Dungeon.playAt(Assets.SND_RAY, pos);
+
 			target.damage(Math.max(target.HT() / 5, Random.Int(target.HP() / 2, 2 * target.HP() / 3)), this);
 			if(target == Dungeon.hero)
 			{

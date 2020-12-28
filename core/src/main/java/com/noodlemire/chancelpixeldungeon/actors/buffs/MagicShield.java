@@ -1,8 +1,6 @@
 package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
-import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
-import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfPurity;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
@@ -38,11 +36,8 @@ public class MagicShield extends DurationBuff implements Expulsion
 	{
 		if(target.isAlive() && left() > 0 && target.SHLD() > 0)
 		{
-			//In case this debuff is applied to a mob, use the current depth since only the Hero has an actual level
-			float lvl = target instanceof Hero ? ((Hero) target).lvl : Dungeon.depth;
-
 			//Shield decays faster at high amounts and slower at low amounts
-			reduction += lvl * left() / target.HT();
+			reduction += .5f * (target.HT() / 5f) * left() / target.HT();
 
 			//Because shielding is an integer, it must be reduced by integer amounts
 			if(reduction >= 1)
@@ -55,7 +50,7 @@ public class MagicShield extends DurationBuff implements Expulsion
 
 			//If the target lost shielding i.e. due to being hit, then subtract that shielding lost from amount
 			if(target.SHLD() < left())
-				shorten(target.SHLD() - left());
+				shorten(left() - target.SHLD());
 		}
 		else
 			detach();

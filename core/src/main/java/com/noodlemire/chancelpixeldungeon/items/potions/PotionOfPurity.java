@@ -26,13 +26,13 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.BlobImmunity;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.BArray;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
@@ -60,10 +60,10 @@ public class PotionOfPurity extends Potion
 		if(Dungeon.level.heroFOV[cell])
 		{
 			splash(cell);
-			Sample.INSTANCE.play(Assets.SND_SHATTER);
-
 			GLog.i(Messages.get(this, "freshness"));
 		}
+
+		Dungeon.playAt(Assets.SND_SHATTER, cell);
 	}
 
 	public static void purifyBlobs(int at)
@@ -92,6 +92,10 @@ public class PotionOfPurity extends Potion
 						blob.volume -= value;
 					}
 				}
+
+				Geyser geyser = Dungeon.level.findGeyser(i);
+				if(geyser != null)
+					Buff.prolong(geyser, Geyser.Disabled.class, Geyser.Disabled.DURATION);
 
 				if(Dungeon.level.heroFOV[i])
 					CellEmitter.get(i).burst(Speck.factory(Speck.DISCOVER), 2);

@@ -47,6 +47,8 @@ public class ScrollOfDarkness extends EnvironmentScroll
 				GameScene.add(Blob.seed(mob.pos, 250, Darkness.class));
 
 		GLog.i(Messages.get(this, "darken"));
+		readAnimation();
+		Sample.INSTANCE.play(Assets.SND_READ);
 	}
 
 	@Override

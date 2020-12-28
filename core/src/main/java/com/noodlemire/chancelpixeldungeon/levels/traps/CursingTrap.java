@@ -36,7 +36,6 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Boomerang;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -54,10 +53,9 @@ public class CursingTrap extends Trap
 	public void activate()
 	{
 		if(Dungeon.level.heroFOV[pos])
-		{
 			CellEmitter.get(pos).burst(ShadowParticle.UP, 5);
-			Sample.INSTANCE.play(Assets.SND_CURSED);
-		}
+
+		Dungeon.playAt(Assets.SND_CURSED, pos);
 
 		Heap heap = Dungeon.level.heaps.get(pos);
 		if(heap != null)

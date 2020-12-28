@@ -32,7 +32,6 @@ import com.watabou.utils.Bundle;
 
 public class Shadows extends Invisibility
 {
-
 	protected float left;
 
 	private static final String LEFT = "left";
@@ -64,12 +63,11 @@ public class Shadows extends Invisibility
 			Sample.INSTANCE.play(Assets.SND_MELD);
 			if(Dungeon.level != null)
 				Dungeon.observe();
+
 			return true;
 		}
 		else
-		{
 			return false;
-		}
 	}
 
 	@Override
@@ -87,7 +85,7 @@ public class Shadows extends Invisibility
 
 			spend(TICK * 2);
 
-			if(--left <= 0 || Dungeon.hero.visibleEnemies() > 0)
+			if(--left <= 0 || Dungeon.hero.visibleDangers() > 0)
 			{
 				detach();
 			}

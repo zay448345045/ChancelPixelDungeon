@@ -36,6 +36,9 @@ import com.watabou.utils.Random;
 
 public class Freezing extends Blob
 {
+	{
+		harmful = true;
+	}
 
 	@Override
 	protected void evolve()

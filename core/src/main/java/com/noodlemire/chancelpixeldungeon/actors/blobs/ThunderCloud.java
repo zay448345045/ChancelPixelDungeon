@@ -7,6 +7,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Statue;
+import com.noodlemire.chancelpixeldungeon.actors.mobs.Thief;
 import com.noodlemire.chancelpixeldungeon.effects.BlobEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.Lightning;
@@ -32,12 +33,15 @@ import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Random;
 
 public class ThunderCloud extends GasBlob implements Hero.Doom
 {
+	{
+		harmful = true;
+	}
+
 	@Override
 	void affect(Char ch, int cell)
 	{
@@ -74,7 +78,7 @@ public class ThunderCloud extends GasBlob implements Hero.Doom
 				emitter.parent.add(new Lightning(cell - 1, cell + 1, null));
 			}
 
-			Sample.INSTANCE.play(Assets.SND_ROCKS);
+			Dungeon.playAt(Assets.SND_ROCKS, cell);
 		}
 
 		if(Random.Int(30) == 0 && (Dungeon.level.map[cell] == Terrain.EMPTY
@@ -98,6 +102,12 @@ public class ThunderCloud extends GasBlob implements Hero.Doom
 
 				//Char is a statue holding a metal weapon
 				((ch instanceof Statue && metallic(((Statue) ch).getWeapon()))
+
+				//Char has the "metallic" property, such as DM-300 and Gnoll Brutes
+				|| ch.properties().contains(Char.Property.METALLIC)
+
+				//Char is a thief that has stolen a metallic item
+				|| (ch instanceof Thief && metallic(((Thief) ch).item))
 
 				 //Or char is a hero with something metal equipped
 				 || ((ch instanceof Hero) && (metallic(((Hero) ch).belongings.weapon) || metallic(((Hero) ch).belongings.armor)

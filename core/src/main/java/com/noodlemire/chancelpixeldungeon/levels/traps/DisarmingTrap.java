@@ -61,7 +61,7 @@ public class DisarmingTrap extends Trap
 					Dungeon.level.visited[cell + i] = true;
 				GameScene.updateFog();
 
-				Sample.INSTANCE.play(Assets.SND_TELEPORT);
+				Dungeon.playAt(Assets.SND_TELEPORT, pos);
 				CellEmitter.get(pos).burst(Speck.factory(Speck.LIGHT), 4);
 			}
 		}
@@ -90,9 +90,7 @@ public class DisarmingTrap extends Trap
 
 					Sample.INSTANCE.play(Assets.SND_TELEPORT);
 					CellEmitter.get(pos).burst(Speck.factory(Speck.LIGHT), 4);
-
 				}
-
 			}
 		}
 	}

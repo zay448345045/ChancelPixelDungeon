@@ -35,7 +35,6 @@ import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfSupernova;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.sprites.MimicSprite;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -165,10 +164,10 @@ public class Mimic extends Mob
 		m.sprite.turnTo(pos, Dungeon.hero.pos);
 
 		if(Dungeon.level.heroFOV[m.pos])
-		{
 			CellEmitter.get(pos).burst(Speck.factory(Speck.STAR), 10);
-			Sample.INSTANCE.play(Assets.SND_MIMIC);
-		}
+
+		Dungeon.playAt(Assets.SND_MIMIC, pos);
+
 
 		//generate an extra reward for killing the mimic
 		Item reward = null;

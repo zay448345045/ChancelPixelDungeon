@@ -5,7 +5,6 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.EnticementGas;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
-import com.watabou.noosa.audio.Sample;
 
 public class PotionOfEnticement extends Potion
 {
@@ -19,10 +18,9 @@ public class PotionOfEnticement extends Potion
 	public void shatter(int cell)
 	{
 		if(Dungeon.level.heroFOV[cell])
-		{
 			splash(cell);
-			Sample.INSTANCE.play(Assets.SND_SHATTER);
-		}
+
+		Dungeon.playAt(Assets.SND_SHATTER, cell);
 
 		GameScene.add(Blob.seed(cell, 1000, EnticementGas.class));
 	}

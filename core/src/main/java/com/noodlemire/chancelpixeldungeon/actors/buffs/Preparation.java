@@ -117,23 +117,25 @@ public class Preparation extends Buff implements ActionIndicator.Action
 		{
 			turnsInvis++;
 			if(AttackLevel.getLvl(turnsInvis).blinkDistance > 0 && target == Dungeon.hero)
-			{
 				ActionIndicator.setAction(this);
-			}
+
 			BuffIndicator.refreshHero();
 			spend(TICK);
 		}
 		else
-		{
 			detach();
-		}
+
 		return true;
 	}
 
 	@Override
 	public void detach()
 	{
-		super.detach();
+		if(target.invisible <= 0)
+			super.detach();
+		else
+			turnsInvis = 0;
+
 		ActionIndicator.clearAction(this);
 	}
 
@@ -321,7 +323,7 @@ public class Preparation extends Buff implements ActionIndicator.Action
 				Dungeon.level.press(Dungeon.hero.pos, Dungeon.hero);
 				//prevents the hero from being interrupted by seeing new enemies
 				Dungeon.observe();
-				Dungeon.hero.checkVisibleMobs();
+				Dungeon.hero.checkVisibleDangers();
 
 				Dungeon.hero.sprite.place(Dungeon.hero.pos);
 				Dungeon.hero.sprite.turnTo(Dungeon.hero.pos, cell);

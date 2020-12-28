@@ -33,6 +33,10 @@ import com.watabou.utils.Random;
 
 public class ToxicGas extends GasBlob implements Hero.Doom
 {
+	{
+		harmful = true;
+	}
+
 	@Override
 	void affect(Char ch, int cell)
 	{

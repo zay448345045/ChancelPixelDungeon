@@ -24,6 +24,7 @@ package com.noodlemire.chancelpixeldungeon.actors.blobs;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
+import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.effects.BlobEmitter;
 import com.noodlemire.chancelpixeldungeon.levels.Level;
 import com.watabou.utils.Bundle;
@@ -43,6 +44,8 @@ public class Blob extends Actor
 	public BlobEmitter emitter;
 
 	public Rect area = new Rect();
+
+	public boolean harmful = false;
 
 	private static final String CUR = "cur";
 	private static final String START = "start";
@@ -261,5 +264,19 @@ public class Blob extends Actor
 			return 0;
 		else
 			return gas.cur[cell];
+	}
+
+	public static boolean harmfulAt(int cell)
+	{
+		return harmfulAt(-1, cell);
+	}
+
+	public static boolean harmfulAt(int safecell, int cell)
+	{
+		for (Blob b : Dungeon.level.blobs.values())
+			if (b.harmful && b.cur != null && (safecell < 0 || b.cur[safecell] <= 0) && b.cur[cell] > 0)
+				return true;
+
+		return false;
 	}
 }

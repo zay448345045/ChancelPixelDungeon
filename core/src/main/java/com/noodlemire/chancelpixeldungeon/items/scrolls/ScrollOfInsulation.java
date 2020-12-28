@@ -1,5 +1,6 @@
 package com.noodlemire.chancelpixeldungeon.items.scrolls;
 
+import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.BlobImmunity;
@@ -8,6 +9,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.MagicImmunity;
 import com.noodlemire.chancelpixeldungeon.effects.Flare;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
+import com.watabou.noosa.audio.Sample;
 
 public class ScrollOfInsulation extends EnvironmentScroll
 {
@@ -19,6 +21,8 @@ public class ScrollOfInsulation extends EnvironmentScroll
 	public void doRead()
 	{
 		insulate(curUser.pos, false);
+		readAnimation();
+		Sample.INSTANCE.play(Assets.SND_READ);
 	}
 
 	@Override
@@ -31,11 +35,12 @@ public class ScrollOfInsulation extends EnvironmentScroll
 	public void empoweredRead()
 	{
 		insulate(curUser.pos, true);
+		readAnimation();
+		Sample.INSTANCE.play(Assets.SND_READ);
 	}
 
 	private void insulate(int pos, boolean empowered)
 	{
-		readAnimation();
 		new Flare(5, 32).color(0x880088, true).show(curUser.sprite, pos, 2f);
 
 		Char ch = Actor.findChar(pos);

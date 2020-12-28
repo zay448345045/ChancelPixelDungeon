@@ -403,7 +403,7 @@ public class Heap implements Bundlable
 	public static void burnFX(int pos)
 	{
 		CellEmitter.get(pos).burst(ElmoParticle.FACTORY, 6);
-		Sample.INSTANCE.play(Assets.SND_BURNING);
+		Dungeon.playAt(Assets.SND_BURNING, pos);
 	}
 
 	public static void evaporateFX(int pos)

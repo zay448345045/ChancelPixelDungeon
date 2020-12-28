@@ -21,7 +21,7 @@
 
 package com.noodlemire.chancelpixeldungeon.windows;
 
-import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
+import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.PixelScene;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
@@ -30,19 +30,15 @@ import com.noodlemire.chancelpixeldungeon.ui.HealthBar;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.ui.Component;
 
-public class WndInfoMob extends WndTitledMessage
+public class WndInfoChar extends WndTitledMessage
 {
-
-	public WndInfoMob(Mob mob)
+	public WndInfoChar(Char ch)
 	{
-
-		super(new MobTitle(mob), mob.description());
-
+		super(new CharTitle(ch), ch.description());
 	}
 
-	private static class MobTitle extends Component
+	private static class CharTitle extends Component
 	{
-
 		private static final int GAP = 2;
 
 		private CharSprite image;
@@ -50,21 +46,20 @@ public class WndInfoMob extends WndTitledMessage
 		private HealthBar health;
 		private BuffIndicator buffs;
 
-		public MobTitle(Mob mob)
+		public CharTitle(Char ch)
 		{
-
-			name = PixelScene.renderText(Messages.titleCase(mob.name), 9);
+			name = PixelScene.renderText(Messages.titleCase(ch.name), 9);
 			name.hardlight(TITLE_COLOR);
 			add(name);
 
-			image = mob.sprite();
+			image = ch.sprite();
 			add(image);
 
 			health = new HealthBar();
-			health.level(mob);
+			health.level(ch);
 			add(health);
 
-			buffs = new BuffIndicator(mob);
+			buffs = new BuffIndicator(ch);
 			add(buffs);
 		}
 

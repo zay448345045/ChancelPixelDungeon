@@ -31,7 +31,6 @@ import com.noodlemire.chancelpixeldungeon.levels.features.Chasm;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.SkeletonSprite;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -83,10 +82,7 @@ public class Skeleton extends Mob
 			}
 		}
 
-		if(Dungeon.level.heroFOV[pos])
-		{
-			Sample.INSTANCE.play(Assets.SND_BONES);
-		}
+		Dungeon.playAt(Assets.SND_BONES, pos);
 
 		if(heroKilled)
 		{

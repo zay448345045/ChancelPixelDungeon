@@ -25,7 +25,6 @@ import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 
@@ -86,10 +85,8 @@ public abstract class Trap implements Bundlable
 	{
 		if(active)
 		{
-			if(Dungeon.level.heroFOV[pos])
-			{
-				Sample.INSTANCE.play(Assets.SND_TRAP);
-			}
+			Dungeon.playAt(Assets.SND_TRAP, pos);
+
 			disarm();
 			reveal();
 			activate();

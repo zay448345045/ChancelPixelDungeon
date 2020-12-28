@@ -29,7 +29,6 @@ import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.utils.BArray;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -48,7 +47,6 @@ public class FlockTrap extends Trap
 		//use an actor as we want to put this on a slight delay so all chars get a chance to act this turn first.
 		Actor.add(new Actor()
 		{
-
 			{
 				actPriority = BUFF_PRIO;
 			}
@@ -73,12 +71,10 @@ public class FlockTrap extends Trap
 						}
 					}
 				}
-				Sample.INSTANCE.play(Assets.SND_PUFF);
+				Dungeon.playAt(Assets.SND_PUFF, pos);
 				Actor.remove(this);
 				return true;
 			}
 		});
-
 	}
-
 }

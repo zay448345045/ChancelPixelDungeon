@@ -135,10 +135,85 @@ public class ChangesScene extends PixelScene
 		add(list);
 
 		//************************
-		//    CPD v0.1 BETA 4
+		//    CPD v0.1 BETA 6
 		//************************
 
-		ChangeInfo changes = new ChangeInfo("CPD v0.1 BETA 5", true, "");
+		ChangeInfo changes = new ChangeInfo("CPD v0.1 BETA 6", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		infos.add(changes);
+
+		changes = new ChangeInfo("New Content", false, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		infos.add(changes);
+
+		changes.addButton(new ChangeButton(new Image(Assets.GEYSERS, 48, 8, 8, 8), "Geysers",
+				"A new type of object has been added to regular floors: Geysers.\n\n" +
+						"Each geyser will spew a different kind of harmful gas or other area-bound effect. " +
+						"In the first 3 regions of the dungeon, geysers tend to only activate upon being hit " +
+						"by a physical weapon, and only rarely spewing anything on their own. However, " +
+						"starting in the Dwarven Metropolis region, some geysers will constantly shoot their " +
+						"substance until something destroys them!\n\n" +
+						"Geysers have high health and never drop any loot, so it's usually best to ignore and " +
+						"avoid them unless you have a way to use them to your advantage."));
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.KIT, null), "Class Armor Rework",
+				"To adjust to the heighted difficulty that late-game spewers add, DM-300 now drops the Armor " +
+						"Kit instead of the Dwarf King. In addition, class armor now uses up 100% of your Dynamic " +
+						"Strength, rather than 33% of your remaining HP. Finally, and most importantly, all class " +
+						"armor special abilities offer some kind of long range jump or teleport.\n\n" +
+						"The DS requirement allows class armor to be used as a navigational tool outside of combat, " +
+						"which is very important to be able to travel past rooms that are filled with very dangerous " +
+						"gasses. However, in combat, it can be just as costly as that 33% HP, as you may be left " +
+						"unable to deal a good amount of damage needed to deal with nearby foes."));
+
+		changes = new ChangeInfo("Changes", false, "");
+		changes.hardlight(CharSprite.WARNING);
+		infos.add(changes);
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.SCROLL_DAGAZ, null), "Scroll Nerfs",
+				"_-_ Shouted Scrolls of Cleansing no longer instakill undead and demonic foes. Now weakens and " +
+						"severely harms these foes instead.\n" +
+						"_-_ Shouted Scrolls of Decay no longer doom directly targeted bosses.\n" +
+						"_-_ Shouted Scrolls of Necromancy no longer corrupt directly targeted bosses."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.DM300, 0, 0, 22, 20), "Metallic Enemies",
+				"More enemies count as metallic, causing them to attract lightning when inside thunderstorms:\n" +
+						"_-_ DM-300 (However it also resists Thundercloud damage now)\n" +
+						"_-_ Gnoll Brutes and Shielded Brutes\n" +
+						"_-_ Prison Guards\n" +
+						"_-_ Crazy Thieves and Bandits who have stolen metallic items"));
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
+				"_-_ Items can no longer be thrown underneath immovable characters. In addition to Yog-Dzewa, " +
+						"this also includes the Rot Heart and all Geysers.\n" +
+						"_-_ Players and mobs now try to avoid walking into harmful gasses, unless their target " +
+						"is only 1 tile away, or they're already inside of that particular gas.\n" +
+						"_-_ Many sounds effects now raise and lower their volume based on their proximity to the player.\n" +
+						"_-_ Many sound effects can now be heard through and around walls.\n" +
+						"_-_ Immune to Magic buff's icon now has higher contrast.\n" +
+						"_-_ Thunderclouds now have a higher contrast, making them more visible in various areas.\n" +
+						"_-_ Added a link to the _Chancel PD Discord Server_ in the About page."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.SPINNER, 144, 0, 16, 16), Messages.get(this, "bugfixes"),
+				"Fixed (Caused by BETA):\n" +
+						"_-_ Might buff's duration still being 200 instead of 300.\n" +
+						"_-_ Might buff causing negative HP if the player dies before it runs out.\n" +
+						"_-_ Forceful missile removal causing the player's melee weapon to proc its enchantment.\n" +
+						"_-_ Magic Shielding buff not being updated properly when the player takes damage.\n" +
+						"_-_ Magic Shielding buff's depletion rate being inconsistent depending on the player's level.\n" +
+						"_-_ Wandmaker mentioning Seeds of Rotberry instead of the Rot Core in one of his lines.\n" +
+						"_-_ Stone of Equity disabling Assassin's preparation if he remained invisible. He would " +
+						"only be able to prepare again once he stopped and restarted his invisiblity.\n" +
+						"_-_ Various scrolls taking 2 turns to shout and playing the sound effect twice.\n" +
+						"_-_ Very broken behavior from the Immune to Magic buff.\n" +
+						"_-_ Forceful missile removal playing no sound effects.\n" +
+						"_-_ Missile weapons being able to be cursed in some situations."));
+
+		//************************
+		//    CPD v0.1 BETA 5
+		//************************
+
+		changes = new ChangeInfo("CPD v0.1 BETA 5", true, "");
 		changes.hardlight(Window.TITLE_COLOR);
 		infos.add(changes);
 
@@ -178,6 +253,10 @@ public class ChangesScene extends PixelScene
 				"_-_ Stones of Challenge not working properly on Piranhas\n" +
 				"_-_ Most multi-target wands being severely weakened because dynamic strength would decrease the instant " +
 				"each enemy is damaged."));
+
+		//************************
+		//    CPD v0.1 BETA 4
+		//************************
 
 		changes = new ChangeInfo("CPD v0.1 BETA 4", true, "");
 		changes.hardlight(Window.TITLE_COLOR);

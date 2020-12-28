@@ -23,6 +23,7 @@ package com.noodlemire.chancelpixeldungeon;
 
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Amok;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Awareness;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Challenged;
@@ -68,6 +69,7 @@ import com.noodlemire.chancelpixeldungeon.utils.DungeonSeed;
 import com.noodlemire.chancelpixeldungeon.windows.WndAlchemy;
 import com.noodlemire.chancelpixeldungeon.windows.WndResurrect;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
@@ -311,7 +313,6 @@ public class Dungeon
 
 	public static void resetLevel()
 	{
-
 		Actor.clear();
 
 		level.reset();
@@ -751,14 +752,19 @@ public class Dungeon
 	public static PathFinder.Path findPath(Char ch, int from, int to, boolean pass[], boolean[] visible)
 	{
 		setupPassable();
-		if(ch.flying || ch.buff(Amok.class) != null || ch.buff(Challenged.class) != null)
+		if (ch.flying || ch.buff(Amok.class) != null || ch.buff(Challenged.class) != null)
 			BArray.or(pass, Dungeon.level.avoid, passable);
 		else
 			System.arraycopy(pass, 0, passable, 0, Dungeon.level.length());
 
-		for(Char c : Actor.chars())
-			if(visible[c.pos])
+		for (Char c : Actor.chars())
+			if (visible[c.pos])
 				passable[c.pos] = false;
+
+		if (ch.buff(Amok.class) == null && ch.buff(Challenged.class) == null)
+			for (int i = 0; i < Dungeon.level.length(); i++)
+				if (visible[i] && Blob.harmfulAt(ch.pos, i))
+					passable[i] = false;
 
 		return PathFinder.find(from, to, passable);
 	}
@@ -795,5 +801,13 @@ public class Dungeon
 		passable[cur] = true;
 
 		return PathFinder.getStepBack(cur, from, passable);
+	}
+
+	public static void playAt(Object id, int pos)
+	{
+		float volume = (float)(1 - level.trueDistance(pos, hero.pos) / 15);
+
+		if(volume > 0)
+			Sample.INSTANCE.play(id, volume);
 	}
 }
