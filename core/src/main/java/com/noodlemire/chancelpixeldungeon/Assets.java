@@ -35,6 +35,7 @@ public class Assets
 
 	public static final String CHROME = "chrome.png";
 	public static final String ICONS = "icons.png";
+	public static final String CHANGELOG_ICONS = "changelog_icons.png";
 	public static final String STATUS = "status_pane.png";
 	public static final String MENU = "menu_button.png";
 	public static final String HP_BAR = "hp_bar.png";
@@ -61,6 +62,7 @@ public class Assets
 	public static final String GNOLL = "gnoll.png";
 	public static final String CRAB = "crab.png";
 	public static final String GOO = "goo.png";
+	public static final String GOOEY_ORB = "gooey_orb.png";
 	public static final String SWARM = "swarm.png";
 	public static final String SKELETON = "skeleton.png";
 	public static final String SHAMAN = "shaman.png";
@@ -102,14 +104,17 @@ public class Assets
 	public static final String ITEMS = "items.png";
 	public static final String TERRAIN_FEATURES = "terrain_features.png";
 	public static final String GEYSERS = "geysers.png";
+	public static final String AMPHORA = "amphora.png";
 
 	public static final String TILES_SEWERS = "tiles_sewers.png";
+	public static final String TILES_SEWERS_BOSS = "tiles_sewers_boss.png";
 	public static final String TILES_PRISON = "tiles_prison.png";
 	public static final String TILES_CAVES = "tiles_caves.png";
 	public static final String TILES_CITY = "tiles_city.png";
 	public static final String TILES_HALLS = "tiles_halls.png";
 
 	public static final String WATER_SEWERS = "water0.png";
+	public static final String WATER_SEWERS_BOSS = "water0b.png";
 	public static final String WATER_PRISON = "water1.png";
 	public static final String WATER_CAVES = "water2.png";
 	public static final String WATER_CITY = "water3.png";
@@ -129,6 +134,7 @@ public class Assets
 	public static final String BUFFS_LARGE = "large_buffs.png";
 	public static final String SPELL_ICONS = "spell_icons.png";
 	public static final String CONS_ICONS = "consumable_icons.png";
+	public static final String LEVEL_UP_CHOICES = "level_up_choices.png";
 
 	public static final String PIXELFONT = "pixel_font.png";
 	public static final String FONT1X = "font1x.png";
@@ -185,4 +191,5 @@ public class Assets
 	public static final String SND_BEE = "snd_bee.mp3";
 	public static final String SND_DEGRADE = "snd_degrade.mp3";
 	public static final String SND_MIMIC = "snd_mimic.mp3";
+	public static final String SND_SMASH = "snd_smash_timbre.mp3"; //By Timbre on freesound.org
 }

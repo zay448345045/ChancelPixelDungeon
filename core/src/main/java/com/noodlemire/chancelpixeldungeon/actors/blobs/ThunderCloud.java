@@ -18,6 +18,7 @@ import com.noodlemire.chancelpixeldungeon.items.armor.MailArmor;
 import com.noodlemire.chancelpixeldungeon.items.armor.PlateArmor;
 import com.noodlemire.chancelpixeldungeon.items.armor.ScaleArmor;
 import com.noodlemire.chancelpixeldungeon.items.armor.WarriorArmor;
+import com.noodlemire.chancelpixeldungeon.items.bags.Bag;
 import com.noodlemire.chancelpixeldungeon.items.rings.Ring;
 import com.noodlemire.chancelpixeldungeon.items.wands.Wand;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
@@ -111,7 +112,7 @@ public class ThunderCloud extends GasBlob implements Hero.Doom
 
 				 //Or char is a hero with something metal equipped
 				 || ((ch instanceof Hero) && (metallic(((Hero) ch).belongings.weapon) || metallic(((Hero) ch).belongings.armor)
-				                              || metallic(((Hero) ch).belongings.misc1) || metallic(((Hero) ch).belongings.misc2))));
+				                              || metallic(((Hero) ch).belongings.miscSlots))));
 	}
 
 	private static boolean metallic(Heap heap)
@@ -125,10 +126,12 @@ public class ThunderCloud extends GasBlob implements Hero.Doom
 
 	private static boolean metallic(Item item)
 	{
-		return  //Item exists and
-				item != null &&
+		if(item instanceof Bag)
+			for(Item i : ((Bag)item).items)
+				if(metallic(i))
+					return true;
 
-				//Item is a metallic weapon
+		return  //Item is a metallic weapon
 				((item instanceof Weapon && !(item instanceof Whip) && !(item instanceof AssassinsBlade) && !(item instanceof Gauntlet)
 				  && !(item instanceof Boomerang) && !(item instanceof ThrowingStone) && !(item instanceof Bolas))
 

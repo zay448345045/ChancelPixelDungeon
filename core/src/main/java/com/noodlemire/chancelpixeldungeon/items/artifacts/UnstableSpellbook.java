@@ -25,7 +25,6 @@ import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Blindness;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.particles.ElmoParticle;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
@@ -227,8 +226,7 @@ public class UnstableSpellbook extends Artifact
 		@Override
 		public boolean act()
 		{
-			LockedFloor lock = target.buff(LockedFloor.class);
-			if(charge < chargeCap && (!cursed || isBound()) && (lock == null || lock.regenOn()))
+			if(charge < chargeCap && (!cursed || isBound()))
 			{
 				partialCharge += 1 / (160f - (chargeCap - charge) * 15f);
 

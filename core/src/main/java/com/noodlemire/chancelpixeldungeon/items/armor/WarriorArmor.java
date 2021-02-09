@@ -55,13 +55,11 @@ public class WarriorArmor extends ClassArmor
 
 	protected static CellSelector.Listener leaper = new CellSelector.Listener()
 	{
-
 		@Override
 		public void onSelect(Integer target)
 		{
 			if(target != null && target != curUser.pos)
 			{
-
 				Ballistica route = new Ballistica(curUser.pos, target, Ballistica.PROJECTILE);
 				int cell = route.collisionPos;
 
@@ -69,8 +67,7 @@ public class WarriorArmor extends ClassArmor
 				if(Actor.findChar(cell) != null && cell != curUser.pos)
 					cell = route.path.get(route.dist - 1);
 
-
-				curUser.dynamic(0, false);
+				curUser.dynamic(-curUser.dynamax());
 
 				final int dest = cell;
 				curUser.busy();
@@ -88,9 +85,7 @@ public class WarriorArmor extends ClassArmor
 						{
 							Char mob = Actor.findChar(curUser.pos + PathFinder.NEIGHBOURS8[i]);
 							if(mob != null && mob != curUser)
-							{
 								Buff.prolong(mob, Paralysis.class, SHOCK_TIME);
-							}
 						}
 
 						CellEmitter.center(dest).burst(Speck.factory(Speck.DUST), 10);

@@ -8,6 +8,7 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.Splash;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfFuror;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfSharpshooting;
+import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Gloves;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.CellSelector;
@@ -36,6 +37,7 @@ public class Bow extends Weapon
 		unique = true;
 		bones = false;
 		cursedKnown = true;
+		levelKnown = true;
 	}
 
 	@Override
@@ -52,9 +54,9 @@ public class Bow extends Weapon
 	{
 		int damage = super.damageRoll(owner);
 
-		if(sniperSpecial)
+		if (sniperSpecial)
 		{
-			switch(augment)
+			switch (augment)
 			{
 				case NONE:
 					damage = Math.round(damage * 2f / 3f);
@@ -95,7 +97,7 @@ public class Bow extends Weapon
 	{
 		super.execute(hero, action);
 
-		if(action.equals(AC_SHOOT))
+		if (action.equals(AC_SHOOT))
 		{
 			curUser = hero;
 			curItem = this;
@@ -123,19 +125,19 @@ public class Bow extends Weapon
 		info.append("\n\n")
 				.append(Messages.get(getClass(), "stats", dispMin(), dispMax(), STRReq()));
 
-		if(STRReq() > Dungeon.hero.STR())
+		if (STRReq() > Dungeon.hero.STR())
 			info.append(Messages.get(Weapon.class, "too_heavy"));
 
-		if(augment == Augment.SPEED)
+		if (augment == Augment.SPEED)
 			info.append("\n\n").append(Messages.get(Weapon.class, "faster"));
-		else if(augment == Augment.DAMAGE)
+		else if (augment == Augment.DAMAGE)
 			info.append("\n\n").append(Messages.get(Weapon.class, "stronger"));
 
-		if(enchantment != null)
+		if (enchantment != null)
 			info.append("\n\n").append(Messages.get(Weapon.class, "enchanted", enchantment.name()))
 					.append(" ").append(Messages.get(enchantment, "desc"));
 
-		if(cursed)
+		if (cursed)
 			info.append("\n\n").append(Messages.get(Weapon.class, "cursed"));
 
 		return info.append("\n\n").append(Messages.get(MissileWeapon.class, "distance")).toString();
@@ -169,7 +171,7 @@ public class Bow extends Weapon
 	@Override
 	public int max(int lvl)
 	{
-		return 6 + visiblyUpgraded() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
+		return 8 + visiblyUpgraded() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero);
 	}
 
 	@Override
@@ -194,7 +196,7 @@ public class Bow extends Weapon
 		@Override
 		public void onSelect(Integer tar)
 		{
-			if(tar != null)
+			if (tar != null)
 				new Arrow().cast(curUser, tar);
 			image = ItemSpriteSheet.BOW_UNLOADED;
 			updateQuickslot();
@@ -223,14 +225,14 @@ public class Bow extends Weapon
 		{
 			final int cell = throwPos(user, dst);
 			Bow.this.targetPos = cell;
-			if(sniperSpecial && Bow.this.augment == Augment.SPEED)
+			if (sniperSpecial && Bow.this.augment == Augment.SPEED)
 			{
-				if(flurryCount == -1)
+				if (flurryCount == -1)
 					flurryCount = 3;
 
 				final Char enemy = Actor.findChar(cell);
 
-				if(enemy == null)
+				if (enemy == null)
 				{
 					user.spendAndNext(castDelay(user, dst));
 					sniperSpecial = false;
@@ -252,13 +254,13 @@ public class Bow extends Weapon
 							@Override
 							public void call()
 							{
-								if(enemy.isAlive())
+								if (enemy.isAlive())
 								{
 									curUser = user;
 									onThrow(cell);
 								}
 
-								if(last)
+								if (last)
 								{
 									user.spendAndNext(castDelay(user, dst));
 									sniperSpecial = false;
@@ -273,7 +275,7 @@ public class Bow extends Weapon
 					public void call()
 					{
 						flurryCount--;
-						if(flurryCount > 0)
+						if (flurryCount > 0)
 							cast(user, dst);
 					}
 				});
@@ -302,16 +304,24 @@ public class Bow extends Weapon
 		}
 
 		@Override
-		public float speedFactor(Char user) {
+		public float speedFactor(Char user)
+		{
 			return Bow.this.speedFactor(user);
 		}
 
 		@Override
-		public float accuracyFactor(Char owner) {
-			if (sniperSpecial && Bow.this.augment == Augment.DAMAGE){
+		public float accuracyFactor(Char owner)
+		{
+			if (sniperSpecial && Bow.this.augment == Augment.DAMAGE)
 				return Float.POSITIVE_INFINITY;
-			} else {
-				return super.accuracyFactor(owner);
+			else
+			{
+				int mult = 1;
+
+				if(owner instanceof Hero && ((Hero)owner).belongings.weapon instanceof Gloves)
+					mult = 2;
+
+				return super.accuracyFactor(owner) * mult;
 			}
 		}
 
@@ -319,16 +329,17 @@ public class Bow extends Weapon
 		public void onThrow(int cell)
 		{
 			Char enemy = Actor.findChar(cell);
-			if(enemy == null || enemy == curUser)
+			if (enemy == null || enemy == curUser)
 			{
 				parent = null;
 				Splash.at(cell, COLOR, 3);
 			}
 			else
 			{
-				if(!curUser.shoot(enemy, this))
+				curUser.attacked = true;
+				if (!curUser.shoot(enemy, this))
 					Splash.at(cell, COLOR, 3);
-				if(sniperSpecial && Bow.this.augment != Augment.SPEED)
+				if (sniperSpecial && Bow.this.augment != Augment.SPEED)
 					sniperSpecial = false;
 			}
 		}

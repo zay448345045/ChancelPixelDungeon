@@ -39,7 +39,6 @@ public class Statue extends Mob
 	{
 		spriteClass = StatueSprite.class;
 
-		EXP = 0;
 		state = PASSIVE;
 
 		properties.add(Property.INORGANIC);
@@ -51,13 +50,14 @@ public class Statue extends Mob
 	{
 		super();
 
+		EXP = Dungeon.depth;
+
 		weapon = (MeleeWeapon) Generator.random(Generator.Category.WEAPON);
 
 		weapon.enchant(Enchantment.random());
 		weapon.cursed = false;
 
 		setHT(20 + Dungeon.depth * 5, true);
-		defenseSkill = 4 + Dungeon.depth;
 	}
 
 	private static final String WEAPON = "weapon";
@@ -112,6 +112,12 @@ public class Statue extends Mob
 	public int drRoll()
 	{
 		return Random.NormalIntRange(0, Dungeon.depth + weapon.defenseFactor(this));
+	}
+
+	@Override
+	public int defenseSkill()
+	{
+		return 4 + Dungeon.depth;
 	}
 
 	@Override

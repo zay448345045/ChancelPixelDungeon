@@ -50,6 +50,7 @@ import com.noodlemire.chancelpixeldungeon.effects.particles.WindParticle;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.items.Heap;
 import com.noodlemire.chancelpixeldungeon.items.Item;
+import com.noodlemire.chancelpixeldungeon.items.LitmusPaper;
 import com.noodlemire.chancelpixeldungeon.items.Stylus;
 import com.noodlemire.chancelpixeldungeon.items.Torch;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.DriedRose;
@@ -133,6 +134,7 @@ public abstract class Level implements Bundlable
 
 	public HashSet<Mob> mobs;
 	public HashSet<Geyser> geysers;
+	public HashSet<Char> others;
 	public SparseArray<Heap> heaps;
 	public HashMap<Class<? extends Blob>, Blob> blobs;
 	public SparseArray<Plant> plants;
@@ -164,6 +166,7 @@ public abstract class Level implements Bundlable
 	private static final String CUSTOM_WALLS = "customWalls";
 	private static final String MOBS = "mobs";
 	private static final String GEYSERS = "geysers";
+	private static final String OTHERS = "others";
 	private static final String BLOBS = "blobs";
 	private static final String FEELING = "feeling";
 
@@ -193,7 +196,11 @@ public abstract class Level implements Bundlable
 			}
 			if(Dungeon.asNeeded())
 			{
-				addItemToSpawn(new Stylus());
+				if(Random.Int(2) == 0)
+					addItemToSpawn(new Stylus());
+				else
+					addItemToSpawn(new LitmusPaper());
+
 				Dungeon.LimitedDrops.ARCANE_STYLI.count++;
 			}
 
@@ -245,6 +252,7 @@ public abstract class Level implements Bundlable
 
 			mobs = new HashSet<>();
 			geysers = new HashSet<>();
+			others = new HashSet<>();
 			heaps = new SparseArray<>();
 			blobs = new HashMap<>();
 			plants = new SparseArray<>();
@@ -301,6 +309,10 @@ public abstract class Level implements Bundlable
 		for(Geyser geyser : geysers.toArray(new Geyser[0]))
 			geysers.remove(geyser);
 
+		for(Char ch : others.toArray(new Char[0]))
+			others.remove(ch);
+
+
 		createMobs();
 		createGeysers();
 	}
@@ -314,6 +326,7 @@ public abstract class Level implements Bundlable
 
 		mobs = new HashSet<>();
 		geysers = new HashSet<>();
+		others = new HashSet<>();
 		heaps = new SparseArray<>();
 		blobs = new HashMap<>();
 		plants = new SparseArray<>();
@@ -386,6 +399,14 @@ public abstract class Level implements Bundlable
 				geysers.add(geyser);
 		}
 
+		collection = bundle.getCollection(OTHERS);
+		for(Bundlable g : collection)
+		{
+			Char ch = (Char)g;
+			if(ch != null)
+				others.add(ch);
+		}
+
 		collection = bundle.getCollection(BLOBS);
 		for(Bundlable b : collection)
 		{
@@ -421,6 +442,7 @@ public abstract class Level implements Bundlable
 		bundle.put(CUSTOM_WALLS, customWalls);
 		bundle.put(MOBS, mobs);
 		bundle.put(GEYSERS, geysers);
+		bundle.put(OTHERS, others);
 		bundle.put(BLOBS, blobs.values());
 		bundle.put(FEELING, feeling);
 	}
@@ -550,7 +572,6 @@ public abstract class Level implements Bundlable
 	{
 		return new Actor()
 		{
-
 			{
 				actPriority = BUFF_PRIO; //as if it were a buff.
 			}
@@ -566,15 +587,21 @@ public abstract class Level implements Bundlable
 
 				if(count < nMobs())
 				{
-					Mob mob = createMob();
-					mob.state = mob.WANDERING;
-					mob.pos = randomRespawnCell();
-					if(Dungeon.hero.isAlive() && mob.pos != -1 && distance(Dungeon.hero.pos, mob.pos) >= 4)
+					Mob mob = Level.this instanceof RegularLevel ?
+							((RegularLevel)Level.this).createMob(false) :
+							createMob();
+
+					if(mob != null)
 					{
-						GameScene.add(mob);
-						if(Statistics.amuletObtained)
+						mob.state = mob.WANDERING;
+						mob.pos = randomRespawnCell();
+						if (Dungeon.hero.isAlive() && mob.pos != -1 && distance(Dungeon.hero.pos, mob.pos) >= 4)
 						{
-							mob.beckon(Dungeon.hero.pos);
+							GameScene.add(mob);
+							if (Statistics.amuletObtained)
+							{
+								mob.beckon(Dungeon.hero.pos);
+							}
 						}
 					}
 				}

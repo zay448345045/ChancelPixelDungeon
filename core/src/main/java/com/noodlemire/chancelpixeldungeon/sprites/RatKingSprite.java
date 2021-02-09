@@ -22,14 +22,16 @@
 package com.noodlemire.chancelpixeldungeon.sprites;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
+import com.noodlemire.chancelpixeldungeon.Badges;
 import com.watabou.noosa.TextureFilm;
 
 import java.util.Calendar;
 
 public class RatKingSprite extends MobSprite
 {
-
 	public boolean festive;
+
+	private Animation gooey;
 
 	public RatKingSprite()
 	{
@@ -57,6 +59,17 @@ public class RatKingSprite extends MobSprite
 		die = new Animation(10, false);
 		die.frames(frames, c + 0);
 
+		gooey = new Animation(10, true);
+		gooey.frames(frames, c + 7);
+
 		play(idle);
+	}
+
+	@Override
+	public synchronized void showSleep()
+	{
+		super.showSleep();
+		if(!Badges.isUnlockedLocal(Badges.Badge.BOSS_SLAIN_1))
+			play(gooey);
 	}
 }

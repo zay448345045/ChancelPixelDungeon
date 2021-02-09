@@ -111,10 +111,14 @@ abstract public class MissileWeapon extends Weapon
 			parent = null;
 			super.onThrow(cell);
 		}
-		else if(!curUser.shoot(enemy, this))
-			rangedMiss(cell);
 		else
-			rangedHit(enemy, cell);
+		{
+			curUser.attacked = true;
+			if(!curUser.shoot(enemy, this))
+				rangedMiss(cell);
+			else
+				rangedHit(enemy, cell);
+		}
 	}
 
 	@Override
@@ -342,6 +346,8 @@ abstract public class MissileWeapon extends Weapon
 				durability += MAX_DURABILITY;
 			}
 		}
+
+		updateQuickslot();
 		return this;
 	}
 

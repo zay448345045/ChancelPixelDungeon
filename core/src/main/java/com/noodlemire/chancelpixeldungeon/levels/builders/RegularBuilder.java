@@ -38,7 +38,6 @@ import java.util.LinkedHashSet;
 // with tunnels padding rooms placed in them
 public abstract class RegularBuilder extends Builder
 {
-
 	// *** Parameter values for level building logic ***
 	// note that implementations do not have to use al of these variables
 
@@ -148,7 +147,6 @@ public abstract class RegularBuilder extends Builder
 	protected void createBranches(ArrayList<Room> rooms, ArrayList<Room> branchable,
 	                              ArrayList<Room> roomsToBranch, float[] connChances)
 	{
-
 		int i = 0;
 		float angle;
 		int tries;
@@ -158,7 +156,6 @@ public abstract class RegularBuilder extends Builder
 		float[] connectionChances = connChances.clone();
 		while(i < roomsToBranch.size())
 		{
-
 			Room r = roomsToBranch.get(i);
 
 			connectingRoomsThisBranch.clear();
@@ -209,9 +206,7 @@ public abstract class RegularBuilder extends Builder
 			}
 
 			if(connectingRoomsThisBranch.size() != connectingRooms)
-			{
 				continue;
-			}
 
 			tries = 10;
 
@@ -242,14 +237,10 @@ public abstract class RegularBuilder extends Builder
 				if(r instanceof StandardRoom)
 				{
 					for(int j = 0; j < ((StandardRoom) r).sizeCat.connectionWeight(); j++)
-					{
 						branchable.add(r);
-					}
 				}
 				else
-				{
 					branchable.add(r);
-				}
 			}
 
 			i++;
@@ -260,5 +251,4 @@ public abstract class RegularBuilder extends Builder
 	{
 		return Random.Float(360f);
 	}
-
 }

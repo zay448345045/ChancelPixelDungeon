@@ -48,12 +48,10 @@ public class Succubus extends Mob
 	{
 		spriteClass = SuccubusSprite.class;
 
-		setHT(105, true);
-		defenseSkill = 25;
-		viewDistance = Light.DISTANCE;
+		EXP = Random.IntRange(16, 22);
 
-		EXP = 12;
-		maxLvl = 25;
+		setHT(90 + EXP, true);
+		viewDistance = Light.DISTANCE;
 
 		loot = new StoneOfHypnotism();
 		lootChance = 0.15f;
@@ -64,7 +62,7 @@ public class Succubus extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(22, 30);
+		return Random.NormalIntRange(EXP + 8, EXP * 2);
 	}
 
 	@Override
@@ -87,24 +85,19 @@ public class Succubus extends Mob
 	{
 		if(fieldOfView[target] && Dungeon.level.distance(pos, target) > 2 && delay <= 0)
 		{
-
 			blink(target);
 			spend(-1 / speed());
 			return true;
-
 		}
 		else
 		{
-
 			delay--;
 			return super.getCloser(target);
-
 		}
 	}
 
 	private void blink(int target)
 	{
-
 		Ballistica route = new Ballistica(pos, target, Ballistica.PROJECTILE);
 		int cell = route.collisionPos;
 
@@ -140,13 +133,19 @@ public class Succubus extends Mob
 	@Override
 	public int attackSkill(Char target)
 	{
-		return 40;
+		return EXP * 3;
 	}
 
 	@Override
 	public int drRoll()
 	{
-		return Random.NormalIntRange(0, 10);
+		return Random.NormalIntRange(0, EXP / 2);
+	}
+
+	@Override
+	public int defenseSkill()
+	{
+		return EXP + 10;
 	}
 
 	{

@@ -78,10 +78,15 @@ public class Wraith extends Mob
 		return 10 + level;
 	}
 
+	@Override
+	public int defenseSkill()
+	{
+		return attackSkill(null) * 5;
+	}
+
 	private void adjustStats(int level)
 	{
 		this.level = level;
-		defenseSkill = attackSkill(null) * 5;
 		enemySeen = true;
 	}
 

@@ -38,12 +38,10 @@ public class Scorpio extends Mob
 	{
 		spriteClass = ScorpioSprite.class;
 
-		setHT(120, true);
-		defenseSkill = 24;
-		viewDistance = Light.DISTANCE;
+		EXP = Random.IntRange(23, 26);
 
-		EXP = 14;
-		maxLvl = 25;
+		setHT(EXP * 5, true);
+		viewDistance = Light.DISTANCE;
 
 		loot = null; //See createLoot()
 		lootChance = 1f;
@@ -54,19 +52,25 @@ public class Scorpio extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(26, 36);
+		return Random.NormalIntRange(EXP + 3, EXP * 2 - 10);
 	}
 
 	@Override
 	public int attackSkill(Char target)
 	{
-		return 36;
+		return EXP * 2;
 	}
 
 	@Override
 	public int drRoll()
 	{
-		return Random.NormalIntRange(0, 16);
+		return Random.NormalIntRange(0, EXP / 2 + 5);
+	}
+
+	@Override
+	public int defenseSkill()
+	{
+		return EXP * 3 - 20;
 	}
 
 	@Override

@@ -33,6 +33,7 @@ import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.items.quest.DarkGold;
 import com.noodlemire.chancelpixeldungeon.items.quest.Pickaxe;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.noodlemire.chancelpixeldungeon.journal.Notes;
 import com.noodlemire.chancelpixeldungeon.levels.rooms.Room;
 import com.noodlemire.chancelpixeldungeon.levels.rooms.standard.BlacksmithRoom;
@@ -83,13 +84,9 @@ public class Blacksmith extends NPC
 
 					Pickaxe pick = new Pickaxe();
 					if(pick.doPickUp(Dungeon.hero))
-					{
 						GLog.i(Messages.get(Dungeon.hero, "you_now_have", pick.name()));
-					}
 					else
-					{
 						Dungeon.level.drop(pick, Dungeon.hero.pos).sprite.drop();
-					}
 				}
 			});
 
@@ -100,49 +97,36 @@ public class Blacksmith extends NPC
 		{
 			if(Quest.alternative)
 			{
-
 				Pickaxe pick = Dungeon.hero.belongings.getItem(Pickaxe.class);
 				if(pick == null)
-				{
 					tell(Messages.get(this, "lost_pick"));
-				}
 				else if(!pick.bloodStained)
-				{
 					tell(Messages.get(this, "blood_2"));
-				}
 				else
 				{
 					if(pick.isEquipped(Dungeon.hero))
-					{
 						pick.doUnequip(Dungeon.hero, false);
-					}
+
 					pick.detach(Dungeon.hero.belongings.backpack);
 					tell(Messages.get(this, "completed"));
 
 					Quest.completed = true;
 					Quest.reforged = false;
 				}
-
 			}
 			else
 			{
-
 				Pickaxe pick = Dungeon.hero.belongings.getItem(Pickaxe.class);
 				DarkGold gold = Dungeon.hero.belongings.getItem(DarkGold.class);
 				if(pick == null)
-				{
 					tell(Messages.get(this, "lost_pick"));
-				}
 				else if(gold == null || gold.quantity() < 15)
-				{
 					tell(Messages.get(this, "gold_2"));
-				}
 				else
 				{
 					if(pick.isEquipped(Dungeon.hero))
-					{
 						pick.doUnequip(Dungeon.hero, false);
-					}
+
 					pick.detach(Dungeon.hero.belongings.backpack);
 					gold.detachAll(Dungeon.hero.belongings.backpack);
 					tell(Messages.get(this, "completed"));
@@ -150,21 +134,12 @@ public class Blacksmith extends NPC
 					Quest.completed = true;
 					Quest.reforged = false;
 				}
-
 			}
 		}
 		else if(!Quest.reforged)
-		{
-
 			GameScene.show(new WndBlacksmith(this, Dungeon.hero));
-
-		}
 		else
-		{
-
 			tell(Messages.get(this, "get_lost"));
-
-		}
 
 		return false;
 	}
@@ -176,8 +151,7 @@ public class Blacksmith extends NPC
 
 	public static String verify(Item item1, Item item2)
 	{
-
-		if(item1 == item2)
+		if(item1 == item2 && item1.quantity() == 1)
 		{
 			return Messages.get(Blacksmith.class, "same_item");
 		}
@@ -230,26 +204,24 @@ public class Blacksmith extends NPC
 		Item.evoke(Dungeon.hero);
 
 		if(first.isEquipped(Dungeon.hero))
-		{
 			((EquipableItem) first).doUnequip(Dungeon.hero, true);
-		}
-		first.level(first.level() + 1); //prevents on-upgrade effects like enchant/glyph removal
+
+		if(first instanceof MissileWeapon)
+			first.upgrade(); //needed for missiles to split properly upon being upgraded
+		else
+			first.level(first.level() + 1); //prevents on-upgrade effects like enchant/glyph removal
 		Dungeon.hero.spendAndNext(2f);
 		Badges.validateItemLevelAquired(first);
 
 		if(second.isEquipped(Dungeon.hero))
-		{
 			((EquipableItem) second).doUnequip(Dungeon.hero, false);
-		}
-		second.detachAll(Dungeon.hero.belongings.backpack);
+		second.detach(Dungeon.hero.belongings.backpack);
 
 		if(second instanceof Armor)
 		{
 			BrokenSeal seal = ((Armor) second).checkSeal();
 			if(seal != null)
-			{
 				Dungeon.level.drop(seal, Dungeon.hero.pos);
-			}
 		}
 
 		Quest.reforged = true;

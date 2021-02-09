@@ -28,8 +28,8 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class AssassinsBlade extends MeleeWeapon
 {
-	//deals 50% toward max to max on surprise, instead of min to max.
-	float SURPRISE_BONUS_RATE = 0.5f;
+	//25% extra damage on surprise attack
+	float SURPRISE_BONUS_RATE = 1.25f;
 
 	{
 		image = ItemSpriteSheet.ASSASSINS_BLADE;
@@ -52,12 +52,7 @@ public class AssassinsBlade extends MeleeWeapon
 			Char enemy = hero.enemy();
 			if(enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero))
 			{
-				int diff = max() - min();
-				int damage = hero.dynamicRoll(
-						min() + Math.round(diff * SURPRISE_BONUS_RATE),
-						max());
-
-				return damage;
+				return Math.round(super.damageRoll(owner) * SURPRISE_BONUS_RATE);
 			}
 		}
 		return super.damageRoll(owner);

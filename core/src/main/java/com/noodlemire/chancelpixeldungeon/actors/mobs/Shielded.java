@@ -29,13 +29,14 @@ public class Shielded extends Brute
 	{
 		spriteClass = ShieldedSprite.class;
 
-		defenseSkill = 20;
+		EXP = 15;
+
+		setHT(80, true);
 	}
 
 	@Override
 	public int drRoll()
 	{
-		return Random.NormalIntRange(0, 10);
+		return Random.NormalIntRange(5, 15);
 	}
-
 }

@@ -224,7 +224,6 @@ public class ItemSlot extends Button
 
 	private void updateText()
 	{
-
 		if(bottomRightIcon != null)
 		{
 			remove(bottomRightIcon);
@@ -310,7 +309,6 @@ public class ItemSlot extends Button
 
 	public void enable(boolean value)
 	{
-
 		active = value;
 
 		float alpha = value ? ENABLED : DISABLED;

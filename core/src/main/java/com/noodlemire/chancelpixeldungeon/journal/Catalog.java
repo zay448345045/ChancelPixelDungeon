@@ -33,7 +33,9 @@ import com.noodlemire.chancelpixeldungeon.items.Gold;
 import com.noodlemire.chancelpixeldungeon.items.GrassSeed;
 import com.noodlemire.chancelpixeldungeon.items.Honeypot;
 import com.noodlemire.chancelpixeldungeon.items.Item;
+import com.noodlemire.chancelpixeldungeon.items.LitmusPaper;
 import com.noodlemire.chancelpixeldungeon.items.MerchantsBeacon;
+import com.noodlemire.chancelpixeldungeon.items.NinjaTrapItem;
 import com.noodlemire.chancelpixeldungeon.items.Stylus;
 import com.noodlemire.chancelpixeldungeon.items.TomeOfMastery;
 import com.noodlemire.chancelpixeldungeon.items.Torch;
@@ -461,6 +463,7 @@ public enum Catalog
 		MISC.seen.put(DarkGold.class, true);
 		MISC.seen.put(DwarfToken.class, true);
 		MISC.seen.put(Embers.class, true);
+		MISC.seen.put(LitmusPaper.class, true);
 		MISC.seen.put(Pickaxe.class, true);
 		MISC.seen.put(RatSkull.class, true);
 		MISC.seen.put(RotberryCore.class, true);
@@ -475,6 +478,7 @@ public enum Catalog
 		MISC.seen.put(GrassSeed.class, true);
 		MISC.seen.put(Honeypot.class, true);
 		MISC.seen.put(MerchantsBeacon.class, true);
+		MISC.seen.put(NinjaTrapItem.class, true);
 		MISC.seen.put(Stylus.class, true);
 		MISC.seen.put(TomeOfMastery.class, true);
 		MISC.seen.put(Torch.class, true);

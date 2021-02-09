@@ -68,7 +68,7 @@ public class RogueArmor extends ClassArmor
 					return;
 				}
 
-				curUser.dynamic(0, false);
+				curUser.dynamic(-curUser.dynamax());
 
 				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[Dungeon.level.mobs.size()]))
 				{

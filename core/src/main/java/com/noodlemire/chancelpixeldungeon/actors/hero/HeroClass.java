@@ -28,6 +28,7 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.items.Amulet;
 import com.noodlemire.chancelpixeldungeon.items.BrokenSeal;
 import com.noodlemire.chancelpixeldungeon.items.armor.ClothArmor;
+import com.noodlemire.chancelpixeldungeon.items.armor.GodArmor;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.CloakOfShadows;
 import com.noodlemire.chancelpixeldungeon.items.bags.PotionBandolier;
 import com.noodlemire.chancelpixeldungeon.items.bags.ScrollHolder;
@@ -94,7 +95,10 @@ public enum HeroClass
 
 	private static void initCommon(Hero hero)
 	{
-		(hero.belongings.armor = new ClothArmor()).identify();
+		if(Amulet.DEBUG)
+			(hero.belongings.armor = new GodArmor()).identify();
+		else
+			(hero.belongings.armor = new ClothArmor()).identify();
 
 		if(Dungeon.isChallenged(Challenges.NO_FOOD))
 			new SmallRation().collect();
@@ -134,6 +138,8 @@ public enum HeroClass
 		new PotionBandolier().collect();
 		Dungeon.LimitedDrops.POTION_BANDOLIER.drop();
 		new PotionOfHealing().identify();
+
+		hero.STR_lvl++;
 	}
 
 	private static void initMage(Hero hero)
@@ -157,8 +163,8 @@ public enum HeroClass
 		(hero.belongings.weapon = new Dagger()).identify();
 
 		CloakOfShadows cloak = new CloakOfShadows();
-		(hero.belongings.misc1 = cloak).identify();
-		hero.belongings.misc1.activate(hero);
+		(hero.belongings.classMisc = cloak).identify();
+		hero.belongings.classMisc.activate(hero);
 
 		ThrowingKnife knives = new ThrowingKnife();
 		knives.quantity(3).collect();

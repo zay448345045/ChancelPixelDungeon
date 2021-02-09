@@ -26,7 +26,6 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Invisibility;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.MagicMissile;
 import com.noodlemire.chancelpixeldungeon.items.Item;
@@ -281,8 +280,7 @@ public class LloydsBeacon extends Artifact
 		@Override
 		public boolean act()
 		{
-			LockedFloor lock = target.buff(LockedFloor.class);
-			if(charge < chargeCap && (!cursed || isBound()) && (lock == null || lock.regenOn()))
+			if(charge < chargeCap && (!cursed || isBound()))
 			{
 				partialCharge += 1 / (100f - (chargeCap - charge) * 10f);
 

@@ -20,9 +20,9 @@ import com.watabou.noosa.audio.Sample;
 public class ScrollOfDecay extends EnvironmentScroll
 {
 	{
+		should_shout = true;
 		initials = 12;
-
-		if(isIdentified()) defaultAction = AC_SHOUT;
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 
 	@Override
@@ -106,6 +106,13 @@ public class ScrollOfDecay extends EnvironmentScroll
 	public void setKnown()
 	{
 		super.setKnown();
-		if(isIdentified()) defaultAction = AC_SHOUT;
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
+	}
+
+	@Override
+	public void setDangerKnown()
+	{
+		super.setDangerKnown();
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 }

@@ -30,7 +30,6 @@ import com.watabou.utils.Bundle;
 
 public abstract class Trap implements Bundlable
 {
-
 	//trap colors
 	public static final int RED = 0;
 	public static final int ORANGE = 1;

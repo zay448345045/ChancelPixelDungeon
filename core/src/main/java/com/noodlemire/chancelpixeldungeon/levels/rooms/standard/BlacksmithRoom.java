@@ -47,7 +47,6 @@ public class BlacksmithRoom extends StandardRoom
 
 	public void paint(Level level)
 	{
-
 		Painter.fill(level, this, Terrain.WALL);
 		Painter.fill(level, this, 1, Terrain.TRAP);
 		Painter.fill(level, this, 2, Terrain.EMPTY_SP);

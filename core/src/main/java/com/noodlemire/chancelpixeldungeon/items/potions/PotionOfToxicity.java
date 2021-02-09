@@ -29,11 +29,11 @@ import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 
 public class PotionOfToxicity extends Potion
 {
-
 	{
 		initials = 11;
+		harmful = true;
 
-		if(isIdentified()) defaultAction = AC_THROW;
+		if(isDangerKnown()) defaultAction = AC_THROW;
 	}
 
 	@Override
@@ -51,7 +51,14 @@ public class PotionOfToxicity extends Potion
 	public void setKnown()
 	{
 		super.setKnown();
-		if(isIdentified()) defaultAction = AC_THROW;
+		if(isDangerKnown()) defaultAction = AC_THROW;
+	}
+
+	@Override
+	public void setDangerKnown()
+	{
+		super.setDangerKnown();
+		if(isDangerKnown()) defaultAction = AC_THROW;
 	}
 
 	@Override

@@ -30,7 +30,6 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.ThunderCloud;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.ToxicGas;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Terror;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
@@ -58,7 +57,6 @@ public class DM300 extends Mob
 
 		setHT(300, true);
 		EXP = 30;
-		defenseSkill = 18;
 
 		loot = new ArmorKit();
 		lootChance = 1f;
@@ -84,6 +82,12 @@ public class DM300 extends Mob
 	public int drRoll()
 	{
 		return Random.NormalIntRange(0, 10);
+	}
+
+	@Override
+	public int defenseSkill()
+	{
+		return 18;
 	}
 
 	@Override
@@ -142,14 +146,6 @@ public class DM300 extends Mob
 		{
 			Buff.prolong(ch, Paralysis.class, 2);
 		}
-	}
-
-	@Override
-	public void damage(int dmg, Object src)
-	{
-		super.damage(dmg, src);
-		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if(lock != null && !isImmune(src.getClass())) lock.addTime(dmg * 1.5f);
 	}
 
 	@Override

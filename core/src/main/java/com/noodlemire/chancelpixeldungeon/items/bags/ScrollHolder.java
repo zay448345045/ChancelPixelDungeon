@@ -27,11 +27,8 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class ScrollHolder extends Bag
 {
-
 	{
 		image = ItemSpriteSheet.HOLDER;
-
-		size = 20;
 	}
 
 	@Override
@@ -45,5 +42,4 @@ public class ScrollHolder extends Bag
 	{
 		return 40;
 	}
-
 }

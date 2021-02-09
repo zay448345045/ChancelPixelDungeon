@@ -389,9 +389,7 @@ public class Item implements Bundlable
 	final public Item upgrade(int n)
 	{
 		for(int i = 0; i < n; i++)
-		{
 			upgrade();
-		}
 
 		return this;
 	}
@@ -474,7 +472,6 @@ public class Item implements Bundlable
 
 	public Item identify()
 	{
-
 		levelKnown = true;
 		cursedKnown = true;
 
@@ -494,7 +491,6 @@ public class Item implements Bundlable
 	@Override
 	public String toString()
 	{
-
 		String name = name();
 
 		if(visiblyUpgraded() != 0)
@@ -504,7 +500,6 @@ public class Item implements Bundlable
 			name = Messages.format(TXT_TO_STRING_X, name, quantity);
 
 		return name;
-
 	}
 
 	public String name()
@@ -626,13 +621,9 @@ public class Item implements Bundlable
 
 		int level = bundle.getInt(LEVEL);
 		if(level > 0)
-		{
 			upgrade(level);
-		}
 		else if(level < 0)
-		{
 			degrade(-level);
-		}
 
 		cursed = bundle.getBoolean(CURSED);
 

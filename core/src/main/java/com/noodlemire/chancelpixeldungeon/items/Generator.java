@@ -608,7 +608,6 @@ public class Generator
 
 	public static MeleeWeapon randomWeapon(int floorSet)
 	{
-
 		floorSet = (int) GameMath.gate(0, floorSet, floorSetTierProbs.length - 1);
 
 		try

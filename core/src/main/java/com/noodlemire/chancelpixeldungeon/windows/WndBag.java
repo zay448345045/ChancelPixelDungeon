@@ -26,6 +26,7 @@ import com.noodlemire.chancelpixeldungeon.CPDSettings;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Belongings;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
+import com.noodlemire.chancelpixeldungeon.actors.hero.HeroClass;
 import com.noodlemire.chancelpixeldungeon.items.EquipableItem;
 import com.noodlemire.chancelpixeldungeon.items.Gold;
 import com.noodlemire.chancelpixeldungeon.items.Item;
@@ -33,6 +34,7 @@ import com.noodlemire.chancelpixeldungeon.items.Transmutable;
 import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.items.bags.Bag;
 import com.noodlemire.chancelpixeldungeon.items.bags.MagicalHolster;
+import com.noodlemire.chancelpixeldungeon.items.bags.MiscSlots;
 import com.noodlemire.chancelpixeldungeon.items.bags.PotionBandolier;
 import com.noodlemire.chancelpixeldungeon.items.bags.ScrollHolder;
 import com.noodlemire.chancelpixeldungeon.items.bags.VelvetPouch;
@@ -85,6 +87,7 @@ public class WndBag extends WndTabbed
 		POTION,
 		SCROLL,
 		UNIDED_POTION_OR_SCROLL,
+		POTION_DANGER_UNKNOWN,
 		IDED_POTION,
 		EQUIPMENT,
 		ALCHEMY,
@@ -118,7 +121,6 @@ public class WndBag extends WndTabbed
 
 	public WndBag(Bag bag, Listener listener, Mode mode, String title)
 	{
-
 		super();
 
 		if(INSTANCE != null)
@@ -134,7 +136,7 @@ public class WndBag extends WndTabbed
 		lastBag = bag;
 
 		nCols = CPDSettings.landscape() ? COLS_L : COLS_P;
-		nRows = (int) Math.ceil((Belongings.BACKPACK_SIZE + 4) / (float) nCols);
+		nRows = (int) Math.ceil((Belongings.BACKPACK_SIZE + 2) / (float) nCols);
 
 		int slotsWidth = SLOT_WIDTH * nCols + SLOT_MARGIN * (nCols - 1);
 		int slotsHeight = SLOT_HEIGHT * nRows + SLOT_MARGIN * (nRows - 1);
@@ -151,7 +153,8 @@ public class WndBag extends WndTabbed
 				stuff.getItem(VelvetPouch.class),
 				stuff.getItem(ScrollHolder.class),
 				stuff.getItem(PotionBandolier.class),
-				stuff.getItem(MagicalHolster.class)};
+				stuff.getItem(MagicalHolster.class),
+				stuff.miscSlots};
 
 		for(Bag b : bags)
 		{
@@ -223,16 +226,42 @@ public class WndBag extends WndTabbed
 		Belongings stuff = Dungeon.hero.belongings;
 		placeItem(stuff.weapon != null ? stuff.weapon : new Placeholder(ItemSpriteSheet.WEAPON_HOLDER));
 		placeItem(stuff.armor != null ? stuff.armor : new Placeholder(ItemSpriteSheet.ARMOR_HOLDER));
-		placeItem(stuff.misc1 != null ? stuff.misc1 : new Placeholder(ItemSpriteSheet.RING_HOLDER));
-		placeItem(stuff.misc2 != null ? stuff.misc2 : new Placeholder(ItemSpriteSheet.RING_HOLDER));
+
+		if(container instanceof MiscSlots)
+		{
+			// Class-specific extra misc slot
+			if (stuff.classMisc != null)
+			{
+				placeItem(stuff.classMisc);
+			}
+			else
+			{
+				if (Dungeon.hero.heroClass == HeroClass.ROGUE)
+					placeItem(new Placeholder(ItemSpriteSheet.ARTIFACT_HOLDER));
+				else if (Dungeon.hero.heroClass == HeroClass.MAGE)
+					placeItem(new Placeholder(ItemSpriteSheet.WAND_HOLDER));
+				else if (Dungeon.hero.heroClass == HeroClass.HUNTRESS)
+					placeItem(new Placeholder(ItemSpriteSheet.RING_HOLDER));
+			}
+		}
 
 		// Items in the bag
 		for(Item item : container.items.toArray(new Item[0]))
 			placeItem(item);
 
 		// Free Space
-		while((count - 4) < container.size)
-			placeItem(null);
+		int extraCount = 2;
+		if(container instanceof MiscSlots && Dungeon.hero.heroClass != HeroClass.WARRIOR)
+			extraCount = 3;
+
+		while((count - extraCount) < container.size)
+			if(container instanceof MiscSlots)
+				placeItem(new Placeholder(ItemSpriteSheet.SOMETHING));
+			else
+				placeItem(null);
+
+		while((count - extraCount) < Belongings.MAX_MISC_AMOUNT)
+			placeItem(new Placeholder(ItemSpriteSheet.LOCKED));
 	}
 
 	private void placeItem(final Item item)
@@ -329,6 +358,8 @@ public class WndBag extends WndTabbed
 				return Icons.get(Icons.WAND_HOLSTER);
 			else if(bag instanceof PotionBandolier)
 				return Icons.get(Icons.POTION_BANDOLIER);
+			else if(bag instanceof MiscSlots)
+				return Icons.get(Icons.MISC_TAB);
 			else
 				return Icons.get(Icons.BACKPACK);
 		}
@@ -354,7 +385,7 @@ public class WndBag extends WndTabbed
 		@Override
 		public boolean isEquipped(Hero hero)
 		{
-			return true;
+			return image != ItemSpriteSheet.LOCKED;
 		}
 	}
 
@@ -363,7 +394,7 @@ public class WndBag extends WndTabbed
 		private static final int NORMAL = 0x9953564D;
 		private static final int EQUIPPED = 0x9991938C;
 
-		private Item item;
+		private final Item item;
 		private ColorBlock bg;
 
 		ItemButton(Item item)
@@ -403,14 +434,18 @@ public class WndBag extends WndTabbed
 			if(item != null)
 			{
 				bg.texture(TextureCache.createSolid(item.isEquipped(Dungeon.hero) ? EQUIPPED : NORMAL));
-				if(item.cursed && item.cursedKnown)
+				if((item.cursed && item.cursedKnown) ||
+						(!item.isIdentified() && item instanceof Potion && ((Potion)item).isDangerKnown() && ((Potion)item).harmful) ||
+						(!item.isIdentified() && item instanceof Scroll && ((Scroll)item).isDangerKnown() && ((Scroll)item).should_shout))
 				{
 					bg.ra = 0.3f;
 					bg.ga = -0.15f;
 				}
 				else if(!item.isIdentified())
 				{
-					if(item.cursedKnown)
+					if((item.canBeCursed() && item.cursedKnown) ||
+							(item instanceof Potion && ((Potion)item).isDangerKnown()) ||
+							(item instanceof Scroll && ((Scroll)item).isDangerKnown()))
 						bg.ba = 0.3f;
 					else
 					{
@@ -440,6 +475,7 @@ public class WndBag extends WndTabbed
 							(mode == Mode.POTION && item instanceof Potion) ||
 							(mode == Mode.SCROLL && item instanceof Scroll) ||
 							(mode == Mode.UNIDED_POTION_OR_SCROLL && (!item.isIdentified() && (item instanceof Scroll || item instanceof Potion) && item.image != ItemSpriteSheet.POTION_UNSTABLE && item.image != ItemSpriteSheet.SCROLL_MYSTERY)) ||
+							(mode == Mode.POTION_DANGER_UNKNOWN && (item instanceof Potion && !((Potion)item).isDangerKnown())) ||
 							(mode == Mode.IDED_POTION && (item.isIdentified() && item instanceof Potion)) ||
 							(mode == Mode.EQUIPMENT && item instanceof EquipableItem) ||
 							(mode == Mode.ALCHEMY && item.isIdentified() && (item instanceof Seed || item instanceof Scroll || (item instanceof Blandfruit && ((Blandfruit) item).potionAttrib == null) || (item.getClass() == Dart.class))) ||

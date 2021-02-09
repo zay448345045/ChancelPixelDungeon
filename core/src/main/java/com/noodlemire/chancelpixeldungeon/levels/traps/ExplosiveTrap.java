@@ -25,7 +25,6 @@ import com.noodlemire.chancelpixeldungeon.items.Bomb;
 
 public class ExplosiveTrap extends Trap
 {
-
 	{
 		color = ORANGE;
 		shape = DIAMOND;
@@ -36,5 +35,4 @@ public class ExplosiveTrap extends Trap
 	{
 		new Bomb().explode(pos);
 	}
-
 }

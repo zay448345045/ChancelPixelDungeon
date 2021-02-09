@@ -39,6 +39,7 @@ import com.noodlemire.chancelpixeldungeon.effects.Splash;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.ItemExistenceHandler;
+import com.noodlemire.chancelpixeldungeon.items.LitmusPaper;
 import com.noodlemire.chancelpixeldungeon.items.Recipe;
 import com.noodlemire.chancelpixeldungeon.items.Transmutable;
 import com.noodlemire.chancelpixeldungeon.journal.Catalog;
@@ -61,6 +62,8 @@ import java.util.HashSet;
 
 public abstract class Potion extends Item implements Transmutable
 {
+	public boolean harmful = false;
+
 	private static final String AC_DRINK = "DRINK";
 
 	private static final float TIME_TO_DRINK = 1f;
@@ -309,16 +312,27 @@ public abstract class Potion extends Item implements Transmutable
 			}
 
 			if(Dungeon.hero.isAlive())
-			{
 				Catalog.setSeen(getClass());
-			}
+		}
+	}
+
+	public boolean isDangerKnown()
+	{
+		return isKnown() || (handler != null && handler.isDangerKnown(this));
+	}
+
+	public void setDangerKnown()
+	{
+		if(!isDangerKnown())
+		{
+			handler.setDangerKnown(this);
+			updateQuickslot();
 		}
 	}
 
 	@Override
 	public Item identify()
 	{
-
 		setKnown();
 		return super.identify();
 	}
@@ -332,11 +346,20 @@ public abstract class Potion extends Item implements Transmutable
 	@Override
 	public String info()
 	{
-		return isKnown() ?
-				desc() :
-				image != ItemSpriteSheet.POTION_UNSTABLE ?
-						Messages.get(Potion.class, "unknown_desc") :
-						Messages.get(Potion.class, "unstable_desc");
+		if(isKnown())
+				return desc();
+		else
+		{
+			String info = image == ItemSpriteSheet.POTION_UNSTABLE ?
+					Messages.get(this, "unstable_desc") :
+					Messages.get(this, "unknown_desc");
+
+			if(isDangerKnown())
+				info += "\n\n" + (harmful ? Messages.get(LitmusPaper.class, "dangerous")
+						: Messages.get(LitmusPaper.class, "safe"));
+
+			return info;
+		}
 	}
 
 	public Integer initials()

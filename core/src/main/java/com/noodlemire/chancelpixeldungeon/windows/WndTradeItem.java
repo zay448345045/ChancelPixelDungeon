@@ -132,7 +132,6 @@ public class WndTradeItem extends Window
 
 		if(canBuy)
 		{
-
 			RedButton btnBuy = new RedButton(Messages.get(this, "buy", price))
 			{
 				@Override
@@ -251,7 +250,6 @@ public class WndTradeItem extends Window
 
 	private void sell(Item item)
 	{
-
 		Hero hero = Dungeon.hero;
 
 		if(item.isEquipped(hero) && !((EquipableItem) item).doUnequip(hero, false))
@@ -295,7 +293,6 @@ public class WndTradeItem extends Window
 
 	private void buy(Heap heap)
 	{
-
 		Hero hero = Dungeon.hero;
 		Item item = heap.pickUp();
 

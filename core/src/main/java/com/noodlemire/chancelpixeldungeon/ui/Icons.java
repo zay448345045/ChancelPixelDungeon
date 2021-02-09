@@ -49,6 +49,7 @@ public enum Icons
 	ALERT,
 	LOST,
 	BACKPACK,
+	MISC_TAB,
 	SEED_POUCH,
 	SCROLL_HOLDER,
 	POTION_BANDOLIER,
@@ -137,6 +138,9 @@ public enum Icons
 				break;
 			case BACKPACK:
 				icon.frame(icon.texture.uvRect(58, 0, 68, 10));
+				break;
+			case MISC_TAB:
+				icon.frame(icon.texture.uvRect(106, 12, 116, 22));
 				break;
 			case SCROLL_HOLDER:
 				icon.frame(icon.texture.uvRect(68, 0, 78, 10));

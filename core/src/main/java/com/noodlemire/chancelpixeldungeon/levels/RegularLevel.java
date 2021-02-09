@@ -22,9 +22,9 @@
 package com.noodlemire.chancelpixeldungeon.levels;
 
 import com.noodlemire.chancelpixeldungeon.Bones;
-import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
+import com.noodlemire.chancelpixeldungeon.actors.Amphora;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.geysers.FlameGeyser;
 import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
@@ -190,14 +190,7 @@ public abstract class RegularLevel extends Level
 	@Override
 	public int nMobs()
 	{
-		switch(Dungeon.depth)
-		{
-			case 1:
-				//mobs are not randomly spawned on floor 1.
-				return 0;
-			default:
-				return 2 + Dungeon.depth % 5 + Random.Int(5);
-		}
+		return 2 + Dungeon.depth % 5 + Random.Int(5);
 	}
 
 	@Override
@@ -213,30 +206,21 @@ public abstract class RegularLevel extends Level
 		}
 	}
 
-	private ArrayList<Class<? extends Mob>> mobsToSpawn = new ArrayList<>();
-
 	@Override
 	public Mob createMob()
 	{
-		if(mobsToSpawn == null || mobsToSpawn.isEmpty())
-			mobsToSpawn = Bestiary.getMobRotation(Dungeon.depth);
+		return createMob(true);
+	}
 
-		try
-		{
-			return mobsToSpawn.remove(0).newInstance();
-		}
-		catch(Exception e)
-		{
-			ChancelPixelDungeon.reportException(e);
-			return null;
-		}
+	public Mob createMob(boolean ignoreEXP)
+	{
+		return Bestiary.spawnMob(Dungeon.depth, ignoreEXP);
 	}
 
 	@Override
 	protected void createMobs()
 	{
-		//on floor 1, 10 rats are created so the player can get level 2.
-		int mobsToSpawn = Dungeon.depth == 1 ? 10 : nMobs();
+		int mobsToSpawn = nMobs();
 
 		ArrayList<Room> stdRooms = new ArrayList<>();
 		for(Room room : rooms)
@@ -258,7 +242,11 @@ public abstract class RegularLevel extends Level
 				stdRoomIter = stdRooms.iterator();
 			Room roomToSpawn = stdRoomIter.next();
 
-			Mob mob = createMob();
+			Mob mob = createMob(false);
+
+			if(mob == null)
+				break;
+
 			mob.pos = pointToCell(roomToSpawn.random());
 
 			if(findMob(mob.pos) == null && passable[mob.pos] && mob.pos != exit)
@@ -269,7 +257,11 @@ public abstract class RegularLevel extends Level
 				//TODO: perhaps externalize this logic into a method. Do I want to make mobs more likely to clump deeper down?
 				if(mobsToSpawn > 0 && Random.Int(4) == 0)
 				{
-					mob = createMob();
+					mob = createMob(false);
+
+					if(mob == null)
+						break;
+
 					mob.pos = pointToCell(roomToSpawn.random());
 
 					if(findMob(mob.pos) == null && passable[mob.pos] && mob.pos != exit)
@@ -389,7 +381,6 @@ public abstract class RegularLevel extends Level
 	@Override
 	public int randomDestination()
 	{
-
 		int count = 0;
 		int cell = -1;
 
@@ -416,6 +407,23 @@ public abstract class RegularLevel extends Level
 		}
 	}
 
+	private boolean noCharsAtPos(int pos)
+	{
+		for(Mob m : mobs)
+			if(m.pos == pos)
+				return false;
+
+		for(Geyser g : geysers)
+			if(g.pos == pos)
+				return false;
+
+		for(Char ch : others)
+			if(ch.pos == pos)
+				return false;
+
+		return true;
+	}
+
 	@Override
 	protected void createItems()
 	{
@@ -439,10 +447,20 @@ public abstract class RegularLevel extends Level
 				case 5:
 					type = Dungeon.depth > 1 ? Heap.Type.MIMIC : Heap.Type.CHEST;
 					break;
+				case 6:
+				case 7:
+				case 8:
+				case 9:
+					type = Heap.Type.AMPHORA;
+					break;
 				default:
 					type = Heap.Type.HEAP;
 			}
 			int cell = randomDropCell();
+
+			while(type == Heap.Type.AMPHORA && !noCharsAtPos(cell))
+				cell = randomDropCell();
+
 			if(map[cell] == Terrain.HIGH_GRASS)
 			{
 				map[cell] = Terrain.GRASS;
@@ -462,6 +480,13 @@ public abstract class RegularLevel extends Level
 					dropped.type = Heap.Type.LOCKED_CHEST;
 					addItemToSpawn(new GoldenKey(Dungeon.depth));
 				}
+			}
+			else if(type == Heap.Type.AMPHORA)
+			{
+				Amphora a = new Amphora();
+				a.insertItem(toDrop);
+				a.pos = cell;
+				others.add(a);
 			}
 			else
 			{
@@ -561,6 +586,10 @@ public abstract class RegularLevel extends Level
 			if(m.pos == pos && m.properties().contains(Char.Property.IMMOVABLE))
 				return m;
 
+		for(Char ch : others)
+			if(ch.pos == pos && ch.properties().contains(Char.Property.IMMOVABLE))
+				return ch;
+
 		return null;
 	}
 
@@ -618,7 +647,6 @@ public abstract class RegularLevel extends Level
 	{
 		super.storeInBundle(bundle);
 		bundle.put("rooms", rooms);
-		bundle.put("mobs_to_spawn", mobsToSpawn.toArray(new Class[0]));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -640,14 +668,5 @@ public abstract class RegularLevel extends Level
 				roomExit = r;
 			}
 		}
-
-		if(bundle.contains("mobs_to_spawn"))
-		{
-			for(Class<? extends Mob> mob : bundle.getClassArray("mobs_to_spawn"))
-			{
-				if(mob != null) mobsToSpawn.add(mob);
-			}
-		}
 	}
-
 }

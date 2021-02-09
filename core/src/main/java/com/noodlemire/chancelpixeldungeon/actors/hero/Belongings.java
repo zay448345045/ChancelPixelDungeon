@@ -29,10 +29,13 @@ import com.noodlemire.chancelpixeldungeon.items.KindOfWeapon;
 import com.noodlemire.chancelpixeldungeon.items.KindofMisc;
 import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.items.bags.Bag;
+import com.noodlemire.chancelpixeldungeon.items.bags.MiscSlots;
 import com.noodlemire.chancelpixeldungeon.items.keys.GoldenKey;
 import com.noodlemire.chancelpixeldungeon.items.keys.IronKey;
 import com.noodlemire.chancelpixeldungeon.items.keys.Key;
 import com.noodlemire.chancelpixeldungeon.items.keys.SkeletonKey;
+import com.noodlemire.chancelpixeldungeon.items.potions.Potion;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.Scroll;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfCleansing;
 import com.noodlemire.chancelpixeldungeon.items.wands.Wand;
 import com.noodlemire.chancelpixeldungeon.journal.Notes;
@@ -44,17 +47,18 @@ import java.util.Iterator;
 
 public class Belongings implements Iterable<Item>
 {
+	public static final int BACKPACK_SIZE = 22;
+	public static final int MAX_MISC_AMOUNT = 21;
 
-	public static final int BACKPACK_SIZE = 20;
-
-	private Hero owner;
+	private final Hero owner;
 
 	public Bag backpack;
 
+	public MiscSlots miscSlots;
+
 	public KindOfWeapon weapon = null;
 	public Armor armor = null;
-	public KindofMisc misc1 = null;
-	public KindofMisc misc2 = null;
+	public KindofMisc classMisc = null;
 
 	public Belongings(Hero owner)
 	{
@@ -66,27 +70,34 @@ public class Belongings implements Iterable<Item>
 			size = BACKPACK_SIZE;
 		}};
 		backpack.owner = owner;
+
+		miscSlots = new MiscSlots(){{
+			name = Messages.get(MiscSlots.class, "name");
+			size = 0;
+		}};
+		miscSlots.owner = owner;
 	}
 
 	private static final String WEAPON = "weapon";
 	private static final String ARMOR = "armor";
-	private static final String MISC1 = "misc1";
-	private static final String MISC2 = "misc2";
+	private static final String CLASS_MISC = "class_misc";
+	private static final String MISC_SLOTS = "misc_slots";
 
 	public void storeInBundle(Bundle bundle)
 	{
-
 		backpack.storeInBundle(bundle);
 
 		bundle.put(WEAPON, weapon);
 		bundle.put(ARMOR, armor);
-		bundle.put(MISC1, misc1);
-		bundle.put(MISC2, misc2);
+		bundle.put(CLASS_MISC, classMisc);
+
+		Bundle miscs = new Bundle();
+		miscSlots.storeInBundle(miscs);
+		bundle.put(MISC_SLOTS, miscs);
 	}
 
 	public void restoreFromBundle(Bundle bundle)
 	{
-
 		//moving keys to Notes, for pre-0.6.1 saves
 		if(bundle.contains("ironKeys"))
 		{
@@ -122,54 +133,38 @@ public class Belongings implements Iterable<Item>
 		backpack.clear();
 		backpack.restoreFromBundle(bundle);
 
+		miscSlots.clear();
+		miscSlots.size = owner.slot_lvl;
+		if(bundle.contains(MISC_SLOTS))
+			miscSlots.restoreFromBundle(bundle.getBundle(MISC_SLOTS));
+
 		weapon = (KindOfWeapon) bundle.get(WEAPON);
 		if(weapon != null)
-		{
 			weapon.activate(owner);
-		}
 
 		armor = (Armor) bundle.get(ARMOR);
 		if(armor != null)
-		{
 			armor.activate(owner);
-		}
 
-		misc1 = (KindofMisc) bundle.get(MISC1);
-		if(misc1 != null)
-		{
-			misc1.activate(owner);
-		}
-
-		misc2 = (KindofMisc) bundle.get(MISC2);
-		if(misc2 != null)
-		{
-			misc2.activate(owner);
-		}
+		classMisc = (KindofMisc) bundle.get(CLASS_MISC);
+		if(classMisc != null)
+			classMisc.activate(owner);
 	}
 
 	static void preview(GamesInProgress.Info info, Bundle bundle)
 	{
 		if(bundle.contains(ARMOR))
-		{
 			info.armorTier = ((Armor) bundle.get(ARMOR)).tier;
-		}
 		else
-		{
 			info.armorTier = 0;
-		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends Item> T getItem(Class<T> itemClass)
 	{
-
 		for(Item item : this)
-		{
 			if(itemClass.isInstance(item))
-			{
 				return (T) item;
-			}
-		}
 
 		return null;
 	}
@@ -177,12 +172,8 @@ public class Belongings implements Iterable<Item>
 	public Item getSimilar(Item similar)
 	{
 		for(Item item : this)
-		{
 			if(item != similar && item.isSimilar(similar))
-			{
 				return item;
-			}
-		}
 
 		return null;
 	}
@@ -190,9 +181,7 @@ public class Belongings implements Iterable<Item>
 	public void identify()
 	{
 		for(Item item : this)
-		{
 			item.identify();
-		}
 	}
 
 	public void observe()
@@ -202,30 +191,33 @@ public class Belongings implements Iterable<Item>
 			weapon.identify();
 			Badges.validateItemLevelAquired(weapon);
 		}
+
 		if(armor != null)
 		{
 			armor.identify();
 			Badges.validateItemLevelAquired(armor);
 		}
-		if(misc1 != null)
+
+		for(Item misc : miscSlots)
 		{
-			misc1.identify();
-			Badges.validateItemLevelAquired(misc1);
+			misc.identify();
+			Badges.validateItemLevelAquired(misc);
 		}
-		if(misc2 != null)
-		{
-			misc2.identify();
-			Badges.validateItemLevelAquired(misc2);
-		}
+
 		for(Item item : backpack)
 		{
 			item.cursedKnown = true;
+
+			if(item instanceof Potion)
+				((Potion)item).setDangerKnown();
+			else if(item instanceof Scroll)
+				((Scroll)item).setDangerKnown();
 		}
 	}
 
 	public void uncurseEquipped()
 	{
-		ScrollOfCleansing.uncurse(owner, false, armor, weapon, misc1, misc2);
+		ScrollOfCleansing.uncurse(owner, false, armor, weapon);//, misc1, misc2);
 	}
 
 	public Item randomUnequipped()
@@ -270,21 +262,15 @@ public class Belongings implements Iterable<Item>
 			armor.activate(owner);
 		}
 
-		if(misc1 != null)
+		for(Item misc : miscSlots)
 		{
-			misc1.cursed = false;
-			misc1.activate(owner);
-		}
-		if(misc2 != null)
-		{
-			misc2.cursed = false;
-			misc2.activate(owner);
+			misc.cursed = false;
+			((KindofMisc)misc).activate(owner);
 		}
 	}
 
 	public int charge(float charge)
 	{
-
 		int count = 0;
 
 		for(Wand.Charger charger : owner.buffs(Wand.Charger.class))
@@ -304,18 +290,18 @@ public class Belongings implements Iterable<Item>
 
 	private class ItemIterator implements Iterator<Item>
 	{
-
 		private int index = 0;
 
 		private Iterator<Item> backpackIterator = backpack.iterator();
 
-		private Item[] equipped = {weapon, armor, misc1, misc2};
+		private Iterator<Item> miscIterator = miscSlots.iterator();
+
+		private Item[] equipped = {weapon, armor};
 		private int backpackIndex = equipped.length;
 
 		@Override
 		public boolean hasNext()
 		{
-
 			for(int i = index; i < backpackIndex; i++)
 			{
 				if(equipped[i] != null)
@@ -324,21 +310,25 @@ public class Belongings implements Iterable<Item>
 				}
 			}
 
+			if(miscIterator.hasNext())
+				return true;
+
 			return backpackIterator.hasNext();
 		}
 
 		@Override
 		public Item next()
 		{
-
 			while(index < backpackIndex)
 			{
 				Item item = equipped[index++];
+
 				if(item != null)
-				{
 					return item;
-				}
 			}
+
+			if(miscIterator.hasNext())
+				return miscIterator.next();
 
 			return backpackIterator.next();
 		}
@@ -354,14 +344,11 @@ public class Belongings implements Iterable<Item>
 				case 1:
 					equipped[1] = armor = null;
 					break;
-				case 2:
-					equipped[2] = misc1 = null;
-					break;
-				case 3:
-					equipped[3] = misc2 = null;
-					break;
 				default:
-					backpackIterator.remove();
+					if(miscIterator.hasNext())
+						miscIterator.remove();
+					else
+						backpackIterator.remove();
 			}
 		}
 	}

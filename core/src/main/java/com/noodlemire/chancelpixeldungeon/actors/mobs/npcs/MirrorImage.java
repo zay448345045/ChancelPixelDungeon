@@ -49,7 +49,6 @@ public class MirrorImage extends NPC
 		spriteClass = MirrorSprite.class;
 
 		setHT(8, true);
-		defenseSkill = 1;
 
 		alignment = Alignment.ALLY;
 		state = HUNTING;
@@ -186,6 +185,12 @@ public class MirrorImage extends NPC
 		}
 		else
 			return 0;
+	}
+
+	@Override
+	public int defenseSkill()
+	{
+		return 1;
 	}
 
 	@Override

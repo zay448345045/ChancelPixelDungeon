@@ -198,7 +198,7 @@ public abstract class RegularPainter extends Painter
 				if(d.type == Room.Door.Type.REGULAR)
 				{
 					//chance for a hidden door scales from 3/21 on floor 2 to 3/3 on floor 20
-					if(Dungeon.depth > 1 &&
+					if(Dungeon.depth > 1 && Dungeon.depth != 5 &&
 					   (Dungeon.depth >= 20 || Random.Int(23 - Dungeon.depth) < Dungeon.depth))
 					{
 						d.type = Room.Door.Type.HIDDEN;

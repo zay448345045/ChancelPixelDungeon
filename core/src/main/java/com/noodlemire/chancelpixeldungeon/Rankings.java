@@ -163,9 +163,9 @@ public enum Rankings
 		System.out.println("Getting potions.");
 		Potion.saveSelectively(handler, belongings.backpack.items);
 		System.out.println("Potions get?");
-		//include worn rings
-		if(belongings.misc1 != null) belongings.backpack.items.add(belongings.misc1);
-		if(belongings.misc2 != null) belongings.backpack.items.add(belongings.misc2);
+		//include worn miscs
+		//if(belongings.misc1 != null) belongings.backpack.items.add(belongings.misc1);
+		//if(belongings.misc2 != null) belongings.backpack.items.add(belongings.misc2);
 		Ring.saveSelectively(handler, belongings.backpack.items);
 		rec.gameData.put(HANDLERS, handler);
 
@@ -189,9 +189,7 @@ public enum Rankings
 
 		Bundle handler = data.getBundle(HANDLERS);
 		Scroll.restore(handler);
-		System.out.println("Restoring Potions");
 		Potion.restore(handler);
-		System.out.println("Potions restored?");
 		Ring.restore(handler);
 
 		Badges.loadLocal(data.getBundle(BADGES));
@@ -201,7 +199,6 @@ public enum Rankings
 		Statistics.restoreFromBundle(data.getBundle(STATS));
 
 		Dungeon.challenges = data.getInt(CHALLENGES);
-
 	}
 
 	private static final String RECORDS = "records";
@@ -225,7 +222,6 @@ public enum Rankings
 		{
 			ChancelPixelDungeon.reportException(e);
 		}
-
 	}
 
 	public void load()

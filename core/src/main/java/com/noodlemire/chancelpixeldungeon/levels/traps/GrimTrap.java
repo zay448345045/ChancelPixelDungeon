@@ -24,6 +24,7 @@ package com.noodlemire.chancelpixeldungeon.levels.traps;
 import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
+import com.noodlemire.chancelpixeldungeon.actors.Amphora;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
@@ -38,7 +39,6 @@ import com.watabou.utils.Callback;
 
 public class GrimTrap extends Trap
 {
-
 	{
 		color = GREY;
 		shape = LARGE_DOT;
@@ -62,7 +62,7 @@ public class GrimTrap extends Trap
 			for(Char ch : Actor.chars())
 			{
 				//But exclude geysers.
-				if(ch instanceof Geyser)
+				if(ch instanceof Geyser || ch instanceof Amphora)
 					continue;
 
 				Ballistica bolt = new Ballistica(pos, ch.pos, Ballistica.PROJECTILE);

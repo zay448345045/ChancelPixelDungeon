@@ -40,6 +40,13 @@ public abstract class Geyser extends Char
 	}
 
 	@Override
+	protected boolean act()
+	{
+		spend(TICK);
+		return true;
+	}
+
+	@Override
 	public void destroy()
 	{
 		super.destroy();

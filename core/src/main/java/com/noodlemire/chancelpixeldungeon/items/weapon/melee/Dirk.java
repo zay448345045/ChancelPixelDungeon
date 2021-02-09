@@ -26,8 +26,8 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 public class Dirk extends AssassinsBlade
 {
 	{
-		//deals 67% toward max to max on surprise, instead of min to max.
-		SURPRISE_BONUS_RATE = 0.67f;
+		//deals 33% extra damage on surprise attack
+		SURPRISE_BONUS_RATE = 1.33f;
 		image = ItemSpriteSheet.DIRK;
 		tier = 2;
 

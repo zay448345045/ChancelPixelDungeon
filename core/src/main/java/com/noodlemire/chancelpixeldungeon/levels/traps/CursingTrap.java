@@ -30,7 +30,6 @@ import com.noodlemire.chancelpixeldungeon.items.EquipableItem;
 import com.noodlemire.chancelpixeldungeon.items.Heap;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.KindOfWeapon;
-import com.noodlemire.chancelpixeldungeon.items.KindofMisc;
 import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Boomerang;
@@ -98,17 +97,7 @@ public class CursingTrap extends Trap
 				canCurse.add(armor);
 		}
 
-		KindofMisc misc1 = hero.belongings.misc1;
-		if(misc1 != null)
-		{
-			canCurse.add(misc1);
-		}
-
-		KindofMisc misc2 = hero.belongings.misc2;
-		if(misc2 != null)
-		{
-			canCurse.add(misc2);
-		}
+		canCurse.addAll(hero.belongings.miscSlots.items);
 
 		Collections.shuffle(priorityCurse);
 		Collections.shuffle(canCurse);

@@ -403,10 +403,9 @@ public class CursedWand
 				{
 					public void call()
 					{
-						Mimic mimic = Mimic.spawnAt(bolt.collisionPos, new ArrayList<Item>());
+						Mimic mimic = Mimic.spawnAt(bolt.collisionPos, new ArrayList<Item>(), Dungeon.depth + 10);
 						if(mimic != null)
 						{
-							mimic.adjustStats(Dungeon.depth + 10);
 							Item reward;
 							do
 							{

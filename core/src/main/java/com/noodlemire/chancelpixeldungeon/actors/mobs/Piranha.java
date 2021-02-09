@@ -42,8 +42,6 @@ public class Piranha extends Mob
 
 		baseSpeed = 2f;
 
-		EXP = 0;
-
 		loot = MysteryMeat.class;
 		lootChance = 1f;
 
@@ -56,8 +54,8 @@ public class Piranha extends Mob
 	{
 		super();
 
+		EXP = Dungeon.depth;
 		setHT(15 + Dungeon.depth * 5, true);
-		defenseSkill = 10 + Dungeon.depth * 2;
 	}
 
 	@Override
@@ -89,6 +87,12 @@ public class Piranha extends Mob
 	public int drRoll()
 	{
 		return Random.NormalIntRange(0, Dungeon.depth);
+	}
+
+	@Override
+	public int defenseSkill()
+	{
+		return 10 + Dungeon.depth * 2;
 	}
 
 	@Override

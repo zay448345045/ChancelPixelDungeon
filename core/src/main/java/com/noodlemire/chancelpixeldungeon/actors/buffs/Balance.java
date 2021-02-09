@@ -94,8 +94,8 @@ public class Balance extends FlavourBuff
 
 			if(hero.belongings.weapon != null) count++;
 			if(hero.belongings.armor != null) count++;
-			if(hero.belongings.misc1 != null) count++;
-			if(hero.belongings.misc2 != null) count++;
+			//if(hero.belongings.misc1 != null) count++;
+			//if(hero.belongings.misc2 != null) count++;
 
 			int average = (int) Math.ceil((b.weapon + b.armor + b.misc1 + b.misc2) / count);
 
@@ -124,10 +124,10 @@ public class Balance extends FlavourBuff
 			else b.weapon = 0;
 			if(hero.belongings.armor != null) b.armor = hero.belongings.armor.rawLevel();
 			else b.armor = 0;
-			if(hero.belongings.misc1 != null) b.misc1 = hero.belongings.misc1.rawLevel();
-			else b.misc1 = 0;
-			if(hero.belongings.misc2 != null) b.misc2 = hero.belongings.misc2.rawLevel();
-			else b.misc2 = 0;
+			//if(hero.belongings.misc1 != null) b.misc1 = hero.belongings.misc1.rawLevel();
+			//else b.misc1 = 0;
+			//if(hero.belongings.misc2 != null) b.misc2 = hero.belongings.misc2.rawLevel();
+			//else b.misc2 = 0;
 		}
 	}
 }

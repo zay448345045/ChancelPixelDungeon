@@ -26,6 +26,7 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.npcs.Ghost;
 import com.noodlemire.chancelpixeldungeon.effects.Ripple;
 import com.noodlemire.chancelpixeldungeon.items.DewVial;
+import com.noodlemire.chancelpixeldungeon.items.LitmusPaper;
 import com.noodlemire.chancelpixeldungeon.levels.painters.Painter;
 import com.noodlemire.chancelpixeldungeon.levels.painters.SewerPainter;
 import com.noodlemire.chancelpixeldungeon.levels.traps.AlarmTrap;
@@ -117,6 +118,7 @@ public class SewerLevel extends RegularLevel
 		if(!Dungeon.LimitedDrops.DEW_VIAL.dropped())
 		{
 			addItemToSpawn(new DewVial());
+			addItemToSpawn(new LitmusPaper());
 			Dungeon.LimitedDrops.DEW_VIAL.drop();
 		}
 
@@ -133,15 +135,17 @@ public class SewerLevel extends RegularLevel
 		return visuals;
 	}
 
+	public Group super_addVisuals()
+	{
+		super.addVisuals();
+		return visuals;
+	}
+
 	public static void addSewerVisuals(Level level, Group group)
 	{
 		for(int i = 0; i < level.length(); i++)
-		{
 			if(level.map[i] == Terrain.WALL_DECO)
-			{
 				group.add(new Sink(i));
-			}
-		}
 	}
 
 	@Override
@@ -172,7 +176,6 @@ public class SewerLevel extends RegularLevel
 
 	private static class Sink extends Emitter
 	{
-
 		private int pos;
 		private float rippleDelay = 0;
 
@@ -222,7 +225,6 @@ public class SewerLevel extends RegularLevel
 
 	public static final class WaterParticle extends PixelParticle
 	{
-
 		public WaterParticle()
 		{
 			super();

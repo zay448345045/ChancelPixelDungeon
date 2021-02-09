@@ -28,11 +28,8 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class MagicalHolster extends Bag
 {
-
 	{
 		image = ItemSpriteSheet.HOLSTER;
-
-		size = 20;
 	}
 
 	public static final float HOLSTER_SCALE_FACTOR = 0.85f;
@@ -93,5 +90,4 @@ public class MagicalHolster extends Bag
 	{
 		return 60;
 	}
-
 }

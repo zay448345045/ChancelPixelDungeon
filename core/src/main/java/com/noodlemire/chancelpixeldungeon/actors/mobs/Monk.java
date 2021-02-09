@@ -40,11 +40,9 @@ public class Monk extends Mob
 	{
 		spriteClass = MonkSprite.class;
 
-		setHT(86, true);
-		defenseSkill = 30;
+		EXP = Random.IntRange(15, 19);
 
-		EXP = 11;
-		maxLvl = 21;
+		setHT(EXP * 5 + 1, true);
 
 		//loot = new Food(); //New loot coming soon.
 		//lootChance = 0.083f;
@@ -55,13 +53,13 @@ public class Monk extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(12, 25);
+		return Random.NormalIntRange(EXP - 3, EXP * 2 - 5);
 	}
 
 	@Override
 	public int attackSkill(Char target)
 	{
-		return 30;
+		return EXP * 2;
 	}
 
 	@Override
@@ -71,9 +69,9 @@ public class Monk extends Mob
 	}
 
 	@Override
-	public int drRoll()
+	public int defenseSkill()
 	{
-		return Random.NormalIntRange(0, 2);
+		return EXP * 3;
 	}
 
 	@Override

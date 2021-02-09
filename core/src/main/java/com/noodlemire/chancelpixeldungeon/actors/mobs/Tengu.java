@@ -27,7 +27,6 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.ToxicGas;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Poison;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass;
@@ -56,7 +55,6 @@ public class Tengu extends Mob
 
 		setHT(200, true);
 		EXP = 20;
-		defenseSkill = 20;
 
 		HUNTING = new Hunting();
 
@@ -92,18 +90,17 @@ public class Tengu extends Mob
 	}
 
 	@Override
+	public int defenseSkill()
+	{
+		return 20;
+	}
+
+	@Override
 	public void damage(int dmg, Object src)
 	{
 		int beforeHitHP = HP();
 		super.damage(dmg, src);
 		dmg = beforeHitHP - HP();
-
-		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if(lock != null)
-		{
-			int multiple = beforeHitHP > HT() / 2 ? 1 : 4;
-			lock.addTime(dmg * multiple);
-		}
 
 		//phase 2 of the fight is over
 		if(HP() == 0 && beforeHitHP <= HT() / 2)

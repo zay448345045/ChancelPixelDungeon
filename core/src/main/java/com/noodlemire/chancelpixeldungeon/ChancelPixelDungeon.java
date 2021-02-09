@@ -154,7 +154,8 @@ public class ChancelPixelDungeon extends Game
 				Assets.SND_BONES,
 				Assets.SND_BEE,
 				Assets.SND_DEGRADE,
-				Assets.SND_MIMIC);
+				Assets.SND_MIMIC,
+				Assets.SND_SMASH);
 
 		if(!CPDSettings.systemFont())
 			RenderedText.setFont("pixelfont.ttf");

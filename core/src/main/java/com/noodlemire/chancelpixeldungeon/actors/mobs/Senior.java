@@ -31,12 +31,10 @@ public class Senior extends Monk
 {
 	{
 		spriteClass = SeniorSprite.class;
-	}
 
-	@Override
-	public int damageRoll()
-	{
-		return Random.NormalIntRange(16, 24);
+		EXP = 20;
+
+		setHT(100, true);
 	}
 
 	@Override
@@ -49,5 +47,4 @@ public class Senior extends Monk
 		}
 		return super.attackProc(enemy, damage);
 	}
-
 }

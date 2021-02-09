@@ -22,6 +22,7 @@
 package com.noodlemire.chancelpixeldungeon.windows;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.PixelScene;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
@@ -48,7 +49,12 @@ public class WndInfoChar extends WndTitledMessage
 
 		public CharTitle(Char ch)
 		{
-			name = PixelScene.renderText(Messages.titleCase(ch.name), 9);
+			String chName = ch.name;
+
+			if(ch instanceof Mob)
+				chName = chName + " (" + ((Mob)ch).EXP + ")";
+
+			name = PixelScene.renderText(Messages.titleCase(chName), 9);
 			name.hardlight(TITLE_COLOR);
 			add(name);
 

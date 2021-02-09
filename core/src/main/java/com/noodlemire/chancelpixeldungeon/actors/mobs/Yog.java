@@ -31,7 +31,6 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Amok;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Burning;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Charm;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.MagicImmunity;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Ooze;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
@@ -112,7 +111,6 @@ public class Yog extends Mob
 	@Override
 	public void damage(int dmg, Object src)
 	{
-
 		HashSet<Mob> fists = new HashSet<>();
 
 		for(Mob mob : Dungeon.level.mobs)
@@ -122,10 +120,6 @@ public class Yog extends Mob
 		dmg >>= fists.size();
 
 		super.damage(dmg, src);
-
-		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if(lock != null) lock.addTime(dmg * 0.5f);
-
 	}
 
 	@Override
@@ -219,7 +213,6 @@ public class Yog extends Mob
 			spriteClass = RottingFistSprite.class;
 
 			setHT(400, true);
-			defenseSkill = 25;
 
 			EXP = 0;
 
@@ -249,6 +242,12 @@ public class Yog extends Mob
 		}
 
 		@Override
+		public int defenseSkill()
+		{
+			return 25;
+		}
+
+		@Override
 		public int attackProc(Char enemy, int damage)
 		{
 			damage = super.attackProc(enemy, damage);
@@ -274,14 +273,6 @@ public class Yog extends Mob
 			return super.act();
 		}
 
-		@Override
-		public void damage(int dmg, Object src)
-		{
-			super.damage(dmg, src);
-			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-			if(lock != null) lock.addTime(dmg * 0.5f);
-		}
-
 		{
 			immunities.add(Paralysis.class);
 			immunities.add(Amok.class);
@@ -298,7 +289,6 @@ public class Yog extends Mob
 			spriteClass = BurningFistSprite.class;
 
 			setHT(300, true);
-			defenseSkill = 25;
 
 			EXP = 0;
 
@@ -325,6 +315,12 @@ public class Yog extends Mob
 		public int drRoll()
 		{
 			return Random.NormalIntRange(0, 15);
+		}
+
+		@Override
+		public int defenseSkill()
+		{
+			return 25;
 		}
 
 		@Override
@@ -379,19 +375,9 @@ public class Yog extends Mob
 			return super.act();
 		}
 
-		@Override
-		public void damage(int dmg, Object src)
-		{
-			super.damage(dmg, src);
-			LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-			if(lock != null) lock.addTime(dmg * 0.5f);
-		}
-
 		{
 			resistances.add(ToxicGas.class);
-		}
 
-		{
 			immunities.add(Amok.class);
 			immunities.add(Sleep.class);
 			immunities.add(Terror.class);
@@ -405,7 +391,6 @@ public class Yog extends Mob
 			spriteClass = LarvaSprite.class;
 
 			setHT(50, true);
-			defenseSkill = 20;
 
 			EXP = 0;
 
@@ -432,5 +417,10 @@ public class Yog extends Mob
 			return Random.NormalIntRange(0, 8);
 		}
 
+		@Override
+		public int defenseSkill()
+		{
+			return 20;
+		}
 	}
 }

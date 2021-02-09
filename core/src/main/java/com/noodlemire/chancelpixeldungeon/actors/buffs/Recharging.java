@@ -27,7 +27,6 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.Belongings;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.Artifact;
-import com.noodlemire.chancelpixeldungeon.items.bags.MagicalHolster;
 import com.noodlemire.chancelpixeldungeon.items.wands.Wand;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.MagesStaff;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
@@ -63,23 +62,23 @@ public class Recharging extends DurationBuff implements Expulsion
 			Hero hero = ((Hero) target);
 			Belongings b = hero.belongings;
 
-			if(b.misc1 instanceof Artifact)
-				((Artifact) b.misc1).charge(hero, remainder());
-			if(b.misc2 instanceof Artifact)
-				((Artifact) b.misc2).charge(hero, remainder());
+			for(Item i : b.miscSlots.items)
+				if(i instanceof Wand)
+					((Wand)i).gainCharge(remainder() / 4);
+				else if(i instanceof Artifact)
+					((Artifact)i).charge(hero, remainder());
 
 			for(Item i : b.backpack.items)
-				if(i instanceof Wand)
-					((Wand) i).gainCharge(remainder() / 4);
-				else if(i instanceof MagesStaff)
+				if(i instanceof MagesStaff)
 					((MagesStaff) i).gainCharge(remainder() / 4);
-				else if(i instanceof MagicalHolster)
-					for(Item w : ((MagicalHolster)i).items)
-						if(w instanceof Wand)
-							((Wand)w).gainCharge(remainder() / 4);
 
 			if(b.weapon instanceof MagesStaff)
 				((MagesStaff) b.weapon).gainCharge(remainder() / 4);
+
+			if(b.classMisc instanceof Wand)
+				((Wand)b.classMisc).gainCharge(remainder() / 4);
+			else if(b.classMisc instanceof Artifact)
+				((Artifact)b.classMisc).charge(hero, remainder());
 		}
 
 		shorten(TICK);

@@ -74,7 +74,8 @@ public class Heap implements Bundlable
 		TOMB,
 		SKELETON,
 		REMAINS,
-		MIMIC
+		MIMIC,
+		AMPHORA
 	}
 
 	public Type type = Type.HEAP;
@@ -199,10 +200,8 @@ public class Heap implements Bundlable
 
 	public void drop(Item item)
 	{
-
 		if(item.stackable() && type != Type.FOR_SALE)
 		{
-
 			for(Item i : items)
 			{
 				if(i.isSimilar(item))
@@ -212,7 +211,6 @@ public class Heap implements Bundlable
 				}
 			}
 			items.remove(item);
-
 		}
 
 		if((item instanceof Dewdrop || item instanceof DriedRose.Petal) && type != Type.FOR_SALE)

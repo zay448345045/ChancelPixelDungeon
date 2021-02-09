@@ -39,7 +39,6 @@ import com.watabou.utils.DeviceCompat;
 
 public class WndSettings extends WndTabbed
 {
-
 	private static final int WIDTH = 112;
 	private static final int HEIGHT = 138;
 	private static final int SLIDER_HEIGHT = 24;
@@ -48,9 +47,10 @@ public class WndSettings extends WndTabbed
 	private static final int GAP_SML = 6;
 	private static final int GAP_LRG = 18;
 
-	private DisplayTab display;
-	private UITab ui;
-	private AudioTab audio;
+	private final DisplayTab display;
+	private final UITab ui;
+	private final AudioTab audio;
+	private final ControlsTab controls;
 
 	private static int last_index = 0;
 
@@ -66,6 +66,9 @@ public class WndSettings extends WndTabbed
 
 		audio = new AudioTab();
 		add(audio);
+
+		controls = new ControlsTab();
+		add(controls);
 
 		add(new LabeledTab(Messages.get(this, "display"))
 		{
@@ -100,17 +103,26 @@ public class WndSettings extends WndTabbed
 			}
 		});
 
+		add(new LabeledTab(Messages.get(this, "controls"))
+		{
+			@Override
+			protected void select(boolean value)
+			{
+				super.select(value);
+				controls.visible = controls.active = value;
+				if(value) last_index = 3;
+			}
+		});
+
 		resize(WIDTH, HEIGHT);
 
 		layoutTabs();
 
 		select(last_index);
-
 	}
 
 	private class DisplayTab extends Group
 	{
-
 		public DisplayTab()
 		{
 			super();
@@ -368,7 +380,6 @@ public class WndSettings extends WndTabbed
 
 	private class AudioTab extends Group
 	{
-
 		public AudioTab()
 		{
 			OptionSlider musicVol = new OptionSlider(Messages.get(this, "music_vol"), "0", "10", 0, 10)
@@ -425,6 +436,24 @@ public class WndSettings extends WndTabbed
 
 			resize(WIDTH, (int) btnSound.bottom());
 		}
+	}
 
+	private class ControlsTab extends Group
+	{
+		public ControlsTab()
+		{
+			CheckBox avoidBlobs = new CheckBox(Messages.get(this, "avoid_blobs"))
+			{
+				@Override
+				protected void onClick()
+				{
+					super.onClick();
+					CPDSettings.avoid_blobs(checked());
+				}
+			};
+			avoidBlobs.setRect(0, 0, WIDTH, BTN_HEIGHT);
+			avoidBlobs.checked(CPDSettings.avoid_blobs());
+			add(avoidBlobs);
+		}
 	}
 }

@@ -107,6 +107,7 @@ abstract public class Weapon extends KindOfWeapon
 
 		if(!levelKnown)
 		{
+			System.out.println("Hits To Know: " + hitsToKnow);
 			if(--hitsToKnow <= 0)
 			{
 				identify();
@@ -210,7 +211,7 @@ abstract public class Weapon extends KindOfWeapon
 	@Override
 	public Item random()
 	{
-		switch(Random.Int(5))
+		switch(Random.Int(4))
 		{
 			//case 0: normal
 			case 1:
@@ -222,10 +223,12 @@ abstract public class Weapon extends KindOfWeapon
 			case 3:
 				upgrade();
 				break;
-			case 4:
-				cursed = true;
-				enchant(Enchantment.randomCurse());
-				break;
+		}
+
+		if(Random.Int(2) == 0)
+		{
+			cursed = true;
+			enchant(Enchantment.randomCurse());
 		}
 
 		return this;

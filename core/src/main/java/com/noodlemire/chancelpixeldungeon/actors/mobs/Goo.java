@@ -23,18 +23,21 @@ package com.noodlemire.chancelpixeldungeon.actors.mobs;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Badges;
+import com.noodlemire.chancelpixeldungeon.Challenges;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
+import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.GooWarn;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Ooze;
+import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.effects.particles.ElmoParticle;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.LloydsBeacon;
 import com.noodlemire.chancelpixeldungeon.items.keys.SkeletonKey;
+import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
@@ -52,7 +55,6 @@ public class Goo extends Mob
 	{
 		setHT(100, true);
 		EXP = 10;
-		defenseSkill = 8;
 		spriteClass = GooSprite.class;
 
 		loot = new LloydsBeacon();
@@ -61,8 +63,15 @@ public class Goo extends Mob
 		properties.add(Property.BOSS);
 		properties.add(Property.DEMONIC);
 		properties.add(Property.ACIDIC);
+
+		SLEEPING = new GooSleeping();
+		state = SLEEPING;
 	}
 
+	private boolean shieldVisual = false;
+	public AiState TRACKING = new Tracking();
+
+	public Char closest_char = null;
 	private int pumpedUp = 0;
 
 	@Override
@@ -70,16 +79,17 @@ public class Goo extends Mob
 	{
 		int min = 1;
 		int max = (HP() * 2 <= HT()) ? 15 : 10;
+
 		if(pumpedUp > 0)
 		{
 			pumpedUp = 0;
 			PathFinder.buildDistanceMap(pos, BArray.not(Dungeon.level.solid, null), 2);
 			for(int i = 0; i < PathFinder.distance.length; i++)
-			{
 				if(PathFinder.distance[i] < Integer.MAX_VALUE)
 					CellEmitter.get(i).burst(ElmoParticle.FACTORY, 10);
-			}
+
 			Dungeon.playAt(Assets.SND_BURNING, pos);
+
 			return Random.NormalIntRange(min * 3, max * 3);
 		}
 		else
@@ -102,6 +112,12 @@ public class Goo extends Mob
 	}
 
 	@Override
+	public int defenseSkill()
+	{
+		return 8;
+	}
+
+	@Override
 	public int drRoll()
 	{
 		return Random.NormalIntRange(0, 2);
@@ -110,6 +126,17 @@ public class Goo extends Mob
 	@Override
 	public boolean act()
 	{
+		if(Dungeon.level.geysers.isEmpty() && shieldVisual)
+		{
+			sprite.remove(CharSprite.State.GOO_INVINCIBILITY);
+			shieldVisual = false;
+		}
+		else if(!Dungeon.level.geysers.isEmpty() && !shieldVisual)
+		{
+			sprite.add(CharSprite.State.GOO_INVINCIBILITY);
+			shieldVisual = true;
+		}
+
 		if(Dungeon.level.water[pos] && HP() < HT())
 		{
 			sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
@@ -121,7 +148,43 @@ public class Goo extends Mob
 			heal(1);
 		}
 
+		Char cur_closest_char = null;
+		int closest_dist = -1;
+
+		for(int i = 1; i < Dungeon.level.length(); i++)
+		{
+			if(i == pos)
+				continue;
+
+			Char ch = Actor.findChar(i);
+			if(ch != null && !(ch instanceof Geyser) && !ch.flying && Dungeon.level.map[i] == Terrain.WATER &&
+					(cur_closest_char == null || Dungeon.level.distance(i, pos) < closest_dist))
+			{
+				cur_closest_char = ch;
+				closest_dist = Dungeon.level.distance(i, pos);
+			}
+		}
+
+		if(cur_closest_char != null)
+		{
+			beckon(cur_closest_char.pos, cur_closest_char != closest_char);
+			closest_char = cur_closest_char;
+		}
+
 		return super.act();
+	}
+
+	@Override
+	public void beckon(int cell, boolean noticed)
+	{
+		if(state != TRACKING)
+			super.beckon(cell, noticed);
+	}
+
+	public void track(int cell)
+	{
+		super.beckon(cell);
+		state = TRACKING;
 	}
 
 	@Override
@@ -235,6 +298,13 @@ public class Goo extends Mob
 	@Override
 	public void damage(int dmg, Object src)
 	{
+		if(!Dungeon.level.geysers.isEmpty())
+		{
+			GLog.n(Messages.get(this, "absorbed_msg"));
+			sprite.showStatus(CharSprite.NEUTRAL, Messages.get(this, "absorbed"));
+			return;
+		}
+
 		boolean bleeding = (HP() * 2 <= HT());
 		super.damage(dmg, src);
 		if((HP() * 2 <= HT()) && !bleeding)
@@ -244,14 +314,11 @@ public class Goo extends Mob
 			((GooSprite) sprite).spray(true);
 			yell(Messages.get(this, "gluuurp"));
 		}
-		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if(lock != null) lock.addTime(dmg * 2);
 	}
 
 	@Override
 	public void die(Object cause)
 	{
-
 		super.die(cause);
 
 		Dungeon.level.unseal();
@@ -277,22 +344,85 @@ public class Goo extends Mob
 	@Override
 	public void storeInBundle(Bundle bundle)
 	{
-
 		super.storeInBundle(bundle);
 
 		bundle.put(PUMPEDUP, pumpedUp);
+
+		if(state == TRACKING)
+		{
+			bundle.put(STATE, Tracking.TAG);
+		}
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle)
 	{
-
 		super.restoreFromBundle(bundle);
 
 		pumpedUp = bundle.getInt(PUMPEDUP);
 		if(state != SLEEPING) BossHealthBar.assignBoss(this);
 		if((HP() * 2 <= HT())) BossHealthBar.bleed(true);
 
+		String state = bundle.getString(STATE);
+		if(state.equals(Tracking.TAG))
+		{
+			this.state = TRACKING;
+		}
 	}
 
+	protected class Tracking implements AiState
+	{
+		public static final String TAG = "TRACKING";
+
+		@Override
+		public boolean act(boolean enemyInFOV, boolean justAlerted)
+		{
+			int oldPos = pos;
+			if(target != -1 && !fieldOfView[target] && getCloser(target))
+			{
+				spend(1 / speed());
+				return moveSprite(oldPos, pos);
+			}
+			else
+			{
+				spend(TICK);
+
+				if(enemyInFOV)
+				{
+					enemySeen = true;
+
+					notice();
+					alerted = true;
+					state = HUNTING;
+					target = enemy.pos;
+
+					if(Dungeon.isChallenged(Challenges.SWARM_INTELLIGENCE))
+						for(Mob mob : Dungeon.level.mobs)
+							if(Dungeon.level.distance(pos, mob.pos) <= 8 && mob.state != mob.HUNTING)
+								mob.beckon(target);
+				}
+				else
+				{
+					sprite.showLost();
+					state = WANDERING;
+					target = Dungeon.level.randomDestination();
+				}
+
+				closest_char = null;
+
+				return true;
+			}
+		}
+	}
+
+	private class GooSleeping extends Sleeping
+	{
+		//Do not check anything when sleeping. Just sleep until something forcefully changes the AiState
+		@Override
+		public boolean act(boolean enemyInFOV, boolean justAlerted)
+		{
+			spend(TICK);
+			return true;
+		}
+	}
 }

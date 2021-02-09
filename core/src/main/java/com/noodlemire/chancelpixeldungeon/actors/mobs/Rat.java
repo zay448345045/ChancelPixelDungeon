@@ -30,27 +30,32 @@ public class Rat extends Mob
 	{
 		spriteClass = RatSprite.class;
 
-		setHT(9, true);
-		defenseSkill = 2;
+		EXP = Random.IntRange(1, 3);
 
-		maxLvl = 5;
+		setHT(8 + EXP, true);
 	}
 
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(1, 4);
+		return Random.NormalIntRange(1, 3 + EXP);
 	}
 
 	@Override
 	public int attackSkill(Char target)
 	{
-		return 8;
+		return 7 + EXP;
 	}
 
 	@Override
 	public int drRoll()
 	{
-		return Random.NormalIntRange(0, 1);
+		return Random.NormalIntRange(0, 1 + EXP / 2);
+	}
+
+	@Override
+	public int defenseSkill()
+	{
+		return 2 + EXP / 2;
 	}
 }

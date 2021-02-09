@@ -35,14 +35,12 @@ import com.watabou.noosa.Image;
 
 public class WndInfoCell extends Window
 {
-
 	private static final float GAP = 2;
 
 	private static final int WIDTH = 120;
 
 	public WndInfoCell(int cell)
 	{
-
 		super();
 
 		int tile = Dungeon.level.map[cell];

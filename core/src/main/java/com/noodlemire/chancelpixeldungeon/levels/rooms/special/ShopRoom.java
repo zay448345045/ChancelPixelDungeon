@@ -115,18 +115,15 @@ public class ShopRoom extends SpecialRoom
 
 	protected void placeShopkeeper(Level level)
 	{
-
 		int pos = level.pointToCell(center());
 
 		Mob shopkeeper = new Shopkeeper();
 		shopkeeper.pos = pos;
 		level.mobs.add(shopkeeper);
-
 	}
 
 	protected void placeItems(Level level)
 	{
-
 		if(itemsToSpawn == null)
 			itemsToSpawn = generateItems();
 
@@ -224,13 +221,32 @@ public class ShopRoom extends SpecialRoom
 				break;
 		}
 
-		itemsToSpawn.add(TippedDart.randomTipped());
-
 		itemsToSpawn.add(new MerchantsBeacon());
 
+		if(Dungeon.depth != 1)
+		{
+			itemsToSpawn.add(TippedDart.randomTipped());
+			itemsToSpawn.add(ChooseBag(Dungeon.hero.belongings));
+			itemsToSpawn.add(new Ankh());
 
-		itemsToSpawn.add(ChooseBag(Dungeon.hero.belongings));
-
+			Item rare;
+			switch(Random.Int(10))
+			{
+				case 0:
+					rare = Generator.random(Generator.Category.WAND);
+					break;
+				case 1:
+					rare = Generator.random(Generator.Category.RING);
+					break;
+				case 2:
+					rare = Generator.random(Generator.Category.ARTIFACT);
+					break;
+				default:
+					rare = Generator.random(Generator.Category.STONE);
+			}
+			rare.cursed = rare.cursedKnown = false;
+			itemsToSpawn.add(rare);
+		}
 
 		itemsToSpawn.add(new PotionOfHealing());
 		for(int i = 0; i < 3; i++)
@@ -245,7 +261,6 @@ public class ShopRoom extends SpecialRoom
 			itemsToSpawn.add(Random.Int(2) == 0 ?
 					Generator.random(Generator.Category.POTION) :
 					Generator.random(Generator.Category.SCROLL));
-
 
 		itemsToSpawn.add(new SmallRation());
 		itemsToSpawn.add(new SmallRation());
@@ -265,7 +280,6 @@ public class ShopRoom extends SpecialRoom
 				break;
 		}
 
-		itemsToSpawn.add(new Ankh());
 		itemsToSpawn.add(Generator.random(Generator.Category.STONE));
 
 		TimekeepersHourglass hourglass = Dungeon.hero.belongings.getItem(TimekeepersHourglass.class);
@@ -296,24 +310,6 @@ public class ShopRoom extends SpecialRoom
 				hourglass.sandBags++;
 			}
 		}
-
-		Item rare;
-		switch(Random.Int(10))
-		{
-			case 0:
-				rare = Generator.random(Generator.Category.WAND);
-				break;
-			case 1:
-				rare = Generator.random(Generator.Category.RING);
-				break;
-			case 2:
-				rare = Generator.random(Generator.Category.ARTIFACT);
-				break;
-			default:
-				rare = Generator.random(Generator.Category.STONE);
-		}
-		rare.cursed = rare.cursedKnown = false;
-		itemsToSpawn.add(rare);
 
 		//hard limit is 63 items + 1 shopkeeper, as shops can't be bigger than 8x8=64 internally
 		if(itemsToSpawn.size() > 63)

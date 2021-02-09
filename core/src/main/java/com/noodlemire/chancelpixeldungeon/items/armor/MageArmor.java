@@ -64,7 +64,7 @@ public class MageArmor extends ClassArmor
 					return;
 				}
 
-				curUser.dynamic(0, false);
+				curUser.dynamic(-curUser.dynamax());
 
 				for (Mob mob : Dungeon.level.mobs)
 				{

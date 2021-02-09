@@ -41,8 +41,9 @@ public class PotionOfShockwave extends Potion implements Hero.Doom
 
 	{
 		initials = 8;
+		harmful = true;
 
-		if(isIdentified()) defaultAction = AC_THROW;
+		if(isDangerKnown()) defaultAction = AC_THROW;
 	}
 
 	@Override
@@ -84,7 +85,14 @@ public class PotionOfShockwave extends Potion implements Hero.Doom
 	public void setKnown()
 	{
 		super.setKnown();
-		if(isIdentified()) defaultAction = AC_THROW;
+		if(isDangerKnown()) defaultAction = AC_THROW;
+	}
+
+	@Override
+	public void setDangerKnown()
+	{
+		super.setDangerKnown();
+		if(isDangerKnown()) defaultAction = AC_THROW;
 	}
 
 	@Override

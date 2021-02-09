@@ -27,11 +27,8 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class PotionBandolier extends Bag
 {
-
 	{
 		image = ItemSpriteSheet.BANDOLIER;
-
-		size = 20;
 	}
 
 	@Override
@@ -45,5 +42,4 @@ public class PotionBandolier extends Bag
 	{
 		return 40;
 	}
-
 }

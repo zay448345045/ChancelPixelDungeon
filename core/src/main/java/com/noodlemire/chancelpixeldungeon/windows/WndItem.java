@@ -54,7 +54,6 @@ public class WndItem extends Window
 
 	public WndItem(final WndBag owner, final Item item, final boolean options)
 	{
-
 		super();
 
 		if(INSTANCE != null)

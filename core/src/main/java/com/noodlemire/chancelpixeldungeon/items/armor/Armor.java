@@ -494,7 +494,7 @@ public class Armor extends EquipableItem
 	@Override
 	public Item random()
 	{
-		switch(Random.Int(5))
+		switch(Random.Int(4))
 		{
 			//case 0: normal
 			case 1:
@@ -506,10 +506,12 @@ public class Armor extends EquipableItem
 			case 3:
 				upgrade();
 				break;
-			case 4:
-				cursed = true;
-				inscribe(Glyph.randomCurse());
-				break;
+		}
+
+		if(Random.Int(2) == 0)
+		{
+			cursed = true;
+			inscribe(Glyph.randomCurse());
 		}
 
 		return this;

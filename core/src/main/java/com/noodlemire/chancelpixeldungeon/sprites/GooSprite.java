@@ -32,7 +32,6 @@ import com.watabou.utils.Random;
 
 public class GooSprite extends MobSprite
 {
-
 	private Animation pump;
 	private Animation pumpAttack;
 

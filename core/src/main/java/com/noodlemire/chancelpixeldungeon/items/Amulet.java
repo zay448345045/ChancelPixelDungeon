@@ -33,9 +33,11 @@ import com.noodlemire.chancelpixeldungeon.items.potions.Potion;
 import com.noodlemire.chancelpixeldungeon.items.rings.Ring;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.Scroll;
 import com.noodlemire.chancelpixeldungeon.journal.Catalog;
+import com.noodlemire.chancelpixeldungeon.levels.traps.CursingTrap;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.AmuletScene;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.scenes.InterlevelScene;
 import com.noodlemire.chancelpixeldungeon.scenes.PixelScene;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
@@ -63,10 +65,13 @@ public class Amulet extends Item
 	private static final String AC_END = "END";
 
 	private static final String AC_COLLECT = "COLLECT";
+	private static final String AC_CURSE = "CURSE";
 	private static final String AC_ENCHANT = "ENCHANT";
 	private static final String AC_LEVEL = "LEVEL";
+	private static final String AC_REVEAL = "REVEAL";
 	private static final String AC_SUMMON = "SUMMON";
-	private static final String AC_TRAVEL = "TRAVEL";
+	private static final String AC_TRAVEL_UP = "TRAVEL_UP";
+	private static final String AC_TRAVEL_DOWN = "TRAVEL_DOWN";
 
 	{
 		image = ItemSpriteSheet.AMULET;
@@ -83,10 +88,13 @@ public class Amulet extends Item
 		if(DEBUG)
 		{
 			actions.add(AC_COLLECT);
+			actions.add(AC_CURSE);
 			actions.add(AC_ENCHANT);
 			actions.add(AC_LEVEL);
+			actions.add(AC_REVEAL);
 			actions.add(AC_SUMMON);
-			actions.add(AC_TRAVEL);
+			actions.add(AC_TRAVEL_UP);
+			actions.add(AC_TRAVEL_DOWN);
 		}
 
 		return actions;
@@ -102,6 +110,35 @@ public class Amulet extends Item
 
 		if(action.equals(AC_COLLECT))
 			GameScene.show(new WndCollect());
+
+		if(action.equals(AC_CURSE))
+			CursingTrap.curse(hero);
+
+		if(action.equals(AC_REVEAL))
+		{
+			for (int i = 0; i < Dungeon.level.length(); i++)
+			{
+				Dungeon.level.mapped[i] = true;
+				Dungeon.observe();
+			}
+		}
+
+		if(action.equals(AC_TRAVEL_DOWN))
+		{
+			InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
+			Game.switchScene(InterlevelScene.class);
+		}
+
+		if(action.equals(AC_TRAVEL_UP))
+		{
+			InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
+			Game.switchScene(InterlevelScene.class);
+		}
+
+		if(action.equals(AC_LEVEL))
+		{
+			Dungeon.hero.earnExp(Dungeon.hero.maxExp());
+		}
 	}
 
 	@Override

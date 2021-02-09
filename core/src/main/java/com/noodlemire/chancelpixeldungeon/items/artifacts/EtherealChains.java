@@ -26,7 +26,6 @@ import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Cripple;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.Chains;
 import com.noodlemire.chancelpixeldungeon.effects.Pushing;
@@ -296,8 +295,7 @@ public class EtherealChains extends Artifact
 		public boolean act()
 		{
 			int chargeTarget = 5 + (level() * 2);
-			LockedFloor lock = target.buff(LockedFloor.class);
-			if(charge < chargeTarget && (!cursed || isBound()) && (lock == null || lock.regenOn()))
+			if(charge < chargeTarget && (!cursed || isBound()))
 				partialCharge += 1 / (40f - (chargeTarget - charge) * 2f);
 			else if(cursed && !isBound() && Random.Int(100) == 0)
 				Buff.prolong(target, Cripple.class, 10f);

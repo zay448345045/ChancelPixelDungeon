@@ -277,7 +277,7 @@ public class WandOfCorruption extends Wand
 			Statistics.enemiesSlain++;
 			Badges.validateMonstersSlain();
 			Statistics.qualifiedForNoKilling = false;
-			if(enemy.EXP > 0 && curUser.lvl <= enemy.maxLvl)
+			if(enemy.EXP > 0)
 			{
 				curUser.sprite.showStatus(CharSprite.POSITIVE, Messages.get(enemy, "exp", enemy.EXP));
 				curUser.earnExp(enemy.EXP);
@@ -285,9 +285,7 @@ public class WandOfCorruption extends Wand
 			enemy.rollToDropLoot();
 		}
 		else
-		{
 			Buff.affect(enemy, Doom.class);
-		}
 	}
 
 	@Override

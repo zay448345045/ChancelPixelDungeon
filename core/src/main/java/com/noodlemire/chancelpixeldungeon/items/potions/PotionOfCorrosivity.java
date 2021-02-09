@@ -10,8 +10,9 @@ public class PotionOfCorrosivity extends Potion
 {
 	{
 		initials = 15;
+		harmful = true;
 
-		if(isIdentified()) defaultAction = AC_THROW;
+		if(isDangerKnown()) defaultAction = AC_THROW;
 	}
 
 	@Override
@@ -29,7 +30,14 @@ public class PotionOfCorrosivity extends Potion
 	public void setKnown()
 	{
 		super.setKnown();
-		if(isIdentified()) defaultAction = AC_THROW;
+		if(isDangerKnown()) defaultAction = AC_THROW;
+	}
+
+	@Override
+	public void setDangerKnown()
+	{
+		super.setDangerKnown();
+		if(isDangerKnown()) defaultAction = AC_THROW;
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
+import com.noodlemire.chancelpixeldungeon.actors.hero.HeroClass;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.KindofMisc;
@@ -61,24 +62,36 @@ public class Artifact extends KindofMisc implements Transmutable
 	@Override
 	public boolean doEquip(final Hero hero)
 	{
-		if((hero.belongings.misc1 != null && hero.belongings.misc1.getClass() == this.getClass())
-		   || (hero.belongings.misc2 != null && hero.belongings.misc2.getClass() == this.getClass()))
+		for(Item i : hero.belongings.miscSlots.items)
+		{
+			if (i.getClass() == this.getClass())
+			{
+				GLog.w(Messages.get(Artifact.class, "cannot_wear_two"));
+				return false;
+			}
+		}
+
+		if(hero.belongings.classMisc != null && hero.belongings.classMisc.getClass() == this.getClass())
 		{
 			GLog.w(Messages.get(Artifact.class, "cannot_wear_two"));
 			return false;
 		}
-		else
+
+		if(hero.heroClass == HeroClass.ROGUE && hero.belongings.classMisc == null)
 		{
-			if(super.doEquip(hero))
-			{
-				identify();
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			hero.belongings.classMisc = this;
+			identify();
+			afterEquip(hero);
+			return true;
 		}
+
+		if(super.doEquip(hero))
+		{
+			identify();
+			return true;
+		}
+		else
+			return false;
 	}
 
 	public void activate(Char ch)
@@ -92,8 +105,11 @@ public class Artifact extends KindofMisc implements Transmutable
 	{
 		if(super.doUnequip(hero, collect, single))
 		{
-			passiveBuff.detach();
-			passiveBuff = null;
+			if(passiveBuff != null)
+			{
+				passiveBuff.detach();
+				passiveBuff = null;
+			}
 
 			if(activeBuff != null)
 			{
@@ -104,9 +120,7 @@ public class Artifact extends KindofMisc implements Transmutable
 			return true;
 		}
 		else
-		{
 			return false;
-		}
 	}
 
 	@Override
@@ -198,7 +212,7 @@ public class Artifact extends KindofMisc implements Transmutable
 		//always +0
 
 		//30% chance to be cursed
-		if(Random.Float() < 0.3f)
+		if(Random.Int(2) == 0)
 			cursed = true;
 
 		return this;

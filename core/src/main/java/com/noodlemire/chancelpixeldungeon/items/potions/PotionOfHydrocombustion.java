@@ -32,8 +32,9 @@ public class PotionOfHydrocombustion extends Potion
 {
 	{
 		initials = 5;
+		harmful = true;
 
-		if(isIdentified()) defaultAction = AC_THROW;
+		if(isDangerKnown()) defaultAction = AC_THROW;
 	}
 
 	@Override
@@ -41,7 +42,6 @@ public class PotionOfHydrocombustion extends Potion
 	{
 		if(Dungeon.level.heroFOV[cell])
 			splash(cell);
-
 
 		Dungeon.playAt(Assets.SND_SHATTER, cell);
 
@@ -54,7 +54,14 @@ public class PotionOfHydrocombustion extends Potion
 	public void setKnown()
 	{
 		super.setKnown();
-		if(isIdentified()) defaultAction = AC_THROW;
+		if(isDangerKnown()) defaultAction = AC_THROW;
+	}
+
+	@Override
+	public void setDangerKnown()
+	{
+		super.setDangerKnown();
+		if(isDangerKnown()) defaultAction = AC_THROW;
 	}
 
 	@Override

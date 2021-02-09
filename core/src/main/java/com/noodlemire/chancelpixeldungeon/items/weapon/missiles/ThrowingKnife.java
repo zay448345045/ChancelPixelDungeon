@@ -60,12 +60,7 @@ public class ThrowingKnife extends MissileWeapon
 			Hero hero = (Hero) owner;
 			if(enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero))
 			{
-				//deals 75% toward max to max on surprise, instead of min to max.
-				int diff = max() - min();
-
-				return augment.damageFactor(hero.dynamicRoll(
-						min() + Math.round(diff * 0.75f),
-						max()));
+				return Math.round(super.damageRoll(owner) * 1.5f);
 			}
 		}
 		return super.damageRoll(owner);

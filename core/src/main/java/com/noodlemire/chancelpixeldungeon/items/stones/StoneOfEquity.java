@@ -4,7 +4,9 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.DynamicRecovery;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Hunger;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Regeneration;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.Artifact;
 import com.noodlemire.chancelpixeldungeon.items.rings.Ring;
@@ -22,10 +24,12 @@ public class StoneOfEquity extends Runestone
 	private static boolean isRemovable(Buff target)
 	{
 		return !(target instanceof Hunger ||
-		         target instanceof Regeneration ||
-		         target instanceof Ring.RingBuff ||
-		         target instanceof Artifact.ArtifactBuff ||
-		         target instanceof Wand.Charger);
+				target instanceof Regeneration ||
+				target instanceof DynamicRecovery ||
+				target instanceof Ring.RingBuff ||
+				target instanceof Artifact.ArtifactBuff ||
+				target instanceof Wand.Charger ||
+				target instanceof LockedFloor);
 	}
 
 	@Override

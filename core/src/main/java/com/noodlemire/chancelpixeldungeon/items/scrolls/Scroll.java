@@ -63,6 +63,8 @@ import java.util.HashSet;
 
 public abstract class Scroll extends Item implements Transmutable
 {
+	public boolean should_shout = false;
+
 	private static final String AC_READ = "READ";
 	static final String AC_SHOUT = "SHOUT";
 
@@ -321,6 +323,20 @@ public abstract class Scroll extends Item implements Transmutable
 		}
 	}
 
+	public boolean isDangerKnown()
+	{
+		return handler != null && handler.isDangerKnown(this);
+	}
+
+	public void setDangerKnown()
+	{
+		if(!isKnown() && !isDangerKnown())
+		{
+			handler.setDangerKnown(this);
+			updateQuickslot();
+		}
+	}
+
 	@Override
 	public Item identify()
 	{
@@ -337,11 +353,26 @@ public abstract class Scroll extends Item implements Transmutable
 	@Override
 	public String info()
 	{
-		return isKnown() ?
+		/*return isKnown() ?
 				desc() :
 				image != ItemSpriteSheet.SCROLL_MYSTERY ?
 						Messages.get(this, "unknown_desc") :
-						Messages.get(this, "mystery_desc");
+						Messages.get(this, "mystery_desc");*/
+
+		if(isKnown())
+			return desc();
+		else
+		{
+			String info = image == ItemSpriteSheet.SCROLL_MYSTERY ?
+					Messages.get(this, "mystery_desc") :
+					Messages.get(this, "unknown_desc");
+
+			if(isDangerKnown())
+				info += "\n\n" + (should_shout ? Messages.get(this, "should_shout")
+						: Messages.get(this, "should_read"));
+
+			return info;
+		}
 	}
 
 	public Integer initials()

@@ -34,12 +34,10 @@ public class Bat extends Mob
 	{
 		spriteClass = BatSprite.class;
 
-		setHT(39, true);
-		defenseSkill = 15;
-		baseSpeed = 2f;
+		EXP = Random.IntRange(8, 12);
 
-		EXP = 7;
-		maxLvl = 15;
+		setHT(EXP * 4 + 5, true);
+		baseSpeed = 2f;
 
 		flying = true;
 
@@ -50,19 +48,25 @@ public class Bat extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(5, 18);
+		return Random.NormalIntRange(EXP / 2, EXP * 2 + 2);
 	}
 
 	@Override
 	public int attackSkill(Char target)
 	{
-		return 16;
+		return EXP * 2;
 	}
 
 	@Override
 	public int drRoll()
 	{
-		return Random.NormalIntRange(0, 4);
+		return Random.NormalIntRange(0, EXP / 2);
+	}
+
+	@Override
+	public int defenseSkill()
+	{
+		return EXP + 6;
 	}
 
 	@Override

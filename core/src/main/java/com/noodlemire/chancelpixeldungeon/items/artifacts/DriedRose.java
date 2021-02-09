@@ -29,7 +29,6 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.CorrosiveGas;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.ToxicGas;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Burning;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Corruption;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Wraith;
@@ -334,8 +333,7 @@ public class DriedRose extends Artifact
 			if(ghost != null)
 				return true;
 
-			LockedFloor lock = target.buff(LockedFloor.class);
-			if(charge < chargeCap && (!cursed || isBound()) && (lock == null || lock.regenOn()))
+			if(charge < chargeCap && (!cursed || isBound()))
 			{
 				partialCharge += 1 / 5f; //500 turns to a full charge
 				if(partialCharge > 1)
@@ -455,7 +453,6 @@ public class DriedRose extends Artifact
 			if(rose == null)
 				rose = Dungeon.hero.belongings.getItem(DriedRose.class);
 
-			defenseSkill = (Dungeon.hero.lvl + 4) * 2;
 			if(rose == null) return;
 			setHT(20 + 4 * rose.level(), false);
 		}
@@ -621,6 +618,12 @@ public class DriedRose extends Artifact
 				defense = Math.round(rose.armor.evasionFactor(this, defense));
 
 			return defense;
+		}
+
+		@Override
+		public int defenseSkill()
+		{
+			return (Dungeon.hero.lvl + 4) * 2;
 		}
 
 		@Override

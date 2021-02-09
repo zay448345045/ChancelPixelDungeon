@@ -27,6 +27,7 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
+import com.noodlemire.chancelpixeldungeon.actors.hero.HeroClass;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.ItemStatusHandler;
@@ -125,10 +126,24 @@ public class Ring extends KindofMisc implements Transmutable
 		}
 	}
 
+	@Override
 	public void activate(Char ch)
 	{
 		buff = buff();
 		buff.attachTo(ch);
+	}
+
+	@Override
+	public boolean doEquip(Hero hero)
+	{
+		if(hero.heroClass == HeroClass.HUNTRESS && hero.belongings.classMisc == null)
+		{
+			hero.belongings.classMisc = this;
+			afterEquip(hero);
+			return true;
+		}
+
+		return super.doEquip(hero);
 	}
 
 	@Override
@@ -232,7 +247,7 @@ public class Ring extends KindofMisc implements Transmutable
 		level(n);
 
 		//30% chance to be cursed
-		if(Random.Float() < 0.3f)
+		if(Random.Int(2) == 0)
 		{
 			cursed = true;
 		}
@@ -378,6 +393,5 @@ public class Ring extends KindofMisc implements Transmutable
 				return Ring.this.level() + 1;
 			}
 		}
-
 	}
 }

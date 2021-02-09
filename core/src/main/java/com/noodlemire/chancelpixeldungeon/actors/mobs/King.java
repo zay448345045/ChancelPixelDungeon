@@ -29,7 +29,6 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.ToxicGas;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Blindness;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Vertigo;
 import com.noodlemire.chancelpixeldungeon.effects.Flare;
@@ -59,7 +58,6 @@ public class King extends Mob
 
 		setHT(400, true);
 		EXP = 40;
-		defenseSkill = 25;
 
 		Undead.count = 0;
 
@@ -105,11 +103,18 @@ public class King extends Mob
 	}
 
 	@Override
+	public int defenseSkill()
+	{
+		return 25;
+	}
+
+	@Override
 	protected boolean getCloser(int target)
 	{
-		return canTryToSummon() ?
-				super.getCloser(((CityBossLevel) Dungeon.level).pedestal(nextPedestal)) :
-				super.getCloser(target);
+		if (canTryToSummon() && super.getCloser(((CityBossLevel) Dungeon.level).pedestal(nextPedestal)))
+			return true;
+
+		return super.getCloser(target);
 	}
 
 	@Override
@@ -149,14 +154,6 @@ public class King extends Mob
 			}
 			return super.attack(enemy);
 		}
-	}
-
-	@Override
-	public void damage(int dmg, Object src)
-	{
-		super.damage(dmg, src);
-		LockedFloor lock = Dungeon.hero.buff(LockedFloor.class);
-		if(lock != null) lock.addTime(dmg);
 	}
 
 	@Override
@@ -272,7 +269,6 @@ public class King extends Mob
 			spriteClass = UndeadSprite.class;
 
 			setHT(45, true);
-			defenseSkill = 15;
 
 			EXP = 0;
 
@@ -342,6 +338,12 @@ public class King extends Mob
 		public int drRoll()
 		{
 			return Random.NormalIntRange(0, 5);
+		}
+
+		@Override
+		public int defenseSkill()
+		{
+			return 15;
 		}
 
 		{

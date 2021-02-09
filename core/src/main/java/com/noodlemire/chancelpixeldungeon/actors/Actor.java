@@ -183,6 +183,9 @@ public abstract class Actor implements Bundlable
 		for(Geyser geyser : Dungeon.level.geysers)
 			add(geyser);
 
+		for(Char ch : Dungeon.level.others)
+			add(ch);
+
 		for(Blob blob : Dungeon.level.blobs.values())
 			add(blob);
 
@@ -232,7 +235,6 @@ public abstract class Actor implements Bundlable
 
 				for(Actor actor : all)
 				{
-
 					//some actors will always go before others if time is equal.
 					if(actor.time < now ||
 					   actor.time == now && (current == null || actor.actPriority > current.actPriority))
@@ -240,13 +242,11 @@ public abstract class Actor implements Bundlable
 						now = actor.time;
 						current = actor;
 					}
-
 				}
 			}
 
 			if(current != null)
 			{
-
 				Actor acting = current;
 
 				if(acting instanceof Char && ((Char) acting).sprite != null)
@@ -295,7 +295,6 @@ public abstract class Actor implements Bundlable
 			{
 				synchronized(Thread.currentThread())
 				{
-
 					interrupted = interrupted || Thread.interrupted();
 
 					if(interrupted)
@@ -320,7 +319,6 @@ public abstract class Actor implements Bundlable
 					}
 				}
 			}
-
 		}
 		while(true);
 	}

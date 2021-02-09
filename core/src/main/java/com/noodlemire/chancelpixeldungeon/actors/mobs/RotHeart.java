@@ -43,7 +43,6 @@ public class RotHeart extends Mob
 		spriteClass = RotHeartSprite.class;
 
 		setHT(84, true);
-		defenseSkill = 0;
 
 		EXP = 4;
 

@@ -27,7 +27,6 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Darkness;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Expulsion;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Preparation;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass;
@@ -214,8 +213,7 @@ public class CloakOfShadows extends Artifact
 		{
 			if(charge < chargeCap)
 			{
-				LockedFloor lock = target.buff(LockedFloor.class);
-				if(!stealthed && (lock == null || lock.regenOn()))
+				if(!stealthed)
 				{
 					float turnsToCharge = (50 - (chargeCap - charge));
 					if(level() > 7) turnsToCharge -= 10 * (level() - 7) / 3f;

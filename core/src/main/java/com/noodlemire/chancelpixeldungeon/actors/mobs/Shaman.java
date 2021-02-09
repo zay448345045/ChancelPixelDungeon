@@ -42,11 +42,9 @@ public class Shaman extends Mob implements Callback
 	{
 		spriteClass = ShamanSprite.class;
 
-		setHT(22, true);
-		defenseSkill = 8;
+		EXP = Random.IntRange(7, 10);
 
-		EXP = 6;
-		maxLvl = 14;
+		setHT(15 + EXP, true);
 
 		loot = Generator.Category.SCROLL;
 		lootChance = 0.33f;
@@ -57,19 +55,25 @@ public class Shaman extends Mob implements Callback
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(2, 8);
+		return Random.NormalIntRange(2, EXP + 1);
 	}
 
 	@Override
 	public int attackSkill(Char target)
 	{
-		return 11;
+		return EXP + 4;
 	}
 
 	@Override
 	public int drRoll()
 	{
-		return Random.NormalIntRange(0, 4);
+		return Random.NormalIntRange(0, EXP - 3);
+	}
+
+	@Override
+	public int defenseSkill()
+	{
+		return EXP + 1;
 	}
 
 	@Override
@@ -84,27 +88,21 @@ public class Shaman extends Mob implements Callback
 	@Override
 	protected boolean doAttack(Char enemy)
 	{
-
 		if(Dungeon.level.distance(pos, enemy.pos) <= 1)
 		{
-
 			return super.doAttack(enemy);
-
 		}
 		else
 		{
-
 			boolean visible = fieldOfView[pos] || fieldOfView[enemy.pos];
 			if(visible)
-			{
 				sprite.zap(enemy.pos);
-			}
 
 			spend(TIME_TO_ZAP);
 
 			if(hit(this, enemy, true))
 			{
-				int dmg = Random.NormalIntRange(3, 10);
+				int dmg = Random.NormalIntRange(EXP / 2, EXP * 2 - 4);
 				if(Dungeon.level.water[enemy.pos] && !enemy.flying)
 				{
 					dmg *= 1.5f;

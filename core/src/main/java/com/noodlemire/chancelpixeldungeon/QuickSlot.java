@@ -123,10 +123,10 @@ public class QuickSlot
 		}
 	}
 
-	public Item randomNonePlaceholder()
+	public Item randomNonPlaceholder()
 	{
 
-		ArrayList<Item> result = new ArrayList<Item>();
+		ArrayList<Item> result = new ArrayList<>();
 		for(int i = 0; i < SIZE; i++)
 			if(getItem(i) != null && !isPlaceholder(i))
 				result.add(getItem(i));

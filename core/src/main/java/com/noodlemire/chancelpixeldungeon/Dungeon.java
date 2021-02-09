@@ -30,6 +30,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Challenged;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Light;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.MindVision;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
+import com.noodlemire.chancelpixeldungeon.actors.mobs.Bestiary;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.npcs.Ghost;
@@ -204,12 +205,13 @@ public class Dungeon
 		QuickSlotButton.reset();
 
 		depth = 0;
-		gold = 0;
+		gold = 300;
 
 		droppedItems = new SparseArray<>();
 
-		for(LimitedDrops a : LimitedDrops.values())
-			a.count = 0;
+		LimitedDrops.reset();
+
+		Bestiary.reset();
 
 		chapters = new HashSet<>();
 
@@ -336,7 +338,7 @@ public class Dungeon
 
 	public static boolean shopOnLevel()
 	{
-		return depth == 6 || depth == 11 || depth == 16;
+		return depth == 1 || depth == 6 || depth == 11 || depth == 16;
 	}
 
 	public static boolean bossLevel()
@@ -441,6 +443,7 @@ public class Dungeon
 	private static final String DROPPED = "dropped%d";
 	private static final String LEVEL = "level";
 	private static final String LIMDROPS = "limited_drops";
+	private static final String BESTIARY = "bestiary";
 	private static final String CHAPTERS = "chapters";
 	private static final String QUESTS = "quests";
 	private static final String BADGES = "badges";
@@ -467,6 +470,10 @@ public class Dungeon
 			Bundle limDrops = new Bundle();
 			LimitedDrops.store(limDrops);
 			bundle.put(LIMDROPS, limDrops);
+
+			Bundle bestiary = new Bundle();
+			Bestiary.store(bestiary);
+			bundle.put(BESTIARY, bestiary);
 
 			int count = 0;
 			int ids[] = new int[chapters.size()];
@@ -566,6 +573,7 @@ public class Dungeon
 		if(fullLoad)
 		{
 			LimitedDrops.restore(bundle.getBundle(LIMDROPS));
+			Bestiary.restore(bundle.getBundle(BESTIARY));
 
 			chapters = new HashSet<Integer>();
 			int ids[] = bundle.getIntArray(CHAPTERS);
@@ -761,7 +769,7 @@ public class Dungeon
 			if (visible[c.pos])
 				passable[c.pos] = false;
 
-		if (ch.buff(Amok.class) == null && ch.buff(Challenged.class) == null)
+		if ((!(ch instanceof Hero) || CPDSettings.avoid_blobs()) && ch.buff(Amok.class) == null && ch.buff(Challenged.class) == null)
 			for (int i = 0; i < Dungeon.level.length(); i++)
 				if (visible[i] && Blob.harmfulAt(ch.pos, i))
 					passable[i] = false;

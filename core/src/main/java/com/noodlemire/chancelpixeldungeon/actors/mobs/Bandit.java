@@ -40,6 +40,10 @@ public class Bandit extends Thief
 
 		//1 in 50 chance to be a crazy bandit, equates to overall 1/150 chance.
 		lootChance = 0.333f;
+
+		EXP = 12;
+
+		setHT(35, true);
 	}
 
 	@Override
@@ -47,7 +51,6 @@ public class Bandit extends Thief
 	{
 		if(super.steal(hero))
 		{
-
 			Buff.prolong(hero, Blindness.class, Random.Int(2, 5));
 			Buff.affect(hero, Poison.class).set(Random.Int(5, 7));
 			Buff.prolong(hero, Cripple.class, Random.Int(3, 8));

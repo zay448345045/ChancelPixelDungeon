@@ -43,24 +43,19 @@ public class Regeneration extends Buff
 		{
 			if(!((Hero) target).isStarving())
 			{
-				LockedFloor lock = target.buff(LockedFloor.class);
-
-				if(lock == null || lock.regenOn())
+				if((int) target.buff(Hunger.class).lastingDamage > 0)
 				{
-					if((int) target.buff(Hunger.class).lastingDamage > 0)
-					{
-						target.buff(Hunger.class).lastingDamage = Math.max(0, target.buff(Hunger.class).lastingDamage - 1);
+					target.buff(Hunger.class).lastingDamage = Math.max(0, target.buff(Hunger.class).lastingDamage - 1);
 
-						if(target.buff(Hunger.class).lastingDamage == 0)
-							BuffIndicator.refreshHero();
-					}
-					else if(target.HP() < regencap() && target.HP() > 0)
-					{
-						target.heal(1);
+					if(target.buff(Hunger.class).lastingDamage == 0)
+						BuffIndicator.refreshHero();
+				}
+				else if(target.HP() < regencap() && target.HP() > 0)
+				{
+					target.heal(1);
 
-						if(target.HP() == regencap())
-							((Hero) target).resting = false;
-					}
+					if(target.HP() == regencap())
+						((Hero) target).resting = false;
 				}
 			}
 
@@ -76,11 +71,7 @@ public class Regeneration extends Buff
 
 		}
 		else
-		{
-
 			deactivate();
-
-		}
 
 		return true;
 	}

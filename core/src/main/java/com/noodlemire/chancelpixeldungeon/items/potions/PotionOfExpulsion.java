@@ -6,6 +6,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.DurationBuff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Expulsion;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
+import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.CloakOfShadows;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.EnvironmentScroll;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
@@ -42,9 +43,16 @@ public class PotionOfExpulsion extends Potion
 				}
 				else if(buff instanceof CloakOfShadows.cloakStealth)
 				{
-					CloakOfShadows cloak = hero.belongings.misc1 instanceof CloakOfShadows
-							? (CloakOfShadows) hero.belongings.misc1
-							: (CloakOfShadows) hero.belongings.misc2;
+					CloakOfShadows cloak = null;
+
+					for(Item i : hero.belongings.miscSlots.items)
+					{
+						if (i instanceof CloakOfShadows)
+						{
+							cloak = (CloakOfShadows) i;
+							break;
+						}
+					}
 
 					blobamount = cloak.charges() * 3;
 					cloak.drain();

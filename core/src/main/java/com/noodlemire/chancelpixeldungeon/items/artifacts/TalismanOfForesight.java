@@ -25,7 +25,6 @@ import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Awareness;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
@@ -218,8 +217,7 @@ public class TalismanOfForesight extends Artifact
 			BuffIndicator.refreshHero();
 
 			//fully charges in 2000 turns at lvl=0, scaling to 667 turns at lvl = 10.
-			LockedFloor lock = target.buff(LockedFloor.class);
-			if(charge < chargeCap && (!cursed || isBound()) && (lock == null || lock.regenOn()))
+			if(charge < chargeCap && (!cursed || isBound()))
 			{
 				partialCharge += 0.05 + (level() * 0.01);
 

@@ -921,7 +921,6 @@ public class Badges
 
 	private static void displayBadge(Badge badge)
 	{
-
 		if(badge == null)
 		{
 			return;
@@ -959,6 +958,11 @@ public class Badges
 		return global.contains(badge);
 	}
 
+	public static boolean isUnlockedLocal(Badge badge)
+	{
+		return local.contains(badge);
+	}
+
 	public static void disown(Badge badge)
 	{
 		loadGlobal();
@@ -968,7 +972,6 @@ public class Badges
 
 	public static List<Badge> filtered(boolean global)
 	{
-
 		HashSet<Badge> filtered = new HashSet<Badge>(global ? Badges.global : Badges.local);
 
 		Iterator<Badge> iterator = filtered.iterator();

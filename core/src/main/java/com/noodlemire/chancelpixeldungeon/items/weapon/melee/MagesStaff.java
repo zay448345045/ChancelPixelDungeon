@@ -116,14 +116,11 @@ public class MagesStaff extends MeleeWeapon
 
 		if(action.equals(AC_IMBUE))
 		{
-
 			curUser = hero;
 			GameScene.selectItem(itemSelector, WndBag.Mode.WAND, Messages.get(this, "prompt"));
-
 		}
 		else if(action.equals(AC_ZAP))
 		{
-
 			if(wand == null)
 			{
 				GameScene.show(new WndItem(null, this, true));
@@ -184,7 +181,6 @@ public class MagesStaff extends MeleeWeapon
 
 	public Item imbueWand(Wand wand, Char owner)
 	{
-
 		wand.cursed = false;
 		this.wand = null;
 
@@ -228,6 +224,11 @@ public class MagesStaff extends MeleeWeapon
 		Badges.validateItemLevelAquired(this);
 
 		return this;
+	}
+
+	public boolean ownedByStaff(Wand w)
+	{
+		return this.wand == w;
 	}
 
 	public void gainCharge(float amt)
@@ -420,7 +421,12 @@ public class MagesStaff extends MeleeWeapon
 
 			Dungeon.quickslot.clearItem(wand);
 
-			wand.detach(curUser.belongings.backpack);
+			if(wand == curUser.belongings.classMisc)
+				curUser.belongings.classMisc = null;
+			else if(curUser.belongings.miscSlots.contains(wand))
+				wand.detach(curUser.belongings.miscSlots);
+			else
+				wand.detach(curUser.belongings.backpack);
 
 			GLog.p(Messages.get(MagesStaff.class, "imbue", wand.name()));
 			imbueWand(wand, curUser);

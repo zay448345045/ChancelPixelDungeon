@@ -31,7 +31,6 @@ import java.util.ArrayList;
 
 public abstract class ConnectionRoom extends Room
 {
-
 	@Override
 	public int minWidth()
 	{
@@ -96,7 +95,7 @@ public abstract class ConnectionRoom extends Room
 	{
 		chances[1] = new float[]{20, 1, 0, 2, 2, 1};
 		chances[4] = chances[3] = chances[2] = chances[1];
-		chances[5] = new float[]{18, 0, 0, 0, 7, 0};
+		chances[5] = new float[]{1, 0, 0, 0, 0, 0};
 
 		chances[6] = new float[]{0, 0, 22, 3, 0, 0};
 		chances[10] = chances[9] = chances[8] = chances[7] = chances[6];

@@ -21,6 +21,7 @@
 
 package com.noodlemire.chancelpixeldungeon.actors.mobs.npcs;
 
+import com.noodlemire.chancelpixeldungeon.Badges;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
@@ -29,10 +30,10 @@ import com.noodlemire.chancelpixeldungeon.sprites.RatKingSprite;
 
 public class RatKing extends NPC
 {
-
 	{
 		spriteClass = RatKingSprite.class;
 
+		SLEEPING = new RatKingSleeping();
 		state = SLEEPING;
 	}
 
@@ -73,6 +74,12 @@ public class RatKing extends NPC
 	@Override
 	public boolean interact()
 	{
+		if(properties.contains(Property.IMMOVABLE))
+		{
+			yell(Messages.get(this, "zzz"));
+			return false;
+		}
+
 		sprite.turnTo(pos, Dungeon.hero.pos);
 		if(state == SLEEPING)
 		{
@@ -81,9 +88,8 @@ public class RatKing extends NPC
 			state = WANDERING;
 		}
 		else
-		{
 			yell(Messages.get(this, "what_is_it"));
-		}
+
 		return true;
 	}
 
@@ -93,5 +99,26 @@ public class RatKing extends NPC
 		return ((RatKingSprite) sprite).festive ?
 				Messages.get(this, "desc_festive")
 				: super.description();
+	}
+
+	private class RatKingSleeping extends Sleeping
+	{
+		//Do not check anything when sleeping, until Goo dies.
+		@Override
+		public boolean act(boolean enemyInFOV, boolean justAlerted)
+		{
+			if(Badges.isUnlockedLocal(Badges.Badge.BOSS_SLAIN_1))
+			{
+				properties.remove(Property.IMMOVABLE);
+				return super.act(enemyInFOV, justAlerted);
+			}
+			else
+			{
+				properties.add(Property.IMMOVABLE);
+
+				spend(TICK);
+				return true;
+			}
+		}
 	}
 }

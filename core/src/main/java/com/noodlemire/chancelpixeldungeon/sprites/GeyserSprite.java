@@ -11,13 +11,9 @@ public class GeyserSprite extends CharSprite
 	private static final int FRAME_WIDTH = 8;
 	private static final int FRAME_HEIGHT = 8;
 
-	private boolean auto;
-
 	public GeyserSprite(int x, int y, boolean auto)
 	{
 		super();
-
-		this.auto = auto;
 
 		int a = 3 * x + 12 * y;
 
@@ -30,9 +26,6 @@ public class GeyserSprite extends CharSprite
 			idle.frames(frames, a, a+1, a, a+2);
 		else
 			idle.frames(frames, a);
-
-		run = new Animation(10, true);
-		run.frames(frames, a);
 
 		attack = new Animation(10, false);
 		attack.frames(frames, a, a+1, a, a+2);

@@ -36,12 +36,12 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Berserk;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Combo;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Drowsy;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.DynamicRecovery;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.FlavourBuff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Fury;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Haste;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Hunger;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Invisibility;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Levitation;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Might;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.MindVision;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Momentum;
@@ -110,6 +110,7 @@ import com.noodlemire.chancelpixeldungeon.ui.QuickSlotButton;
 import com.noodlemire.chancelpixeldungeon.utils.BArray;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.noodlemire.chancelpixeldungeon.windows.WndAlchemy;
+import com.noodlemire.chancelpixeldungeon.windows.WndLevelUp;
 import com.noodlemire.chancelpixeldungeon.windows.WndMessage;
 import com.noodlemire.chancelpixeldungeon.windows.WndResurrect;
 import com.noodlemire.chancelpixeldungeon.windows.WndTradeItem;
@@ -131,8 +132,6 @@ public class Hero extends Char
 
 		alignment = Alignment.ALLY;
 	}
-
-	public static final int MAX_LEVEL = 30;
 
 	private static final int STARTING_STR = 10;
 
@@ -164,10 +163,15 @@ public class Hero extends Char
 
 	public int HTBoost = 0;
 
-	private float dynamic = 0;
-	private boolean attacked = false;
+	private float dynamic = dynamax();
+	public boolean attacked = false;
+	public boolean moved = false;
 
 	private ArrayList<Char> visibleDangers;
+
+	public int HT_lvl = 0;
+	public int STR_lvl = 0;
+	public int slot_lvl = 0;
 
 	//This list is maintained so that some logic checks can be skipped
 	// for enemies we know we aren't seeing normally, resulting in better performance
@@ -189,7 +193,7 @@ public class Hero extends Char
 	{
 		int curHT = HT();
 
-		int newHT = 20 + 5 * (lvl - 1) + HTBoost;
+		int newHT = 20 + 5 * HT_lvl + HTBoost;
 		float multiplier = RingOfMight.HTMultiplier(this);
 		newHT = Math.round(multiplier * newHT);
 
@@ -200,14 +204,9 @@ public class Hero extends Char
 		setHT(newHT, false);
 	}
 
-	private static int STR(int lvl)
-	{
-		return STARTING_STR + lvl / 3;
-	}
-
 	public int STR(boolean includeBuffs)
 	{
-		int STR = STR(lvl);
+		int STR = STARTING_STR + STR_lvl;
 
 		if(includeBuffs)
 		{
@@ -225,15 +224,15 @@ public class Hero extends Char
 		return STR(true);
 	}
 
-	public int dynamax()
+	public float dynamax()
 	{
-		return Math.round(7 + lvl * 2.1f);
+		return 7f + lvl * 2.1f;
 	}
 
 	public float dynamicFactor()
 	{
 		Combo combo = buff(Combo.class);
-		int max = dynamax() + RingOfForce.dynamicBonus(this);
+		float max = dynamax() + RingOfForce.dynamicBonus(this);
 
 		if(combo != null)
 			dynamic(max * combo.count() / 10f, false);
@@ -241,10 +240,15 @@ public class Hero extends Char
 		return dynamic / max;
 	}
 
+	public int dynamicRoll(int min, int max)
+	{
+		return dynamicRoll(min, max, 1);
+	}
+
 	//With dynamic strength, random range is limited to 25% of the difference between a weapon's min and max
 	//This greatly decreases the amount of randomness in each hit, with variety now depending most on how
 	//high the hero's dynamic strength currently is.
-	public int dynamicRoll(int min, int max)
+	public int dynamicRoll(int min, int max, float delay)
 	{
 		int diff = max - min;
 		int factorMin = min + Math.round(diff * dynamicFactor() * 0.75f);
@@ -255,7 +259,7 @@ public class Hero extends Char
 			dmg = Math.min(max, dmg);
 
 		if(buff(Combo.class) == null)
-			dynamic(-dmg);
+			dynamic(-dmg * delay);
 
 		attacked = true;
 
@@ -270,7 +274,7 @@ public class Hero extends Char
 	public void dynamic(float change, boolean add)
 	{
 		dynamic = add ? dynamic + change : change;
-		int max = dynamax() + RingOfForce.dynamicBonus(this) + RingOfForce.dynamicExtension(this);
+		float max = dynamax() + RingOfForce.dynamicBonus(this) + RingOfForce.dynamicExtension(this);
 
 		if(dynamic < 0)
 			dynamic = 0;
@@ -284,6 +288,9 @@ public class Hero extends Char
 	private static final String EXPERIENCE = "exp";
 	private static final String HTBOOST = "htboost";
 	private static final String DYNAMIC = "dynamic";
+	private static final String HT_LVL = "ht_lvl";
+	private static final String STR_LVL = "str_lvl";
+	private static final String SLOT_LVL = "slot_lvl";
 
 	@Override
 	public void storeInBundle(Bundle bundle)
@@ -302,6 +309,10 @@ public class Hero extends Char
 		bundle.put(HTBOOST, HTBoost);
 
 		bundle.put(DYNAMIC, dynamic);
+
+		bundle.put(HT_LVL, HT_lvl);
+		bundle.put(STR_LVL, STR_lvl);
+		bundle.put(SLOT_LVL, slot_lvl);
 
 		belongings.storeInBundle(bundle);
 	}
@@ -324,13 +335,17 @@ public class Hero extends Char
 
 		dynamic = bundle.getFloat(DYNAMIC);
 
+		HT_lvl = bundle.getInt(HT_LVL);
+		STR_lvl = bundle.getInt(STR_LVL);
+		slot_lvl = bundle.getInt(SLOT_LVL);
+
 		belongings.restoreFromBundle(bundle);
 	}
 
 	public static void preview(GamesInProgress.Info info, Bundle bundle)
 	{
 		info.level = bundle.getInt(LEVEL);
-		info.str = STR(info.level);
+		info.str = 10 + bundle.getInt(STR_LVL);
 		info.exp = bundle.getInt(EXPERIENCE);
 		info.hp = bundle.getInt(Char.TAG_HP);
 		info.ht = bundle.getInt(Char.TAG_HT);
@@ -354,6 +369,7 @@ public class Hero extends Char
 	{
 		Buff.affect(this, Regeneration.class);
 		Buff.affect(this, Hunger.class);
+		Buff.affect(this, DynamicRecovery.class);
 	}
 
 	public int tier()
@@ -506,6 +522,8 @@ public class Hero extends Char
 				passable[m.pos] = false;
 			for(Geyser g : Dungeon.level.geysers)
 				passable[g.pos] = false;
+			for(Char ch : Dungeon.level.others)
+				passable[ch.pos] = false;
 
 			PathFinder.buildDistanceMap(enemy.pos, passable, wep.reachFactor(this));
 
@@ -531,16 +549,8 @@ public class Hero extends Char
 	@Override
 	public void spend(float time)
 	{
-		int max = dynamax() + RingOfForce.dynamicBonus(this);
-
-		if(buff(Combo.class) == null)
-			if(justMoved)
-				dynamic(max * 0.05f * time);
-			else if(!attacked)
-				dynamic(max * 0.25f * time);
-
-		attacked = false;
 		justMoved = false;
+
 		TimekeepersHourglass.timeFreeze timebuff = buff(TimekeepersHourglass.timeFreeze.class);
 		Slow.Freeze slowbuff = buff(Slow.Freeze.class);
 		if(timebuff != null)
@@ -647,7 +657,7 @@ public class Hero extends Char
 	public void interrupt()
 	{
 		if(isAlive() && curAction != null &&
-		   ((curAction instanceof HeroAction.Move && curAction.dst != pos) ||
+		   ((curAction.dst != pos) ||
 		    (curAction instanceof HeroAction.Ascend || curAction instanceof HeroAction.Descend)))
 		{
 			lastAction = curAction;
@@ -672,6 +682,7 @@ public class Hero extends Char
 		if(getCloser(action.dst))
 		{
 			justMoved = true;
+			moved = true;
 			return true;
 		}
 		else
@@ -895,7 +906,7 @@ public class Hero extends Char
 	private boolean actDescend(HeroAction.Descend action)
 	{
 		int stairs = action.dst;
-		if(pos == stairs && pos == Dungeon.level.exit && buff(Levitation.class) == null)
+		if(pos == stairs && pos == Dungeon.level.exit)
 		{
 			curAction = null;
 
@@ -1313,9 +1324,11 @@ public class Hero extends Char
 			lvl++;
 			levelUp = true;
 
-			updateHT(true);
+			//updateHT(true);
 			attackSkill++;
 			defenseSkill++;
+
+			GameScene.show(new WndLevelUp());
 		}
 
 		if(levelUp)
@@ -1326,11 +1339,13 @@ public class Hero extends Char
 			Item bow = null;
 
 			for(Item item : belongings.backpack.items)
-				if(item instanceof Bow)
+			{
+				if (item instanceof Bow)
 				{
 					bow = item;
 					break;
 				}
+			}
 
 			if(heroClass == HeroClass.HUNTRESS && bow != null)
 			{
@@ -1338,10 +1353,10 @@ public class Hero extends Char
 				bow.updateQuickslot();
 			}
 
-			GLog.p(Messages.get(this, "new_level") +
-			       (lvl % 3 == 0 ? Messages.get(this, "new_level_str") : ""), lvl);
+			//GLog.p(Messages.get(this, "new_level") +
+			//       (lvl % 3 == 0 ? Messages.get(this, "new_level_str") : ""), lvl);
 
-			sprite.showStatus(CharSprite.POSITIVE, Messages.get(Hero.class, "level_up"));
+			//sprite.showStatus(CharSprite.POSITIVE, Messages.get(Hero.class, "level_up"));
 			Sample.INSTANCE.play(Assets.SND_LEVELUP);
 		}
 	}
@@ -1353,7 +1368,7 @@ public class Hero extends Char
 
 	public static int maxExp(int lvl)
 	{
-		return 5 + lvl * 5;
+		return 4 + lvl * 4;
 	}
 
 	public boolean isStarving()

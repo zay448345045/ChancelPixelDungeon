@@ -134,11 +134,152 @@ public class ChangesScene extends PixelScene
 
 		add(list);
 
+		ChangeInfo changes;
+
+		//************************
+		//    CPD v0.1 BETA 7
+		//************************
+
+		changes = new ChangeInfo("CPD v0.1 BETA 7", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		infos.add(changes);
+
+		changes = new ChangeInfo("New Content", false, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		infos.add(changes);
+
+		changes.addButton(new ChangeButton(new Image(Assets.GOOEY_ORB, 0, 0, 16, 16), "Goo Rework",
+				"Goo has gained a new first phase! In it, Goo itself will be invincible. Throughout the " +
+						"floor, there will be three 'Gooey Orbs' to find. Once destroyed, Goo will become " +
+						"vulnerable to damage, and the fight will resume as normal.\n\n" +
+						"Although the floor will be very large, it will be very easy for Goo to track you down. " +
+						"This is because it can feel you wherever you step in water, and track your movement. " +
+						"Winning the fight is dependent on being able to manipulate and distract the Goo long " +
+						"enough to find and destroy its orbs!"));
+
+		changes.addButton(new ChangeButton(new Image(Assets.CHANGELOG_ICONS, 17, 0, 16, 16), "3 Choice Level Up System",
+				"Upon levelling up, you will no longer automatically receive any HT or STR.\n\n" +
+						"Instead, on every level up, you will receive this choice: +5 HT, +1 STR, or a New Misc Slot.\n\n" +
+						"If you find good gear early on, you could invest your next few level ups to gain all the " +
+						"strength you need. Or, if you find lots of misc equipment, you could get a lot of slots " +
+						"(limit of 21) and have everything equipped at once. However, the more you try to gain power " +
+						"early, the lower your health will be. If you aren't careful, you could be stuck with 20 HP " +
+						"until something one-shots you."));
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TOMB, null), "Mob Permadeath",
+				"Mobs will no longer respawn forever. Instead, it is possible to permanently empty some or " +
+						"all of the dungeon's floors!\n\n" +
+						"Spawned mobs are now only limited by the EXP they provide, up to a certain limit per floor. " +
+						"You might be swarmed by a lot of weak mobs, or you might need to face off against a small " +
+						"quantity of very strong mobs. Either outcome will leave the floor empty afterwards.\n\n" +
+						"Mobs will no longer refuse to drop EXP or loot just because your level is too high. Any " +
+						"surplus or deficit in EXP you have will carry over from floor to floor. Keep this in mind " +
+						"when using tools that increase or decrease the amount of EXP you receive from mobs."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.AMPHORA, 0, 0, 16, 21), "Amphora",
+				"A new kind of object that can be found uncommonly throught the dungeon. These can contain " +
+						"an item, and must be destroyed in order to find what's inside. However, they make a lot of " +
+						"noise, enough to attract nearby mobs. Don't destroy them carlessly!"));
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.LITMUS_PAPER, null), "Litmus Paper",
+				"Litmus Paper can now be occasionally found throughout the dungeon. This item can be used to " +
+						"know if a potion is safe to drink, or if you should throw it at an enemy.\n\n" +
+						"A dangerous potion will be shown with a red background until it is identified. Similarly, " +
+						"a safe potion will have a blue background.\n\n" +
+						"The same effect can technically be achieved with scrolls, but only if you drink from a Well of " +
+						"Awareness."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.KEEPER, 0, 0, 14, 14), "Depth 1 Shop",
+				"There is now a shop on the very first floor!\n\n" +
+						"This shop doesn't contain any super powerful items like bags, ankhs, or equipment. Instead, " +
+						"it only sells various consumables to make the start of a run more manageable.\n\n" +
+						"To allow you to use this shop, all runs now start with 300 Gold. Use it wisely."));
+
+		changes = new ChangeInfo("Changes", false, "");
+		changes.hardlight(CharSprite.WARNING);
+		infos.add(changes);
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_HOLDER, null), "Wands",
+				"Wands now count as misc equipment. You can only use them once you equip them. " +
+						"They also will only recharge while equipped. If you equip a cursed wand, you won't " +
+						"be able to remove it.\n\n" +
+						"Due to the new 3 Choice Level Up System, this is not of massive nerf. Whenever you get " +
+						"a wand you want to use, you can use your next level up to gain the misc slot needed to equip it.\n\n" +
+						"The Mage's Staff is an exception. You can zap it even if it's not equipped."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.CHANGELOG_ICONS, 0, 0, 16, 16), "EXP and Mob Changes",
+				"_-_ Required EXP per level has been reduced by 20%\n" +
+						"_-_ Mobs now give notably higher EXP, sometimes as much as twice as before.\n" +
+						"_-_ Mobs will now spawn at a range of levels. Higher level mobs are stronger, " +
+						"but give more EXP.\n" +
+						"_-_ You can see the level of any mob by inspecting it. This level is the amount of EXP " +
+						"they provide."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.BUFFS_LARGE, 0, 80, 16, 16), "Locked Floors",
+				"Locked floors will no longer restrict how much health you can regenerate, or how much your " +
+						"wands and artifacts may recharge. However, they also will no longer prevent you from starving.\n\n" +
+						"This gives you more freedom to wait around, but only if you still have the food to support " +
+						"yourself. It might also allow Tengu's maze to at least be vaguely dangerous, at least until " +
+						"the proper rework comes."));
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ASSASSINS_BLADE, null), "Surprise Attack Weapons",
+				"Surprise attack weapons will no longer have their minimum damage boosted to be close to max. " +
+						"Instead, the damage they deal will simply be increased by a percentage.\n\n" +
+						"The point of raising the minimum is so the bonus damage will always be noticed when a weapon's damage " +
+						"is random. However, with the advent of Dynamic Strength, this becomes redundant and very abusable. " +
+						"Now that maximum rolls can already be predicted, a simple damage increase will serve as a perfectly " +
+						"acceptable bonus without making every hit extremely powerful."));
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GLOVES, null), "Other Weapons",
+				"_-_ The Spirit Bow's base damage has been increased to 1-8, up from 1-6. (Scaling unchanged.)\n" +
+						"_-_ The Studded Gloves now double the Spirit Bow's accuracy while equipped.\n\n" +
+						"In addition, all weapons in general will multiply their dynamic strength consumption rate " +
+						"by their delay. In other words, fast weapons will use up very little dynamic strength, while " +
+						"slow weapons are more likely to use up all of it in one hit."));
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
+				"_-_ Rat King can no longer be woken before Goo is defeated.\n" +
+						"_-_ It now takes 1 turn to use the Arcane Stylus, down from 2.\n" +
+						"_-_ Added two new guidebook pages to describe the strategy behind Dynamic Strength.\n" +
+						"_-_ Scrolls of Reflection now have SHOUT as their default action.\n" +
+						"_-_ You can now descend stairs while levitating.\n" +
+						"_-_ You now start a new game at 100% dynamic strenght, rather than 0%.\n" +
+						"_-_ Mobs are now allowed to respawn on depth 1, until Mob Permadeath kicks in.\n" +
+						"_-_ Added an option to prevent the hero from pathfinding around harmful blobs.\n" +
+						"_-_ All bags and the backpack now have a maximum of 22 inventory slots.\n" +
+						"_-_ The continue movement button will now appear in more cases.\n" +
+						"_-_ Piranhas and Statues will now give EXP for defeating them.\n" +
+						"_-_ Immobile chars will now stay visible after you move to where you can no longer see them.\n" +
+						"_-_ All naturally spawned equipment now has a 50% chance to be cursed.\n" +
+						"_-_ Due to massive text changes, the only available language is English for now."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.SPINNER, 144, 0, 16, 16), Messages.get(this, "bugfixes") + " 1",
+				"Fixed (Caused by BETA):\n" +
+						"_-_ If you visited the rankings, the next game you tried to begin would freeze the game.\n" +
+						"_-_ Potions and scrolls showing as non-existent in the rankings.\n" +
+						"_-_ Huntress's Spectral Blades causing the game to hang if it killed an enemy adjacent to her.\n" +
+						"_-_ Huntress's Spectral Blades not consuming Dynamic Strength if no mobs were nearby.\n" +
+						"_-_ A rare case where upgrading a missile weapon wouldn't update the quickslot.\n" +
+						"_-_ Dwarf King standing still if a gas blocked one of his pedestals, but the other was reachable.\n" +
+						"_-_ Stones of Equity being able to remove the Locked Floor buff.\n" +
+						"_-_ Missile Weapons not being reforgable at the Troll Blacksmith."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.SPINNER, 144, 0, 16, 16), Messages.get(this, "bugfixes") + " 2",
+				"Fixed (Caused by BETA):\n" +
+						"_-_ Wells of Awareness trying to curse-identify potions and scrolls if you drink from one.\n" +
+						"_-_ Wand of Transfusion using the old, pre-buff description.\n" +
+						"_-_ Spirit Bow trying to identify itself once you've used it enough.\n" +
+						"_-_ Dynamic Strength's recovery being delayed in an odd fashion.\n" +
+						"_-_ Other small issues relating to Dynamic Strength.\n" +
+						"_-_ Enticement Gas not actually allowing mobs to walk into harmful gasses.\n" +
+						"_-_ Armor Kit making the armor's strength requirement go up by 1.\n" +
+						"_-_ A previous changelog button's icon being replaced by a different one."));
+
 		//************************
 		//    CPD v0.1 BETA 6
 		//************************
 
-		ChangeInfo changes = new ChangeInfo("CPD v0.1 BETA 6", true, "");
+		changes = new ChangeInfo("CPD v0.1 BETA 6", true, "");
 		changes.hardlight(Window.TITLE_COLOR);
 		infos.add(changes);
 
@@ -734,7 +875,7 @@ public class ChangesScene extends PixelScene
 				"_-_ Potion of Strength\n" +
 				"_-_ Potion of Paralytic Gas"));
 
-		changes.addButton(new ChangeButton(new Image(Assets.BUFFS_LARGE, 32, 80, 16, 16), "Blessed",
+		changes.addButton(new ChangeButton(new Image(Assets.CHANGELOG_ICONS, 0, 0, 16, 16), "Blessed",
 				"The absolute player level cap of 30 has been removed.\n\n" +
 				"Because of this, and also because of the removal of the Starflower plant, the Blessed buff has effectively been removed " +
 				"from the game, even if it still technically exists in the code."));

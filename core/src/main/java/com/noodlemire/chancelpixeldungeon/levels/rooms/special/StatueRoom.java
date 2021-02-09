@@ -49,31 +49,23 @@ public class StatueRoom extends SpecialRoom
 
 		if(door.x == left)
 		{
-
 			Painter.fill(level, right - 1, top + 1, 1, height() - 2, Terrain.STATUE);
 			cx = right - 2;
-
 		}
 		else if(door.x == right)
 		{
-
 			Painter.fill(level, left + 1, top + 1, 1, height() - 2, Terrain.STATUE);
 			cx = left + 2;
-
 		}
 		else if(door.y == top)
 		{
-
 			Painter.fill(level, left + 1, bottom - 1, width() - 2, 1, Terrain.STATUE);
 			cy = bottom - 2;
-
 		}
 		else if(door.y == bottom)
 		{
-
 			Painter.fill(level, left + 1, top + 1, width() - 2, 1, Terrain.STATUE);
 			cy = top + 2;
-
 		}
 
 		Statue statue = new Statue();

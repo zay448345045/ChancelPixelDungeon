@@ -54,6 +54,7 @@ public class ItemSpriteSheet
 	public static final int BAG_HOLDER = PLACEHOLDERS + 12;
 	public static final int MISSILE_HOLDER = PLACEHOLDERS + 13;
 	public static final int SOMETHING = PLACEHOLDERS + 14;
+	public static final int LOCKED = PLACEHOLDERS + 15;
 
 	static
 	{
@@ -72,6 +73,7 @@ public class ItemSpriteSheet
 		assignItemRect(BAG_HOLDER, 14, 15);
 		assignItemRect(MISSILE_HOLDER, 15, 15);
 		assignItemRect(SOMETHING, 8, 13);
+		assignItemRect(LOCKED, 11, 14);
 	}
 
 	private static final int UNCOLLECTIBLE = xy(1, 2);   //16 slots
@@ -131,6 +133,8 @@ public class ItemSpriteSheet
 	public static final int MASTERY = SINGLE_USE + 13;
 	public static final int KIT = SINGLE_USE + 14;
 	public static final int AMULET = SINGLE_USE + 15;
+	public static final int LITMUS_PAPER = SINGLE_USE + 16;
+	public static final int NINJA_TRAP_ITEM = SINGLE_USE + 17;
 
 	static
 	{
@@ -150,6 +154,8 @@ public class ItemSpriteSheet
 		assignItemRect(MASTERY, 13, 16);
 		assignItemRect(KIT, 16, 15);
 		assignItemRect(AMULET, 16, 16);
+		assignItemRect(LITMUS_PAPER, 16, 13);
+		assignItemRect(NINJA_TRAP_ITEM, 9, 9);
 	}
 
 	//32 free slots

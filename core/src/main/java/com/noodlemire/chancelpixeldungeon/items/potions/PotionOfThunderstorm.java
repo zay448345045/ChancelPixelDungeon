@@ -10,8 +10,9 @@ public class PotionOfThunderstorm extends Potion
 {
 	{
 		initials = 16;
+		harmful = true;
 
-		if(isIdentified()) defaultAction = AC_THROW;
+		if(isDangerKnown()) defaultAction = AC_THROW;
 	}
 
 	@Override
@@ -29,7 +30,14 @@ public class PotionOfThunderstorm extends Potion
 	public void setKnown()
 	{
 		super.setKnown();
-		if(isIdentified()) defaultAction = AC_THROW;
+		if(isDangerKnown()) defaultAction = AC_THROW;
+	}
+
+	@Override
+	public void setDangerKnown()
+	{
+		super.setDangerKnown();
+		if(isDangerKnown()) defaultAction = AC_THROW;
 	}
 
 	@Override

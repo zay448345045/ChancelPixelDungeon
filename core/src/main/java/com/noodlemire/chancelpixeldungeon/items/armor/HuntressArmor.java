@@ -41,7 +41,7 @@ public class HuntressArmor extends ClassArmor
 		image = ItemSpriteSheet.ARMOR_HUNTRESS;
 	}
 
-	private HashMap<Callback, Mob> targets = new HashMap<>();
+	private final HashMap<Callback, Mob> targets = new HashMap<>();
 
 	@Override
 	public void doSpecial()
@@ -52,7 +52,7 @@ public class HuntressArmor extends ClassArmor
 	protected CellSelector.Listener dasher = new CellSelector.Listener()
 	{
 		@Override
-		public void onSelect( Integer target )
+		public void onSelect(final Integer target )
 		{
 			if (target != null && target != curUser.pos)
 			{
@@ -76,27 +76,31 @@ public class HuntressArmor extends ClassArmor
 
 						Item proto = new Arrow();
 
-						for (Mob mob : Dungeon.level.mobs) {
-							if(Dungeon.level.distance(curUser.pos, mob.pos) <= 12
+						for (Mob mob : Dungeon.level.mobs)
+						{
+							if (Dungeon.level.distance(curUser.pos, mob.pos) <= 12
 									&& Dungeon.level.heroFOV[mob.pos])
 							{
-								Callback callback = new Callback() {
+								Callback callback = new Callback()
+								{
 									@Override
-									public void call() {
+									public void call()
+									{
 										float old_factor = curUser.dynamicFactor();
-										curUser.attack( targets.get( this ) );
-										targets.remove( this );
+										curUser.attack(targets.get(this));
+										targets.remove(this);
 
-										if(targets.isEmpty())
-											curUser.dynamic(0, false);
-										else
+										if (targets.size() == 0)
+										{
+											curUser.dynamic(-curUser.dynamax());
+											curUser.spendAndNext(curUser.attackDelay());
+										} else
 											curUser.dynamic(curUser.dynamax() * old_factor, false);
-
 									}
 								};
 
-								((MissileSprite)curUser.sprite.parent.recycle( MissileSprite.class )).
-										reset( curUser.pos, mob.pos, proto, callback );
+								((MissileSprite) curUser.sprite.parent.recycle(MissileSprite.class)).
+										reset(curUser.pos, mob.pos, proto, callback);
 
 								targets.put(callback, mob);
 							}
@@ -105,12 +109,14 @@ public class HuntressArmor extends ClassArmor
 						if (targets.size() == 0)
 						{
 							curUser.sprite.idle();
-							return;
+							curUser.dynamic(-curUser.dynamax());
+							curUser.spendAndNext(curUser.attackDelay());
 						}
-
-						curUser.spendAndNext(curUser.attackDelay());
-						curUser.sprite.zap(curUser.pos);
-						curUser.busy();
+						else
+						{
+							curUser.sprite.zap(curUser.pos);
+							curUser.busy();
+						}
 					}
 				} );
 			}

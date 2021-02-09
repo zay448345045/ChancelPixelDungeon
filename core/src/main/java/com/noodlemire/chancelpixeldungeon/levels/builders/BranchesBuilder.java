@@ -29,11 +29,9 @@ import java.util.ArrayList;
 //A builder that creates only branches, very simple and very random
 public class BranchesBuilder extends RegularBuilder
 {
-
 	@Override
 	public ArrayList<Room> build(ArrayList<Room> rooms)
 	{
-
 		setupRooms(rooms);
 
 		if(entrance == null)
@@ -61,16 +59,10 @@ public class BranchesBuilder extends RegularBuilder
 		findNeighbours(rooms);
 
 		for(Room r : rooms)
-		{
 			for(Room n : r.neigbours)
-			{
 				if(!n.connected.containsKey(r)
 				   && Random.Float() < extraConnectionChance)
-				{
 					r.connect(n);
-				}
-			}
-		}
 
 		return rooms;
 	}

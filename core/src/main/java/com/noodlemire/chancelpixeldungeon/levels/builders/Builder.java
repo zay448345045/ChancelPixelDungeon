@@ -33,7 +33,6 @@ import java.util.Iterator;
 
 public abstract class Builder
 {
-
 	//If builders require additional parameters, they should
 	// request them in their constructor or other methods
 

@@ -13,8 +13,9 @@ import com.watabou.noosa.audio.Sample;
 public class ScrollOfDarkness extends EnvironmentScroll
 {
 	{
+		should_shout = true;
 		initials = 14;
-		if(isIdentified()) defaultAction = AC_SHOUT;
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 
 	@Override
@@ -55,6 +56,13 @@ public class ScrollOfDarkness extends EnvironmentScroll
 	public void setKnown()
 	{
 		super.setKnown();
-		if(isIdentified()) defaultAction = AC_SHOUT;
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
+	}
+
+	@Override
+	public void setDangerKnown()
+	{
+		super.setDangerKnown();
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 }

@@ -28,7 +28,6 @@ import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Invisibility;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.MagicImmunity;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.SoulMark;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
@@ -37,6 +36,7 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass;
 import com.noodlemire.chancelpixeldungeon.effects.MagicMissile;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.items.Item;
+import com.noodlemire.chancelpixeldungeon.items.KindofMisc;
 import com.noodlemire.chancelpixeldungeon.items.Transmutable;
 import com.noodlemire.chancelpixeldungeon.items.bags.Bag;
 import com.noodlemire.chancelpixeldungeon.items.bags.MagicalHolster;
@@ -56,7 +56,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public abstract class Wand extends Item implements Transmutable
+public abstract class Wand extends KindofMisc implements Transmutable
 {
 	private static final int USAGES_TO_KNOW = 20;
 
@@ -99,6 +99,12 @@ public abstract class Wand extends Item implements Transmutable
 
 		if(action.equals(AC_ZAP))
 		{
+			if(!isEquipped(hero))
+			{
+				GLog.w(Messages.get(this, "need_to_equip"));
+				return;
+			}
+
 			curUser = hero;
 			curItem = this;
 			GameScene.selectCell(zapper);
@@ -124,6 +130,58 @@ public abstract class Wand extends Item implements Transmutable
 		}
 
 		return false;
+	}
+
+	@Override
+	public void activate(Char ch)
+	{
+		if(ch instanceof Hero)
+		{
+			Hero hero = (Hero)ch;
+
+			if (hero.belongings.backpack.contains(MagicalHolster.class))
+				charge(hero, MagicalHolster.HOLSTER_SCALE_FACTOR);
+			else
+				charge(hero);
+		}
+	}
+
+	@Override
+	public boolean doEquip(Hero hero)
+	{
+		if(hero.heroClass == HeroClass.MAGE && hero.belongings.classMisc == null)
+		{
+			hero.belongings.classMisc = this;
+			afterEquip(hero);
+			return true;
+		}
+
+		return super.doEquip(hero);
+	}
+
+	@Override
+	public boolean doUnequip(Hero hero, boolean collect, boolean single)
+	{
+		if(super.doUnequip(hero, collect, single))
+		{
+			stopCharging();
+			return true;
+		}
+		else
+			return false;
+	}
+
+	@Override
+	public boolean isEquipped(Hero hero)
+	{
+		if(hero.belongings.weapon instanceof MagesStaff && ((MagesStaff)hero.belongings.weapon).ownedByStaff(this))
+			return true;
+
+		for(Item i : hero.belongings.backpack.items)
+			if(i instanceof MagesStaff && ((MagesStaff)i).ownedByStaff(this))
+				return true;
+
+		return super.isEquipped(hero);
 	}
 
 	public void gainCharge(float amt)
@@ -155,12 +213,6 @@ public abstract class Wand extends Item implements Transmutable
 		   Dungeon.hero.subClass == HeroSubClass.WARLOCK &&
 		   Random.Float() > Math.pow(0.9f, (level() * chargesUsed) + 1))
 			SoulMark.prolong(target, SoulMark.class, SoulMark.DURATION + level());
-	}
-
-	@Override
-	public void onDetach()
-	{
-		stopCharging();
 	}
 
 	public void stopCharging()
@@ -330,7 +382,7 @@ public abstract class Wand extends Item implements Transmutable
 		level(n);
 
 		//30% chance to be cursed
-		if(Random.Float() < 0.3f)
+		if(Random.Int(2) == 0)
 			cursed = true;
 
 		return this;
@@ -529,9 +581,7 @@ public abstract class Wand extends Item implements Transmutable
 			float turnsToCharge = (float) (BASE_CHARGE_DELAY
 			                               + (SCALING_CHARGE_ADDITION * Math.pow(scalingFactor, missingCharges)));
 
-			LockedFloor lock = target.buff(LockedFloor.class);
-			if(lock == null || lock.regenOn())
-				partialCharge += (1f/turnsToCharge) * RingOfEnergy.wandChargeMultiplier(target);
+			partialCharge += (1f/turnsToCharge) * RingOfEnergy.wandChargeMultiplier(target);
 		}
 
 		public void gainCharge(float charge)

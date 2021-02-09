@@ -47,8 +47,10 @@ import com.watabou.utils.PointF;
 public class ScrollOfReflection extends EnvironmentScroll
 {
 	{
+		should_shout = true;
 		initials = 4;
 		mode = Ballistica.PROJECTILE;
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 
 	@Override
@@ -77,6 +79,20 @@ public class ScrollOfReflection extends EnvironmentScroll
 		reflect(true);
 		readAnimation();
 		Sample.INSTANCE.play(Assets.SND_READ);
+	}
+
+	@Override
+	public void setKnown()
+	{
+		super.setKnown();
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
+	}
+
+	@Override
+	public void setDangerKnown()
+	{
+		super.setDangerKnown();
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 
 	private void reflect(boolean empowered)

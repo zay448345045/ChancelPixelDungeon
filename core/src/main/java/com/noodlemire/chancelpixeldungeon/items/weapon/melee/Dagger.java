@@ -26,8 +26,8 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 public class Dagger extends AssassinsBlade
 {
 	{
-		//deals 75% toward max to max on surprise, instead of min to max.
-		SURPRISE_BONUS_RATE = 0.75f;
+		//deals 50% extra damage on surprise attack
+		SURPRISE_BONUS_RATE = 1.5f;
 		image = ItemSpriteSheet.DAGGER;
 		tier = 1;
 		bones = false;

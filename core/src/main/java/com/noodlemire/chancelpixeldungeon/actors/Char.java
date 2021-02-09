@@ -113,17 +113,22 @@ public abstract class Char extends Actor
 
 	protected boolean[] fieldOfView = null;
 
-	private HashSet<Buff> buffs = new HashSet<>();
+	private final HashSet<Buff> buffs = new HashSet<>();
 
 	@Override
 	protected boolean act()
+	{
+		observe();
+		return false;
+	}
+
+	protected void observe()
 	{
 		if(fieldOfView == null || fieldOfView.length != Dungeon.level.length())
 		{
 			fieldOfView = new boolean[Dungeon.level.length()];
 		}
 		Dungeon.level.updateFieldOfView(this, fieldOfView);
-		return false;
 	}
 
 	protected static final String POS = "pos";

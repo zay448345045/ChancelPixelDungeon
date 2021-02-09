@@ -263,6 +263,8 @@ public class StatusPane extends Component
 		int speck;
 		float dyna = Dungeon.hero.dynamicFactor();
 
+		//System.out.println("New dynamic factor: " + dyna);
+
 		if(dyna < Hero.DYNAMIC_MILESTONES[0])
 			speck = 0;
 		else if(dyna < Hero.DYNAMIC_MILESTONES[1])

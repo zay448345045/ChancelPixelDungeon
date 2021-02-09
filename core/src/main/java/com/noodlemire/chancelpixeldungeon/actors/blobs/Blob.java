@@ -24,7 +24,6 @@ package com.noodlemire.chancelpixeldungeon.actors.blobs;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
-import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.effects.BlobEmitter;
 import com.noodlemire.chancelpixeldungeon.levels.Level;
 import com.watabou.utils.Bundle;
@@ -273,8 +272,11 @@ public class Blob extends Actor
 
 	public static boolean harmfulAt(int safecell, int cell)
 	{
+		if(Blob.volumeAt(cell, EnticementGas.class) > 0)
+			return false;
+
 		for (Blob b : Dungeon.level.blobs.values())
-			if (b.harmful && b.cur != null && (safecell < 0 || b.cur[safecell] <= 0) && b.cur[cell] > 0)
+			if (b.harmful && Blob.volumeAt(cell, b.getClass()) > 0 && (safecell < 0 || Blob.volumeAt(safecell, b.getClass()) == 0))
 				return true;
 
 		return false;

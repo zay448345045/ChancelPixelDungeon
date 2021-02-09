@@ -79,7 +79,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	public enum State
 	{
-		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, FORCEFIELD
+		BURNING, LEVITATING, INVISIBLE, PARALYSED, FROZEN, ILLUMINATED, CHILLED, DARKENED, MARKED, HEALING, FORCEFIELD, GOO_INVINCIBILITY
 	}
 
 	protected Animation idle;
@@ -359,8 +359,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			case BURNING:
 				burning = emitter();
 				burning.pour(FlameParticle.FACTORY, 0.06f);
-				if(visible)
-					Dungeon.playAt(Assets.SND_BURNING, ch.pos);
+				Dungeon.playAt(Assets.SND_BURNING, ch.pos);
 				break;
 			case LEVITATING:
 				levitation = emitter();
@@ -403,6 +402,9 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			case FORCEFIELD:
 				GameScene.effect(forcefield = new Forcefield(this));
 				break;
+			case GOO_INVINCIBILITY:
+				GameScene.effect(forcefield = new Forcefield(this));
+				forcefield.color(0.2f, 0, 0.2f);
 		}
 	}
 
@@ -478,6 +480,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 				}
 				break;
 			case FORCEFIELD:
+			case GOO_INVINCIBILITY:
 				if(forcefield != null)
 					forcefield.putOut();
 				break;
@@ -488,7 +491,6 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	//syncronized due to EmoIcon handling
 	public synchronized void update()
 	{
-
 		super.update();
 
 		if(paused && listener != null)
@@ -513,6 +515,8 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			hideSleep();
 		if(emo != null && emo.alive)
 			emo.visible = visible;
+		if(forcefield != null)
+			forcefield.visible = visible;
 	}
 
 	@Override
@@ -523,7 +527,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			alpha(0.4f);
 	}
 
-	private synchronized void showSleep()
+	public synchronized void showSleep()
 	{
 		if(!(emo instanceof EmoIcon.Sleep))
 		{

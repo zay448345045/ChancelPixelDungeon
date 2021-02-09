@@ -38,7 +38,6 @@ import java.util.ArrayList;
 
 public class Gold extends Item
 {
-
 	private static final String TXT_VALUE = "%+d";
 
 	{
@@ -70,7 +69,6 @@ public class Gold extends Item
 	@Override
 	public boolean doPickUp(Hero hero)
 	{
-
 		Dungeon.gold += quantity;
 		Statistics.goldCollected += quantity;
 		Badges.validateGoldCollected();

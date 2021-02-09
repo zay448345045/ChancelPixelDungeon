@@ -11,9 +11,9 @@ import com.watabou.noosa.audio.Sample;
 public class ScrollOfMagma extends EnvironmentScroll
 {
 	{
+		should_shout = true;
 		initials = 18;
-
-		if(isIdentified()) defaultAction = AC_SHOUT;
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 
 	@Override
@@ -46,6 +46,13 @@ public class ScrollOfMagma extends EnvironmentScroll
 	public void setKnown()
 	{
 		super.setKnown();
-		if(isIdentified()) defaultAction = AC_SHOUT;
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
+	}
+
+	@Override
+	public void setDangerKnown()
+	{
+		super.setDangerKnown();
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 }

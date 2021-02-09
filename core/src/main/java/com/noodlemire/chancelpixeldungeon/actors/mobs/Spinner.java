@@ -39,11 +39,9 @@ public class Spinner extends Mob
 	{
 		spriteClass = SpinnerSprite.class;
 
-		setHT(59, true);
-		defenseSkill = 14;
+		EXP = Random.IntRange(14, 16);
 
-		EXP = 9;
-		maxLvl = 16;
+		setHT(EXP * 4, true);
 
 		loot = new MysteryMeat();
 		lootChance = 0.5f; //Only the base chance, see rollToDropLoot()
@@ -54,19 +52,25 @@ public class Spinner extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(10, 25);
+		return Random.NormalIntRange(EXP - 4, EXP * 2 - 4);
 	}
 
 	@Override
 	public int attackSkill(Char target)
 	{
-		return 20;
+		return EXP;
 	}
 
 	@Override
 	public int drRoll()
 	{
-		return Random.NormalIntRange(0, 6);
+		return Random.NormalIntRange(0, EXP / 2 - 1);
+	}
+
+	@Override
+	public int defenseSkill()
+	{
+		return EXP * 2 - 2;
 	}
 
 	@Override

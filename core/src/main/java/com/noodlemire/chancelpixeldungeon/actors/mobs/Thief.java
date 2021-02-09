@@ -46,11 +46,9 @@ public class Thief extends Mob
 	{
 		spriteClass = ThiefSprite.class;
 
-		setHT(24, true);
-		defenseSkill = 12;
+		EXP = Random.IntRange(5, 8);
 
-		EXP = 5;
-		maxLvl = 10;
+		setHT(14 + EXP * 2, true);
 
 		//see createloot
 		loot = null;
@@ -88,7 +86,7 @@ public class Thief extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(1, 10);
+		return Random.NormalIntRange(1, 5 + EXP);
 	}
 
 	@Override
@@ -123,13 +121,19 @@ public class Thief extends Mob
 	@Override
 	public int attackSkill(Char target)
 	{
-		return 12;
+		return EXP * 3;
 	}
 
 	@Override
 	public int drRoll()
 	{
-		return Random.NormalIntRange(0, 3);
+		return Random.NormalIntRange(0, (EXP + 1) / 2);
+	}
+
+	@Override
+	public int defenseSkill()
+	{
+		return EXP * 2;
 	}
 
 	@Override

@@ -35,11 +35,9 @@ public class Brute extends Mob
 	{
 		spriteClass = BruteSprite.class;
 
-		setHT(49, true);
-		defenseSkill = 15;
+		EXP = Random.IntRange(10, 14);
 
-		EXP = 8;
-		maxLvl = 15;
+		setHT(EXP * 4 + 9, true);
 
 		loot = Gold.class;
 		lootChance = 0.5f;
@@ -60,20 +58,26 @@ public class Brute extends Mob
 	public int damageRoll()
 	{
 		return enraged ?
-				Random.NormalIntRange(15, 45) :
-				Random.NormalIntRange(6, 26);
+				Random.NormalIntRange(EXP + 5, EXP * 5 - 5) :
+				Random.NormalIntRange(EXP / 2, EXP * 2 + 6);
 	}
 
 	@Override
 	public int attackSkill(Char target)
 	{
-		return 20;
+		return EXP * 2;
 	}
 
 	@Override
 	public int drRoll()
 	{
-		return Random.NormalIntRange(0, 8);
+		return Random.NormalIntRange(0, EXP-2);
+	}
+
+	@Override
+	public int defenseSkill()
+	{
+		return EXP + 5;
 	}
 
 	@Override

@@ -24,14 +24,9 @@ package com.noodlemire.chancelpixeldungeon.actors.buffs;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
-import com.watabou.utils.Bundle;
 
 public class LockedFloor extends Buff
 {
-
-	//the amount of turns remaining before beneficial passive effects turn off
-	private float left = 50; //starts at 50 turns
-
 	@Override
 	public boolean act()
 	{
@@ -40,36 +35,7 @@ public class LockedFloor extends Buff
 		if(!Dungeon.level.locked)
 			detach();
 
-		if(left >= 1)
-			left--;
-
 		return true;
-	}
-
-	public void addTime(float time)
-	{
-		left += time;
-	}
-
-	public boolean regenOn()
-	{
-		return left >= 1;
-	}
-
-	private final String LEFT = "left";
-
-	@Override
-	public void storeInBundle(Bundle bundle)
-	{
-		super.storeInBundle(bundle);
-		bundle.put(LEFT, left);
-	}
-
-	@Override
-	public void restoreFromBundle(Bundle bundle)
-	{
-		super.restoreFromBundle(bundle);
-		left = bundle.getFloat(LEFT);
 	}
 
 	@Override

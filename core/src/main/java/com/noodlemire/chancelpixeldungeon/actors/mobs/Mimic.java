@@ -45,11 +45,20 @@ import java.util.List;
 
 public class Mimic extends Mob
 {
-
-	private int level;
-
+	public Mimic()
 	{
+		this(Dungeon.depth);
+	}
+
+	public Mimic(int level)
+	{
+		super();
+
 		spriteClass = MimicSprite.class;
+
+		EXP = level;
+
+		setHT((1 + EXP) * 7, true);
 
 		properties.add(Property.DEMONIC);
 	}
@@ -64,7 +73,6 @@ public class Mimic extends Mob
 	{
 		super.storeInBundle(bundle);
 		if(items != null) bundle.put(ITEMS, items);
-		bundle.put(LEVEL, level);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -75,7 +83,7 @@ public class Mimic extends Mob
 		{
 			items = new ArrayList<>((Collection<Item>) ((Collection<?>) bundle.getCollection(ITEMS)));
 		}
-		adjustStats(bundle.getInt(LEVEL));
+
 		super.restoreFromBundle(bundle);
 	}
 
@@ -88,24 +96,18 @@ public class Mimic extends Mob
 	@Override
 	public int attackSkill(Char target)
 	{
-		return 9 + level;
+		return 9 + EXP;
 	}
 
-	public void adjustStats(int level)
+	@Override
+	public int defenseSkill()
 	{
-		this.level = level;
-
-		setHT((1 + level) * 7, true);
-		EXP = 2 + 2 * (level - 1) / 5;
-		defenseSkill = attackSkill(null) / 2;
-
-		enemySeen = true;
+		return attackSkill(null) / 2;
 	}
 
 	@Override
 	public void rollToDropLoot()
 	{
-
 		if(items != null)
 		{
 			for(Item item : items)
@@ -125,6 +127,11 @@ public class Mimic extends Mob
 	}
 
 	public static Mimic spawnAt(int pos, List<Item> items)
+	{
+		return spawnAt(pos, items, Dungeon.depth);
+	}
+
+	public static Mimic spawnAt(int pos, List<Item> items, int level)
 	{
 		if(Dungeon.level.pit[pos]) return null;
 		Char ch = Actor.findChar(pos);
@@ -154,9 +161,9 @@ public class Mimic extends Mob
 			}
 		}
 
-		Mimic m = new Mimic();
+		Mimic m = new Mimic(level);
 		m.items = new ArrayList<>(items);
-		m.adjustStats(Dungeon.depth);
+		m.enemySeen = true;
 		m.pos = pos;
 		m.state = m.HUNTING;
 		GameScene.add(m, 1);

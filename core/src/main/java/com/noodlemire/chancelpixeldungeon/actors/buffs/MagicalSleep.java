@@ -30,7 +30,6 @@ import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
 public class MagicalSleep extends Buff
 {
-
 	private static final float STEP = 1f;
 
 	@Override
@@ -38,7 +37,6 @@ public class MagicalSleep extends Buff
 	{
 		if(!target.isImmune(Sleep.class) && super.attachTo(target))
 		{
-
 			if(target instanceof Hero)
 				if(target.HP() == target.buff(Regeneration.class).regencap())
 				{
@@ -47,9 +45,7 @@ public class MagicalSleep extends Buff
 					return true;
 				}
 				else
-				{
 					GLog.i(Messages.get(this, "fallasleep"));
-				}
 			else if(target instanceof Mob)
 				((Mob) target).state = ((Mob) target).SLEEPING;
 
@@ -58,9 +54,7 @@ public class MagicalSleep extends Buff
 			return true;
 		}
 		else
-		{
 			return false;
-		}
 	}
 
 	@Override

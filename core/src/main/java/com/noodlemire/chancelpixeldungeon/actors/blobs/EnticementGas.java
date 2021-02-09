@@ -21,7 +21,7 @@ public class EnticementGas extends GasBlob
 			Point p = (Point) Random.element(area.getPoints().toArray());
 			int cell = p.x + p.y * Dungeon.level.width();
 
-			if(Dungeon.level.distance(cell, mob.pos) <= volume / 4)
+			if(Dungeon.level.trueDistance(cell, mob.pos) <= volume / 4f)
 				mob.beckon(cell);
 		}
 	}

@@ -33,6 +33,10 @@ public class Acidic extends Scorpio
 	{
 		spriteClass = AcidicSprite.class;
 
+		EXP = 27;
+
+		setHT(150, true);
+
 		properties.add(Property.ACIDIC);
 	}
 

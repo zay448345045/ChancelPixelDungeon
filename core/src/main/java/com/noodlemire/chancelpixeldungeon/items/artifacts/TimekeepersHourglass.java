@@ -25,7 +25,6 @@ import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Hunger;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.LockedFloor;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.items.Item;
@@ -230,8 +229,7 @@ public class TimekeepersHourglass extends Artifact
 		@Override
 		public boolean act()
 		{
-			LockedFloor lock = target.buff(LockedFloor.class);
-			if(charge < chargeCap && (!cursed || isBound()) && (lock == null || lock.regenOn()))
+			if(charge < chargeCap && (!cursed || isBound()))
 			{
 				partialCharge += 1 / (90f - (chargeCap - charge) * 3f);
 

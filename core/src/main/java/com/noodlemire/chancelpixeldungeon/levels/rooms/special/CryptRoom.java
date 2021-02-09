@@ -36,10 +36,8 @@ import com.watabou.utils.Point;
 
 public class CryptRoom extends SpecialRoom
 {
-
 	public void paint(Level level)
 	{
-
 		Painter.fill(level, this, Terrain.WALL);
 		Painter.fill(level, this, 1, Terrain.EMPTY);
 
@@ -82,7 +80,6 @@ public class CryptRoom extends SpecialRoom
 
 	private static Item prize(Level level)
 	{
-
 		//1 floor set higher than normal
 		Armor prize = Generator.randomArmor((Dungeon.depth / 5) + 1);
 

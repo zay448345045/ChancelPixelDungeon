@@ -44,12 +44,10 @@ public class Eye extends Mob
 	{
 		spriteClass = EyeSprite.class;
 
-		setHT(125, true);
-		defenseSkill = 20;
-		viewDistance = Light.DISTANCE;
+		EXP = Random.IntRange(20, 24);
 
-		EXP = 13;
-		maxLvl = 25;
+		setHT(EXP * 6, true);
+		viewDistance = Light.DISTANCE;
 
 		flying = true;
 
@@ -64,19 +62,25 @@ public class Eye extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(20, 30);
+		return Random.NormalIntRange(EXP, EXP + 10);
 	}
 
 	@Override
 	public int attackSkill(Char target)
 	{
-		return 30;
+		return EXP * 2 - 10;
 	}
 
 	@Override
 	public int drRoll()
 	{
-		return Random.NormalIntRange(0, 10);
+		return Random.NormalIntRange(0, EXP / 2);
+	}
+
+	@Override
+	public int defenseSkill()
+	{
+		return EXP;
 	}
 
 	private Ballistica beam;
@@ -177,25 +181,21 @@ public class Eye extends Mob
 
 		for(int pos : beam.subPath(1, beam.dist))
 		{
-
 			if(Dungeon.level.flamable[pos])
 			{
 
 				Dungeon.level.destroy(pos);
 				GameScene.updateMap(pos);
 				terrainAffected = true;
-
 			}
 
 			Char ch = Actor.findChar(pos);
 			if(ch == null)
-			{
 				continue;
-			}
 
 			if(hit(this, ch, true))
 			{
-				ch.damage(Random.NormalIntRange(30, 50), this);
+				ch.damage(Random.NormalIntRange(EXP * 2 - 10, EXP * 5 - 50), this);
 
 				if(Dungeon.level.heroFOV[pos])
 				{

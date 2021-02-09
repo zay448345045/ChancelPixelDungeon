@@ -31,7 +31,6 @@ import java.util.ArrayList;
 //A builder with one core loop as its primary element
 public class LoopBuilder extends RegularBuilder
 {
-
 	//These methods allow for the adjusting of the shape of the loop
 	//by default the loop is a perfect circle, but it can be adjusted
 
@@ -185,16 +184,9 @@ public class LoopBuilder extends RegularBuilder
 		findNeighbours(rooms);
 
 		for(Room r : rooms)
-		{
 			for(Room n : r.neigbours)
-			{
-				if(!n.connected.containsKey(r)
-				   && Random.Float() < extraConnectionChance)
-				{
+				if(!n.connected.containsKey(r) && Random.Float() < extraConnectionChance)
 					r.connect(n);
-				}
-			}
-		}
 
 		return rooms;
 	}

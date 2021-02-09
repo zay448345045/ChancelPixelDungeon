@@ -25,6 +25,7 @@ import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
+import com.noodlemire.chancelpixeldungeon.actors.Amphora;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Poison;
@@ -62,7 +63,7 @@ public class PoisonDartTrap extends Trap
 			for(Char ch : Actor.chars())
 			{
 				//But exclude geysers.
-				if(ch instanceof Geyser)
+				if(ch instanceof Geyser || ch instanceof Amphora)
 					continue;
 
 				Ballistica bolt = new Ballistica(pos, ch.pos, Ballistica.PROJECTILE);

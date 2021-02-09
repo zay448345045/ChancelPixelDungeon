@@ -43,7 +43,6 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.SoulMark;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Taunted;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Terror;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Weakness;
-import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.Flare;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.effects.Surprise;
@@ -84,10 +83,7 @@ public abstract class Mob extends Char
 
 	protected int target = -1;
 
-	protected int defenseSkill = 0;
-
 	public int EXP = 1;
-	public int maxLvl = Hero.MAX_LEVEL;
 
 	protected Char enemy;
 	protected boolean enemySeen;
@@ -95,9 +91,10 @@ public abstract class Mob extends Char
 
 	protected static final float TIME_TO_WAKE_UP = 1f;
 
-	private static final String STATE = "state";
+	public static final String STATE = "state";
 	private static final String SEEN = "seen";
 	private static final String TARGET = "target";
+	private static final String EXP_KEY = "exp";
 
 	@Override
 	public void storeInBundle(Bundle bundle)
@@ -126,6 +123,7 @@ public abstract class Mob extends Char
 		}
 		bundle.put(SEEN, enemySeen);
 		bundle.put(TARGET, target);
+		bundle.put(EXP_KEY, EXP);
 	}
 
 	@Override
@@ -158,6 +156,8 @@ public abstract class Mob extends Char
 		enemySeen = bundle.getBoolean(SEEN);
 
 		target = bundle.getInt(TARGET);
+
+		EXP = bundle.getInt(EXP_KEY);
 	}
 
 	@Override
@@ -558,6 +558,11 @@ public abstract class Mob extends Char
 		return damage;
 	}
 
+	public int defenseSkill()
+	{
+		return 0;
+	}
+
 	@Override
 	public int defenseSkill(Char enemy)
 	{
@@ -566,7 +571,7 @@ public abstract class Mob extends Char
 		if(seen
 		   && paralysed == 0
 		   && !(alignment == Alignment.ALLY && enemy == Dungeon.hero))
-			return this.defenseSkill;
+			return this.defenseSkill();
 		else
 			return 0;
 	}
@@ -623,7 +628,6 @@ public abstract class Mob extends Char
 	@Override
 	public void damage(int dmg, Object src)
 	{
-
 		Terror.recover(this);
 
 		if(state == SLEEPING)
@@ -654,7 +658,7 @@ public abstract class Mob extends Char
 				Badges.validateMonstersSlain();
 				Statistics.qualifiedForNoKilling = false;
 
-				int exp = Dungeon.hero.lvl <= maxLvl ? EXP : 0;
+				int exp = EXP;
 				if(exp > 0)
 				{
 					Dungeon.hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "exp", exp));
@@ -688,8 +692,6 @@ public abstract class Mob extends Char
 
 	public void rollToDropLoot()
 	{
-		if(Dungeon.hero.lvl > maxLvl + 2) return;
-
 		float lootChance = this.lootChance;
 		lootChance *= RingOfWealth.dropChanceMultiplier(Dungeon.hero);
 
@@ -752,7 +754,12 @@ public abstract class Mob extends Char
 
 	public void beckon(int cell)
 	{
-		notice();
+		beckon(cell, true);
+	}
+
+	public void beckon(int cell, boolean noticed)
+	{
+		if(noticed) notice();
 
 		if(state != HUNTING)
 		{
@@ -792,26 +799,17 @@ public abstract class Mob extends Char
 				target = enemy.pos;
 
 				if(Dungeon.isChallenged(Challenges.SWARM_INTELLIGENCE))
-				{
 					for(Mob mob : Dungeon.level.mobs)
-					{
 						if(Dungeon.level.distance(pos, mob.pos) <= 8 && mob.state != mob.HUNTING)
-						{
 							mob.beckon(target);
-						}
-					}
-				}
 
 				spend(TIME_TO_WAKE_UP);
-
 			}
 			else
 			{
-
 				enemySeen = false;
 
 				spend(TICK);
-
 			}
 			return true;
 		}
@@ -819,7 +817,6 @@ public abstract class Mob extends Char
 
 	protected class Wandering implements AiState
 	{
-
 		public static final String TAG = "WANDERING";
 
 		@Override
@@ -827,7 +824,6 @@ public abstract class Mob extends Char
 		{
 			if(enemyInFOV && (justAlerted || Random.Int(distance(enemy) / 2 + enemy.stealth()) == 0))
 			{
-
 				enemySeen = true;
 
 				notice();
@@ -836,20 +832,12 @@ public abstract class Mob extends Char
 				target = enemy.pos;
 
 				if(Dungeon.isChallenged(Challenges.SWARM_INTELLIGENCE))
-				{
 					for(Mob mob : Dungeon.level.mobs)
-					{
 						if(Dungeon.level.distance(pos, mob.pos) <= 8 && mob.state != mob.HUNTING)
-						{
 							mob.beckon(target);
-						}
-					}
-				}
-
 			}
 			else
 			{
-
 				enemySeen = false;
 
 				int oldPos = pos;
@@ -863,8 +851,8 @@ public abstract class Mob extends Char
 					target = Dungeon.level.randomDestination();
 					spend(TICK);
 				}
-
 			}
+
 			return true;
 		}
 	}

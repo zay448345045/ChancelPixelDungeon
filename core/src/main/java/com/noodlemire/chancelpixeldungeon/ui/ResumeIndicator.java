@@ -70,11 +70,13 @@ public class ResumeIndicator extends Tag
 	{
 		if(!Dungeon.hero.isAlive())
 			visible = false;
-		else if(visible != (Dungeon.hero.lastAction != null))
+		else
 		{
-			visible = Dungeon.hero.lastAction != null;
-			if(visible)
+			boolean prevVisible = visible;
+			visible = (Dungeon.hero.lastAction != null);
+			if (visible && !prevVisible)
 				flash();
+
 		}
 		super.update();
 	}

@@ -33,7 +33,6 @@ import java.util.Locale;
 
 public class CPDSettings extends GameSettings
 {
-
 	//Version info
 
 	public static final String KEY_VERSION = "version";
@@ -209,11 +208,6 @@ public class CPDSettings extends GameSettings
 		put(KEY_LAST_CLASS, value);
 	}
 
-	public static int lastClass()
-	{
-		return getInt(KEY_LAST_CLASS, 0, 0, 3);
-	}
-
 	public static void challenges(int value)
 	{
 		put(KEY_CHALLENGES, value);
@@ -313,8 +307,21 @@ public class CPDSettings extends GameSettings
 
 	public static boolean systemFont()
 	{
-		return getBoolean(KEY_SYSTEMFONT,
-				(language() == Languages.KOREAN || language() == Languages.CHINESE));
+		return getBoolean(KEY_SYSTEMFONT, false);
+				//(language() == Languages.KOREAN || language() == Languages.CHINESE));
 	}
 
+	//Controls
+
+	public static final String KEY_AVOID_BLOBS = "avoid_blobs";
+
+	public static void avoid_blobs(boolean value)
+	{
+		put(KEY_AVOID_BLOBS, value);
+	}
+
+	public static boolean avoid_blobs()
+	{
+		return getBoolean(KEY_AVOID_BLOBS, false);
+	}
 }

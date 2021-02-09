@@ -33,12 +33,10 @@ import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
 public class GreatCrab extends Crab
 {
-
 	{
 		spriteClass = GreatCrabSprite.class;
 
 		setHT(26, true);
-		defenseSkill = 0; //see damage()
 		baseSpeed = 1f;
 
 		EXP = 6;

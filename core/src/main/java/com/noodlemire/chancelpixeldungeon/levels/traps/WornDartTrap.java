@@ -25,6 +25,7 @@ import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
+import com.noodlemire.chancelpixeldungeon.actors.Amphora;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.geysers.Geyser;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.darts.Dart;
@@ -36,7 +37,6 @@ import com.watabou.utils.Random;
 
 public class WornDartTrap extends Trap
 {
-
 	{
 		color = GREY;
 		shape = CROSSHAIR;
@@ -60,7 +60,7 @@ public class WornDartTrap extends Trap
 			for(Char ch : Actor.chars())
 			{
 				//But exclude geysers.
-				if(ch instanceof Geyser)
+				if(ch instanceof Geyser || ch instanceof Amphora)
 					continue;
 
 				Ballistica bolt = new Ballistica(pos, ch.pos, Ballistica.PROJECTILE);

@@ -29,7 +29,6 @@ import com.noodlemire.chancelpixeldungeon.ui.Window;
 
 public class WndOptions extends Window
 {
-
 	private static final int WIDTH_P = 120;
 	private static final int WIDTH_L = 144;
 

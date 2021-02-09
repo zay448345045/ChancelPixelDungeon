@@ -29,7 +29,6 @@ import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 
 public class Door
 {
-
 	public static void enter(int pos)
 	{
 		Level.set(pos, Terrain.OPEN_DOOR);

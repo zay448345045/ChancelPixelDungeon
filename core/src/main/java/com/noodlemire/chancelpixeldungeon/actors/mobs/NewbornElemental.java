@@ -33,12 +33,9 @@ public class NewbornElemental extends Elemental
 	{
 		spriteClass = NewbornElementalSprite.class;
 
-		setHT(81, false);
-		setHP(HT() / 2); //40
+		EXP = 8;
 
-		defenseSkill = 12;
-
-		EXP = 7;
+		setHT(40, true);
 
 		properties.add(Property.MINIBOSS);
 	}

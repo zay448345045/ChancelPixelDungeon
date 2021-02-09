@@ -23,71 +23,43 @@ package com.noodlemire.chancelpixeldungeon.items;
 
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
-import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
-import com.noodlemire.chancelpixeldungeon.windows.WndOptions;
 
 public abstract class KindofMisc extends EquipableItem
 {
-
 	private static final float TIME_TO_EQUIP = 1f;
 
 	@Override
 	public boolean doEquip(final Hero hero)
 	{
-
-		if(hero.belongings.misc1 != null && hero.belongings.misc2 != null)
+		if(hero.belongings.miscSlots.isFull())
 		{
-
-			final KindofMisc m1 = hero.belongings.misc1;
-			final KindofMisc m2 = hero.belongings.misc2;
-
-			GameScene.show(
-					new WndOptions(Messages.get(KindofMisc.class, "unequip_title"),
-							Messages.get(KindofMisc.class, "unequip_message"),
-							Messages.titleCase(m1.toString()),
-							Messages.titleCase(m2.toString()))
-					{
-
-						@Override
-						protected void onSelect(int index)
-						{
-
-							KindofMisc equipped = (index == 0 ? m1 : m2);
-							//temporarily give 1 extra backpack spot to support swapping with a full inventory
-							hero.belongings.backpack.size++;
-							if(equipped.doUnequip(hero, true, false))
-							{
-								//fully re-execute rather than just call doEquip as we want to preserve quickslot
-								execute(hero, AC_EQUIP);
-							}
-							hero.belongings.backpack.size--;
-						}
-					});
-
+			GLog.w(Messages.get(this, "no_misc_slots"));
 			return false;
 		}
 		else
 		{
-			if(hero.belongings.misc1 == null)
-				hero.belongings.misc1 = this;
-			else
-				hero.belongings.misc2 = this;
+			collect(hero.belongings.miscSlots);
 
-			detach(hero.belongings.backpack);
-
-			activate(hero);
-
-			cursedKnown = true;
-			if(cursed)
-			{
-				equipCursed(hero);
-				GLog.n(Messages.get(this, "equip_cursed", this));
-			}
-
-			hero.spendAndNext(TIME_TO_EQUIP);
+			afterEquip(hero);
 			return true;
 		}
+	}
+
+	public void afterEquip(final Hero hero)
+	{
+		detach(hero.belongings.backpack);
+
+		activate(hero);
+
+		cursedKnown = true;
+		if(cursed)
+		{
+			equipCursed(hero);
+			GLog.n(Messages.get(this, "equip_cursed", this));
+		}
+
+		hero.spendAndNext(TIME_TO_EQUIP);
 	}
 
 	@Override
@@ -95,31 +67,20 @@ public abstract class KindofMisc extends EquipableItem
 	{
 		if(super.doUnequip(hero, collect, single))
 		{
-
-			if(hero.belongings.misc1 == this)
-			{
-				hero.belongings.misc1 = null;
-			}
+			if(hero.belongings.classMisc == this)
+				hero.belongings.classMisc = null;
 			else
-			{
-				hero.belongings.misc2 = null;
-			}
+				detach(hero.belongings.miscSlots);
 
 			return true;
-
 		}
 		else
-		{
-
 			return false;
-
-		}
 	}
 
 	@Override
 	public boolean isEquipped(Hero hero)
 	{
-		return hero.belongings.misc1 == this || hero.belongings.misc2 == this;
+		return hero.belongings.classMisc == this || hero.belongings.miscSlots.contains(this);
 	}
-
 }

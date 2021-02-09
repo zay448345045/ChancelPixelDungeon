@@ -39,7 +39,6 @@ import com.watabou.noosa.ui.Component;
 
 public class WndBlacksmith extends Window
 {
-
 	private static final int BTN_SIZE = 36;
 	private static final float GAP = 2;
 	private static final float BTN_GAP = 10;
@@ -53,7 +52,6 @@ public class WndBlacksmith extends Window
 
 	public WndBlacksmith(Blacksmith troll, Hero hero)
 	{
-
 		super();
 
 		IconTitle titlebar = new IconTitle();
@@ -126,9 +124,7 @@ public class WndBlacksmith extends Window
 						btnReforge.enable(false);
 					}
 					else
-					{
 						btnReforge.enable(true);
-					}
 				}
 			}
 		}
@@ -136,7 +132,6 @@ public class WndBlacksmith extends Window
 
 	public static class ItemButton extends Component
 	{
-
 		protected NinePatch bg;
 		protected ItemSlot slot;
 

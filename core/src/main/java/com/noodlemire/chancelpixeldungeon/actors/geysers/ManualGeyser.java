@@ -8,13 +8,14 @@ import com.watabou.utils.Random;
 public abstract class ManualGeyser extends Geyser
 {
 	private float nextSpewTime = 50f;
+	protected boolean randomlySpew = true;
 
 	@Override
 	public boolean act()
 	{
 		super.act();
 
-		if(nextSpewTime <= 0)
+		if(randomlySpew && nextSpewTime <= 0)
 		{
 			spew();
 			((GeyserSprite)sprite).spew();
@@ -28,7 +29,7 @@ public abstract class ManualGeyser extends Geyser
 	@Override
 	protected void spend(float time)
 	{
-		nextSpewTime -= time;
+		if(randomlySpew) nextSpewTime -= time;
 		super.spend(time);
 	}
 

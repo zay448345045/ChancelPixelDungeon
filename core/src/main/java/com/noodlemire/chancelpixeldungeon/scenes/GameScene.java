@@ -144,6 +144,7 @@ public class GameScene extends PixelScene
 	private Group heaps;
 	private Group mobs;
 	private Group geysers;
+	private Group others;
 	private Group emitters;
 	private Group effects;
 	private Group gases;
@@ -250,6 +251,9 @@ public class GameScene extends PixelScene
 		geysers = new Group();
 		add(geysers);
 
+		others = new Group();
+		add(others);
+
 		for(Mob mob : Dungeon.level.mobs)
 		{
 			addMobSprite(mob);
@@ -261,6 +265,9 @@ public class GameScene extends PixelScene
 
 		for(Geyser geyser : Dungeon.level.geysers)
 			addGeyserSprite(geyser);
+
+		for(Char ch : Dungeon.level.others)
+			addOtherSprite(ch);
 
 		walls = new DungeonWallsTilemap();
 		add(walls);
@@ -731,6 +738,14 @@ public class GameScene extends PixelScene
 		sprite.link(geyser);
 	}
 
+	private void addOtherSprite(Char ch)
+	{
+		CharSprite sprite = ch.sprite();
+		sprite.visible = Dungeon.level.heroFOV[ch.pos];
+		others.add(sprite);
+		sprite.link(ch);
+	}
+
 	private synchronized void prompt(String text)
 	{
 
@@ -986,17 +1001,26 @@ public class GameScene extends PixelScene
 		}
 	}
 
+	private static boolean rememberIfImmobile(Char ch)
+	{
+		return ch.properties().contains(Char.Property.IMMOVABLE) && Dungeon.level.visited[ch.pos];
+	}
+
 	public static void afterObserve()
 	{
 		if(scene != null)
 		{
 			for(Mob mob : Dungeon.level.mobs)
 				if(mob.sprite != null)
-					mob.sprite.visible = Dungeon.level.heroFOV[mob.pos];
+					mob.sprite.visible = Dungeon.level.heroFOV[mob.pos] || rememberIfImmobile(mob);
 
 			for(Geyser geyser : Dungeon.level.geysers)
 				if(geyser.sprite != null)
-					geyser.sprite.visible = Dungeon.level.heroFOV[geyser.pos];
+					geyser.sprite.visible = Dungeon.level.heroFOV[geyser.pos] || rememberIfImmobile(geyser);
+
+			for(Char ch : Dungeon.level.others)
+				if(ch.sprite != null)
+					ch.sprite.visible = Dungeon.level.heroFOV[ch.pos] || rememberIfImmobile(ch);
 		}
 	}
 

@@ -86,6 +86,8 @@ public enum Document
 		ADVENTURERS_GUIDE.pages.put("Dieing", false);
 		ADVENTURERS_GUIDE.pages.put("Looting", false);
 		ADVENTURERS_GUIDE.pages.put("Magic", false);
+		ADVENTURERS_GUIDE.pages.put("Targets", false);
+		ADVENTURERS_GUIDE.pages.put("Consumables", false);
 	}
 
 	private static final String DOCUMENTS = "documents";

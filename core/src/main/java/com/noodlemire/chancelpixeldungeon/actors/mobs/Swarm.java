@@ -45,11 +45,9 @@ public class Swarm extends Mob
 	{
 		spriteClass = SwarmSprite.class;
 
-		setHT(50, true);
-		defenseSkill = 5;
+		EXP = Random.IntRange(3, 5);
 
-		EXP = 3;
-		maxLvl = 9;
+		setHT(20 + EXP * 10, true);
 
 		flying = true;
 
@@ -81,7 +79,7 @@ public class Swarm extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(1, 4);
+		return Random.NormalIntRange(1, 1 + EXP);
 	}
 
 	@Override
@@ -120,14 +118,19 @@ public class Swarm extends Mob
 	@Override
 	public int attackSkill(Char target)
 	{
-		return 10;
+		return EXP * 3;
+	}
+
+	@Override
+	public int defenseSkill()
+	{
+		return 2 + EXP;
 	}
 
 	private Swarm split()
 	{
 		Swarm clone = new Swarm();
 		clone.generation = generation + 1;
-		clone.EXP = 0;
 		if(buff(Burning.class) != null)
 		{
 			Buff.affect(clone, Burning.class).reignite();
@@ -141,6 +144,15 @@ public class Swarm extends Mob
 			Buff.affect(clone, Corruption.class);
 		}
 		return clone;
+	}
+
+	@Override
+	public void die(Object cause)
+	{
+		if(generation > 1)
+			EXP = 0;
+
+		super.die(cause);
 	}
 
 	@Override

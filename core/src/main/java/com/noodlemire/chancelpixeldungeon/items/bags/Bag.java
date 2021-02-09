@@ -24,6 +24,7 @@ package com.noodlemire.chancelpixeldungeon.items.bags;
 import com.noodlemire.chancelpixeldungeon.Badges;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.hero.Belongings;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
@@ -36,7 +37,6 @@ import java.util.Iterator;
 
 public class Bag extends Item implements Iterable<Item>
 {
-
 	public static final String AC_OPEN = "OPEN";
 
 	{
@@ -49,28 +49,22 @@ public class Bag extends Item implements Iterable<Item>
 
 	public Char owner;
 
-	public ArrayList<Item> items = new ArrayList<Item>();
+	public ArrayList<Item> items = new ArrayList<>();
 
-	public int size = 1;
+	public int size = Belongings.BACKPACK_SIZE;
 
 	@Override
 	public void execute(Hero hero, String action)
 	{
-
 		super.execute(hero, action);
 
 		if(action.equals(AC_OPEN))
-		{
-
 			GameScene.show(new WndBag(this, null, WndBag.Mode.ALL, null));
-
-		}
 	}
 
 	@Override
 	public boolean collect(Bag container)
 	{
-
 		for(Item item : container.items.toArray(new Item[0]))
 		{
 			if(grab(item))
@@ -90,7 +84,6 @@ public class Bag extends Item implements Iterable<Item>
 
 		if(super.collect(container))
 		{
-
 			owner = container.owner;
 
 			Badges.validateAllBagsBought(this);
@@ -98,9 +91,7 @@ public class Bag extends Item implements Iterable<Item>
 			return true;
 		}
 		else
-		{
 			return false;
-		}
 	}
 
 	@Override
@@ -132,9 +123,7 @@ public class Bag extends Item implements Iterable<Item>
 	public void resurrect()
 	{
 		for(Item item : items.toArray(new Item[0]))
-		{
 			if(!item.unique) items.remove(item);
-		}
 	}
 
 	private static final String ITEMS = "inventory";
@@ -151,9 +140,7 @@ public class Bag extends Item implements Iterable<Item>
 	{
 		super.restoreFromBundle(bundle);
 		for(Bundlable item : bundle.getCollection(ITEMS))
-		{
 			if(item != null) ((Item) item).collect(this);
-		}
 	}
 
 	public boolean contains(Item item)
@@ -161,9 +148,7 @@ public class Bag extends Item implements Iterable<Item>
 		for(Item i : items)
 		{
 			if(i == item)
-			{
 				return true;
-			}
 			else if(i instanceof Bag && ((Bag) i).contains(item))
 			{
 				return true;
@@ -188,6 +173,11 @@ public class Bag extends Item implements Iterable<Item>
 		return false;
 	}
 
+	public boolean isFull()
+	{
+		return items.size() == size;
+	}
+
 	@Override
 	public Iterator<Item> iterator()
 	{
@@ -196,7 +186,6 @@ public class Bag extends Item implements Iterable<Item>
 
 	private class ItemIterator implements Iterator<Item>
 	{
-
 		private int index = 0;
 		private Iterator<Item> nested = null;
 
@@ -218,13 +207,10 @@ public class Bag extends Item implements Iterable<Item>
 		{
 			if(nested != null && nested.hasNext())
 			{
-
 				return nested.next();
-
 			}
 			else
 			{
-
 				nested = null;
 
 				Item item = items.get(index++);

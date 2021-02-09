@@ -21,196 +21,240 @@
 
 package com.noodlemire.chancelpixeldungeon.actors.mobs;
 
+import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Bestiary
 {
-	public static ArrayList<Class<? extends Mob>> getMobRotation(int depth)
+	private static final String TOTAL_EXP = "totalExp";
+	private static final int MAX_DEPTH = 25;
+
+	private static final int[] totalEXP = new int[MAX_DEPTH];
+
+	private static int maxEXP(int depth)
 	{
-		ArrayList<Class<? extends Mob>> mobs = standardMobRotation(depth);
-		addRareMobs(depth, mobs);
-		Random.shuffle(mobs);
-		return mobs;
+		return 4 + 16 * depth;
 	}
 
-	//returns a rotation of standard mobs, unshuffled.
-	private static ArrayList<Class<? extends Mob>> standardMobRotation(int depth)
+	public static Mob spawnMob(int depth, boolean ignoreEXP)
 	{
+		if(depth < 1 || depth > MAX_DEPTH || (!ignoreEXP && totalEXP[depth-1] >= maxEXP(depth)))
+			return null;
+
+		try
+		{
+			Mob mob = getRandomStandardMob(depth).newInstance();
+
+			if(!ignoreEXP)
+				totalEXP[depth-1] += mob.EXP;
+
+			return mob;
+		}
+		catch (Exception e)
+		{
+			ChancelPixelDungeon.reportException(e);
+			return null;
+		}
+	}
+
+	private static Class<? extends Mob> getRandomStandardMob(int depth)
+	{
+		Class<? extends Mob> mob;
+
 		switch(depth)
 		{
 			// Sewers
 			case 1:
 			default:
-				//10x rat
-				return new ArrayList<Class<? extends Mob>>(Arrays.asList(
-						Rat.class, Rat.class, Rat.class, Rat.class, Rat.class,
-						Rat.class, Rat.class, Rat.class, Rat.class, Rat.class
-				));
+				//100% rat
+				return Rat.class;
 			case 2:
-				//3x rat, 3x gnoll
-				return new ArrayList<>(Arrays.asList(Rat.class, Rat.class, Rat.class,
-						Gnoll.class, Gnoll.class, Gnoll.class));
+				//50% rat, 50% gnoll
+				return Random.oneOf(Rat.class, Gnoll.class);
 			case 3:
-				//2x rat, 4x gnoll, 1x crab, 1x swarm
-				return new ArrayList<>(Arrays.asList(Rat.class, Rat.class,
+				//25% rat, 50% gnoll, 12.5% crab, 12.5% swarm
+				return Random.oneOf(Rat.class, Rat.class,
 						Gnoll.class, Gnoll.class, Gnoll.class, Gnoll.class,
-						Crab.class, Swarm.class));
+						Crab.class, Swarm.class);
 			case 4:
-				//1x rat, 2x gnoll, 3x crab, 1x swarm
-				return new ArrayList<>(Arrays.asList(Rat.class,
+				mob = getRareMob(depth);
+				if(mob != null) return mob;
+
+				//14% rat, 28% gnoll, 42% crab, 14% swarm
+				return Random.oneOf(Rat.class,
 						Gnoll.class, Gnoll.class,
 						Crab.class, Crab.class, Crab.class,
-						Swarm.class));
+						Swarm.class);
 
 			// Prison
 			case 6:
-				//3x skeleton, 1x thief, 1x swarm
-				return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
+				//60% skeleton, 20% thief, 20% swarm
+				return Random.oneOf(Skeleton.class, Skeleton.class, Skeleton.class,
 						Thief.class,
-						Swarm.class));
+						Swarm.class);
 			case 7:
-				//3x skeleton, 1x thief, 1x shaman, 1x guard
-				return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
+				//50% skeleton, 17% thief, 17% shaman, 17% guard
+				return Random.oneOf(Skeleton.class, Skeleton.class, Skeleton.class,
 						Thief.class,
 						Shaman.class,
-						Guard.class));
+						Guard.class);
 			case 8:
-				//3x skeleton, 1x thief, 2x shaman, 2x guard
-				return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
+				//37.5% skeleton, 12.5% thief, 25% shaman, 25% guard
+				return Random.oneOf(Skeleton.class, Skeleton.class, Skeleton.class,
 						Thief.class,
 						Shaman.class, Shaman.class,
-						Guard.class, Guard.class));
+						Guard.class, Guard.class);
 			case 9:
-				//3x skeleton, 1x thief, 2x shaman, 3x guard
-				return new ArrayList<>(Arrays.asList(Skeleton.class, Skeleton.class, Skeleton.class,
+				mob = getRareMob(depth);
+				if(mob != null) return mob;
+
+				//33% skeleton, 11% thief, 22% shaman, 33% guard
+				return Random.oneOf(Skeleton.class, Skeleton.class, Skeleton.class,
 						Thief.class,
 						Shaman.class, Shaman.class,
-						Guard.class, Guard.class, Guard.class));
+						Guard.class, Guard.class, Guard.class);
 
 			// Caves
 			case 11:
-				//5x bat, 1x brute
-				return new ArrayList<>(Arrays.asList(
+				//83% bat, 17% brute
+				return Random.oneOf(
 						Bat.class, Bat.class, Bat.class, Bat.class, Bat.class,
-						Brute.class));
+						Brute.class);
 			case 12:
-				//5x bat, 5x brute, 1x spinner
-				return new ArrayList<>(Arrays.asList(
+				//45% bat, 45% brute, 10% spinner
+				return Random.oneOf(
 						Bat.class, Bat.class, Bat.class, Bat.class, Bat.class,
 						Brute.class, Brute.class, Brute.class, Brute.class, Brute.class,
-						Spinner.class));
+						Spinner.class);
 			case 13:
-				//1x bat, 3x brute, 1x shaman, 1x spinner
-				return new ArrayList<>(Arrays.asList(
+				//17% bat, 50% brute, 17% shaman, 17% spinner
+				return Random.oneOf(
 						Bat.class,
 						Brute.class, Brute.class, Brute.class,
 						Shaman.class,
-						Spinner.class));
+						Spinner.class);
 			case 14:
-				//1x bat, 3x brute, 1x shaman, 4x spinner
-				return new ArrayList<>(Arrays.asList(
+				mob = getRareMob(depth);
+				if(mob != null) return mob;
+
+				//11% bat, 33% brute, 11% shaman, 44% spinner
+				return Random.oneOf(
 						Bat.class,
 						Brute.class, Brute.class, Brute.class,
 						Shaman.class,
-						Spinner.class, Spinner.class, Spinner.class, Spinner.class));
+						Spinner.class, Spinner.class, Spinner.class, Spinner.class);
 
 			// City
 			case 16:
-				//5x elemental, 5x warlock, 1x monk
-				return new ArrayList<>(Arrays.asList(
+				//45% elemental, 45% warlock, 10% monk
+				return Random.oneOf(
 						Elemental.class, Elemental.class, Elemental.class, Elemental.class, Elemental.class,
 						Warlock.class, Warlock.class, Warlock.class, Warlock.class, Warlock.class,
-						Monk.class));
+						Monk.class);
 			case 17:
-				//2x elemental, 2x warlock, 2x monk
-				return new ArrayList<>(Arrays.asList(
-						Elemental.class, Elemental.class,
-						Warlock.class, Warlock.class,
-						Monk.class, Monk.class));
+				//33% elemental, 33% warlock, 33% monk
+				return Random.oneOf(Elemental.class, Warlock.class, Monk.class);
 			case 18:
-				//1x elemental, 1x warlock, 2x monk, 1x golem
-				return new ArrayList<>(Arrays.asList(
+				//20% elemental, 20% warlock, 40% monk, 20% golem
+				return Random.oneOf(
 						Elemental.class,
 						Warlock.class,
 						Monk.class, Monk.class,
-						Golem.class));
+						Golem.class);
 			case 19:
-				//1x elemental, 1x warlock, 2x monk, 3x golem
-				return new ArrayList<>(Arrays.asList(
+				mob = getRareMob(depth);
+				if(mob != null) return mob;
+
+				//14% elemental, 14% warlock, 28% monk, 42% golem
+				return Random.oneOf(
 						Elemental.class,
 						Warlock.class,
 						Monk.class, Monk.class,
-						Golem.class, Golem.class, Golem.class));
+						Golem.class, Golem.class, Golem.class);
 
 			// Halls
 			case 22:
-				//3x succubus, 3x evil eye
-				return new ArrayList<>(Arrays.asList(
-						Succubus.class, Succubus.class, Succubus.class,
-						Eye.class, Eye.class, Eye.class));
+				//50% succubus, 50% evil eye
+				return Random.oneOf(Succubus.class, Eye.class);
 			case 23:
-				//2x succubus, 4x evil eye, 2x scorpio
-				return new ArrayList<>(Arrays.asList(
-						Succubus.class, Succubus.class,
-						Eye.class, Eye.class, Eye.class, Eye.class,
-						Scorpio.class, Scorpio.class));
-			case 24:
-				//1x succubus, 2x evil eye, 3x scorpio
-				return new ArrayList<>(Arrays.asList(
+				//25% succubus, 50% evil eye, 25% scorpio
+				return Random.oneOf(
 						Succubus.class,
 						Eye.class, Eye.class,
-						Scorpio.class, Scorpio.class, Scorpio.class));
-		}
+						Scorpio.class);
+			case 24:
+				mob = getRareMob(depth);
+				if(mob != null) return mob;
 
+				//17% succubus, 33% evil eye, 50% scorpio
+				return Random.oneOf(
+						Succubus.class,
+						Eye.class, Eye.class,
+						Scorpio.class, Scorpio.class, Scorpio.class);
+		}
 	}
 
-	//At the last floor of each chapter, a random 'rare' mob will spawn. This only happens once per last floor.
-	private static void addRareMobs(int depth, ArrayList<Class<? extends Mob>> rotation)
+	private static Class<? extends Mob> getRareMob(int depth)
 	{
+		Class<? extends Mob> mob = null;
+
 		if(depth / 5 + 1 > Dungeon.LimitedDrops.RARE_MOB.count)
 		{
 			switch(depth)
 			{
-				default:
-					return;
-
 				// Sewers
 				case 4:
-					rotation.add(GetRandomRare(Skeleton.class, Thief.class, Albino.class));
-
+					mob = Random.oneOf(Skeleton.class, Thief.class, Albino.class);
 					break;
 
 				// Prison
 				case 9:
-					rotation.add(GetRandomRare(Bat.class, Brute.class, Bandit.class));
+					mob = Random.oneOf(Bat.class, Brute.class, Bandit.class);
 					break;
 
 				// Caves
 				case 14:
-					rotation.add(GetRandomRare(Elemental.class, Monk.class, Shielded.class));
+					mob = Random.oneOf(Elemental.class, Monk.class, Shielded.class);
 					break;
 
 				// City
 				case 19:
-					rotation.add(GetRandomRare(Succubus.class, Senior.class));
+					mob = Random.oneOf(Succubus.class, Senior.class);
 					break;
 
 				case 24:
-					rotation.add(Acidic.class);
+					mob = Acidic.class;
 					break;
 			}
 
 			Dungeon.LimitedDrops.RARE_MOB.count++;
 		}
+
+		return mob;
 	}
 
-	@SafeVarargs
-	private static Class<? extends Mob> GetRandomRare(Class<? extends Mob>... options)
+	public static void store(Bundle bundle)
 	{
-		return options[Random.Int(options.length)];
+		for(int i  = 0; i < MAX_DEPTH; i++)
+		{
+			bundle.put(TOTAL_EXP + i, totalEXP[i]);
+		}
+	}
+
+	public static void restore(Bundle bundle)
+	{
+		for(int i  = 0; i < MAX_DEPTH; i++)
+		{
+			if(bundle.contains(TOTAL_EXP + i))
+				totalEXP[i] = bundle.getInt(TOTAL_EXP + i);
+		}
+	}
+
+	public static void reset()
+	{
+		for(int i = 0; i < MAX_DEPTH; i++)
+			totalEXP[i] = 0;
 	}
 }

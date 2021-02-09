@@ -19,9 +19,9 @@ import java.util.ArrayList;
 public class ScrollOfNecromancy extends EnvironmentScroll
 {
 	{
+		should_shout = true;
 		initials = 15;
-
-		if(isIdentified()) defaultAction = AC_SHOUT;
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 
 	@Override
@@ -102,6 +102,13 @@ public class ScrollOfNecromancy extends EnvironmentScroll
 	public void setKnown()
 	{
 		super.setKnown();
-		if(isIdentified()) defaultAction = AC_SHOUT;
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
+	}
+
+	@Override
+	public void setDangerKnown()
+	{
+		super.setDangerKnown();
+		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 }

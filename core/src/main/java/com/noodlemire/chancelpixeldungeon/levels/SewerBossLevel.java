@@ -21,20 +21,31 @@
 
 package com.noodlemire.chancelpixeldungeon.levels;
 
+import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Bones;
+import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Goo;
+import com.noodlemire.chancelpixeldungeon.effects.Ripple;
 import com.noodlemire.chancelpixeldungeon.items.Heap;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.levels.builders.Builder;
-import com.noodlemire.chancelpixeldungeon.levels.builders.LoopBuilder;
+import com.noodlemire.chancelpixeldungeon.levels.builders.WebbedBuilder;
 import com.noodlemire.chancelpixeldungeon.levels.rooms.Room;
-import com.noodlemire.chancelpixeldungeon.levels.rooms.secret.RatKingRoom;
+import com.noodlemire.chancelpixeldungeon.levels.rooms.special.GooeyOrbRoom;
+import com.noodlemire.chancelpixeldungeon.levels.rooms.special.RatKingRoom;
 import com.noodlemire.chancelpixeldungeon.levels.rooms.standard.EmptyRoom;
 import com.noodlemire.chancelpixeldungeon.levels.rooms.standard.SewerBossEntranceRoom;
 import com.noodlemire.chancelpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.tiles.DungeonTilemap;
+import com.watabou.noosa.Game;
+import com.watabou.noosa.Group;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.ColorMath;
+import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -56,9 +67,10 @@ public class SewerBossLevel extends SewerLevel
 
 		int standards = standardRooms();
 		for(int i = 0; i < standards; i++)
-		{
 			initRooms.add(new EmptyRoom());
-		}
+
+		for(int i = 0; i < 3; i++)
+			initRooms.add(new GooeyOrbRoom());
 
 		initRooms.add(new RatKingRoom());
 		return initRooms;
@@ -67,15 +79,15 @@ public class SewerBossLevel extends SewerLevel
 	@Override
 	protected int standardRooms()
 	{
-		//2 to 4, average 3
-		return 2 + Random.chances(new float[]{1, 1, 1});
+		//7 to 9, average 8
+		return 6 + Random.chances(new float[]{1, 1, 1});
 	}
 
 	protected Builder builder()
 	{
-		return new LoopBuilder()
-				.setPathLength(1f, new float[]{1})
-				.setTunnelLength(new float[]{0, 3, 1}, new float[]{1});
+		return new WebbedBuilder()
+				.setPathLength(50f, new float[]{1})
+				.setTunnelLength(new float[]{3, 1}, new float[]{0, 0, 1, 2});
 	}
 
 	@Override
@@ -159,12 +171,22 @@ public class SewerBossLevel extends SewerLevel
 		return pos;
 	}
 
+	@Override
+	public String tilesTex()
+	{
+		return Assets.TILES_SEWERS_BOSS;
+	}
+
+	@Override
+	public String waterTex()
+	{
+		return Assets.WATER_SEWERS_BOSS;
+	}
 
 	public void seal()
 	{
 		if(entrance != 0)
 		{
-
 			super.seal();
 
 			set(entrance, Terrain.WATER);
@@ -180,7 +202,6 @@ public class SewerBossLevel extends SewerLevel
 	{
 		if(stairs != 0)
 		{
-
 			super.unseal();
 
 			entrance = stairs;
@@ -188,7 +209,6 @@ public class SewerBossLevel extends SewerLevel
 
 			set(entrance, Terrain.ENTRANCE);
 			GameScene.updateMap(entrance);
-
 		}
 	}
 
@@ -207,5 +227,95 @@ public class SewerBossLevel extends SewerLevel
 		super.restoreFromBundle(bundle);
 		stairs = bundle.getInt(STAIRS);
 		roomExit = roomEntrance;
+	}
+
+	@Override
+	public Group addVisuals()
+	{
+		super_addVisuals();
+		addSewerBossVisuals(this, visuals);
+		return visuals;
+	}
+
+	public static void addSewerBossVisuals(Level level, Group group)
+	{
+		for(int i = 0; i < level.length(); i++)
+			if(level.map[i] == Terrain.WALL_DECO)
+				group.add(new SewerBossLevel.Sink(i));
+	}
+
+	private static class Sink extends Emitter
+	{
+		private int pos;
+		private float rippleDelay = 0;
+
+		private static final Emitter.Factory factory = new Factory()
+		{
+
+			@Override
+			public void emit(Emitter emitter, int index, float x, float y)
+			{
+				BlackWaterParticle p = (BlackWaterParticle) emitter.recycle(BlackWaterParticle.class);
+				p.reset(x, y);
+			}
+		};
+
+		public Sink(int pos)
+		{
+			super();
+
+			this.pos = pos;
+
+			PointF p = DungeonTilemap.tileCenterToWorld(pos);
+			pos(p.x - 2, p.y + 3, 4, 0);
+
+			pour(factory, 0.1f);
+		}
+
+		@Override
+		public void update()
+		{
+			if(visible = (pos < Dungeon.level.heroFOV.length && Dungeon.level.heroFOV[pos]))
+			{
+
+				super.update();
+
+				if((rippleDelay -= Game.elapsed) <= 0)
+				{
+					Ripple ripple = GameScene.ripple(pos + Dungeon.level.width());
+					if(ripple != null)
+					{
+						ripple.y -= DungeonTilemap.SIZE / 2;
+						rippleDelay = Random.Float(0.4f, 0.6f);
+					}
+				}
+			}
+		}
+	}
+
+	public static final class BlackWaterParticle extends PixelParticle
+	{
+		public BlackWaterParticle()
+		{
+			super();
+
+			acc.y = 50;
+			am = 0.5f;
+
+			color(ColorMath.random(0x000000, 0x3b3b3b));
+			size(2);
+		}
+
+		public void reset(float x, float y)
+		{
+			revive();
+
+			this.x = x;
+			this.y = y;
+
+			speed.set(Random.Float(-2, +2), 0);
+
+			left = lifespan = 0.4f;
+		}
 	}
 }

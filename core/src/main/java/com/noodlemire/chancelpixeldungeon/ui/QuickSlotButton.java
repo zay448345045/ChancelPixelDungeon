@@ -250,12 +250,8 @@ public class QuickSlotButton extends Button implements WndBag.Listener
 	public static void refresh()
 	{
 		for(int i = 0; i < instance.length; i++)
-		{
 			if(instance[i] != null)
-			{
 				instance[i].item(select(i));
-			}
-		}
 	}
 
 	public static void target(Char target)
