@@ -21,6 +21,7 @@
 
 package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
+import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Crossbow extends MeleeWeapon
@@ -35,5 +36,12 @@ public class Crossbow extends MeleeWeapon
 	public int max(int lvl)
 	{
 		return Math.round(super.max(lvl) * 0.8f); //20 base, down from 25, and +4 per level, down from +5
+	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		//Does nothing upon a melee crit; See Dart.java
+		return damage;
 	}
 }

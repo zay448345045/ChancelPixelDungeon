@@ -47,7 +47,6 @@ import java.util.List;
 
 public class Preparation extends Buff implements ActionIndicator.Action
 {
-
 	{
 		//always acts after other buffs, so invisibility effects can process first
 		actPriority = BUFF_PRIO - 1;
@@ -84,11 +83,7 @@ public class Preparation extends Buff implements ActionIndicator.Action
 		public int damageRoll(Char attacker, Char defender)
 		{
 			int dmg = attacker.damageRoll();
-			for(int i = 1; i < damageRolls; i++)
-			{
-				int newDmg = attacker.damageRoll();
-				if(newDmg > dmg) dmg = newDmg;
-			}
+
 			float defenderHPPercent = 1f - (defender.HP() / (float) defender.HT());
 			return Math.round(dmg * (1f + baseDmgBonus + (missingHPBonus * defenderHPPercent)));
 		}

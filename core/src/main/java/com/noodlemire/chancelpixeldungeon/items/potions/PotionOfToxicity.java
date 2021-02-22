@@ -26,11 +26,12 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.ToxicGas;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class PotionOfToxicity extends Potion
 {
 	{
-		initials = 11;
+		icon = ItemSpriteSheet.Icons.POTION_TOXICITY;
 		harmful = true;
 
 		if(isDangerKnown()) defaultAction = AC_THROW;

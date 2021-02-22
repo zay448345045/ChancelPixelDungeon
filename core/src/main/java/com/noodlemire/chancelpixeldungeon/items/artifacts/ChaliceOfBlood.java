@@ -133,7 +133,7 @@ public class ChaliceOfBlood extends Artifact
 	@Override
 	public void charge(Hero target, float amount)
 	{
-		target.heal(Math.round(amount * (1 + Dungeon.depth/5)));
+		target.heal(Math.round(amount * (1 + Dungeon.depth/5)), this);
 	}
 
 	@Override

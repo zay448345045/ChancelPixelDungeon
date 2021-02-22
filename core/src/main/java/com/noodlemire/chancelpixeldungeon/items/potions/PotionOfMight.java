@@ -27,12 +27,13 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Might;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
 public class PotionOfMight extends Potion
 {
 	{
-		initials = 6;
+		icon = ItemSpriteSheet.Icons.POTION_MIGHT;
 	}
 
 	@Override

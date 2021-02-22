@@ -37,7 +37,7 @@ public class ThrowingStone extends MissileWeapon
 	public int min(int lvl)
 	{
 		return tier +                      //1 base, down from 2
-		       (tier == 1 ? lvl : 2 * lvl);  //scaling unchanged
+		       (tier == 1 ? lvl : lvl / 2);  //scaling unchanged
 	}
 
 	@Override

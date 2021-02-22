@@ -39,7 +39,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class ChancelPixelDungeon extends Game
 {
-	//variable constants for specific older versions of chancel, used for data conversion
+	//variable constants for specific older versions of Chancel, used for data conversion
 	//versions older than v0.6.0b are no longer supported, and data from them is ignored
 	//(currently unused beyond checking for latest version)
 
@@ -48,6 +48,22 @@ public class ChancelPixelDungeon extends Game
 	public ChancelPixelDungeon()
 	{
 		super(WelcomeScene.class);
+
+		//v0.1 Beta 8
+		com.watabou.utils.Bundle.addAlias(
+				com.noodlemire.chancelpixeldungeon.items.artifacts.BraceletOfForce.class,
+				"com.noodlemire.chancelpixeldungeon.items.rings.RingOfForce"
+		);
+
+		com.watabou.utils.Bundle.addAlias(
+				com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfSunlight.class,
+				"com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfBalance"
+		);
+
+		com.watabou.utils.Bundle.addAlias(
+				com.noodlemire.chancelpixeldungeon.items.stones.StoneOfLinkage.class,
+				"com.noodlemire.chancelpixeldungeon.items.stones.StoneOfEquity"
+		);
 
 		//v0.1 Beta 2
 		com.watabou.utils.Bundle.addAlias(

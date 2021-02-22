@@ -87,7 +87,7 @@ public class Wraith extends Mob
 	private void adjustStats(int level)
 	{
 		this.level = level;
-		enemySeen = true;
+		lookForEnemy(true);
 	}
 
 	@Override

@@ -32,24 +32,25 @@ import com.watabou.utils.Random;
 
 public class Vorpal extends Weapon.Enchantment
 {
-
-	private static ItemSprite.Glowing RED = new ItemSprite.Glowing(0xAA6666);
+	private static final ItemSprite.Glowing RED = new ItemSprite.Glowing(0xAA6666);
 
 	@Override
-	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	public boolean procChance(int level, Char attacker, Char defender, int damage)
 	{
 		// lvl 0 - 33%
 		// lvl 1 - 50%
 		// lvl 2 - 60%
-		int level = Math.max(0, weapon.level());
+		return Random.Int(level + 3) >= 2;
+	}
 
-		if(Random.Int(level + 3) >= 2)
+	@Override
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
+		if(doProc(weapon, attacker, defender, damage))
 		{
-
 			Buff.affect(defender, Bleeding.class).set(damage / 4);
 			Splash.at(defender.sprite.center(), -PointF.PI / 2, PointF.PI / 6,
 					defender.sprite.blood(), 10);
-
 		}
 
 		return damage;
@@ -60,5 +61,4 @@ public class Vorpal extends Weapon.Enchantment
 	{
 		return RED;
 	}
-
 }

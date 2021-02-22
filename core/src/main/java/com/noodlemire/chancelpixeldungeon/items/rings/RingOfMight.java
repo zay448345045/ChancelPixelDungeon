@@ -26,11 +26,16 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 import java.text.DecimalFormat;
 
 public class RingOfMight extends Ring
 {
+	{
+		icon = ItemSpriteSheet.Icons.RING_MIGHT;
+	}
+
 	@Override
 	public boolean doEquip(Hero hero)
 	{

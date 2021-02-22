@@ -192,7 +192,7 @@ public class Guard extends Mob
 		@Override
 		public boolean act(boolean enemyInFOV, boolean justAlerted)
 		{
-			enemySeen = enemyInFOV;
+			lookForEnemy(enemyInFOV);
 
 			if(!chainsUsed
 			   && enemyInFOV

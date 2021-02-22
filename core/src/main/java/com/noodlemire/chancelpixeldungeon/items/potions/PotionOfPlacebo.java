@@ -2,12 +2,13 @@ package com.noodlemire.chancelpixeldungeon.items.potions;
 
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.items.Item;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.windows.WndBag;
 
 public class PotionOfPlacebo extends InventoryPotion
 {
 	{
-		initials = 19;
+		icon = ItemSpriteSheet.Icons.POTION_PLACEBO;
 		mode = WndBag.Mode.IDED_POTION;
 	}
 

@@ -22,8 +22,10 @@
 package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
-import com.noodlemire.chancelpixeldungeon.actors.blobs.Regrowth;
+import com.noodlemire.chancelpixeldungeon.actors.blobs.Sunlight;
+import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
+import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 
@@ -36,16 +38,22 @@ public class Healing extends DurationBuff implements Expulsion
 		//unlike other buffs, this one acts after the hero and takes priority against other effects
 		//healing is much more useful if you get some of it off before taking damage
 		actPriority = HERO_PRIO - 1;
+
+		type = buffType.POSITIVE;
+	}
+
+	private int healingThisTick()
+	{
+		int h = Math.round(left() * percentHealPerTick) + flatHealPerTick;
+		return (int) GameMath.gate(1, h, left());
 	}
 
 	@Override
 	public boolean act()
 	{
-		int healingThisTick = Math.round(left() * percentHealPerTick) + flatHealPerTick;
+		int healingThisTick = healingThisTick();
 
-		healingThisTick = (int) GameMath.gate(1, healingThisTick, left());
-
-		target.heal(healingThisTick);
+		target.heal(healingThisTick, this);
 
 		shorten(healingThisTick);
 		spend(TICK);
@@ -63,13 +71,13 @@ public class Healing extends DurationBuff implements Expulsion
 	@Override
 	public Class<? extends Blob> expulse()
 	{
-		return Regrowth.class;
+		return Sunlight.class;
 	}
 
 	@Override
 	public void fx(boolean on)
 	{
-		if(on) target.sprite.add(CharSprite.State.HEALING);
+		if (on) target.sprite.add(CharSprite.State.HEALING);
 		else target.sprite.remove(CharSprite.State.HEALING);
 	}
 
@@ -90,5 +98,23 @@ public class Healing extends DurationBuff implements Expulsion
 		super.restoreFromBundle(bundle);
 		percentHealPerTick = bundle.getFloat(PERCENT);
 		flatHealPerTick = bundle.getInt(FLAT);
+	}
+
+	@Override
+	public int icon()
+	{
+		return BuffIndicator.HEALING;
+	}
+
+	@Override
+	public String toString()
+	{
+		return Messages.get(this, "name");
+	}
+
+	@Override
+	public String desc()
+	{
+		return Messages.get(this, "desc", healingThisTick(), (int)left());
 	}
 }

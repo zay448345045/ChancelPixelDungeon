@@ -33,23 +33,26 @@ import com.watabou.utils.Random;
 
 public class Venomous extends Weapon.Enchantment
 {
-
-	private static ItemSprite.Glowing PURPLE = new ItemSprite.Glowing(0x4400AA);
+	private static final ItemSprite.Glowing PURPLE = new ItemSprite.Glowing(0x4400AA);
 
 	@Override
-	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	public boolean procChance(int level, Char attacker, Char defender, int damage)
 	{
 		// lvl 0 - 33%
 		// lvl 1 - 50%
 		// lvl 2 - 60%
+		return Random.Int(level + 3) >= 2;
+	}
+
+	@Override
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
 		int level = Math.max(0, weapon.level());
 
-		if(Random.Int(level + 3) >= 2)
+		if(doProc(weapon, attacker, defender, damage))
 		{
-
 			Buff.affect(defender, Poison.class).extend(((level / 2) + 1));
 			CellEmitter.center(defender.pos).burst(PoisonParticle.SPLASH, 5);
-
 		}
 
 		return damage;

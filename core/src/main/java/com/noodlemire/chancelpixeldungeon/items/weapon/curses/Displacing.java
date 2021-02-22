@@ -32,14 +32,18 @@ import com.watabou.utils.Random;
 
 public class Displacing extends Weapon.Enchantment
 {
+	private static final ItemSprite.Glowing BLACK = new ItemSprite.Glowing(0x000000);
 
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing(0x000000);
+	@Override
+	public boolean procChance(int level, Char attacker, Char defender, int damage)
+	{
+		return Random.Int(12) == 0 && !defender.properties().contains(Char.Property.IMMOVABLE);
+	}
 
 	@Override
 	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
 	{
-
-		if(Random.Int(12) == 0 && !defender.properties().contains(Char.Property.IMMOVABLE))
+		if(doProc(weapon, attacker, defender, damage))
 		{
 			int count = 10;
 			int newPos;
@@ -88,5 +92,4 @@ public class Displacing extends Weapon.Enchantment
 	{
 		return BLACK;
 	}
-
 }

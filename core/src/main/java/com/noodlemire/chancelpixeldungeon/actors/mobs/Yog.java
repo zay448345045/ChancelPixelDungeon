@@ -103,7 +103,7 @@ public class Yog extends Mob
 	@Override
 	protected boolean act()
 	{
-		heal(1);
+		heal(1, this);
 
 		return super.act();
 	}
@@ -267,7 +267,7 @@ public class Yog extends Mob
 			if(Dungeon.level.water[pos] && HP() < HT())
 			{
 				sprite.emitter().burst(ShadowParticle.UP, 2);
-				heal(REGENERATION);
+				heal(REGENERATION, this);
 			}
 
 			return super.act();

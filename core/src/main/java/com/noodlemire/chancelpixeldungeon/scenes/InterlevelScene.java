@@ -34,10 +34,12 @@ import com.noodlemire.chancelpixeldungeon.levels.features.Chasm;
 import com.noodlemire.chancelpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.GameLog;
+import com.noodlemire.chancelpixeldungeon.ui.RenderedTextMultiline;
 import com.noodlemire.chancelpixeldungeon.windows.WndError;
 import com.noodlemire.chancelpixeldungeon.windows.WndStory;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Blending;
+import com.watabou.input.Touchscreen;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
@@ -45,20 +47,24 @@ import com.watabou.noosa.NoosaScript;
 import com.watabou.noosa.NoosaScriptNoLighting;
 import com.watabou.noosa.RenderedText;
 import com.watabou.noosa.SkinnedBlock;
+import com.watabou.noosa.TouchArea;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class InterlevelScene extends PixelScene
 {
-
 	//slow fade on entering a new region
 	private static final float SLOW_FADE = 1f; //.33 in, 1.33 steady, .33 out, 2 seconds total
 	//norm fade when loading, falling, returning, or descending to a new floor
 	private static final float NORM_FADE = 0.67f; //.33 in, .67 steady, .33 out, 1.33 seconds total
 	//fast fade when ascending, or descending to a floor you've been on
 	private static final float FAST_FADE = 0.50f; //.33 in, .33 steady, .33 out, 1 second total
+
+	private static final int NUM_TIPS = 52;
 
 	private static float fadeTime;
 
@@ -85,10 +91,22 @@ public class InterlevelScene extends PixelScene
 	private float timeLeft;
 
 	private RenderedText message;
+	private RenderedText continueText;
+
+	private static ArrayList<Integer> tipset;
+	private RenderedTextMultiline tip;
 
 	private static Thread thread;
 	private static Exception error = null;
 	private float waitingTime;
+	private boolean touched = true;
+
+	private void newTipSet()
+	{
+		tipset = new ArrayList<>();
+		for(int i = 1; i <= NUM_TIPS; i++)
+			tipset.add(i);
+	}
 
 	@Override
 	public void create()
@@ -198,9 +216,26 @@ public class InterlevelScene extends PixelScene
 
 		message = PixelScene.renderText(text, 9);
 		message.x = (Camera.main.width - message.width()) / 2;
-		message.y = (Camera.main.height - message.height()) / 2;
+		message.y = (Camera.main.height - message.height()) / 4;
 		align(message);
 		add(message);
+
+		continueText = PixelScene.renderText(Messages.get(this, "continue"), 9);
+		continueText.x = (Camera.main.width - continueText.width()) / 2;
+		continueText.y = message.y + 10;
+		align(continueText);
+		add(continueText);
+
+		if(tipset == null || tipset.isEmpty())
+			newTipSet();
+
+		int tip_i = tipset.remove(Random.Int(tipset.size()));
+
+		tip = PixelScene.renderMultiline(Messages.get(this, "tip_" + tip_i), 9);
+		tip.maxWidth((int)Math.round(Camera.main.width * 0.8));
+		tip.setPos((Camera.main.width - tip.width()) / 2, (Camera.main.height - tip.height()) / 2);
+		align(tip);
+		add(tip);
 
 		phase = Phase.FADE_IN;
 		timeLeft = fadeTime;
@@ -257,6 +292,7 @@ public class InterlevelScene extends PixelScene
 			thread.start();
 		}
 		waitingTime = 0f;
+		touched = true;
 	}
 
 	@Override
@@ -264,7 +300,10 @@ public class InterlevelScene extends PixelScene
 	{
 		super.update();
 
-		waitingTime += Game.elapsed;
+		//In order to avoid unnecessary errors being thrown,
+		//the game won't include time spent reading a tip as loading time.
+		if(touched)
+			waitingTime += Game.elapsed;
 
 		float p = timeLeft / fadeTime;
 
@@ -272,22 +311,36 @@ public class InterlevelScene extends PixelScene
 		{
 			case FADE_IN:
 				message.alpha(1 - p);
+				continueText.alpha(1 - p);
+				tip.alpha(1 - p);
+
 				if((timeLeft -= Game.elapsed) <= 0)
 				{
+					touched = false;
+					phase = Phase.STATIC;
+
 					if(!thread.isAlive() && error == null)
 					{
-						phase = Phase.FADE_OUT;
-						timeLeft = fadeTime;
-					}
-					else
-					{
-						phase = Phase.STATIC;
+						TouchArea continueArea = new TouchArea(0, 0, Camera.main.width, Camera.main.height)
+						{
+							@Override
+							protected void onClick(Touchscreen.Touch touch)
+							{
+								touched = true;
+								phase = Phase.FADE_OUT;
+								timeLeft = fadeTime;
+								this.destroy();
+							}
+						};
+						add(continueArea);
 					}
 				}
 				break;
 
 			case FADE_OUT:
 				message.alpha(p);
+				continueText.alpha(p);
+				tip.alpha(p);
 
 				if((timeLeft -= Game.elapsed) <= 0)
 				{
@@ -424,7 +477,6 @@ public class InterlevelScene extends PixelScene
 
 	private void restore() throws IOException
 	{
-
 		Actor.fixTime();
 		DriedRose.clearHeldGhostHero();
 

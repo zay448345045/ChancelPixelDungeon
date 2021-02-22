@@ -77,7 +77,6 @@ import java.util.HashMap;
 //TODO final balancing decisions here
 public class WandOfCorruption extends Wand
 {
-
 	{
 		image = ItemSpriteSheet.WAND_CORRUPTION;
 	}
@@ -259,7 +258,7 @@ public class WandOfCorruption extends Wand
 
 		if(!enemy.isImmune(Corruption.class))
 		{
-			enemy.heal(enemy.HT());
+			enemy.heal(enemy.HT(), curItem);
 			for(Buff buff : enemy.buffs())
 			{
 				if(buff.type == Buff.buffType.NEGATIVE

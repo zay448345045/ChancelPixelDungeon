@@ -32,23 +32,26 @@ import com.watabou.utils.Random;
 
 public class Stunning extends Weapon.Enchantment
 {
-
-	private static ItemSprite.Glowing YELLOW = new ItemSprite.Glowing(0xCCAA44);
+	private static final ItemSprite.Glowing YELLOW = new ItemSprite.Glowing(0xCCAA44);
 
 	@Override
-	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	public boolean procChance(int level, Char attacker, Char defender, int damage)
 	{
 		// lvl 0 - 13%
 		// lvl 1 - 22%
 		// lvl 2 - 30%
+		return Random.Int(level + 8) >= 7;
+	}
+
+	@Override
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
 		int level = Math.max(0, weapon.level());
 
-		if(Random.Int(level + 8) >= 7)
+		if(doProc(weapon, attacker, defender, damage))
 		{
-
 			Buff.prolong(defender, Paralysis.class, Random.Float(1, 1.5f + level));
 			defender.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 12);
-
 		}
 
 		return damage;

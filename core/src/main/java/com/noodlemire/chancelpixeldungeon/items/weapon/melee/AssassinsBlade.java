@@ -22,6 +22,8 @@
 package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Blindness;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
@@ -56,5 +58,13 @@ public class AssassinsBlade extends MeleeWeapon
 			}
 		}
 		return super.damageRoll(owner);
+	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		Buff.affect(defender, Blindness.class, 2);
+
+		return damage;
 	}
 }

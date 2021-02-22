@@ -29,7 +29,6 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class PoisonDart extends TippedDart
 {
-
 	{
 		image = ItemSpriteSheet.POISON_DART;
 	}

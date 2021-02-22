@@ -21,6 +21,7 @@
 
 package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
+import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class WarHammer extends MeleeWeapon
@@ -36,5 +37,13 @@ public class WarHammer extends MeleeWeapon
 	{
 		//24 base, down from 30; scaling unchanged
 		return super.max(lvl) - (tier + 1);
+	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		//No on-hit effect
+		//See Mob/defenseSkill(char Enemy)
+		return damage;
 	}
 }

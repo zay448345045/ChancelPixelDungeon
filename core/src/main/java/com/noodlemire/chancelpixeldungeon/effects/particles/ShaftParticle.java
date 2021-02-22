@@ -28,7 +28,6 @@ import com.watabou.utils.Random;
 
 public class ShaftParticle extends PixelParticle
 {
-
 	public static final Emitter.Factory FACTORY = new Factory()
 	{
 		@Override

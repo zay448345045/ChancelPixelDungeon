@@ -39,6 +39,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Doom;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Frost;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Haste;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Hunger;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Linkage;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.MagicalSleep;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.MeleeProc;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Ooze;
@@ -54,13 +55,17 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass;
 import com.noodlemire.chancelpixeldungeon.items.armor.glyphs.Potential;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfElements;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfSupernova;
+import com.noodlemire.chancelpixeldungeon.items.wands.DamageWand;
+import com.noodlemire.chancelpixeldungeon.items.wands.Wand;
 import com.noodlemire.chancelpixeldungeon.items.wands.WandOfBlastWave;
 import com.noodlemire.chancelpixeldungeon.items.wands.WandOfFireblast;
 import com.noodlemire.chancelpixeldungeon.items.wands.WandOfLightning;
+import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.items.weapon.enchantments.Blazing;
 import com.noodlemire.chancelpixeldungeon.items.weapon.enchantments.Grim;
 import com.noodlemire.chancelpixeldungeon.items.weapon.enchantments.Shocking;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Shuriken;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.darts.ShockingDart;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.levels.features.Chasm;
@@ -92,7 +97,7 @@ public abstract class Char extends Actor
 	private int SHLD;
 
 	protected float baseSpeed = 1;
-	protected PathFinder.Path path;
+	public PathFinder.Path path;
 
 	public int paralysed = 0;
 	public boolean rooted = false;
@@ -186,8 +191,27 @@ public abstract class Char extends Actor
 		HP = Math.max(HP, 1);
 	}
 
-	public void heal(int by)
+	public void heal(int by, Object src)
 	{
+		if(!(src instanceof Linkage))
+		{
+			Linkage link = buff(Linkage.class);
+			if (link != null)
+			{
+				Actor a = Actor.findById(link.object);
+
+				if (a instanceof Char)
+				{
+					Char ch = (Char) a;
+					if (ch.isAlive())
+					{
+						by /= 2;
+						ch.heal(by, link);
+					}
+				}
+			}
+		}
+
 		if(HP < HT && by > 0)
 		{
 			int amt = Math.min(HT - HP, by);
@@ -228,96 +252,11 @@ public abstract class Char extends Actor
 	{
 		if(enemy == null || !enemy.isAlive()) return false;
 
-		boolean repulsed = enemy.buff(Repulsion.class) != null;
 		boolean visibleFight = Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[enemy.pos];
-		boolean selfHarm = false;
 
 		if(hit(this, enemy, false))
 		{
-			int dr = enemy.drRoll();
-
-			if(this instanceof Hero)
-			{
-				Hero h = (Hero) this;
-				if(h.belongings.weapon instanceof MissileWeapon
-				   && h.subClass == HeroSubClass.SNIPER)
-					dr = 0;
-			}
-
-			int dmg;
-			Preparation prep = buff(Preparation.class);
-			if(prep != null)
-			{
-				dmg = prep.damageRoll(this, enemy);
-			}
-			else
-			{
-				dmg = damageRoll();
-			}
-
-			int effectiveDamage = enemy.defenseProc(this, dmg);
-			effectiveDamage = Math.max(effectiveDamage - dr, 0);
-			effectiveDamage = attackProc(enemy, effectiveDamage);
-
-			Dungeon.playAt(Assets.SND_HIT, enemy.pos);
-
-			// If the enemy is already dead, interrupt the attack.
-			// This matters as defence procs can sometimes inflict self-damage, such as armor glyphs.
-			if(!enemy.isAlive())
-				return true;
-
-			//TODO: consider revisiting this and shaking in more cases.
-			float shake = 0f;
-			if(enemy == Dungeon.hero)
-				shake = effectiveDamage / (enemy.HT / 4);
-
-			if(shake > 1f)
-				Camera.main.shake(GameMath.gate(1, shake, 5), 0.3f);
-
-			if(repulsed)
-			{
-				effectiveDamage /= 2;
-				damage(effectiveDamage, this);
-			}
-
-			enemy.damage(effectiveDamage, this);
-
-			for(Buff buff : buffs)
-				if(buff instanceof MeleeProc)
-					((MeleeProc)buff).proc(enemy);
-
-			enemy.sprite.bloodBurstA(sprite.center(), effectiveDamage);
-			enemy.sprite.flash();
-
-			if(repulsed)
-			{
-				sprite.bloodBurstA(sprite.center(), effectiveDamage);
-				sprite.flash();
-
-				WandOfBlastWave.throwChar(this, new Ballistica(pos, pos + (pos - enemy.pos), Ballistica.MAGIC_BOLT), 1);
-
-				selfHarm = true;
-			}
-
-			if(!enemy.isAlive() && visibleFight)
-			{
-				if(enemy == Dungeon.hero && this != Dungeon.hero)
-				{
-					Dungeon.fail(getClass());
-					GLog.n(Messages.capitalize(Messages.get(Char.class, "kill", name)));
-				}
-				else if(this == Dungeon.hero)
-				{
-					GLog.i(Messages.capitalize(Messages.get(Char.class, "defeat", enemy.name)));
-				}
-			}
-
-			//Even though suicide is an option, it is never the option.
-			if(this == Dungeon.hero && !isAlive() && (selfHarm || enemy == Dungeon.hero))
-			{
-				Dungeon.fail(getClass());
-				GLog.n(Messages.capitalize(Messages.get(Hero.class, "suicide")));
-			}
+			onAttack(enemy, visibleFight, true);
 
 			return true;
 		}
@@ -330,6 +269,102 @@ public abstract class Char extends Actor
 
 			return false;
 		}
+	}
+
+	public int onAttack(Char enemy, boolean visibleFight, boolean blood)
+	{
+		boolean repulsed = enemy.buff(Repulsion.class) != null;
+		boolean selfHarm = false;
+
+		int dmg;
+		Preparation prep = buff(Preparation.class);
+		if(prep != null)
+		{
+			dmg = prep.damageRoll(this, enemy);
+		}
+		else
+		{
+			dmg = damageRoll();
+		}
+
+		int dr = enemy.drRoll();
+
+		if(this instanceof Hero)
+		{
+			Hero h = (Hero) this;
+			if((h.belongings.weapon instanceof MissileWeapon && h.subClass == HeroSubClass.SNIPER)
+					|| (h.belongings.weapon instanceof Shuriken && h.critBoost((Weapon)h.belongings.weapon)))
+				dr = 0;
+		}
+
+		int effectiveDamage = enemy.defenseProc(this, dmg);
+		effectiveDamage = Math.max(effectiveDamage - dr, 0);
+		effectiveDamage = attackProc(enemy, effectiveDamage);
+
+		Dungeon.playAt(Assets.SND_HIT, enemy.pos);
+
+		// If the enemy is already dead, interrupt the attack.
+		// This matters as defence procs can sometimes inflict self-damage, such as armor glyphs.
+		if(!enemy.isAlive())
+			return effectiveDamage;
+
+		//TODO: consider revisiting this and shaking in more cases.
+		float shake = 0f;
+		if(enemy == Dungeon.hero)
+			shake = effectiveDamage / (enemy.HT / 4);
+
+		if(shake > 1f)
+			Camera.main.shake(GameMath.gate(1, shake, 5), 0.3f);
+
+		if(repulsed)
+		{
+			effectiveDamage /= 2;
+			damage(effectiveDamage, this);
+		}
+
+		enemy.damage(effectiveDamage, this);
+
+		if(blood)
+		{
+			enemy.sprite.bloodBurstA(sprite.center(), effectiveDamage);
+			enemy.sprite.flash();
+		}
+
+		for(Buff buff : buffs)
+			if(buff instanceof MeleeProc)
+				((MeleeProc)buff).proc(enemy);
+
+		if(repulsed)
+		{
+			sprite.bloodBurstA(sprite.center(), effectiveDamage);
+			sprite.flash();
+
+			WandOfBlastWave.throwChar(this, new Ballistica(pos, pos + (pos - enemy.pos), Ballistica.MAGIC_BOLT), 1);
+
+			selfHarm = true;
+		}
+
+		if(!enemy.isAlive() && visibleFight)
+		{
+			if(enemy == Dungeon.hero && this != Dungeon.hero)
+			{
+				Dungeon.fail(getClass());
+				GLog.n(Messages.capitalize(Messages.get(Char.class, "kill", name)));
+			}
+			else if(this == Dungeon.hero)
+			{
+				GLog.i(Messages.capitalize(Messages.get(Char.class, "defeat", enemy.name)));
+			}
+		}
+
+		//Even though suicide is an option, it is never the option.
+		if(this == Dungeon.hero && !isAlive() && (selfHarm || enemy == Dungeon.hero))
+		{
+			Dungeon.fail(getClass());
+			GLog.n(Messages.capitalize(Messages.get(Hero.class, "suicide")));
+		}
+
+		return effectiveDamage;
 	}
 
 	public static boolean hit(Char attacker, Char defender, boolean magic)
@@ -387,21 +422,19 @@ public abstract class Char extends Actor
 	public void damage(int dmg, Object src)
 	{
 		if(!isAlive() || dmg < 0)
-		{
 			return;
-		}
-		if(this.buff(Frost.class) != null)
-		{
+
+		if(buff(Frost.class) != null)
 			Buff.detach(this, Frost.class);
-		}
-		if(this.buff(MagicalSleep.class) != null)
-		{
+
+		if(buff(MagicalSleep.class) != null)
 			Buff.detach(this, MagicalSleep.class);
-		}
-		if(this.buff(Doom.class) != null)
-		{
+
+		if(buff(Doom.class) != null)
 			dmg *= 2;
-		}
+
+		if(src instanceof DamageWand && ((Wand) src).ownedByStaff && Dungeon.hero.critBoost(null))
+			dmg = (int)Math.round(dmg * 1.25);
 
 		Class<?> srcClass = src.getClass();
 		if(isImmune(srcClass))
@@ -411,6 +444,25 @@ public abstract class Char extends Actor
 		else
 		{
 			dmg = Math.round(dmg * resist(srcClass));
+		}
+
+		if(!(src instanceof Linkage))
+		{
+			Linkage link = buff(Linkage.class);
+			if (link != null)
+			{
+				Actor a = Actor.findById(link.object);
+
+				if (a instanceof Char)
+				{
+					Char ch = (Char) a;
+					if (ch.isAlive())
+					{
+						dmg /= 2;
+						ch.damage(dmg, link);
+					}
+				}
+			}
 		}
 
 		if(buff(Paralysis.class) != null)

@@ -21,6 +21,9 @@
 
 package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
+import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.items.wands.WandOfBlastWave;
+import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Whip extends MeleeWeapon
@@ -36,5 +39,15 @@ public class Whip extends MeleeWeapon
 	{
 		return 3 * (tier + 1) +    //12 base, down from 20
 				lvl * (tier);     //+3 per level, down from +4
+	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		int oppositeHero = defender.pos + (defender.pos - attacker.pos);
+		Ballistica trajectory = new Ballistica(defender.pos, oppositeHero, Ballistica.MAGIC_BOLT);
+		WandOfBlastWave.throwChar(defender, trajectory, 2);
+
+		return damage;
 	}
 }

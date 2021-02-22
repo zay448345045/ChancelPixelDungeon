@@ -48,19 +48,24 @@ public class Ring extends KindofMisc implements Transmutable
 {
 	public static final int TICKS_TO_KNOW = 200;
 
+	public boolean ownedByRing = false;
+
 	protected Buff buff;
+
+	protected Integer icon;
 
 	private static final Class<?>[] rings = {
 			RingOfAccuracy.class,
 			RingOfEvasion.class,
 			RingOfElements.class,
-			RingOfForce.class,
+			RingOfAptitude.class,
 			RingOfFuror.class,
 			RingOfHaste.class,
 			RingOfEnergy.class,
 			RingOfMight.class,
 			RingOfSharpshooting.class,
 			RingOfTenacity.class,
+			RingOfVolatility.class,
 			RingOfWealth.class,
 	};
 
@@ -162,11 +167,14 @@ public class Ring extends KindofMisc implements Transmutable
 
 	public boolean isKnown()
 	{
-		return handler.isKnown(this);
+		return ownedByRing || handler.isKnown(this);
 	}
 
 	protected void setKnown()
 	{
+		if(ownedByRing)
+			return;
+
 		if(!isKnown())
 			handler.know(this);
 
@@ -204,6 +212,12 @@ public class Ring extends KindofMisc implements Transmutable
 	}
 
 	@Override
+	public Integer icon()
+	{
+		return isKnown() ? icon : null;
+	}
+
+	@Override
 	public Item upgrade()
 	{
 		super.upgrade();
@@ -219,7 +233,7 @@ public class Ring extends KindofMisc implements Transmutable
 	@Override
 	public boolean isIdentified()
 	{
-		return super.isIdentified() && isKnown();
+		return ownedByRing || (super.isIdentified() && isKnown());
 	}
 
 	@Override

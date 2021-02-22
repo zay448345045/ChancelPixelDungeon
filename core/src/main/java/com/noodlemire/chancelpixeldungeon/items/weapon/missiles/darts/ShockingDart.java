@@ -32,7 +32,6 @@ import java.util.ArrayList;
 
 public class ShockingDart extends TippedDart
 {
-
 	{
 		image = ItemSpriteSheet.SHOCKING_DART;
 	}

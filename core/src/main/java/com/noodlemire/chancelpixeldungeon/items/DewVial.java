@@ -100,7 +100,7 @@ public class DewVial extends Item
 				int effect = Math.min(hero.HT() - hero.HP(), heal);
 				if(effect > 0)
 				{
-					hero.heal(effect);
+					hero.heal(effect, this);
 					hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1 + dropsNeeded / 5);
 				}
 

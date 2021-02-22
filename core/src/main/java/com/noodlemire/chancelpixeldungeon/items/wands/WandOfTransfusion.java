@@ -88,7 +88,7 @@ public class WandOfTransfusion extends Wand
 					Buff.affect(ch, MagicShield.class).set(shielding);
 				}
 
-				ch.heal(healing);
+				ch.heal(healing, this);
 				ch.sprite.emitter().burst(Speck.factory(Speck.HEALING), 2 + level() / 2);
 
 				selfShield = false;

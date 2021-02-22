@@ -67,7 +67,7 @@ public class MagicalSleep extends Buff
 		}
 		if(target instanceof Hero)
 		{
-			target.heal(1);
+			target.heal(1, this);
 			((Hero) target).resting = true;
 			if(target.HP() == target.buff(Regeneration.class).regencap())
 			{

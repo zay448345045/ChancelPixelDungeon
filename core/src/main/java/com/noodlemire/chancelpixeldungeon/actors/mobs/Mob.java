@@ -52,6 +52,7 @@ import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.noodlemire.chancelpixeldungeon.items.rings.Ring;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfWealth;
+import com.noodlemire.chancelpixeldungeon.items.weapon.melee.WarHammer;
 import com.noodlemire.chancelpixeldungeon.levels.features.Chasm;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
@@ -72,6 +73,8 @@ public abstract class Mob extends Char
 		alignment = Alignment.ENEMY;
 	}
 
+	public static final int PATIENCE = 6;
+
 	public AiState SLEEPING = new Sleeping();
 	public AiState HUNTING = new Hunting();
 	public AiState WANDERING = new Wandering();
@@ -86,7 +89,7 @@ public abstract class Mob extends Char
 	public int EXP = 1;
 
 	protected Char enemy;
-	protected boolean enemySeen;
+	private int enemySeen;
 	protected boolean alerted = false;
 
 	protected static final float TIME_TO_WAKE_UP = 1f;
@@ -153,7 +156,7 @@ public abstract class Mob extends Char
 			this.state = PASSIVE;
 		}
 
-		enemySeen = bundle.getBoolean(SEEN);
+		enemySeen = bundle.getInt(SEEN);
 
 		target = bundle.getInt(TARGET);
 
@@ -195,7 +198,7 @@ public abstract class Mob extends Char
 
 		if(paralysed > 0)
 		{
-			enemySeen = false;
+			enemySeen = 0;
 			spend(TICK);
 			return true;
 		}
@@ -206,6 +209,26 @@ public abstract class Mob extends Char
 		                     || buff(MindVision.class) != null;
 
 		return state.act(enemyInFOV, justAlerted);
+	}
+
+	public boolean lookForEnemy(boolean found)
+	{
+		if(found)
+			enemySeen = PATIENCE;
+		else
+			enemySeen = Math.max(0, enemySeen - 1);
+
+		return enemySeen > 0;
+	}
+
+	public void forgetEnemey()
+	{
+		enemySeen = 0;
+	}
+
+	public boolean enemySeen()
+	{
+		return enemySeen > 0;
 	}
 
 	protected Char chooseEnemy()
@@ -312,7 +335,6 @@ public abstract class Mob extends Char
 				}
 				return closest;
 			}
-
 		}
 		else
 			return enemy;
@@ -320,7 +342,6 @@ public abstract class Mob extends Char
 
 	protected boolean moveSprite(int from, int to)
 	{
-
 		if(sprite.isVisible() && (Dungeon.level.heroFOV[from] || Dungeon.level.heroFOV[to]))
 		{
 			sprite.move(from, to);
@@ -390,9 +411,11 @@ public abstract class Mob extends Char
 			boolean newPath = false;
 			//scrap the current path if it's empty, no longer connects to the current location
 			//or if it's extremely inefficient and checking again may result in a much better path
+			//or if they're starting to lose sight of their target
 			if(path == null || path.isEmpty()
-			   || !Dungeon.level.adjacent(pos, path.getFirst())
-			   || path.size() > 2 * Dungeon.level.distance(pos, target))
+					|| !Dungeon.level.adjacent(pos, path.getFirst())
+					|| path.size() > 2 * Dungeon.level.distance(pos, target)
+					|| enemySeen <= PATIENCE / 3)
 				newPath = true;
 			else if(path.getLast() != target)
 			{
@@ -480,9 +503,7 @@ public abstract class Mob extends Char
 			return true;
 		}
 		else
-		{
 			return false;
-		}
 	}
 
 	protected boolean getFurther(int target)
@@ -496,9 +517,7 @@ public abstract class Mob extends Char
 			return true;
 		}
 		else
-		{
 			return false;
-		}
 	}
 
 	@Override
@@ -517,7 +536,6 @@ public abstract class Mob extends Char
 
 	protected boolean doAttack(Char enemy)
 	{
-
 		boolean visible = Dungeon.level.heroFOV[pos];
 
 		if(visible)
@@ -566,12 +584,19 @@ public abstract class Mob extends Char
 	@Override
 	public int defenseSkill(Char enemy)
 	{
-		boolean seen = (enemySeen && enemy.invisible == 0);
+		boolean seen = (enemySeen == PATIENCE && enemy.invisible == 0);
 		if(enemy == Dungeon.hero && !Dungeon.hero.canSurpriseAttack()) seen = true;
 		if(seen
 		   && paralysed == 0
 		   && !(alignment == Alignment.ALLY && enemy == Dungeon.hero))
+		{
+			if(enemy == Dungeon.hero && Dungeon.hero.belongings.weapon instanceof WarHammer
+					&& Dungeon.hero.dynamicFactor() >= 1
+					&& Dungeon.hero.STR() >= ((WarHammer) Dungeon.hero.belongings.weapon).STRReq())
+				return 0;
+
 			return this.defenseSkill();
+		}
 		else
 			return 0;
 	}
@@ -579,17 +604,13 @@ public abstract class Mob extends Char
 	@Override
 	public int defenseProc(Char enemy, int damage)
 	{
-		if((!enemySeen || enemy.invisible > 0)
+		if((enemySeen < PATIENCE || enemy.invisible > 0)
 		   && enemy == Dungeon.hero && Dungeon.hero.canSurpriseAttack())
 		{
 			if(enemy.buff(Preparation.class) != null)
-			{
 				Wound.hit(this);
-			}
 			else
-			{
 				Surprise.hit(this);
-			}
 		}
 
 		//if attacked by something else than current target, and that thing is closer, switch targets
@@ -604,7 +625,7 @@ public abstract class Mob extends Char
 		{
 			int restoration = Math.min(damage, HP());
 			Dungeon.hero.buff(Hunger.class).satisfy(restoration * 0.5f);
-			Dungeon.hero.heal((int) Math.ceil(restoration * 0.25f));
+			Dungeon.hero.heal((int) Math.ceil(restoration * 0.25f), buff(SoulMark.class));
 			Dungeon.hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
 		}
 
@@ -613,7 +634,7 @@ public abstract class Mob extends Char
 
 	public boolean surprisedBy(Char enemy)
 	{
-		return !enemySeen && enemy == Dungeon.hero;
+		return enemySeen < PATIENCE && enemy == Dungeon.hero;
 	}
 
 	public void aggro(Char ch)
@@ -660,10 +681,7 @@ public abstract class Mob extends Char
 
 				int exp = EXP;
 				if(exp > 0)
-				{
-					Dungeon.hero.sprite.showStatus(CharSprite.POSITIVE, Messages.get(this, "exp", exp));
 					Dungeon.hero.earnExp(exp);
-				}
 			}
 		}
 	}
@@ -728,21 +746,15 @@ public abstract class Mob extends Char
 		Item item;
 		if(loot instanceof Generator.Category)
 		{
-
 			item = Generator.random((Generator.Category) loot);
-
 		}
 		else if(loot instanceof Class<?>)
 		{
-
 			item = Generator.random((Class<? extends Item>) loot);
-
 		}
 		else
 		{
-
 			item = (Item) loot;
-
 		}
 		return item;
 	}
@@ -792,7 +804,7 @@ public abstract class Mob extends Char
 		{
 			if(enemyInFOV && Random.Int(distance(enemy) + enemy.stealth() + (enemy.flying ? 2 : 0)) == 0)
 			{
-				enemySeen = true;
+				enemySeen = PATIENCE;
 
 				notice();
 				state = HUNTING;
@@ -807,7 +819,7 @@ public abstract class Mob extends Char
 			}
 			else
 			{
-				enemySeen = false;
+				enemySeen = 0;
 
 				spend(TICK);
 			}
@@ -824,7 +836,7 @@ public abstract class Mob extends Char
 		{
 			if(enemyInFOV && (justAlerted || Random.Int(distance(enemy) / 2 + enemy.stealth()) == 0))
 			{
-				enemySeen = true;
+				enemySeen = PATIENCE;
 
 				notice();
 				alerted = true;
@@ -838,7 +850,7 @@ public abstract class Mob extends Char
 			}
 			else
 			{
-				enemySeen = false;
+				enemySeen = 0;
 
 				int oldPos = pos;
 				if(target != -1 && getCloser(target))
@@ -864,7 +876,7 @@ public abstract class Mob extends Char
 		@Override
 		public boolean act(boolean enemyInFOV, boolean justAlerted)
 		{
-			enemySeen = enemyInFOV;
+			enemyInFOV = lookForEnemy(enemyInFOV);
 			if(enemyInFOV && !isCharmedBy(enemy) && canAttack(enemy))
 				return doAttack(enemy);
 			else
@@ -908,7 +920,7 @@ public abstract class Mob extends Char
 		{
 			//Terror can now be focused on a specific location instead of a mob
 			Terror terror = buff(Terror.class);
-			enemySeen = enemyInFOV;
+			enemyInFOV = lookForEnemy(enemyInFOV);
 
 			if(terror != null && enemy == null && terror.getPos() != -1)
 				target = terror.getPos();
@@ -934,20 +946,17 @@ public abstract class Mob extends Char
 			}
 		}
 
-		protected void nowhereToRun()
-		{
-		}
+		protected void nowhereToRun() {}
 	}
 
 	protected class Passive implements AiState
 	{
-
 		public static final String TAG = "PASSIVE";
 
 		@Override
 		public boolean act(boolean enemyInFOV, boolean justAlerted)
 		{
-			enemySeen = false;
+			enemySeen = 0;
 			spend(TICK);
 			return true;
 		}

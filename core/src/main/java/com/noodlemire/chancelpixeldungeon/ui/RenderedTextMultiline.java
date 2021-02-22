@@ -31,7 +31,6 @@ import java.util.List;
 
 public class RenderedTextMultiline extends Component
 {
-
 	private int maxWidth = Integer.MAX_VALUE;
 	public int nLines;
 
@@ -105,6 +104,12 @@ public class RenderedTextMultiline extends Component
 	public int maxWidth()
 	{
 		return maxWidth;
+	}
+
+	public void alpha(float value)
+	{
+		for(RenderedText word : words)
+			word.alpha(value);
 	}
 
 	private synchronized void build()

@@ -9,6 +9,7 @@ import com.noodlemire.chancelpixeldungeon.items.Transmutable;
 import com.noodlemire.chancelpixeldungeon.journal.Catalog;
 import com.noodlemire.chancelpixeldungeon.levels.traps.DistortionTrap;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.noodlemire.chancelpixeldungeon.windows.WndBag;
 
@@ -18,7 +19,7 @@ public class ScrollOfTransmutation extends InventoryScroll
 
 	{
 		mode = WndBag.Mode.TRANSMUTABLE;
-		initials = 19;
+		icon = ItemSpriteSheet.Icons.SCROLL_TRANSMUTATION;
 	}
 
 	@Override

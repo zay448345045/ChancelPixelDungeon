@@ -39,6 +39,7 @@ import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.CellSelector;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.noodlemire.chancelpixeldungeon.windows.WndBag;
 import com.noodlemire.chancelpixeldungeon.windows.WndOptions;
@@ -51,7 +52,7 @@ public class ScrollOfCleansing extends InventoryScroll
 	private static boolean identifiedByUse = false;
 
 	{
-		initials = 8;
+		icon = ItemSpriteSheet.Icons.SCROLL_CLEANSING;
 		mode = WndBag.Mode.UNIDED_OR_CURSED_OR_ENCHANTED;
 	}
 

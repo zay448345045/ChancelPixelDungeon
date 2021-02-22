@@ -4,12 +4,13 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.MagicShield;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
 public class PotionOfShielding extends Potion
 {
 	{
-		initials = 14;
+		icon = ItemSpriteSheet.Icons.POTION_SHIELDING;
 	}
 
 	@Override

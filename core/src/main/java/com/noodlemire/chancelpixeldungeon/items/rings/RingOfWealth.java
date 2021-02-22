@@ -28,6 +28,7 @@ import com.noodlemire.chancelpixeldungeon.items.Gold;
 import com.noodlemire.chancelpixeldungeon.items.Honeypot;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.Random;
 
 import java.text.DecimalFormat;
@@ -36,6 +37,10 @@ import java.util.HashSet;
 
 public class RingOfWealth extends Ring
 {
+	{
+		icon = ItemSpriteSheet.Icons.RING_WEALTH;
+	}
+
 	private float triesToDrop = 0;
 
 	@Override

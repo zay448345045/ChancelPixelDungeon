@@ -24,6 +24,7 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.missiles;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Cripple;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Roots;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Bolas extends MissileWeapon
@@ -42,9 +43,20 @@ public class Bolas extends MissileWeapon
 	}
 
 	@Override
-	public int proc(Char attacker, Char defender, int damage)
+	public void rangedHit(Char enemy, int cell, boolean returnToHero)
 	{
-		Buff.prolong(defender, Cripple.class, Cripple.DURATION);
-		return super.proc(attacker, defender, damage);
+		super.rangedHit(enemy, cell, returnToHero);
+
+		if(returnToHero)
+			Buff.detach(enemy, Cripple.class);
+		else
+			Buff.prolong(enemy, Cripple.class, Cripple.DURATION);
+	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		Buff.prolong(defender, Roots.class, 2);
+		return damage;
 	}
 }

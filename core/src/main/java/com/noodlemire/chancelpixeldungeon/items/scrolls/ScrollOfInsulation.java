@@ -8,13 +8,14 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.MagicImmunity;
 import com.noodlemire.chancelpixeldungeon.effects.Flare;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
 public class ScrollOfInsulation extends EnvironmentScroll
 {
 	{
-		initials = 16;
+		icon = ItemSpriteSheet.Icons.SCROLL_INSULATION;
 	}
 
 	@Override

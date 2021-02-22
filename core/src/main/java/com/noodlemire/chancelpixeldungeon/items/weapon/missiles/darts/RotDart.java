@@ -30,7 +30,6 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class RotDart extends TippedDart
 {
-
 	{
 		image = ItemSpriteSheet.ROT_DART;
 	}
@@ -42,5 +41,4 @@ public class RotDart extends TippedDart
 
 		return super.proc(attacker, defender, damage);
 	}
-
 }

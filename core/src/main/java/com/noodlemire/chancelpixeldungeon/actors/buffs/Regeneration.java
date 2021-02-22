@@ -52,7 +52,7 @@ public class Regeneration extends Buff
 				}
 				else if(target.HP() < regencap() && target.HP() > 0)
 				{
-					target.heal(1);
+					target.heal(1, this);
 
 					if(target.HP() == regencap())
 						((Hero) target).resting = false;

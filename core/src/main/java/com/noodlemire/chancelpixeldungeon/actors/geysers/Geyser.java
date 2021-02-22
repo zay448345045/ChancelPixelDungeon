@@ -74,7 +74,7 @@ public abstract class Geyser extends Char
 	public static Geyser createGeyser()
 	{
 		int selection = Math.min((Dungeon.depth-1) / 5,
-				Random.chances(new float[]{1, 2, 3, 4, 5}));
+				Random.chances(new float[]{1, 2, 4, 8, 16}));
 		Class<? extends Geyser> result;
 
 		switch(selection)

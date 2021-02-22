@@ -23,11 +23,16 @@ package com.noodlemire.chancelpixeldungeon.items.rings;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 import java.text.DecimalFormat;
 
 public class RingOfFuror extends Ring
 {
+	{
+		icon = ItemSpriteSheet.Icons.RING_FUROR;
+	}
+
 	@Override
 	protected RingBuff buff()
 	{
@@ -46,7 +51,5 @@ public class RingOfFuror extends Ring
 			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(10.5f));
 	}
 
-	public class Furor extends RingBuff
-	{
-	}
+	public class Furor extends RingBuff {}
 }

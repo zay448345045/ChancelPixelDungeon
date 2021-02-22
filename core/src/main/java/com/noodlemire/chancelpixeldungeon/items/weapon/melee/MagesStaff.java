@@ -90,6 +90,7 @@ public class MagesStaff extends MeleeWeapon
 		this.wand = wand;
 		wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
 		wand.curCharges = wand.maxCharges;
+		wand.ownedByStaff = true;
 		name = Messages.get(wand, "staff_name");
 	}
 
@@ -141,6 +142,13 @@ public class MagesStaff extends MeleeWeapon
 			wand.onHit(this, attacker, defender, damage);
 		}
 		return super.proc(attacker, defender, damage);
+	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		//Nothing on melee hit; see Char.java
+		return damage;
 	}
 
 	@Override
@@ -206,6 +214,7 @@ public class MagesStaff extends MeleeWeapon
 		wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
 		wand.curCharges = wand.maxCharges;
 		wand.identify();
+		wand.ownedByStaff = true;
 		if(owner != null) wand.charge(owner);
 
 		name = Messages.get(wand, "staff_name");
@@ -328,6 +337,7 @@ public class MagesStaff extends MeleeWeapon
 		if(wand != null)
 		{
 			wand.maxCharges = Math.min(wand.maxCharges + 1, 10);
+			wand.ownedByStaff = true;
 			name = Messages.get(wand, "staff_name");
 		}
 	}

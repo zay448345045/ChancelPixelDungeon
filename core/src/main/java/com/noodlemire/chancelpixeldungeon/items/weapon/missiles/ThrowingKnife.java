@@ -23,6 +23,8 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.missiles;
 
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Blindness;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
@@ -64,5 +66,12 @@ public class ThrowingKnife extends MissileWeapon
 			}
 		}
 		return super.damageRoll(owner);
+	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		Buff.affect(defender, Blindness.class, 2);
+		return damage;
 	}
 }

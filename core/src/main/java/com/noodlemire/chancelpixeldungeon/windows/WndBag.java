@@ -464,7 +464,7 @@ public class WndBag extends WndTabbed
 							(mode == Mode.UNIDENTIFED && !item.isIdentified() && item.image != ItemSpriteSheet.POTION_UNSTABLE && item.image != ItemSpriteSheet.SCROLL_MYSTERY) ||
 							(mode == Mode.UNIDED_OR_CURSED_OR_ENCHANTED && ((item instanceof EquipableItem || item instanceof Wand) && (!item.isIdentified() || item.cursed))) ||
 							(mode == Mode.QUICKSLOT && (item.defaultAction != null)) ||
-							(mode == Mode.WEAPON && (item instanceof MeleeWeapon || item instanceof Boomerang)) ||
+							(mode == Mode.WEAPON && (item instanceof MeleeWeapon)) ||
 							(mode == Mode.ARMOR && item instanceof Armor) ||
 							(mode == Mode.ENCHANTABLE && (item instanceof MeleeWeapon || item instanceof Bow || item instanceof Armor)) ||
 							(mode == Mode.ENCHANTABLE_IDED && item.isIdentified() && (item instanceof MeleeWeapon || item instanceof Bow || item instanceof Boomerang || item instanceof Armor)) ||

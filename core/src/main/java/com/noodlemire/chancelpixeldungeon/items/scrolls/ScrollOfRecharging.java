@@ -28,6 +28,7 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.SpellSprite;
 import com.noodlemire.chancelpixeldungeon.effects.particles.EnergyParticle;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
@@ -36,7 +37,7 @@ public class ScrollOfRecharging extends Scroll
 	private static final float BUFF_DURATION = 30f;
 
 	{
-		initials = 7;
+		icon = ItemSpriteSheet.Icons.SCROLL_RECHARGING;
 	}
 
 	@Override

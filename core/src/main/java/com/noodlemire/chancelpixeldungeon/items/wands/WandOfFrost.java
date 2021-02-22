@@ -41,14 +41,15 @@ import com.watabou.utils.Random;
 
 public class WandOfFrost extends DamageWand
 {
-
 	{
 		image = ItemSpriteSheet.WAND_FROST;
+
+		canCrit = true;
 	}
 
 	public int min(int lvl)
 	{
-		return 2 + lvl;
+		return 2 + lvl / 2;
 	}
 
 	public int max(int lvl)
@@ -59,7 +60,6 @@ public class WandOfFrost extends DamageWand
 	@Override
 	protected void onZap(Ballistica bolt)
 	{
-
 		Heap heap = Dungeon.level.heaps.get(bolt.collisionPos);
 		if(heap != null)
 		{
@@ -69,23 +69,24 @@ public class WandOfFrost extends DamageWand
 		Char ch = Actor.findChar(bolt.collisionPos);
 		if(ch != null)
 		{
-
 			int damage = damageRoll();
+			boolean critBoost = curUser.critBoost(null);
 
-			if(ch.buff(Frost.class) != null)
-			{
+			if(ch.buff(Frost.class) != null && !critBoost)
 				return; //do nothing, can't affect a frozen target
-			}
-			if(ch.buff(Chill.class) != null)
+
+			if(ch.buff(Chill.class) != null && !critBoost)
 			{
 				//7.5% less damage per turn of chill remaining
 				float chill = ch.buff(Chill.class).cooldown();
+
 				damage = (int) Math.round(damage * Math.pow(0.9f, chill));
 			}
 			else
-			{
 				ch.sprite.burst(0xFF99CCFF, level() / 2 + 2);
-			}
+
+			if(critBoost)
+				critFx(ch);
 
 			processSoulMark(ch, chargesPerCast());
 			ch.damage(damage, this);

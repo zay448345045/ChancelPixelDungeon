@@ -137,6 +137,120 @@ public class ChangesScene extends PixelScene
 		ChangeInfo changes;
 
 		//************************
+		//    CPD v0.1 BETA 8
+		//************************
+
+		changes = new ChangeInfo("CPD v0.1 BETA 8", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		infos.add(changes);
+
+		changes = new ChangeInfo("New Content", false, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		infos.add(changes);
+
+		changes.addButton(new ChangeButton(new Image(Assets.CHANGELOG_ICONS, 48, 0, 16, 16), "Critical Hits",
+				"You can now preform a critical hit with any weapon or damage wand. Any attack at maximum " +
+						"Dynamic Strength is automatically a crit, as long as the weapon isn't too heavy for you.\n\n" +
+						"The effect of a crit depends on the weapon or wand used, which is always shown in the " +
+						"description. Some examples of effects include a damage boost, attacking instantly, " +
+						"pushing the enemy away, blinding the enemy, or making the attack guaranteed to hit, as if " +
+						"it were a surprise attack.\n\n" +
+						"Crits are visualized by stars flying out of attacked enemies."));
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_BRACELET, null), "Bracelet of Force",
+				"This is a new artifact that replaces the Ring of Force, which has been removed from the game.\n\n" +
+						"This artifact is able to gain charge any time you execute a max DS attack against " +
+						"an enemy. Once its fully charged, you can use it to instantly refill your DS.\n\n" +
+						"You can upgrade it by letting it absorb uncursed melee weapons. Each level requires " +
+						"more weapons, demands a higher minimum tier. These weapons don't need to be completely " +
+						"identified though."));
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_AMETHYST, null), "New Rings",
+				"There are two new rings in the game.\n\n" +
+						"Ring of Aptitude: Increases the amount of EXP you earn, allowing you to level up more often.\n\n" +
+						"Ring of Volatility: Mimicks the effect of a random ring of the same level (other than itself). " +
+						"The ring it acts like changes every 300 turns, and can only be checked once its fully identified."));
+
+		changes.addButton(new ChangeButton(new Image(Icons.get(Icons.INFO)), "Loading Screen Tips",
+				"In each loading screen, you can now see a short random tip. These are here to provide " +
+						"general advice, reminders from the adventurer's guide, a few item-specific tips, " +
+						"or to explain some obscure mechanics that wouldn't fit anywhere else.\n\n" +
+						"To provide as much reading time as necessary, you must tap the loading screen to continue."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.CHANGELOG_ICONS, 64, 0, 16, 16), "Scroll of Sunlight",
+						"This new scroll summons healing sunlight to the reader's location. This sunlight will gradually " +
+								"heal any creature that stands within it, except for undead and inorganic mobs. Undead mobs " +
+								"will be damaged instead. If you shout it, an extremely large amount of sunlight will be " +
+								"gathered, allowing it to linger for much longer and/or cover a much larger area.\n\n" +
+								"This scroll replaces the scroll of balance, which has been removed from the game. The scroll " +
+								"of balance had a unique concept that was rarely ever useful. There were many more cases where " +
+								"it would weaken the user or have no notable effect, rather than offering any benefit.\n\n" +
+								"In comparison, I hope that the scroll of sunlight turns out to be much more interesting overall, " +
+								"being a risk/reward healing option due to the fact that it heals most enemies. Or, if you think " +
+								"you can survive long enoughm, you can wait until you clear a floor before using it to heal up."));
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.STONE_SOWILO, null), "Stone of Linkage",
+				"This new runestone will link you and a given other creature. While linked, you both will " +
+						"share half of recieved healing and damage from all sources. This effect lasts for 20 turns.\n\n" +
+						"This can have a variety of uses. You can use it to protect and heal an ally, as you can absorb " +
+						"some of that ally's damage and drink a healing potion to heal yourself and the ally. Or, you can " +
+						"throw it at a mob that's attacking you while you fight off another mob, allowing you to take " +
+						"less damage while letting the linked enemy hurt itself. Just be careful not to hit yourself or " +
+						"heal whatever you're fighting.\n\n" +
+						"This stone replaces the stone of equity, which has been removed from the game. It was a boring " +
+						"runestone with few use cases that other items can't do better. Its only unique aspect rarely " +
+						"ever came into effect, since you would almost never have the same buffs or debuffs as another " +
+						"creature, and that condition usually turned into a downside anyways.\n\n" +
+						"Can be made using a scroll of insulation or sunlight."));
+
+		changes = new ChangeInfo("Changes", false, "");
+		changes.hardlight(CharSprite.WARNING);
+		infos.add(changes);
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.DYNAMIC), "Dynamic Strength",
+				"Dynamic Strength has been changed in a few major ways, to fix various minor issues with it.\n\n" +
+						"_-_ Minimum damage scaling has been reduced to 0.5/level. This prevents various weapons " +
+						"from having minimums so high that spamming min damage attacks is more effective than waiting.\n" +
+						"_-_ There is no longer a 25% random variance to your damage. The only variance is now " +
+						"due to enemy armor. This makes it feel better to use the system, and makes the difference " +
+						"between waiting or attacking now feel clearer.\n" +
+						"_-_ You can no longer regain DS by moving. It is no longer effective to run in circles for " +
+						"a minute before each attack.\n" +
+						"_-_ For the sake of convenience, after 5 turns spend without seeing an enemy, your DS will " +
+						"automatically reset itself to max.\n" +
+						"_-_ The hero's sprite will now flash a color the instant you regain some DS. This uses the " +
+						"same color scheme as the light that shines around the avatar's fist in the upper right corner.\n" +
+						"_-_ Now, only a weapon's innate attack speed and its augment will effect DS consumption rate. " +
+						"Other factors won't change DS."));
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.LOST), "Enemy AI",
+				"Enemies are now better at following their target around pillars and corners. Enemies " +
+						"can continue follow their target for a few turns without seeing them, before returning " +
+						"to wandering as usual.\n\n" +
+						"Before the mob gives up, it will attempt to recalculate its path. This won't matter in " +
+						"most cases, but when making a mob chase you around a pillar, this can mean that sometimes " +
+						"it goes the other way to surprise you."));
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
+				"_-_ Enemies will no longer remain crippled if you forcefully remove bolas from them.\n" +
+						"_-_ The Healing buff now has an icon and description, imported from Shattered PD.\n" +
+						"_-_ The Healing buff now expulses sunlight, rather than regrowth.\n" +
+						"_-_ It's now much less likely for a previous chapter's geysers to spawn, in place of " +
+						"a geyser from the current chapter.\n" +
+						"_-_ Added identification icons for rings, mostly imported from Shattered PD."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.SPINNER, 144, 0, 16, 16), Messages.get(this, "bugfixes"),
+				"_-_ If a mob died as it fell into a chasm, it could grant EXP and loot twice.\n" +
+						"_-_ The ability to give a boomerang to the sad ghost as a melee weapon.\n" +
+						"_-_ Cursing Traps being unable to target items in the class-specific misc slot.\n" +
+						"_-_ Huntress's grass seeds rooting herself if used on herself, rather than placing grass.\n" +
+						"_-_ Heavy Darts not properly showing the damage they deal.\n" +
+						"_-_ Various effects, such as armor, not working properly with forceful missile removal.\n" +
+						"_-_ Various cases where upgraded darts would lose their upgrades.\n" +
+						"_-_ Cases where Assassin's attack would make you lose more DS than necessary.\n" +
+						"_-_ Mobs sometimes continuing to avoid danger despite a stone of challenge being used on them."));
+
+		//************************
 		//    CPD v0.1 BETA 7
 		//************************
 

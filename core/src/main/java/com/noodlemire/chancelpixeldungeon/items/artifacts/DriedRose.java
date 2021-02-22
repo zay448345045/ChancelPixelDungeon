@@ -711,7 +711,7 @@ public class DriedRose extends Artifact
 			{
 				if(enemyInFOV)
 				{
-					enemySeen = true;
+					lookForEnemy(true);
 
 					notice();
 					alerted = true;
@@ -720,7 +720,7 @@ public class DriedRose extends Artifact
 				}
 				else
 				{
-					enemySeen = false;
+					forgetEnemey();
 
 					int oldPos = pos;
 					//always move towards the hero when wandering

@@ -21,6 +21,9 @@
 
 package com.noodlemire.chancelpixeldungeon.items.weapon.missiles;
 
+import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Paralysis;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class ThrowingHammer extends MissileWeapon
@@ -36,7 +39,7 @@ public class ThrowingHammer extends MissileWeapon
 	public int min(int lvl)
 	{
 		return Math.round(1.6f * tier) +   //8 base, down from 10
-		       (tier == 1 ? lvl : 2 * lvl);  //scaling unchanged
+		       (tier == 1 ? lvl : lvl / 2);  //scaling unchanged
 	}
 
 	@Override
@@ -44,5 +47,13 @@ public class ThrowingHammer extends MissileWeapon
 	{
 		return 4 * tier +                  //20 base, down from 25
 		       (tier) * lvl;               //scaling unchanged
+	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		Buff.prolong(defender, Paralysis.class, 2);
+
+		return damage;
 	}
 }

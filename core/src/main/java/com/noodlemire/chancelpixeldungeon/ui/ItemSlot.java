@@ -27,8 +27,6 @@ import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.items.keys.Key;
 import com.noodlemire.chancelpixeldungeon.items.keys.SkeletonKey;
-import com.noodlemire.chancelpixeldungeon.items.potions.Potion;
-import com.noodlemire.chancelpixeldungeon.items.scrolls.Scroll;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
@@ -54,7 +52,7 @@ public class ItemSlot extends Button
 	protected BitmapText topLeft;
 	protected BitmapText topRight;
 	protected BitmapText bottomRight;
-	protected Image bottomRightIcon;
+	protected Image itemIcon;
 	protected boolean iconVisible = true;
 
 	private static final String TXT_STRENGTH = ":%d";
@@ -124,7 +122,6 @@ public class ItemSlot extends Button
 	@Override
 	protected void createChildren()
 	{
-
 		super.createChildren();
 
 		icon = new ItemSprite();
@@ -179,11 +176,11 @@ public class ItemSlot extends Button
 			PixelScene.align(bottomRight);
 		}
 
-		if(bottomRightIcon != null)
+		if (itemIcon != null)
 		{
-			bottomRightIcon.x = x + (width - bottomRightIcon.width()) - 1;
-			bottomRightIcon.y = y + (height - bottomRightIcon.height());
-			PixelScene.align(bottomRightIcon);
+			itemIcon.x = x + width - (ItemSpriteSheet.Icons.SIZE + itemIcon.width())/2f;
+			itemIcon.y = y + (ItemSpriteSheet.Icons.SIZE - itemIcon.height)/2f;
+			PixelScene.align(itemIcon);
 		}
 	}
 
@@ -204,30 +201,25 @@ public class ItemSlot extends Button
 
 		if(item == null)
 		{
-
 			enable(false);
 			icon.visible(false);
-
-			updateText();
-
 		}
 		else
 		{
-
 			enable(true);
 			icon.visible(true);
 
 			icon.view(item);
-			updateText();
 		}
+
+		updateText();
 	}
 
 	private void updateText()
 	{
-		if(bottomRightIcon != null)
-		{
-			remove(bottomRightIcon);
-			bottomRightIcon = null;
+		if (itemIcon != null){
+			remove(itemIcon);
+			itemIcon = null;
 		}
 
 		if(item == null)
@@ -245,7 +237,15 @@ public class ItemSlot extends Button
 		boolean isArmor = item instanceof Armor;
 		boolean isWeapon = item instanceof Weapon;
 
-		if(isArmor || isWeapon)
+		if (item.icon() != null)
+		{
+			topRight.text(null);
+
+			itemIcon = new Image(Assets.ITEM_ICONS);
+			itemIcon.frame(ItemSpriteSheet.Icons.film.get(item.icon()));
+			add(itemIcon);
+		}
+		else if(isArmor || isWeapon)
 		{
 			if(item.levelKnown || (isWeapon && !(item instanceof MeleeWeapon)))
 			{
@@ -281,26 +281,6 @@ public class ItemSlot extends Button
 			bottomRight.measure();
 			bottomRight.hardlight(UPGRADED);
 		}
-		else if(item instanceof Scroll || item instanceof Potion)
-		{
-			bottomRight.text(null);
-
-			Integer iconInt;
-
-			if(item instanceof Scroll)
-				iconInt = ((Scroll) item).initials();
-			else
-				iconInt = ((Potion) item).initials();
-
-			if(iconInt != null && iconVisible)
-			{
-				bottomRightIcon = new Image(Assets.CONS_ICONS);
-				int left = iconInt * 7;
-				int top = item instanceof Potion ? 0 : 7;
-				bottomRightIcon.frame(left, top, 7, 7);
-				add(bottomRightIcon);
-			}
-		}
 		else
 			bottomRight.text(null);
 
@@ -316,7 +296,7 @@ public class ItemSlot extends Button
 		topLeft.alpha(alpha);
 		topRight.alpha(alpha);
 		bottomRight.alpha(alpha);
-		if(bottomRightIcon != null) bottomRightIcon.alpha(alpha);
+		if (itemIcon != null) itemIcon.alpha( alpha );
 	}
 
 	public void showParams(boolean TL, boolean TR, boolean BR)

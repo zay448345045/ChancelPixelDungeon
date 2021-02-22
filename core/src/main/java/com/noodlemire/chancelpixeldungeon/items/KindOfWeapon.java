@@ -113,12 +113,17 @@ abstract public class KindOfWeapon extends EquipableItem
 		}
 
 		if(owner instanceof Hero)
-			return ((Hero) owner).dynamicRoll(min, max, speedFactor(owner));
+			return ((Hero) owner).dynamicRoll(min, max, dynamicFactor(owner));
 		else
 			return Random.NormalIntRange(min, max);
 	}
 
 	public float accuracyFactor(Char owner)
+	{
+		return 1f;
+	}
+
+	public float dynamicFactor(Char owner)
 	{
 		return 1f;
 	}

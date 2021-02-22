@@ -41,7 +41,6 @@ import com.watabou.utils.Random;
 
 public class FrozenCarpaccio extends Food
 {
-
 	{
 		image = ItemSpriteSheet.CARPACCIO;
 		energy = Hunger.HUNGRY / 2f;
@@ -50,7 +49,6 @@ public class FrozenCarpaccio extends Food
 	@Override
 	public void execute(Hero hero, String action)
 	{
-
 		super.execute(hero, action);
 
 		if(action.equals(AC_EAT))
@@ -90,7 +88,7 @@ public class FrozenCarpaccio extends Food
 				GLog.i(Messages.get(FrozenCarpaccio.class, "better"));
 				if(hero.HP() < hero.HT())
 				{
-					hero.heal(hero.HT() / 4);
+					hero.heal(hero.HT() / 4, curItem);
 					hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
 				}
 				break;

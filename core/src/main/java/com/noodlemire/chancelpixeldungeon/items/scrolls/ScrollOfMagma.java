@@ -6,13 +6,14 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Magma;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 
 public class ScrollOfMagma extends EnvironmentScroll
 {
 	{
 		should_shout = true;
-		initials = 18;
+		icon = ItemSpriteSheet.Icons.SCROLL_MAGMA;
 		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 

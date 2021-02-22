@@ -28,8 +28,14 @@ import com.watabou.utils.Bundle;
 
 public class Fragile extends Weapon.Enchantment
 {
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing(0x000000);
+	private static final ItemSprite.Glowing BLACK = new ItemSprite.Glowing(0x000000);
 	private int hits = 0;
+
+	@Override
+	public boolean procChance(int level, Char attacker, Char defender, int damage)
+	{
+		return false;
+	}
 
 	@Override
 	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
@@ -65,5 +71,4 @@ public class Fragile extends Weapon.Enchantment
 	{
 		bundle.put(HITS, hits);
 	}
-
 }

@@ -11,6 +11,7 @@ import com.noodlemire.chancelpixeldungeon.items.artifacts.CloakOfShadows;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.EnvironmentScroll;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
 public class PotionOfExpulsion extends Potion
@@ -19,7 +20,7 @@ public class PotionOfExpulsion extends Potion
 			MAX_RANGE = 3;
 
 	{
-		initials = 17;
+		icon = ItemSpriteSheet.Icons.POTION_EXPULSION;
 	}
 
 	@Override

@@ -5,11 +5,12 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.ThunderCloud;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class PotionOfThunderstorm extends Potion
 {
 	{
-		initials = 16;
+		icon = ItemSpriteSheet.Icons.POTION_THUNDERSTORM;
 		harmful = true;
 
 		if(isDangerKnown()) defaultAction = AC_THROW;

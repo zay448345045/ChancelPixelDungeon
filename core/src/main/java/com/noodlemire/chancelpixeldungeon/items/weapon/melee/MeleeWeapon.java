@@ -24,6 +24,7 @@ package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 import com.noodlemire.chancelpixeldungeon.Challenges;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
+import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.Transmutable;
@@ -39,7 +40,7 @@ public class MeleeWeapon extends Weapon implements Transmutable
 	public int min(int lvl)
 	{
 		return tier +  //base
-				lvl;    //level scaling
+				lvl / 2;    //level scaling
 	}
 
 	@Override
@@ -66,6 +67,12 @@ public class MeleeWeapon extends Weapon implements Transmutable
 	}
 
 	@Override
+	public float dynamicFactor(Char owner)
+	{
+		return augment.delayFactor(DLY);
+	}
+
+	@Override
 	public String info()
 	{
 		String info = super.info();
@@ -85,6 +92,8 @@ public class MeleeWeapon extends Weapon implements Transmutable
 
 		String stats_desc = Messages.get(this, "stats_desc");
 		if(!stats_desc.equals("")) info += "\n\n" + stats_desc;
+
+		info += "\n\n" + Messages.get(this, "crit");
 
 		if(isIdentified())
 			switch(augment)

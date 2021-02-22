@@ -27,7 +27,6 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 //wands with AOE effects count here (e.g. fireblast), but wands with indrect damage do not (e.g. venom, transfusion)
 public abstract class DamageWand extends Wand
 {
-
 	public int min()
 	{
 		return min(level());
@@ -55,9 +54,16 @@ public abstract class DamageWand extends Wand
 	@Override
 	public String statsDesc()
 	{
+		String stats;
+
 		if(levelKnown)
-			return Messages.get(this, "stats_desc", min(), max());
+			stats = Messages.get(this, "stats_desc", min(), max());
 		else
-			return Messages.get(this, "stats_desc", min(0), max(0));
+			stats = Messages.get(this, "stats_desc", min(0), max(0));
+
+		if(canCrit)
+			stats += "\n\n" + Messages.get(this, "crit");
+
+		return stats;
 	}
 }

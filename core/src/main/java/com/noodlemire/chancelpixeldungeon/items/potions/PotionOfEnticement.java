@@ -5,11 +5,12 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.EnticementGas;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class PotionOfEnticement extends Potion
 {
 	{
-		initials = 12;
+		icon = ItemSpriteSheet.Icons.POTION_ENTICEMENT;
 
 		if(isIdentified()) defaultAction = AC_THROW;
 	}

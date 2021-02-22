@@ -101,7 +101,7 @@ public class HornOfPlenty extends Artifact
 					case WARRIOR:
 						if(hero.HP() < hero.HT())
 						{
-							hero.heal(5);
+							hero.heal(5, this);
 							hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
 						}
 						break;

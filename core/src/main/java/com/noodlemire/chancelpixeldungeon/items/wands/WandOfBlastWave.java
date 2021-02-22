@@ -50,11 +50,13 @@ public class WandOfBlastWave extends DamageWand
 		image = ItemSpriteSheet.WAND_BLAST_WAVE;
 
 		collisionProperties = Ballistica.PROJECTILE;
+
+		canCrit = true;
 	}
 
 	public int min(int lvl)
 	{
-		return 1 + lvl;
+		return 1 + lvl / 2;
 	}
 
 	public int max(int lvl)
@@ -69,6 +71,7 @@ public class WandOfBlastWave extends DamageWand
 		BlastWave.blast(bolt.collisionPos);
 
 		int damage = damageRoll();
+		boolean critBoost = Dungeon.hero.critBoost(null);
 
 		//presses all tiles in the AOE first
 		for(int i : PathFinder.NEIGHBOURS9)
@@ -90,7 +93,7 @@ public class WandOfBlastWave extends DamageWand
 				{
 					Ballistica trajectory = new Ballistica(ch.pos, ch.pos + i, Ballistica.MAGIC_BOLT);
 					int strength = 1 + Math.round(level() / 2f);
-					throwChar(ch, trajectory, strength);
+					throwChar(ch, trajectory, strength, critBoost);
 				}
 			}
 		}
@@ -106,7 +109,7 @@ public class WandOfBlastWave extends DamageWand
 			{
 				Ballistica trajectory = new Ballistica(ch.pos, bolt.path.get(bolt.dist + 1), Ballistica.MAGIC_BOLT);
 				int strength = level() + 3;
-				throwChar(ch, trajectory, strength);
+				throwChar(ch, trajectory, strength, critBoost);
 			}
 		}
 
@@ -118,6 +121,11 @@ public class WandOfBlastWave extends DamageWand
 	}
 
 	public static void throwChar(final Char ch, final Ballistica trajectory, int power)
+	{
+		throwChar(ch, trajectory, power, false);
+	}
+
+	public static void throwChar(final Char ch, final Ballistica trajectory, int power, final boolean crit)
 	{
 		int dist = Math.min(trajectory.dist, power);
 
@@ -151,8 +159,16 @@ public class WandOfBlastWave extends DamageWand
 				ch.pos = newPos;
 				if(ch.pos == trajectory.collisionPos)
 				{
-					ch.damage(Random.NormalIntRange((finalDist + 1) / 2, finalDist), this);
-					Paralysis.prolong(ch, Paralysis.class, Random.NormalIntRange((finalDist + 1) / 2, finalDist));
+					int num = Random.NormalIntRange((finalDist + 1) / 2, finalDist);
+
+					if(crit)
+					{
+						num *= 2;
+						Wand.critFx(ch);
+					}
+
+					ch.damage(num, this);
+					Paralysis.prolong(ch, Paralysis.class, num);
 				}
 				Dungeon.level.press(ch.pos, ch, true);
 				if(ch == Dungeon.hero)

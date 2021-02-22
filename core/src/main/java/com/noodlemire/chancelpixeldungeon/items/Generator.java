@@ -31,6 +31,7 @@ import com.noodlemire.chancelpixeldungeon.items.armor.PlateArmor;
 import com.noodlemire.chancelpixeldungeon.items.armor.ScaleArmor;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.Artifact;
+import com.noodlemire.chancelpixeldungeon.items.artifacts.BraceletOfForce;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.CapeOfThorns;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.CloakOfShadows;
@@ -70,18 +71,18 @@ import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfThunderstorm;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfToxicity;
 import com.noodlemire.chancelpixeldungeon.items.rings.Ring;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfAccuracy;
+import com.noodlemire.chancelpixeldungeon.items.rings.RingOfAptitude;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfElements;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfEnergy;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfEvasion;
-import com.noodlemire.chancelpixeldungeon.items.rings.RingOfForce;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfFuror;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfHaste;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfMight;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfSharpshooting;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfTenacity;
+import com.noodlemire.chancelpixeldungeon.items.rings.RingOfVolatility;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfWealth;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.Scroll;
-import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfBalance;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfBlessing;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfCharm;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfCleansing;
@@ -95,6 +96,7 @@ import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfNecromancy;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfRage;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfReflection;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfSunlight;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfSupernova;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTaunt;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -107,11 +109,11 @@ import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfBinding;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfBlast;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfChallenge;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfDistortion;
-import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfEquity;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfFlock;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfHypnotism;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfIllusion;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfIntuition;
+import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfLinkage;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfPreservation;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfShock;
 import com.noodlemire.chancelpixeldungeon.items.wands.Wand;
@@ -250,7 +252,7 @@ public class Generator
 			return item instanceof Bag ? Integer.MAX_VALUE : Integer.MAX_VALUE - 1;
 		}
 
-		private static final float[] INITIAL_ARTIFACT_PROBS = new float[]{0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1};
+		private static final float[] INITIAL_ARTIFACT_PROBS = new float[]{0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1};
 
 		static
 		{
@@ -271,7 +273,7 @@ public class Generator
 					ScrollOfSupernova.class,
 					ScrollOfReflection.class,
 					ScrollOfDecay.class,
-					ScrollOfBalance.class,
+					ScrollOfSunlight.class,
 					ScrollOfDarkness.class,
 					ScrollOfNecromancy.class,
 					ScrollOfTransmutation.class,
@@ -427,17 +429,18 @@ public class Generator
 
 			RING.classes = new Class<?>[]{
 					RingOfAccuracy.class,
+					RingOfAptitude.class,
 					RingOfEvasion.class,
 					RingOfElements.class,
-					RingOfForce.class,
 					RingOfFuror.class,
 					RingOfHaste.class,
 					RingOfEnergy.class,
 					RingOfMight.class,
 					RingOfSharpshooting.class,
 					RingOfTenacity.class,
+					RingOfVolatility.class,
 					RingOfWealth.class};
-			RING.probs = new float[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+			RING.probs = new float[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
 			ARTIFACT.classes = new Class<?>[]{
 					CapeOfThorns.class,
@@ -452,7 +455,8 @@ public class Generator
 					AlchemistsToolkit.class, //currently removed from drop tables, pending rework.
 					DriedRose.class,
 					LloydsBeacon.class,
-					EtherealChains.class
+					EtherealChains.class,
+					BraceletOfForce.class
 			};
 			ARTIFACT.probs = INITIAL_ARTIFACT_PROBS.clone();
 
@@ -483,7 +487,7 @@ public class Generator
 					StoneOfIllusion.class,
 					StoneOfDistortion.class,
 					StoneOfChallenge.class,
-					StoneOfEquity.class};
+					StoneOfLinkage.class};
 			STONE.probs = new float[]{1, 10, 8, 10, 10, 0, 10, 10, 10, 2, 10, 10};
 		}
 	}

@@ -163,7 +163,7 @@ public class Mimic extends Mob
 
 		Mimic m = new Mimic(level);
 		m.items = new ArrayList<>(items);
-		m.enemySeen = true;
+		m.lookForEnemy(true);
 		m.pos = pos;
 		m.state = m.HUNTING;
 		GameScene.add(m, 1);

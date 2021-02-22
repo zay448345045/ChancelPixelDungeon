@@ -26,12 +26,13 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Fire;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.PathFinder;
 
 public class PotionOfHydrocombustion extends Potion
 {
 	{
-		initials = 5;
+		icon = ItemSpriteSheet.Icons.POTION_HYDROCOMBUSTION;
 		harmful = true;
 
 		if(isDangerKnown()) defaultAction = AC_THROW;

@@ -77,7 +77,7 @@ public class Bat extends Mob
 
 		if(reg > 0)
 		{
-			heal(reg);
+			heal(reg, this);
 			sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
 		}
 

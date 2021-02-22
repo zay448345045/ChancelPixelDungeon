@@ -30,12 +30,13 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Levitation;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
 public class PotionOfLevitation extends Potion
 {
 	{
-		initials = 4;
+		icon = ItemSpriteSheet.Icons.POTION_LEVITATION;
 	}
 
 	@Override

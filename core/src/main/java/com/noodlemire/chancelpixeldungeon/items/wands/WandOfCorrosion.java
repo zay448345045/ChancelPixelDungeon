@@ -44,7 +44,6 @@ import com.watabou.utils.Random;
 
 public class WandOfCorrosion extends Wand
 {
-
 	{
 		image = ItemSpriteSheet.WAND_CORROSION;
 
@@ -111,5 +110,4 @@ public class WandOfCorrosion extends Wand
 		particle.setSize(0.5f, 3f);
 		particle.shuffleXY(1f);
 	}
-
 }

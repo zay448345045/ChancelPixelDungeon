@@ -29,10 +29,9 @@ import com.watabou.utils.Random;
 
 public class Unstable extends Weapon.Enchantment
 {
+	private static final ItemSprite.Glowing WHITE = new ItemSprite.Glowing(0xFFFFFF);
 
-	private static ItemSprite.Glowing WHITE = new ItemSprite.Glowing(0xFFFFFF);
-
-	private static Class<? extends Weapon.Enchantment>[] randomEnchants = new Class[]{
+	private static final Class<? extends Weapon.Enchantment>[] randomEnchants = new Class[]{
 			Blazing.class,
 			Chilling.class,
 			Dazzling.class,
@@ -46,6 +45,13 @@ public class Unstable extends Weapon.Enchantment
 			Venomous.class,
 			Vorpal.class
 	};
+
+	@Override
+	public boolean procChance(int level, Char attacker, Char defender, int damage)
+	{
+		//It doesn't have its own proc chance. Rather, it uses the proc chance of one of the selected enchantments.
+		return false;
+	}
 
 	@Override
 	public int proc(Weapon weapon, Char attacker, Char defender, int damage)

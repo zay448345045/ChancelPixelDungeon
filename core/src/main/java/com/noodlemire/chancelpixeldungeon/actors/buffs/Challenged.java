@@ -1,5 +1,6 @@
 package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
+import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
@@ -10,6 +11,13 @@ public class Challenged extends FlavourBuff
 
 	{
 		type = buffType.NEGATIVE;
+	}
+
+	@Override
+	public boolean attachTo(Char target)
+	{
+		target.path = null;
+		return super.attachTo(target);
 	}
 
 	@Override

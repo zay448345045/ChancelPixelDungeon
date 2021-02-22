@@ -55,7 +55,7 @@ public class SandalsOfNature extends Artifact
 		defaultAction = AC_ROOT;
 	}
 
-	 static final String AC_FEED = "FEED";
+	private static final String AC_FEED = "FEED";
 	private static final String AC_ROOT = "ROOT";
 
 	protected WndBag.Mode mode = WndBag.Mode.SEED;

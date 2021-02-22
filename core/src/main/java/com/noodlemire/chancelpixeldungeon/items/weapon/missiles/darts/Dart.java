@@ -46,11 +46,11 @@ public class Dart extends MissileWeapon
 	public int min(int lvl)
 	{
 		if (bow != null)
-			return  4 +                 //4 base
-			        bow.level() + lvl;  //+1 per level or bow level
+			return  4 +                 		//4 base
+					(bow.level() + lvl) / 2;  	//+0.5 per level or bow level
 		else
-			return  1 +     //1 base, down from 2
-			        lvl;    //scaling unchanged
+			return  1 +     	//1 base, down from 2
+			        lvl / 2;    //scaling unchanged
 	}
 
 	@Override
@@ -62,6 +62,15 @@ public class Dart extends MissileWeapon
 		else
 			return  2 +     //2 base, down from 5
 			        2*lvl;  //scaling unchanged
+	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		if(bow != null)
+			return super.crit(attacker, defender, damage);
+		else
+			return damage;
 	}
 
 	private void updateCrossbow()

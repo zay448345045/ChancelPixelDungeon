@@ -30,12 +30,13 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Poison;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Weakness;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
 public class PotionOfHealing extends Potion
 {
 	{
-		initials = 2;
+		icon = ItemSpriteSheet.Icons.POTION_HEALING;
 
 		bones = true;
 	}

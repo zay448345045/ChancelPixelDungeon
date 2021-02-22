@@ -67,6 +67,7 @@ import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.KindOfWeapon;
 import com.noodlemire.chancelpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.noodlemire.chancelpixeldungeon.items.armor.glyphs.Viscosity;
+import com.noodlemire.chancelpixeldungeon.items.artifacts.BraceletOfForce;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.CapeOfThorns;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.DriedRose;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.EtherealChains;
@@ -79,8 +80,8 @@ import com.noodlemire.chancelpixeldungeon.items.keys.IronKey;
 import com.noodlemire.chancelpixeldungeon.items.keys.Key;
 import com.noodlemire.chancelpixeldungeon.items.keys.SkeletonKey;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfAccuracy;
+import com.noodlemire.chancelpixeldungeon.items.rings.RingOfAptitude;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfEvasion;
-import com.noodlemire.chancelpixeldungeon.items.rings.RingOfForce;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfFuror;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfHaste;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfMight;
@@ -164,6 +165,7 @@ public class Hero extends Char
 	public int HTBoost = 0;
 
 	private float dynamic = dynamax();
+	public boolean critBoost = false;
 	public boolean attacked = false;
 	public boolean moved = false;
 
@@ -199,7 +201,7 @@ public class Hero extends Char
 
 		if(boostHP)
 		{
-			heal(Math.max(newHT - curHT, 0));
+			heal(Math.max(newHT - curHT, 0), null);
 		}
 		setHT(newHT, false);
 	}
@@ -232,7 +234,7 @@ public class Hero extends Char
 	public float dynamicFactor()
 	{
 		Combo combo = buff(Combo.class);
-		float max = dynamax() + RingOfForce.dynamicBonus(this);
+		float max = dynamax();
 
 		if(combo != null)
 			dynamic(max * combo.count() / 10f, false);
@@ -245,25 +247,43 @@ public class Hero extends Char
 		return dynamicRoll(min, max, 1);
 	}
 
-	//With dynamic strength, random range is limited to 25% of the difference between a weapon's min and max
-	//This greatly decreases the amount of randomness in each hit, with variety now depending most on how
-	//high the hero's dynamic strength currently is.
-	public int dynamicRoll(int min, int max, float delay)
+	public int dynamicRoll(int min, int max, float multiplier)
 	{
 		int diff = max - min;
-		int factorMin = min + Math.round(diff * dynamicFactor() * 0.75f);
-		int factorMax = factorMin + Math.round(diff * 0.25f);
-		int dmg = Random.NormalIntRange(factorMin, factorMax);
+		int dmg = min + Math.round(diff * dynamicFactor());
 
-		if(buff(RingOfForce.Force.class) == null)
-			dmg = Math.min(max, dmg);
+		dmg = Math.min(max, dmg);
+
+		//Because of the variety of times where being crit-boosed matters,
+		//You will only lose a crit boost the moment of your first non-crit attack.
+		critBoost = dynamic == dynamax();
+
+		if(critBoost)
+		{
+			for(Item item : belongings.miscSlots)
+			{
+				if (item instanceof BraceletOfForce)
+				{
+					((BraceletOfForce) item).gainCharge();
+					break;
+				}
+			}
+		}
 
 		if(buff(Combo.class) == null)
-			dynamic(-dmg * delay);
+			dynamic(-dmg * multiplier);
 
 		attacked = true;
 
 		return dmg;
+	}
+
+	public boolean critBoost(Weapon wep)
+	{
+		if(wep == null || wep.STRReq() <= STR())
+			return critBoost;
+
+		return false;
 	}
 
 	public void dynamic(float change)
@@ -274,12 +294,14 @@ public class Hero extends Char
 	public void dynamic(float change, boolean add)
 	{
 		dynamic = add ? dynamic + change : change;
-		float max = dynamax() + RingOfForce.dynamicBonus(this) + RingOfForce.dynamicExtension(this);
+		float max = dynamax() * (BraceletOfForce.cursedHero(this) ? 0.75f : 1f);
 
 		if(dynamic < 0)
 			dynamic = 0;
 		else if(dynamic > max)
 			dynamic = max;
+
+		dynamic = GameMath.gate(0, dynamic, max);
 	}
 
 	private static final String ATTACK = "attackSkill";
@@ -1102,6 +1124,7 @@ public class Hero extends Char
 	public void checkVisibleDangers()
 	{
 		ArrayList<Char> visible = new ArrayList<>();
+		boolean seenMob = false;
 
 		boolean newChar = false;
 
@@ -1111,6 +1134,8 @@ public class Hero extends Char
 			if(fieldOfView[m.pos] && m.alignment == Alignment.ENEMY)
 			{
 				visible.add(m);
+				seenMob = true;
+
 				if(!visibleDangers.contains(m))
 					newChar = true;
 
@@ -1121,6 +1146,10 @@ public class Hero extends Char
 						target = m;
 			}
 		}
+
+		DynamicRecovery dr = buff(DynamicRecovery.class);
+		if(dr != null && seenMob)
+			dr.resetTimer();
 
 		for(Geyser g : Dungeon.level.geysers.toArray(new Geyser[0]))
 		{
@@ -1305,6 +1334,12 @@ public class Hero extends Char
 
 	public void earnExp(int exp)
 	{
+		exp = Math.round(exp * RingOfAptitude.experienceMultiplier(this));
+		if(exp == 0)
+			return;
+
+		sprite.showStatus(CharSprite.POSITIVE, Messages.get(Mob.class, "exp", exp));
+
 		this.exp += exp;
 		float percent = exp / (float) maxExp();
 
@@ -1324,7 +1359,6 @@ public class Hero extends Char
 			lvl++;
 			levelUp = true;
 
-			//updateHT(true);
 			attackSkill++;
 			defenseSkill++;
 
@@ -1353,10 +1387,6 @@ public class Hero extends Char
 				bow.updateQuickslot();
 			}
 
-			//GLog.p(Messages.get(this, "new_level") +
-			//       (lvl % 3 == 0 ? Messages.get(this, "new_level_str") : ""), lvl);
-
-			//sprite.showStatus(CharSprite.POSITIVE, Messages.get(Hero.class, "level_up"));
 			Sample.INSTANCE.play(Assets.SND_LEVELUP);
 		}
 	}
@@ -1437,7 +1467,7 @@ public class Hero extends Char
 
 		if(ankh != null && ankh.isBlessed())
 		{
-			heal(HT() / 4);
+			heal(HT() / 4, ankh);
 
 			//ensures that you'll get to act first in almost any case, to prevent reviving and then instantly dieing again.
 			Buff.detach(this, Paralysis.class);
@@ -1726,7 +1756,7 @@ public class Hero extends Char
 
 	public void resurrect(int resetLevel)
 	{
-		heal(HT());
+		heal(HT(), null);
 		Dungeon.gold = 0;
 		exp = 0;
 

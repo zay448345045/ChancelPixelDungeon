@@ -34,6 +34,7 @@ import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.noodlemire.chancelpixeldungeon.windows.WndBag;
 import com.watabou.noosa.audio.Sample;
@@ -44,7 +45,7 @@ import java.util.ArrayList;
 public class ScrollOfIdentify extends InventoryScroll
 {
 	{
-		initials = 0;
+		icon = ItemSpriteSheet.Icons.SCROLL_IDENTIFY;
 		mode = WndBag.Mode.UNIDENTIFED;
 
 		bones = true;

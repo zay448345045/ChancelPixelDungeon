@@ -42,4 +42,12 @@ public class Pavise extends MeleeWeapon
 	{
 		return 10 + 3 * level(); //10 extra defence, plus 3 per level;
 	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		attacker.SHLD(Math.max(attacker.SHLD() - damage, 0));
+
+		return damage;
+	}
 }

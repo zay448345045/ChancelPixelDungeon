@@ -60,7 +60,7 @@ public class GrassSeed extends Item
 	protected void onThrow(int cell)
 	{
 		Char ch = Actor.findChar(cell);
-		if(ch != null && !ch.isImmune(Roots.class) && !ch.flying)
+		if(ch != null && !ch.isImmune(Roots.class) && !ch.flying && ch != curUser)
 			Buff.affect(ch, Roots.class, 2);
 		else if(Dungeon.level.map[cell] == Terrain.ALCHEMY ||
 		        Dungeon.level.map[cell] == Terrain.ENTRANCE ||

@@ -23,7 +23,6 @@ package com.noodlemire.chancelpixeldungeon.actors.mobs;
 
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Balance;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.npcs.Imp;
 import com.noodlemire.chancelpixeldungeon.items.KindOfWeapon;
@@ -108,7 +107,6 @@ public class Monk extends Mob
 					Dungeon.quickslot.convertToPlaceholder(weapon);
 					weapon.updateQuickslot();
 					Dungeon.level.drop(weapon, hero.pos).sprite.drop();
-					Balance.update();
 					GLog.w(Messages.get(this, "disarm", weapon.name()));
 				}
 			}

@@ -10,6 +10,7 @@ import com.noodlemire.chancelpixeldungeon.actors.mobs.Wraith;
 import com.noodlemire.chancelpixeldungeon.items.Heap;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.quest.CorpseDust;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -20,7 +21,7 @@ public class ScrollOfNecromancy extends EnvironmentScroll
 {
 	{
 		should_shout = true;
-		initials = 15;
+		icon = ItemSpriteSheet.Icons.SCROLL_NECROMANCY;
 		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 

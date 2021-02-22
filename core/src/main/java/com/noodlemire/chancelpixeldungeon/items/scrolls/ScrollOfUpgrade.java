@@ -33,6 +33,7 @@ import com.noodlemire.chancelpixeldungeon.items.rings.Ring;
 import com.noodlemire.chancelpixeldungeon.items.wands.Wand;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.noodlemire.chancelpixeldungeon.windows.WndBag;
 import com.watabou.noosa.audio.Sample;
@@ -40,7 +41,7 @@ import com.watabou.noosa.audio.Sample;
 public class ScrollOfUpgrade extends InventoryScroll
 {
 	{
-		initials = 11;
+		icon = ItemSpriteSheet.Icons.SCROLL_UPGRADE;
 		mode = WndBag.Mode.UPGRADEABLE;
 		bones = false;
 	}

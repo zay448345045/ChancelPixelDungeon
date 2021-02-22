@@ -43,12 +43,13 @@ public class WandOfDisintegration extends DamageWand
 		image = ItemSpriteSheet.WAND_DISINTEGRATION;
 
 		collisionProperties = Ballistica.WONT_STOP;
-	}
 
+		canCrit = true;
+	}
 
 	public int min(int lvl)
 	{
-		return 2 + lvl;
+		return 2 + lvl / 2;
 	}
 
 	public int max(int lvl)
@@ -60,9 +61,8 @@ public class WandOfDisintegration extends DamageWand
 	protected void onZap(Ballistica beam)
 	{
 		boolean terrainAffected = false;
-
 		int damage = damageRoll();
-
+		boolean critBoost = curUser.critBoost(null);
 		int maxDistance = Math.min(distance(), beam.dist);
 
 		ArrayList<Char> chars = new ArrayList<>();
@@ -97,9 +97,10 @@ public class WandOfDisintegration extends DamageWand
 		if(terrainAffected)
 			Dungeon.observe();
 
+		if(critBoost)
+			terrainBonus *= 2;
+
 		int dmg = damage + 3 * ((chars.size() - 1) + terrainBonus);
-		if(chars.size() > 1 && terrainBonus > 0)
-			dmg += Random.IntRange(-1, 1);
 
 		for(Char ch : chars)
 		{
@@ -107,6 +108,9 @@ public class WandOfDisintegration extends DamageWand
 			ch.damage(dmg, this);
 			ch.sprite.centerEmitter().burst(PurpleParticle.BURST, Random.IntRange(1, 2));
 			ch.sprite.flash();
+
+			if(critBoost)
+				critFx(ch);
 		}
 	}
 
@@ -140,5 +144,4 @@ public class WandOfDisintegration extends DamageWand
 		particle.setSize(0.5f, 3f);
 		particle.shuffleXY(1f);
 	}
-
 }

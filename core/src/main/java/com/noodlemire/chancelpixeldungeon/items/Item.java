@@ -396,7 +396,6 @@ public class Item implements Bundlable
 
 	public Item degrade()
 	{
-
 		this.level--;
 
 		return this;
@@ -581,6 +580,11 @@ public class Item implements Bundlable
 	public String status()
 	{
 		return quantity != 1 ? Integer.toString(quantity) : null;
+	}
+
+	public Integer icon()
+	{
+		return null;
 	}
 
 	public void updateQuickslot()

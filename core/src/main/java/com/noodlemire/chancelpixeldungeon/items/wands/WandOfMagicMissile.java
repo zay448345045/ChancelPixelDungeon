@@ -33,14 +33,15 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class WandOfMagicMissile extends DamageWand
 {
-
 	{
 		image = ItemSpriteSheet.WAND_MAGIC_MISSILE;
+
+		canCrit = true;
 	}
 
 	public int min(int lvl)
 	{
-		return 2 + lvl;
+		return 2 + lvl / 2;
 	}
 
 	public int max(int lvl)
@@ -51,34 +52,33 @@ public class WandOfMagicMissile extends DamageWand
 	@Override
 	protected void onZap(Ballistica bolt)
 	{
-
 		Char ch = Actor.findChar(bolt.collisionPos);
 		if(ch != null)
 		{
-
 			processSoulMark(ch, chargesPerCast());
 			ch.damage(damageRoll(), this);
 
-			ch.sprite.burst(0xFFFFFFFF, level() / 2 + 2);
+			if(curUser.critBoost(null))
+			{
+				Buff.affect(curUser, Recharging.class).set(1);
+				SpellSprite.show(curUser, SpellSprite.CHARGE);
+				critFx(ch);
+			}
 
+			ch.sprite.burst(0xFFFFFFFF, level() / 2 + 2);
 		}
 		else
-		{
 			Dungeon.level.press(bolt.collisionPos, null, true);
-		}
 	}
 
 	@Override
 	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage)
 	{
 		Buff.affect(attacker, Recharging.class).set(1 + staff.level() / 2f);
-		SpellSprite.show(attacker, SpellSprite.CHARGE);
-
 	}
 
 	protected int initialCharges()
 	{
 		return 3;
 	}
-
 }

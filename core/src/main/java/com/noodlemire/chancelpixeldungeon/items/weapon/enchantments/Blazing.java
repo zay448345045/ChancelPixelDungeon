@@ -32,20 +32,24 @@ import com.watabou.utils.Random;
 
 public class Blazing extends Weapon.Enchantment
 {
-
-	private static ItemSprite.Glowing ORANGE = new ItemSprite.Glowing(0xFF4400);
+	private static final ItemSprite.Glowing ORANGE = new ItemSprite.Glowing(0xFF4400);
 
 	@Override
-	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	public boolean procChance(int level, Char attacker, Char defender, int damage)
 	{
 		// lvl 0 - 33%
 		// lvl 1 - 50%
 		// lvl 2 - 60%
+		return Random.Int(level + 3) >= 2;
+	}
+
+	@Override
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
 		int level = Math.max(0, weapon.level());
 
-		if(Random.Int(level + 3) >= 2)
+		if(doProc(weapon, attacker, defender, damage))
 		{
-
 			if(Random.Int(2) == 0)
 			{
 				Buff.affect(defender, Burning.class).reignite();
@@ -53,11 +57,9 @@ public class Blazing extends Weapon.Enchantment
 			defender.damage(Random.Int(1, level + 2), this);
 
 			defender.sprite.emitter().burst(FlameParticle.FACTORY, level + 1);
-
 		}
 
 		return damage;
-
 	}
 
 	@Override

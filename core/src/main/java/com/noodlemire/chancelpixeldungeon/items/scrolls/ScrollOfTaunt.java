@@ -10,13 +10,14 @@ import com.noodlemire.chancelpixeldungeon.actors.mobs.Goo;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
 public class ScrollOfTaunt extends Scroll
 {
 	{
-		initials = 17;
+		icon = ItemSpriteSheet.Icons.SCROLL_TAUNT;
 	}
 
 	@Override

@@ -114,7 +114,7 @@ public class Tengu extends Mob
 		//phase 1 of the fight is over
 		if(beforeHitHP > HT() / 2 && HP() <= HT() / 2)
 		{
-			heal((HT() / 2) - HP());
+			heal((HT() / 2) - HP(), this);
 			yell(Messages.get(this, "interesting"));
 			((PrisonBossLevel) Dungeon.level).progress();
 			BossHealthBar.bleed(true);
@@ -280,7 +280,7 @@ public class Tengu extends Mob
 		@Override
 		public boolean act(boolean enemyInFOV, boolean justAlerted)
 		{
-			enemySeen = enemyInFOV;
+			lookForEnemy(enemyInFOV);
 			if(enemyInFOV && !isCharmedBy(enemy) && canAttack(enemy))
 			{
 

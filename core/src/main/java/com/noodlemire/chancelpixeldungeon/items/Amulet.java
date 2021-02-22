@@ -22,6 +22,7 @@
 package com.noodlemire.chancelpixeldungeon.items;
 
 import com.noodlemire.chancelpixeldungeon.Badges;
+import com.noodlemire.chancelpixeldungeon.BuildConfig;
 import com.noodlemire.chancelpixeldungeon.CPDSettings;
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
@@ -60,7 +61,7 @@ import java.util.HashMap;
 
 public class Amulet extends Item
 {
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = BuildConfig.DEBUG;
 
 	private static final String AC_END = "END";
 

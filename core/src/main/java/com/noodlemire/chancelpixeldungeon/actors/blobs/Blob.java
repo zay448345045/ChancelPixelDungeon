@@ -135,9 +135,13 @@ public class Blob extends Actor
 		this.emitter = emitter;
 	}
 
+	protected boolean canSpreadTo(int cell)
+	{
+		return !Dungeon.level.solid[cell];
+	}
+
 	protected void evolve()
 	{
-		boolean[] blocking = Dungeon.level.solid;
 		int cell;
 		for(int i = area.top - 1; i <= area.bottom; i++)
 		{
@@ -146,27 +150,27 @@ public class Blob extends Actor
 				cell = j + i * Dungeon.level.width();
 				if(Dungeon.level.insideMap(cell))
 				{
-					if(!blocking[cell])
+					if(canSpreadTo(cell))
 					{
 						int count = 1;
 						int sum = cur[cell];
 
-						if(j > area.left && !blocking[cell - 1])
+						if(j > area.left && canSpreadTo(cell - 1))
 						{
 							sum += cur[cell - 1];
 							count++;
 						}
-						if(j < area.right && !blocking[cell + 1])
+						if(j < area.right && canSpreadTo(cell + 1))
 						{
 							sum += cur[cell + 1];
 							count++;
 						}
-						if(i > area.top && !blocking[cell - Dungeon.level.width()])
+						if(i > area.top && canSpreadTo(cell - Dungeon.level.width()))
 						{
 							sum += cur[cell - Dungeon.level.width()];
 							count++;
 						}
-						if(i < area.bottom && !blocking[cell + Dungeon.level.width()])
+						if(i < area.bottom && canSpreadTo(cell + Dungeon.level.width()))
 						{
 							sum += cur[cell + Dungeon.level.width()];
 							count++;

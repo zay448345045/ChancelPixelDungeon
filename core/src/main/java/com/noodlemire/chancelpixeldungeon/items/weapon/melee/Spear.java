@@ -21,6 +21,9 @@
 
 package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
+import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.items.wands.WandOfBlastWave;
+import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Spear extends MeleeWeapon
@@ -36,5 +39,15 @@ public class Spear extends MeleeWeapon
 	public int max(int lvl)
 	{
 		return Math.round(super.max(lvl) * 1.333f); //20 base, up from 15, and +4 per level, up from +3
+	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		int oppositeHero = defender.pos + (defender.pos - attacker.pos);
+		Ballistica trajectory = new Ballistica(defender.pos, oppositeHero, Ballistica.MAGIC_BOLT);
+		WandOfBlastWave.throwChar(defender, trajectory, 1);
+
+		return damage;
 	}
 }

@@ -145,7 +145,7 @@ public class Goo extends Mob
 				BossHealthBar.bleed(false);
 				((GooSprite) sprite).spray(false);
 			}
-			heal(1);
+			heal(1, Dungeon.level.map[pos]);
 		}
 
 		Char cur_closest_char = null;
@@ -389,7 +389,7 @@ public class Goo extends Mob
 
 				if(enemyInFOV)
 				{
-					enemySeen = true;
+					lookForEnemy(true);
 
 					notice();
 					alerted = true;

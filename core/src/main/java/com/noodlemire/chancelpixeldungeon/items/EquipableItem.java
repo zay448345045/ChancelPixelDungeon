@@ -24,7 +24,6 @@ package com.noodlemire.chancelpixeldungeon.items;
 import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.Balance;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.particles.ShadowParticle;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
@@ -68,11 +67,7 @@ public abstract class EquipableItem extends Item
 			}
 		}
 		else if(action.equals(AC_UNEQUIP))
-		{
 			doUnequip(hero, true);
-		}
-
-		Balance.update();
 	}
 
 	@Override
@@ -96,38 +91,6 @@ public abstract class EquipableItem extends Item
 		}
 
 		super.cast(user, dst);
-	}
-
-	@Override
-	public int level()
-	{
-		if(Dungeon.hero != null && isEquipped(Dungeon.hero) && Balance.average() != -1)
-			return Balance.average();
-		else
-			return super.level();
-	}
-
-	@Override
-	public void level(int value)
-	{
-		super.level(value);
-		Balance.update();
-	}
-
-	@Override
-	public Item upgrade()
-	{
-		Item i = super.upgrade();
-		Balance.update();
-		return i;
-	}
-
-	@Override
-	public Item degrade()
-	{
-		Item i = super.degrade();
-		Balance.update();
-		return i;
 	}
 
 	public static void equipCursed(Hero hero)

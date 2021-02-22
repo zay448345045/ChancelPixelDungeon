@@ -54,11 +54,13 @@ public class WandOfPrismaticLight extends DamageWand
 		image = ItemSpriteSheet.WAND_PRISMATIC_LIGHT;
 
 		collisionProperties = Ballistica.MAGIC_BOLT;
+
+		canCrit = true;
 	}
 
 	public int min(int lvl)
 	{
-		return 1 + lvl;
+		return 1 + lvl / 2;
 	}
 
 	public int max(int lvl)
@@ -88,9 +90,13 @@ public class WandOfPrismaticLight extends DamageWand
 	private void affectTarget(Char ch)
 	{
 		int dmg = damageRoll();
+		boolean critBoost = curUser.critBoost(null);
+
+		if(critBoost)
+			critFx(ch);
 
 		//three in (5+lvl) chance of failing
-		if(Random.Int(5 + level()) >= 3)
+		if(critBoost || Random.Int(5 + level()) >= 3)
 		{
 			Buff.prolong(ch, Blindness.class, 2f + (level() * 0.333f));
 			ch.sprite.emitter().burst(Speck.factory(Speck.LIGHT), 6);
@@ -127,7 +133,6 @@ public class WandOfPrismaticLight extends DamageWand
 				int terr = Dungeon.level.map[cell];
 				if((Terrain.flags[terr] & Terrain.SECRET) != 0)
 				{
-
 					Dungeon.level.discover(cell);
 
 					GameScene.discoverTile(cell, terr);

@@ -47,7 +47,6 @@ import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfTelepathy;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfThunderstorm;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfToxicity;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.Scroll;
-import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfBalance;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfBlessing;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfCharm;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfCleansing;
@@ -61,6 +60,7 @@ import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfNecromancy;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfRage;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfReflection;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfSunlight;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfSupernova;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTaunt;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -102,54 +102,52 @@ public class StoneOfIntuition extends InventoryStone
 		GameScene.show( new WndGuess(item));
 	}
 
-	//Ordered by initials
-
 	public static Class[] potions = new Class[]
 			{
+					PotionOfCorrosivity.class,
+					PotionOfEnticement.class,
 					PotionOfExperience.class,
+					PotionOfExpulsion.class,
 					PotionOfFrost.class,
+					PotionOfHaste.class,
 					PotionOfHealing.class,
+					PotionOfHydrocombustion.class,
 					PotionOfInvisibility.class,
 					PotionOfLevitation.class,
-					PotionOfHydrocombustion.class,
 					PotionOfMight.class,
-					PotionOfTelepathy.class,
-					PotionOfShockwave.class,
-					PotionOfPurity.class,
-					PotionOfHaste.class,
-					PotionOfToxicity.class,
-					PotionOfEnticement.class,
 					PotionOfOvergrowth.class,
-					PotionOfShielding.class,
-					PotionOfCorrosivity.class,
-					PotionOfThunderstorm.class,
-					PotionOfExpulsion.class,
-					PotionOfRepulsion.class,
 					PotionOfPlacebo.class,
+					PotionOfPurity.class,
+					PotionOfRepulsion.class,
+					PotionOfShielding.class,
+					PotionOfShockwave.class,
+					PotionOfTelepathy.class,
+					PotionOfThunderstorm.class,
+					PotionOfToxicity.class,
 			};
 
 	public static Class[] scrolls = new Class[]
 			{
-					ScrollOfIdentify.class,
-					ScrollOfLullaby.class,
 					ScrollOfBlessing.class,
 					ScrollOfCharm.class,
-					ScrollOfReflection.class,
-					ScrollOfSupernova.class,
+					ScrollOfCleansing.class,
+					ScrollOfDarkness.class,
+					ScrollOfDecay.class,
+					ScrollOfIdentify.class,
+					ScrollOfInsulation.class,
+					ScrollOfLullaby.class,
+					ScrollOfMagma.class,
+					ScrollOfNecromancy.class,
 					ScrollOfRage.class,
 					ScrollOfRecharging.class,
-					ScrollOfCleansing.class,
+					ScrollOfReflection.class,
+					ScrollOfSunlight.class,
+					ScrollOfSupernova.class,
+					ScrollOfTaunt.class,
 					ScrollOfTeleportation.class,
 					ScrollOfTerror.class,
-					ScrollOfUpgrade.class,
-					ScrollOfDecay.class,
-					ScrollOfBalance.class,
-					ScrollOfDarkness.class,
-					ScrollOfNecromancy.class,
-					ScrollOfInsulation.class,
-					ScrollOfTaunt.class,
-					ScrollOfMagma.class,
 					ScrollOfTransmutation.class,
+					ScrollOfUpgrade.class,
 			};
 
 	static Class curGuess = null;
@@ -322,7 +320,7 @@ public class StoneOfIntuition extends InventoryStone
 						super.onClick();
 					}
 				};
-				Image im = new Image(Assets.CONS_ICONS, 7 * i, row, 7, 7);
+				Image im = new Image(Assets.ITEM_ICONS, 7 * i, row, 7, 7);
 				im.scale.set(2f);
 				btn.icon(im);
 				btn.setRect(left + placed * BTN_SIZE, top, BTN_SIZE, BTN_SIZE);

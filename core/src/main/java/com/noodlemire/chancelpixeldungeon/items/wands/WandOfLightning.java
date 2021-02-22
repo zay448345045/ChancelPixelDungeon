@@ -46,15 +46,17 @@ public class WandOfLightning extends DamageWand
 {
 	{
 		image = ItemSpriteSheet.WAND_LIGHTNING;
+
+		canCrit = true;
 	}
 
-	private ArrayList<Char> affected = new ArrayList<>();
+	private final ArrayList<Char> affected = new ArrayList<>();
 
-	private ArrayList<Lightning.Arc> arcs = new ArrayList<>();
+	private final ArrayList<Lightning.Arc> arcs = new ArrayList<>();
 
 	public int min(int lvl)
 	{
-		return 5 + lvl;
+		return 5 + lvl / 2;
 	}
 
 	public int max(int lvl)
@@ -66,6 +68,10 @@ public class WandOfLightning extends DamageWand
 	protected void onZap(Ballistica bolt)
 	{
 		int damage = damageRoll();
+		boolean critBoost = curUser.critBoost(null);
+
+		if(critBoost)
+			damage = (int)Math.round(damage * 1.25);
 
 		//lightning deals less damage per-target, the more targets that are hit.
 		float multipler = 0.4f + (0.6f / affected.size());
@@ -74,15 +80,15 @@ public class WandOfLightning extends DamageWand
 
 		for(Char ch : affected)
 		{
-			damage += Random.IntRange(-1, 1);
-			damage = Math.min(max(), Math.max(min(), damage));
-
 			processSoulMark(ch, chargesPerCast());
 			ch.damage(Math.round(damage * multipler), this);
 
 			if(ch == Dungeon.hero) Camera.main.shake(2, 0.3f);
 			ch.sprite.centerEmitter().burst(SparkParticle.FACTORY, 3);
 			ch.sprite.flash();
+
+			if(critBoost)
+				critFx(ch);
 		}
 
 		if(!curUser.isAlive())

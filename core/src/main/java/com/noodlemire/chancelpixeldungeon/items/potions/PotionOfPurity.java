@@ -31,6 +31,7 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.BArray;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.utils.PathFinder;
@@ -49,7 +50,7 @@ public class PotionOfPurity extends Potion
 	}
 
 	{
-		initials = 9;
+		icon = ItemSpriteSheet.Icons.POTION_PURITY;
 	}
 
 	@Override

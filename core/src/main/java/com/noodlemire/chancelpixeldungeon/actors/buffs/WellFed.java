@@ -13,7 +13,7 @@ public class WellFed extends DurationBuff
 	public boolean act()
 	{
 		if(left() % 10 == 0)
-			target.heal(1);
+			target.heal(1, this);
 
 		shorten(1);
 		spend(TICK);

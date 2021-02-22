@@ -32,7 +32,19 @@ import com.watabou.utils.Random;
 
 public class Lucky extends Weapon.Enchantment
 {
-	private static ItemSprite.Glowing GREEN = new ItemSprite.Glowing(0x00FF00);
+	private static final ItemSprite.Glowing GREEN = new ItemSprite.Glowing(0x00FF00);
+
+	@Override
+	public boolean procChance(int level, Char attacker, Char defender, int damage)
+	{
+		float zeroChance = 0.5f;
+
+		Luck buff = attacker.buff(Luck.class);
+		if(buff != null)
+			zeroChance = buff.zeroChance;
+
+		return Random.Float() >= zeroChance;
+	}
 
 	@Override
 	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
@@ -50,12 +62,11 @@ public class Lucky extends Weapon.Enchantment
 		int level = Math.max(0, weapon.level());
 
 		float zeroChance = 0.5f;
-
 		Luck buff = attacker.buff(Luck.class);
 		if(buff != null)
 			zeroChance = buff.zeroChance;
 
-		if(Random.Float() >= zeroChance)
+		if(doProc(weapon, attacker, null, 0))
 		{
 			if(buff != null)
 				buff.detach();
@@ -80,7 +91,6 @@ public class Lucky extends Weapon.Enchantment
 	{
 		return GREEN;
 	}
-
 
 	public static class Luck extends Buff
 	{

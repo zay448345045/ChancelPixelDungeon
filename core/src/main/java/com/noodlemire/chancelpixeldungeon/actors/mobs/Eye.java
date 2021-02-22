@@ -260,7 +260,7 @@ public class Eye extends Mob
 			//even if enemy isn't seen, attack them if the beam is charged
 			if(beamCharged && enemy != null && canAttack(enemy))
 			{
-				enemySeen = enemyInFOV;
+				lookForEnemy(enemyInFOV);
 				return doAttack(enemy);
 			}
 			return super.act(enemyInFOV, justAlerted);

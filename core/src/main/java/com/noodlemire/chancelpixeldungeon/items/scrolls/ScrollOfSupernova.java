@@ -31,6 +31,7 @@ import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
@@ -38,7 +39,7 @@ import com.watabou.utils.Random;
 public class ScrollOfSupernova extends Scroll
 {
 	{
-		initials = 5;
+		icon = ItemSpriteSheet.Icons.SCROLL_SUPERNOVA;
 
 		bones = true;
 	}

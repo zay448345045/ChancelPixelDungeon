@@ -52,9 +52,7 @@ public class ToxicGas extends GasBlob implements Hero.Doom
 	}
 
 	@Override
-	void affect(int cell)
-	{
-	}
+	void affect(int cell) {}
 
 	@Override
 	public void use(BlobEmitter emitter)

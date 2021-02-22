@@ -53,7 +53,7 @@ public class RotLasher extends Mob
 	protected boolean act()
 	{
 		if(enemy == null || !Dungeon.level.adjacent(pos, enemy.pos))
-			heal(3);
+			heal(3, this);
 		return super.act();
 	}
 

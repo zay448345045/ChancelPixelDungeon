@@ -43,4 +43,12 @@ public class Quarterstaff extends MeleeWeapon
 	{
 		return 3;    //3 extra defence
 	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		attacker.SHLD(Math.max(tier + level() - attacker.SHLD(), 0));
+
+		return damage;
+	}
 }

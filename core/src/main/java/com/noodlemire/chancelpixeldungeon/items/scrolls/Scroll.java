@@ -40,11 +40,11 @@ import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfBinding;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfBlast;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfChallenge;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfDistortion;
-import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfEquity;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfFlock;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfHypnotism;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfIllusion;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfIntuition;
+import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfLinkage;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfPreservation;
 import com.noodlemire.chancelpixeldungeon.items.stones.StoneOfShock;
 import com.noodlemire.chancelpixeldungeon.journal.Catalog;
@@ -70,7 +70,7 @@ public abstract class Scroll extends Item implements Transmutable
 
 	static final float TIME_TO_READ = 1f;
 
-	protected int initials;
+	protected int icon;
 
 	private static final Class<?>[] scrolls =
 			{
@@ -82,7 +82,7 @@ public abstract class Scroll extends Item implements Transmutable
 					ScrollOfSupernova.class,
 					ScrollOfReflection.class,
 					ScrollOfDecay.class,
-					ScrollOfBalance.class,
+					ScrollOfSunlight.class,
 					ScrollOfDarkness.class,
 					ScrollOfNecromancy.class,
 					ScrollOfTransmutation.class,
@@ -262,9 +262,7 @@ public abstract class Scroll extends Item implements Transmutable
 		if(isKnown() && (
 				this instanceof ScrollOfUpgrade ||
 				this instanceof ScrollOfCharm ||
-				this instanceof ScrollOfLullaby ||
-				this instanceof ScrollOfBalance
-				))
+				this instanceof ScrollOfLullaby))
 		{
 			GameScene.show(
 					new WndOptions(Messages.get(this, "for_reading"),
@@ -375,9 +373,10 @@ public abstract class Scroll extends Item implements Transmutable
 		}
 	}
 
-	public Integer initials()
+	@Override
+	public Integer icon()
 	{
-		return isKnown() ? initials : null;
+		return isKnown() ? icon : null;
 	}
 
 	@Override
@@ -455,8 +454,8 @@ public abstract class Scroll extends Item implements Transmutable
 			stones.put(ScrollOfRage.class, StoneOfChallenge.class);
 			stones.put(ScrollOfTaunt.class, StoneOfChallenge.class);
 
-			stones.put(ScrollOfBalance.class, StoneOfEquity.class);
-			stones.put(ScrollOfInsulation.class, StoneOfEquity.class);
+			stones.put(ScrollOfSunlight.class, StoneOfLinkage.class);
+			stones.put(ScrollOfInsulation.class, StoneOfLinkage.class);
 		}
 
 		@Override

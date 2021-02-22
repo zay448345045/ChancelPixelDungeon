@@ -35,20 +35,22 @@ import java.util.ArrayList;
 
 public class Shocking extends Weapon.Enchantment
 {
-
 	private static ItemSprite.Glowing WHITE = new ItemSprite.Glowing(0xFFFFFF, 0.6f);
 
 	@Override
-	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	public boolean procChance(int level, Char attacker, Char defender, int damage)
 	{
 		// lvl 0 - 33%
 		// lvl 1 - 50%
 		// lvl 2 - 60%
-		int level = Math.max(0, weapon.level());
+		return Random.Int(level + 3) >= 2;
+	}
 
-		if(Random.Int(level + 3) >= 2)
+	@Override
+	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
+	{
+		if(doProc(weapon, attacker, defender, damage))
 		{
-
 			affected.clear();
 			affected.add(attacker);
 
@@ -57,11 +59,9 @@ public class Shocking extends Weapon.Enchantment
 			hit(defender, Random.Int(1, damage / 3));
 
 			attacker.sprite.parent.addToFront(new Lightning(arcs, null));
-
 		}
 
 		return damage;
-
 	}
 
 	@Override
@@ -70,13 +70,12 @@ public class Shocking extends Weapon.Enchantment
 		return WHITE;
 	}
 
-	private ArrayList<Char> affected = new ArrayList<>();
+	private final ArrayList<Char> affected = new ArrayList<>();
 
-	private ArrayList<Lightning.Arc> arcs = new ArrayList<>();
+	private final ArrayList<Lightning.Arc> arcs = new ArrayList<>();
 
 	private void hit(Char ch, int damage)
 	{
-
 		if(damage < 1)
 		{
 			return;

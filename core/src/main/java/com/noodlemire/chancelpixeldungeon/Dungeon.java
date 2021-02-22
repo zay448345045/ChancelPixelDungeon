@@ -813,7 +813,7 @@ public class Dungeon
 
 	public static void playAt(Object id, int pos)
 	{
-		float volume = (float)(1 - level.trueDistance(pos, hero.pos) / 15);
+		float volume = (1 - level.trueDistance(pos, hero.pos) / 15);
 
 		if(volume > 0)
 			Sample.INSTANCE.play(id, volume);

@@ -5,11 +5,12 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Regrowth;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class PotionOfOvergrowth extends Potion
 {
 	{
-		initials = 13;
+		icon = ItemSpriteSheet.Icons.POTION_OVERGROWTH;
 
 		if(isIdentified()) defaultAction = AC_THROW;
 	}

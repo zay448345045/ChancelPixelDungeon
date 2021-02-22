@@ -49,9 +49,9 @@ public class Tomahawk extends MissileWeapon
 	}
 
 	@Override
-	public int proc(Char attacker, Char defender, int damage)
+	public int crit(Char attacker, Char defender, int damage)
 	{
 		Buff.affect(defender, Bleeding.class).set(damage);
-		return super.proc(attacker, defender, damage);
+		return damage;
 	}
 }

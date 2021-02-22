@@ -40,12 +40,16 @@ import com.noodlemire.chancelpixeldungeon.actors.mobs.Yog;
 import com.noodlemire.chancelpixeldungeon.levels.traps.DisintegrationTrap;
 import com.noodlemire.chancelpixeldungeon.levels.traps.GrimTrap;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
 
 public class RingOfElements extends Ring
 {
+	{
+		icon = ItemSpriteSheet.Icons.RING_ELEMENTS;
+	}
 
 	@Override
 	protected RingBuff buff()

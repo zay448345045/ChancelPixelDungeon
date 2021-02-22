@@ -96,7 +96,7 @@ public class Sungrass extends Plant
 
 			if(partialHeal > 1)
 			{
-				target.heal((int) partialHeal);
+				target.heal((int) partialHeal, this);
 				shorten((int) partialHeal);
 				partialHeal -= (int) partialHeal;
 				target.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
@@ -119,7 +119,7 @@ public class Sungrass extends Plant
 		@Override
 		public int icon()
 		{
-			return BuffIndicator.HEALING;
+			return BuffIndicator.HERBAL_HEALING;
 		}
 
 		@Override

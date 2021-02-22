@@ -83,7 +83,7 @@ public class Multiplicity extends Armor.Glyph
 							Bundle store = new Bundle();
 							attacker.storeInBundle(store);
 							m.restoreFromBundle(store);
-							m.heal(m.HT());
+							m.heal(m.HT(), null);
 
 							//If a thief has stolen an item, that item is not duplicated.
 							if(m instanceof Thief)

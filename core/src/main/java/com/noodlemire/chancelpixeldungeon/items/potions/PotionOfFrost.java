@@ -26,12 +26,13 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Freezing;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.utils.PathFinder;
 
 public class PotionOfFrost extends Potion
 {
 	{
-		initials = 1;
+		icon = ItemSpriteSheet.Icons.POTION_FROST;
 
 		if(isIdentified()) defaultAction = AC_THROW;
 	}

@@ -32,10 +32,8 @@ import com.watabou.utils.Random;
 
 public class SecretGardenRoom extends SecretRoom
 {
-
 	public void paint(Level level)
 	{
-
 		Painter.fill(level, this, Terrain.WALL);
 		Painter.fill(level, this, 1, Terrain.GRASS);
 

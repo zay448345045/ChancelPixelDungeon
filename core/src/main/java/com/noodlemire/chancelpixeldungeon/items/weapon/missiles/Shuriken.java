@@ -46,4 +46,11 @@ public class Shuriken extends MissileWeapon
 		if(owner instanceof Hero && ((Hero) owner).justMoved) return 0;
 		else return super.speedFactor(owner);
 	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		//See Char.java for armor piercing
+		return damage;
+	}
 }

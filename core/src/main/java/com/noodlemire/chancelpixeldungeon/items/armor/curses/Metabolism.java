@@ -53,7 +53,7 @@ public class Metabolism extends Glyph
 					hunger.reduceHunger(healing * -10);
 					BuffIndicator.refreshHero();
 
-					defender.heal(healing);
+					defender.heal(healing, this);
 					defender.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
 				}
 			}

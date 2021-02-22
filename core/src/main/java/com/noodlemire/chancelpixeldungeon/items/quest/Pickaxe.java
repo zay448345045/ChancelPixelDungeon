@@ -45,7 +45,6 @@ import java.util.ArrayList;
 
 public class Pickaxe extends Weapon
 {
-
 	public static final String AC_MINE = "MINE";
 
 	public static final float TIME_TO_MINE = 2;
@@ -59,7 +58,6 @@ public class Pickaxe extends Weapon
 		bones = false;
 
 		defaultAction = AC_MINE;
-
 	}
 
 	public boolean bloodStained = false;
@@ -197,5 +195,4 @@ public class Pickaxe extends Weapon
 	{
 		return bloodStained ? BLOODY : null;
 	}
-
 }

@@ -5,11 +5,12 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Repulsion;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class PotionOfRepulsion extends Potion
 {
 	{
-		initials = 18;
+		icon = ItemSpriteSheet.Icons.POTION_REPULSION;
 	}
 
 	@Override

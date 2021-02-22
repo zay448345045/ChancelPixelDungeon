@@ -68,7 +68,7 @@ public abstract class Potion extends Item implements Transmutable
 
 	private static final float TIME_TO_DRINK = 1f;
 
-	protected Integer initials;
+	protected Integer icon;
 
 	private static final Class<?>[] potions =
 			{
@@ -362,9 +362,10 @@ public abstract class Potion extends Item implements Transmutable
 		}
 	}
 
-	public Integer initials()
+	@Override
+	public Integer icon()
 	{
-		return isKnown() ? initials : null;
+		return isKnown() ? icon : null;
 	}
 
 	@Override

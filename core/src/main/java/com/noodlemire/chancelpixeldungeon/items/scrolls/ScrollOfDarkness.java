@@ -7,6 +7,7 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Darkness;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
@@ -14,7 +15,7 @@ public class ScrollOfDarkness extends EnvironmentScroll
 {
 	{
 		should_shout = true;
-		initials = 14;
+		icon = ItemSpriteSheet.Icons.SCROLL_DARKNESS;
 		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 

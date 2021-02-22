@@ -21,6 +21,7 @@
 
 package com.noodlemire.chancelpixeldungeon.items.weapon.missiles;
 
+import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Kunai extends MissileWeapon
@@ -41,5 +42,22 @@ public class Kunai extends MissileWeapon
 	public int max(int lvl)
 	{
 		return Math.round(super.max(lvl) * 0.75f);
+	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		//See rangedHit()
+		return damage;
+	}
+
+	@Override
+	public void rangedHit(Char enemy, int cell, boolean returnToHero)
+	{
+		//Skip over the part that lowers durability on crit
+		if(curUser.critBoost(this))
+			afterThrow(enemy, cell, returnToHero);
+		else
+			super.rangedHit(enemy, cell, returnToHero);
 	}
 }

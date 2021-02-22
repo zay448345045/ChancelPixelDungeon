@@ -159,7 +159,7 @@ abstract public class MissileWeapon extends Weapon
 		return delay;
 	}
 
-	protected void rangedHit(Char enemy, int cell)
+	public void rangedHit(Char enemy, int cell)
 	{
 		rangedHit(enemy, cell, false);
 	}
@@ -170,15 +170,17 @@ abstract public class MissileWeapon extends Weapon
 		//unless a weapon is about to break, then break the one being thrown
 		if (parent != null)
 		{
-			if(parent.durability <= parent.durabilityPerUse())
+			float durabilityPerUse = parent.durabilityPerUse();
+
+			if(parent.durability <= durabilityPerUse)
 			{
 				durability = 0;
 				parent.durability = MAX_DURABILITY;
 			}
 			else
 			{
-				parent.durability -= parent.durabilityPerUse();
-				if(parent.durability > 0 && parent.durability <= parent.durabilityPerUse())
+				parent.durability -= durabilityPerUse;
+				if(parent.durability > 0 && parent.durability <= durabilityPerUse)
 				{
 					if(level() <= 0)
 						GLog.w(Messages.get(this, "about_to_break"));
@@ -191,8 +193,9 @@ abstract public class MissileWeapon extends Weapon
 		}
 		else
 		{
-			durability -= durabilityPerUse();
-			if(durability > 0 && durability <= durabilityPerUse())
+			float durabilityPerUse = durabilityPerUse();
+			durability -= durabilityPerUse;
+			if(durability > 0 && durability <= durabilityPerUse)
 			{
 				if(level() <= 0)
 					GLog.w(Messages.get(this, "about_to_break"));
@@ -202,24 +205,27 @@ abstract public class MissileWeapon extends Weapon
 		}
 
 		if(durability > 0)
+			afterThrow(enemy, cell, returnToHero);
+	}
+
+	public void afterThrow(Char enemy, int cell, boolean returnToHero)
+	{
+		if(returnToHero)
 		{
-			if(returnToHero)
-			{
-				if(!collect())
-					Dungeon.level.drop(this, Dungeon.hero.pos).sprite.drop();
+			if(!collect())
+				Dungeon.level.drop(this, Dungeon.hero.pos).sprite.drop();
 
-				return;
-			}
-
-			//attempt to stick the missile weapon to the enemy, just drop it if we can't.
-			if(enemy.isAlive() && enemy instanceof Mob && sticky)
-			{
-				PinCushion p = Buff.affect(enemy, PinCushion.class);
-				if(p.target == enemy)
-					p.stick(this);
-			}
-			else super.onThrow(cell);
+			return;
 		}
+
+		//attempt to stick the missile weapon to the enemy, just drop it if we can't.
+		if(enemy.isAlive() && enemy instanceof Mob && sticky)
+		{
+			PinCushion p = Buff.affect(enemy, PinCushion.class);
+			if(p.target == enemy)
+				p.stick(this);
+		}
+		else super.onThrow(cell);
 	}
 
 	protected void rangedMiss(int cell)
@@ -260,8 +266,8 @@ abstract public class MissileWeapon extends Weapon
 	@Override
 	public int min(int lvl)
 	{
-		return 2 * tier +                      //base
-		       (tier == 1 ? lvl : 2 * lvl);      //level scaling
+		return tier +                      //base
+		       lvl / 2;      //level scaling
 	}
 
 	@Override
@@ -291,6 +297,12 @@ abstract public class MissileWeapon extends Weapon
 		lvl = Math.max(0, lvl);
 		//strength req decreases at +1,+3,+6,+10,etc.
 		return (7 + tier * 2) - (int)(Math.sqrt(8 * lvl + 1) - 1)/2;
+	}
+
+	@Override
+	public float dynamicFactor(Char owner)
+	{
+		return augment.delayFactor(DLY);
 	}
 
 	@Override
@@ -400,6 +412,8 @@ abstract public class MissileWeapon extends Weapon
 		{
 			info += " " + Messages.get(Weapon.class, "too_heavy");
 		}
+
+		info += "\n\n" + Messages.get(this, "crit");
 
 		if(enchantment != null && (cursedKnown || !enchantment.curse()))
 		{

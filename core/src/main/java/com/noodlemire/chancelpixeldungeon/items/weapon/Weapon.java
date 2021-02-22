@@ -26,6 +26,8 @@ import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.MagicImmunity;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
+import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
+import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.KindOfWeapon;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfFuror;
@@ -103,11 +105,16 @@ abstract public class Weapon extends KindOfWeapon
 		if(enchantment != null && defender.buff(MagicImmunity.class) == null && !isBound())
 			damage = enchantment.proc(this, attacker, defender, damage);
 
+		if(attacker instanceof Hero && defender instanceof Mob && ((Hero)attacker).critBoost(this))
+		{
+			defender.sprite.emitter().burst(Speck.factory(Speck.STAR), 5);
+			damage = crit(attacker, defender, damage);
+		}
+
 		unBind();
 
 		if(!levelKnown)
 		{
-			System.out.println("Hits To Know: " + hitsToKnow);
 			if(--hitsToKnow <= 0)
 			{
 				identify();
@@ -117,6 +124,11 @@ abstract public class Weapon extends KindOfWeapon
 		}
 
 		return damage;
+	}
+
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		return (int)Math.ceil(damage * 1.25);
 	}
 
 	private static final String UNFAMILIRIARITY = "unfamiliarity";
@@ -296,7 +308,18 @@ abstract public class Weapon extends KindOfWeapon
 				Sacrificial.class, Wayward.class, Elastic.class, Friendly.class
 		};
 
+		public abstract boolean procChance(int level, Char attacker, Char defender, int damage);
 		public abstract int proc(Weapon weapon, Char attacker, Char defender, int damage);
+
+		public boolean doProc(Weapon weapon, Char attacker, Char defender, int damage)
+		{
+			int level = Math.max(0, weapon.level());
+
+			if(weapon instanceof Bow && attacker instanceof Hero && ((Hero) attacker).critBoost(weapon))
+				level = (level + 1) * 2;
+
+			return procChance(level, attacker, defender, damage);
+		}
 
 		public String name()
 		{

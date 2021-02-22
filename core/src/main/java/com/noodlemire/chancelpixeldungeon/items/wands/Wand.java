@@ -34,6 +34,7 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.hero.HeroClass;
 import com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass;
 import com.noodlemire.chancelpixeldungeon.effects.MagicMissile;
+import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.KindofMisc;
@@ -73,6 +74,10 @@ public abstract class Wand extends KindofMisc implements Transmutable
 	private boolean curChargeKnown = false;
 
 	private int usagesToKnow = USAGES_TO_KNOW;
+
+	public boolean ownedByStaff = false;
+
+	protected boolean canCrit = false;
 
 	int collisionProperties = Ballistica.MAGIC_BOLT;
 
@@ -264,7 +269,12 @@ public abstract class Wand extends KindofMisc implements Transmutable
 
 	public String statsDesc()
 	{
-		return Messages.get(this, "stats_desc");
+		String desc = Messages.get(this, "stats_desc");
+
+		if(canCrit)
+			desc += "\n\n" + Messages.get(this, "crit");
+
+		return desc;
 	}
 
 	@Override
@@ -326,6 +336,11 @@ public abstract class Wand extends KindofMisc implements Transmutable
 		return 1;
 	}
 
+	public void staffCrit()
+	{
+
+	}
+
 	protected void fx(Ballistica bolt, Callback callback)
 	{
 		MagicMissile.boltFromChar(curUser.sprite.parent,
@@ -344,6 +359,11 @@ public abstract class Wand extends KindofMisc implements Transmutable
 		particle.speed.polar(Random.Float(PointF.PI2), 2f);
 		particle.setSize(1f, 2f);
 		particle.radiateXY(0.5f);
+	}
+
+	public static void critFx(Char ch)
+	{
+		ch.sprite.emitter().burst(Speck.factory(Speck.STAR), 5);
 	}
 
 	void wandUsed()

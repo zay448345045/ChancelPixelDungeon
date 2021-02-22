@@ -21,6 +21,8 @@
 
 package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
+import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Gloves extends MeleeWeapon
@@ -36,5 +38,21 @@ public class Gloves extends MeleeWeapon
 	public int max(int lvl)
 	{
 		return Math.round(super.max(lvl) * 0.5f); //5 base, down from 10, and +1 per level, down from +2
+	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		//No on-hit bonus, see speedfactor
+		return damage;
+	}
+
+	@Override
+	public float speedFactor(Char owner)
+	{
+		if(owner instanceof Hero && ((Hero) owner).critBoost(this))
+			return 0;
+		else
+			return super.speedFactor(owner);
 	}
 }

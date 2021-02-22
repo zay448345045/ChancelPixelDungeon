@@ -1,6 +1,5 @@
 package com.noodlemire.chancelpixeldungeon.items.weapon.missiles.darts;
 
-import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class HeavyDart extends TippedDart
@@ -10,8 +9,8 @@ public class HeavyDart extends TippedDart
 	}
 
 	@Override
-	public int damageRoll(Char owner)
+	public int max(int lvl)
 	{
-		return super.damageRoll(owner) * 2;
+		return super.max(lvl) * 2;
 	}
 }

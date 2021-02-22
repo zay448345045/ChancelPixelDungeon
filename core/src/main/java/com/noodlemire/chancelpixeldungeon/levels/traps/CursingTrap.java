@@ -30,9 +30,9 @@ import com.noodlemire.chancelpixeldungeon.items.EquipableItem;
 import com.noodlemire.chancelpixeldungeon.items.Heap;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.KindOfWeapon;
+import com.noodlemire.chancelpixeldungeon.items.KindofMisc;
 import com.noodlemire.chancelpixeldungeon.items.armor.Armor;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
-import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Boomerang;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.utils.Random;
@@ -42,7 +42,6 @@ import java.util.Collections;
 
 public class CursingTrap extends Trap
 {
-
 	{
 		color = VIOLET;
 		shape = WAVES;
@@ -80,7 +79,7 @@ public class CursingTrap extends Trap
 		ArrayList<Item> canCurse = new ArrayList<>();
 
 		KindOfWeapon weapon = hero.belongings.weapon;
-		if(weapon instanceof Weapon && !weapon.cursed && !(weapon instanceof Boomerang))
+		if(weapon instanceof Weapon && !weapon.cursed)
 		{
 			if(((Weapon) weapon).enchantment == null)
 				priorityCurse.add(weapon);
@@ -97,7 +96,13 @@ public class CursingTrap extends Trap
 				canCurse.add(armor);
 		}
 
-		canCurse.addAll(hero.belongings.miscSlots.items);
+		KindofMisc misc = hero.belongings.classMisc;
+		if(misc != null && !misc.cursed)
+			canCurse.add(misc);
+
+		for(Item i : hero.belongings.miscSlots)
+			if(!i.cursed)
+				canCurse.add(i);
 
 		Collections.shuffle(priorityCurse);
 		Collections.shuffle(canCurse);

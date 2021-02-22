@@ -31,17 +31,19 @@ import com.watabou.utils.Random;
 
 public class Exhausting extends Weapon.Enchantment
 {
+	private static final ItemSprite.Glowing BLACK = new ItemSprite.Glowing(0x000000);
 
-	private static ItemSprite.Glowing BLACK = new ItemSprite.Glowing(0x000000);
+	@Override
+	public boolean procChance(int level, Char attacker, Char defender, int damage)
+	{
+		return attacker == Dungeon.hero && Random.Int(15) == 0;
+	}
 
 	@Override
 	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
 	{
-
-		if(attacker == Dungeon.hero && Random.Int(15) == 0)
-		{
+		if(doProc(weapon, attacker, defender, damage))
 			Buff.affect(attacker, Weakness.class, Random.NormalIntRange(5, 20));
-		}
 
 		return damage;
 	}

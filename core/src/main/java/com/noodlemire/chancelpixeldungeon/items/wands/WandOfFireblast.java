@@ -41,23 +41,23 @@ import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 import java.util.HashSet;
 
 public class WandOfFireblast extends DamageWand
 {
-
 	{
 		image = ItemSpriteSheet.WAND_FIREBOLT;
 
 		collisionProperties = Ballistica.STOP_TERRAIN;
+
+		canCrit = true;
 	}
 
 	//1x/1.5x/2.25x damage
 	public int min(int lvl)
 	{
-		return (int) Math.round((1 + lvl) * Math.pow(1.5f, chargesPerCast() - 1));
+		return (int) Math.round((1 + lvl / 2) * Math.pow(1.5f, chargesPerCast() - 1));
 	}
 
 	//1x/1.5x/2.25x damage
@@ -76,40 +76,37 @@ public class WandOfFireblast extends DamageWand
 	protected void onZap(Ballistica bolt)
 	{
 		int damage = damageRoll();
+		boolean critBoost = Dungeon.hero.critBoost(null);
+
+		int charges = chargesPerCast();
 
 		for(int cell : affectedCells)
 		{
-			damage += Random.IntRange(-1, 1);
 			damage = Math.min(max(), Math.max(min(), damage));
 
 			//ignore caster cell
 			if(cell == bolt.sourcePos)
-			{
 				continue;
-			}
 
 			//only ignite cells directly near caster if they are flammable
 			if(!Dungeon.level.adjacent(bolt.sourcePos, cell)
 			   || Dungeon.level.flamable[cell])
-				GameScene.add(Blob.seed(cell, 1 + chargesPerCast(), Fire.class));
+				GameScene.add(Blob.seed(cell, 1 + charges, Fire.class));
 
 			Char ch = Actor.findChar(cell);
 			if(ch != null)
 			{
-				processSoulMark(ch, chargesPerCast());
+				processSoulMark(ch, charges);
 				ch.damage(damage, this);
 				Buff.affect(ch, Burning.class).reignite();
-				switch(chargesPerCast())
-				{
-					case 1:
-						break; //no effects
-					case 2:
-						Buff.affect(ch, Cripple.class, 4f);
-						break;
-					case 3:
-						Buff.affect(ch, Paralysis.class, 4f);
-						break;
-				}
+
+				if(critBoost)
+					critFx(ch);
+
+				if(charges >= 3)
+					Buff.affect(ch, Paralysis.class, 4f);
+				else if(charges == 2)
+					Buff.affect(ch, Cripple.class, 4f);
 			}
 		}
 	}
@@ -219,12 +216,25 @@ public class WandOfFireblast extends DamageWand
 	}
 
 	@Override
+	void wandUsed()
+	{
+		if(Dungeon.hero.critBoost(null) && chargesPerCast() > 1)
+			curCharges++;
+
+		super.wandUsed();
+	}
+
+	@Override
 	public String statsDesc()
 	{
+		String stats;
+
 		if(levelKnown)
-			return Messages.get(this, "stats_desc", chargesPerCast(), min(), max());
+			stats = Messages.get(this, "stats_desc", chargesPerCast(), min(), max());
 		else
-			return Messages.get(this, "stats_desc", chargesPerCast(), min(0), max(0));
+			stats = Messages.get(this, "stats_desc", chargesPerCast(), min(0), max(0));
+
+		return stats + "\n\n" + Messages.get(this, "crit");
 	}
 
 	@Override

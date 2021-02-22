@@ -115,7 +115,7 @@ public class Pasty extends Food
 				case NONE:
 					break; //do nothing extra
 				case HWEEN:
-					hero.heal(hero.HT() / 10);
+					hero.heal(hero.HT() / 10, this);
 					hero.sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);
 					break;
 				case XMAS:

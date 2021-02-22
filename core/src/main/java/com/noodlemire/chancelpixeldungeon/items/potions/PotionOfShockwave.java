@@ -32,6 +32,7 @@ import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.Camera;
 import com.watabou.utils.Random;
@@ -40,7 +41,7 @@ public class PotionOfShockwave extends Potion implements Hero.Doom
 {
 
 	{
-		initials = 8;
+		icon = ItemSpriteSheet.Icons.POTION_SHOCKWAVE;
 		harmful = true;
 
 		if(isDangerKnown()) defaultAction = AC_THROW;

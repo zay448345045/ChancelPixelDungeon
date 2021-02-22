@@ -23,7 +23,6 @@ package com.noodlemire.chancelpixeldungeon.levels.rooms.secret;
 
 import com.noodlemire.chancelpixeldungeon.ChancelPixelDungeon;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.Scroll;
-import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfBalance;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfCharm;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfCleansing;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfDarkness;
@@ -36,6 +35,7 @@ import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfNecromancy;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfRage;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfReflection;
+import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfSunlight;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfSupernova;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTaunt;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfTeleportation;
@@ -77,7 +77,7 @@ public class SecretLibraryRoom extends SecretRoom
 		scrollChances.put(ScrollOfSupernova.class, 5f);
 		scrollChances.put(ScrollOfReflection.class, 1f);
 		scrollChances.put(ScrollOfDecay.class, 4f);
-		scrollChances.put(ScrollOfBalance.class, 2f);
+		scrollChances.put(ScrollOfSunlight.class, 2f);
 		scrollChances.put(ScrollOfDarkness.class, 1f);
 		scrollChances.put(ScrollOfNecromancy.class, 2f);
 		scrollChances.put(ScrollOfTransmutation.class, 5f);

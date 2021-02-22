@@ -14,6 +14,7 @@ import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
@@ -21,7 +22,7 @@ public class ScrollOfDecay extends EnvironmentScroll
 {
 	{
 		should_shout = true;
-		initials = 12;
+		icon = ItemSpriteSheet.Icons.SCROLL_DECAY;
 		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 

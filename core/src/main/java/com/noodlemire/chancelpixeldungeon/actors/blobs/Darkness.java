@@ -34,6 +34,12 @@ public class Darkness extends GasBlob
 	}
 
 	@Override
+	protected boolean canSpreadTo(int cell)
+	{
+		return super.canSpreadTo(cell) && Blob.volumeAt(cell, Sunlight.class) == 0;
+	}
+
+	@Override
 	public void use(BlobEmitter emitter)
 	{
 		super.use(emitter);

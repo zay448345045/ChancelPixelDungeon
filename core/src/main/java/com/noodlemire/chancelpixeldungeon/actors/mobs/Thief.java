@@ -233,14 +233,13 @@ public class Thief extends Mob
 		{
 			if(buff(Terror.class) == null && buff(Corruption.class) == null)
 			{
-				if(enemySeen)
+				if(enemySeen())
 				{
 					sprite.showStatus(CharSprite.NEGATIVE, Messages.get(Mob.class, "rage"));
 					state = HUNTING;
 				}
 				else if(item != null && !Dungeon.level.heroFOV[pos])
 				{
-
 					int count = 32;
 					int newPos;
 					do

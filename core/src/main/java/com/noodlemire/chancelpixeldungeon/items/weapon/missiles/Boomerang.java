@@ -55,9 +55,25 @@ public class Boomerang extends MissileWeapon
 	}
 
 	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		//See afterThrow
+		return damage;
+	}
+
+	@Override
 	protected void rangedMiss(int cell)
 	{
 		circleBack(cell, curUser);
+	}
+
+	@Override
+	public void afterThrow(Char enemy, int cell, boolean returnToHero)
+	{
+		if(curUser.critBoost(this))
+			circleBack(cell, curUser);
+		else
+			super.afterThrow(enemy, cell, returnToHero);
 	}
 
 	private void circleBack(int from, Hero owner)

@@ -31,6 +31,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Terror;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.effects.Flare;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 
@@ -38,7 +39,7 @@ public class ScrollOfTerror extends EnvironmentScroll
 {
 	{
 		should_shout = true;
-		initials = 10;
+		icon = ItemSpriteSheet.Icons.SCROLL_TERROR;
 		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
 

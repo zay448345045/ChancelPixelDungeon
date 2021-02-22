@@ -74,6 +74,13 @@ public class Bow extends Weapon
 	}
 
 	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		//See Weapon.Enchantment.doProc
+		return damage;
+	}
+
+	@Override
 	public float speedFactor(Char owner)
 	{
 		if (sniperSpecial)
@@ -124,6 +131,8 @@ public class Bow extends Weapon
 
 		info.append("\n\n")
 				.append(Messages.get(getClass(), "stats", dispMin(), dispMax(), STRReq()));
+
+		info.append("\n\n").append(Messages.get(this, "crit"));
 
 		if (STRReq() > Dungeon.hero.STR())
 			info.append(Messages.get(Weapon.class, "too_heavy"));

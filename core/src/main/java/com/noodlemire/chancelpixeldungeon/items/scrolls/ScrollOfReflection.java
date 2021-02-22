@@ -34,6 +34,7 @@ import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.sprites.HeroSprite;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.sprites.MirrorSprite;
 import com.noodlemire.chancelpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.TextureFilm;
@@ -48,7 +49,7 @@ public class ScrollOfReflection extends EnvironmentScroll
 {
 	{
 		should_shout = true;
-		initials = 4;
+		icon = ItemSpriteSheet.Icons.SCROLL_REFLECTION;
 		mode = Ballistica.PROJECTILE;
 		if(isDangerKnown()) defaultAction = AC_SHOUT;
 	}
@@ -103,7 +104,7 @@ public class ScrollOfReflection extends EnvironmentScroll
 			if(m instanceof MirrorImage && !((MirrorImage)m).isIndividual())
 			{
 				found = true;
-				m.heal(m.HT());
+				m.heal(m.HT(), this);
 				m.sprite.emitter().burst(Speck.factory(Speck.HEALING), 4);
 
 				if(empowered)

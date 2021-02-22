@@ -97,7 +97,7 @@ public class Scorpio extends Mob
 	{
 		if(state == HUNTING)
 		{
-			return enemySeen && getFurther(target);
+			return enemySeen() && getFurther(target);
 		}
 		else
 		{

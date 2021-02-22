@@ -97,7 +97,8 @@ public class Artifact extends KindofMisc implements Transmutable
 	public void activate(Char ch)
 	{
 		passiveBuff = passiveBuff();
-		passiveBuff.attachTo(ch);
+		if(passiveBuff != null)
+			passiveBuff.attachTo(ch);
 	}
 
 	@Override

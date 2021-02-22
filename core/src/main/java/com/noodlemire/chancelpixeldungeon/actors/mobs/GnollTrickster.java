@@ -109,7 +109,7 @@ public class GnollTrickster extends Gnoll
 		combo = 0; //if he's moving, he isn't attacking, reset combo.
 		if(state == HUNTING)
 		{
-			return enemySeen && getFurther(target);
+			return enemySeen() && getFurther(target);
 		}
 		else
 		{

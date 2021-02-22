@@ -43,4 +43,12 @@ public class RoundShield extends MeleeWeapon
 	{
 		return 5 + 2 * level();     //5 extra defence, plus 2 per level;
 	}
+
+	@Override
+	public int crit(Char attacker, Char defender, int damage)
+	{
+		attacker.SHLD(Math.max(damage - attacker.SHLD(), 0));
+
+		return damage;
+	}
 }

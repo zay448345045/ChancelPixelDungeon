@@ -30,8 +30,13 @@ import com.watabou.utils.Random;
 
 public class Vampiric extends Weapon.Enchantment
 {
+	private static final ItemSprite.Glowing RED = new ItemSprite.Glowing(0x660022);
 
-	private static ItemSprite.Glowing RED = new ItemSprite.Glowing(0x660022);
+	@Override
+	public boolean procChance(int level, Char attacker, Char defender, int damage)
+	{
+		return false;
+	}
 
 	@Override
 	public int proc(Weapon weapon, Char attacker, Char defender, int damage)
@@ -46,7 +51,7 @@ public class Vampiric extends Weapon.Enchantment
 
 		if(effValue > 0)
 		{
-			attacker.heal(effValue);
+			attacker.heal(effValue, this);
 			attacker.sprite.emitter().start(Speck.factory(Speck.HEALING), 0.4f, 1);
 		}
 

@@ -22,11 +22,12 @@
 package com.noodlemire.chancelpixeldungeon.items.potions;
 
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class PotionOfExperience extends Potion
 {
 	{
-		initials = 0;
+		icon = ItemSpriteSheet.Icons.POTION_EXPERIENCE;
 
 		bones = true;
 	}

@@ -5,11 +5,12 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.CorrosiveGas;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class PotionOfCorrosivity extends Potion
 {
 	{
-		initials = 15;
+		icon = ItemSpriteSheet.Icons.POTION_CORROSIVITY;
 		harmful = true;
 
 		if(isDangerKnown()) defaultAction = AC_THROW;

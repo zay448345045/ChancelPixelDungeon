@@ -63,7 +63,7 @@ public class BuffIndicator extends Component
 	public static final int BLINDNESS = 16;
 	public static final int COMBO = 17;
 	public static final int FURY = 18;
-	public static final int HEALING = 19;
+	public static final int HERBAL_HEALING = 19;
 	public static final int ARMOR = 20;
 	public static final int HEART = 21;
 	public static final int LIGHT = 22;
@@ -90,7 +90,7 @@ public class BuffIndicator extends Component
 	public static final int MIGHT = 43;
 	public static final int HASTE = 44;
 	public static final int MAGICSHIELD = 45;
-	public static final int BALANCE = 46;
+	public static final int HEALING = 46;
 	public static final int ANTIMAGIC = 47;
 	public static final int WELL_FED = 48;
 

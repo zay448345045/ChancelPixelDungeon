@@ -34,7 +34,6 @@ import java.util.HashMap;
 
 public class DisplacingDart extends TippedDart
 {
-
 	{
 		image = ItemSpriteSheet.DISPLACING_DART;
 	}

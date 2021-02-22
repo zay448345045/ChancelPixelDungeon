@@ -59,16 +59,19 @@ public abstract class TippedDart extends Dart
 	//exact same damage as regular darts, despite being higher tier.
 
 	@Override
-	protected void rangedHit(Char enemy, int cell)
+	public void rangedHit(Char enemy, int cell, boolean returnToHero)
 	{
-		super.rangedHit( enemy, cell);
+		super.rangedHit( enemy, cell, returnToHero);
 
 		//need to spawn a dart
 		if (durability <= 0)
 		{
 			//attempt to stick the dart to the enemy, just drop it if we can't.
 			Dart d = new Dart();
-			if (enemy.isAlive() && sticky)
+			d.level(rawLevel());
+			if(returnToHero && d.collect())
+				return;
+			else if (enemy.isAlive() && sticky)
 			{
 				PinCushion p = Buff.affect(enemy, PinCushion.class);
 				if (p.target == enemy)
@@ -86,6 +89,12 @@ public abstract class TippedDart extends Dart
 	protected float durabilityPerUse()
 	{
 		float use = super.durabilityPerUse();
+
+		if(Dungeon.hero.critBoost(this))
+		{
+			use /= 2f;
+			Dungeon.hero.critBoost = false; //Prevent the durability from randomly changing in the description
+		}
 
 		if (Dungeon.hero.subClass == HeroSubClass.WARDEN)
 			use /= 2f;
@@ -188,7 +197,9 @@ public abstract class TippedDart extends Dart
 
 			try
 			{
-				return types.get(ingredients.get(1).getClass()).newInstance().quantity(2);
+				Item output = types.get(ingredients.get(1).getClass()).newInstance().quantity(2);
+				output.level(ingredients.get(0).rawLevel());
+				return output;
 			}
 			catch(Exception e)
 			{
@@ -204,7 +215,9 @@ public abstract class TippedDart extends Dart
 
 			try
 			{
-				return types.get(ingredients.get(1).getClass()).newInstance().quantity(2);
+				Item output = types.get(ingredients.get(1).getClass()).newInstance().quantity(2);
+				output.level(ingredients.get(0).rawLevel());
+				return output;
 			}
 			catch(Exception e)
 			{

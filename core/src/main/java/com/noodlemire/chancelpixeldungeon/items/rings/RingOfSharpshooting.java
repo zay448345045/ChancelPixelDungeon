@@ -23,11 +23,16 @@ package com.noodlemire.chancelpixeldungeon.items.rings;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 import java.text.DecimalFormat;
 
 public class RingOfSharpshooting extends Ring
 {
+	{
+		icon = ItemSpriteSheet.Icons.RING_SHARPSHOOTING;
+	}
+
 	@Override
 	protected RingBuff buff()
 	{

@@ -26,12 +26,13 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.MindVision;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 
 public class PotionOfTelepathy extends Potion
 {
 	{
-		initials = 7;
+		icon = ItemSpriteSheet.Icons.POTION_TELEPATHY;
 	}
 
 	@Override

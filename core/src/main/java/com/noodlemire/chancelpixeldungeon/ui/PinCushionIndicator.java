@@ -27,6 +27,7 @@ import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Invisibility;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.PinCushion;
+import com.noodlemire.chancelpixeldungeon.items.KindOfWeapon;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.CellSelector;
@@ -189,17 +190,19 @@ public class PinCushionIndicator extends Tag
 
 			if(Char.hit(Dungeon.hero, ch, false))
 			{
+				KindOfWeapon equipped = Dungeon.hero.belongings.weapon;
 				MissileWeapon mw = pc.removeMostRecent();
-				int damage = mw.damageRoll(Dungeon.hero);
+
+				Dungeon.hero.belongings.weapon = mw;
 
 				mw.rangedHit(ch, target, true);
-				damage = Dungeon.hero.attackProc(ch, damage, mw);
-				damage = ch.defenseProc(Dungeon.hero, damage);
-				ch.damage(damage, Dungeon.hero);
+
+				int damage = Dungeon.hero.onAttack(ch, true, false);
+
+				Dungeon.hero.belongings.weapon = equipped;
 
 				ch.sprite.flash();
 				ch.sprite.bloodBurstB(ch.sprite.origin, damage);
-				Dungeon.playAt(Assets.SND_HIT, ch.pos);
 
 				if(!ch.isAlive())
 					AttackIndicator.updateState();
