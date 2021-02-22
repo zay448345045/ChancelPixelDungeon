@@ -213,6 +213,12 @@ public abstract class Mob extends Char
 
 	public boolean lookForEnemy(boolean found)
 	{
+		if(enemy == null || enemy.invisible > 0)
+		{
+			enemySeen = 0;
+			return false;
+		}
+
 		if(found)
 			enemySeen = PATIENCE;
 		else
@@ -229,6 +235,11 @@ public abstract class Mob extends Char
 	public boolean enemySeen()
 	{
 		return enemySeen > 0;
+	}
+
+	public boolean enemyInView()
+	{
+		return enemySeen == PATIENCE;
 	}
 
 	protected Char chooseEnemy()
@@ -877,7 +888,7 @@ public abstract class Mob extends Char
 		public boolean act(boolean enemyInFOV, boolean justAlerted)
 		{
 			enemyInFOV = lookForEnemy(enemyInFOV);
-			if(enemyInFOV && !isCharmedBy(enemy) && canAttack(enemy))
+			if(enemyInView() && !isCharmedBy(enemy) && canAttack(enemy))
 				return doAttack(enemy);
 			else
 			{

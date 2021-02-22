@@ -149,7 +149,7 @@ public class ChangesScene extends PixelScene
 		infos.add(changes);
 
 		changes.addButton(new ChangeButton(new Image(Assets.CHANGELOG_ICONS, 48, 0, 16, 16), "Critical Hits",
-				"You can now preform a critical hit with any weapon or damage wand. Any attack at maximum " +
+				"You can now perform a critical hit with any weapon or damage wand. Any attack at maximum " +
 						"Dynamic Strength is automatically a crit, as long as the weapon isn't too heavy for you.\n\n" +
 						"The effect of a crit depends on the weapon or wand used, which is always shown in the " +
 						"description. Some examples of effects include a damage boost, attacking instantly, " +
@@ -160,7 +160,7 @@ public class ChangesScene extends PixelScene
 		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.ARTIFACT_BRACELET, null), "Bracelet of Force",
 				"This is a new artifact that replaces the Ring of Force, which has been removed from the game.\n\n" +
 						"This artifact is able to gain charge any time you execute a max DS attack against " +
-						"an enemy. Once its fully charged, you can use it to instantly refill your DS.\n\n" +
+						"an enemy. Once it's fully charged, you can use it to instantly refill your DS.\n\n" +
 						"You can upgrade it by letting it absorb uncursed melee weapons. Each level requires " +
 						"more weapons, demands a higher minimum tier. These weapons don't need to be completely " +
 						"identified though."));
@@ -169,7 +169,7 @@ public class ChangesScene extends PixelScene
 				"There are two new rings in the game.\n\n" +
 						"Ring of Aptitude: Increases the amount of EXP you earn, allowing you to level up more often.\n\n" +
 						"Ring of Volatility: Mimicks the effect of a random ring of the same level (other than itself). " +
-						"The ring it acts like changes every 300 turns, and can only be checked once its fully identified."));
+						"The ring it acts like changes every 300 turns, and can only be checked once it's fully identified."));
 
 		changes.addButton(new ChangeButton(new Image(Icons.get(Icons.INFO)), "Loading Screen Tips",
 				"In each loading screen, you can now see a short random tip. These are here to provide " +
@@ -187,11 +187,11 @@ public class ChangesScene extends PixelScene
 								"it would weaken the user or have no notable effect, rather than offering any benefit.\n\n" +
 								"In comparison, I hope that the scroll of sunlight turns out to be much more interesting overall, " +
 								"being a risk/reward healing option due to the fact that it heals most enemies. Or, if you think " +
-								"you can survive long enoughm, you can wait until you clear a floor before using it to heal up."));
+								"you can survive long enough, you can wait until you clear a floor before using it to heal up."));
 
 		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.STONE_SOWILO, null), "Stone of Linkage",
 				"This new runestone will link you and a given other creature. While linked, you both will " +
-						"share half of recieved healing and damage from all sources. This effect lasts for 20 turns.\n\n" +
+						"share half of received healing and damage from all sources. This effect lasts for 20 turns.\n\n" +
 						"This can have a variety of uses. You can use it to protect and heal an ally, as you can absorb " +
 						"some of that ally's damage and drink a healing potion to heal yourself and the ally. Or, you can " +
 						"throw it at a mob that's attacking you while you fight off another mob, allowing you to take " +
@@ -216,16 +216,16 @@ public class ChangesScene extends PixelScene
 						"between waiting or attacking now feel clearer.\n" +
 						"_-_ You can no longer regain DS by moving. It is no longer effective to run in circles for " +
 						"a minute before each attack.\n" +
-						"_-_ For the sake of convenience, after 5 turns spend without seeing an enemy, your DS will " +
+						"_-_ For the sake of convenience, after 5 turns spent without seeing an enemy, your DS will " +
 						"automatically reset itself to max.\n" +
 						"_-_ The hero's sprite will now flash a color the instant you regain some DS. This uses the " +
-						"same color scheme as the light that shines around the avatar's fist in the upper right corner.\n" +
+						"same color scheme as the light that shines around the avatar's fist in the upper left corner.\n" +
 						"_-_ Now, only a weapon's innate attack speed and its augment will effect DS consumption rate. " +
 						"Other factors won't change DS."));
 
 		changes.addButton(new ChangeButton(Icons.get(Icons.LOST), "Enemy AI",
 				"Enemies are now better at following their target around pillars and corners. Enemies " +
-						"can continue follow their target for a few turns without seeing them, before returning " +
+						"can continue to follow their target for a few turns without seeing them, before returning " +
 						"to wandering as usual.\n\n" +
 						"Before the mob gives up, it will attempt to recalculate its path. This won't matter in " +
 						"most cases, but when making a mob chase you around a pillar, this can mean that sometimes " +
@@ -703,7 +703,7 @@ public class ChangesScene extends PixelScene
 		infos.add(changes);
 
 		changes.addButton(new ChangeButton(new Image(Assets.WARRIOR, 0, 90, 12, 15), "Gladiator",
-				"Gladiator has recieved a mini-rework so that Dynamic Strength's nerf to attack-spamming does " +
+				"Gladiator has received a mini-rework so that Dynamic Strength's nerf to attack-spamming does " +
 				"not make it suddenly suck.\n\n" +
 				"Whenever the combo buff is active, the combo's level / 10 becomes the Gladiator's dynamic strength. This " +
 				"means a first hit is free, then he will gradually build up power through combos before every single " +
@@ -801,7 +801,7 @@ public class ChangesScene extends PixelScene
 				"HP, Evil Eyes gained as much as 25. In particular, with Dynamic Strength, rats' 1 extra HP is fairly " +
 				"significant; now, the Warrior is the only class who can one-shot a rat without upgrading his starting weapon, " +
 				"since both the Mage's and Rogue's melee weapons only deal as much as 8 damage without upgrades.\n\n" +
-				"Most bosses have also recieved a health buff, with the Tengu now having 200 max HP (up from 120) and each boss " +
+				"Most bosses have also received a health buff, with the Tengu now having 200 max HP (up from 120) and each boss " +
 				"after that gaining an additional 100 health. Goo's, however, is unchanged from 100."));
 
 		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BLANDFRUIT, new Projecting().glowing()), "Metafruit",
@@ -825,13 +825,13 @@ public class ChangesScene extends PixelScene
 				"interesting shapes and textures."));
 
 		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.PAVISE, null), "Weapon Sprites",
-				"A majority a weapons have recieved a grand visual overhaul, which is mostly a series of recolors, " +
+				"A majority a weapons have received a grand visual overhaul, which is mostly a series of recolors, " +
 				"but also includes some new shapes as well.\n\n" +
 				"Also, since there were previously three tier-5 weapons that had \"Great\" in their name, Greatsword has " +
 				"been renamed to Broadsword, and Great Shield has been renamed to Pavise."));
 
 		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BOW_LOADED, null), "Spirit Bow",
-				"The Huntress's Spirit Bow in particular has recieved a new look, which has separate sprites for " +
+				"The Huntress's Spirit Bow in particular has received a new look, which has separate sprites for " +
 				"when you are and aren't aiming with it."));
 
 		changes.addButton(new ChangeButton(new Image(Assets.BUFFS_LARGE, 80, 48, 16, 16), "Hero Bleeding",
@@ -931,7 +931,7 @@ public class ChangesScene extends PixelScene
 				"not enough to just eat a little bit, as remaining extra damage will take some time to wear off even after eating."));
 
 		changes.addButton(new ChangeButton(new Image(Assets.TILES_SEWERS, 48, 96, 16, 16), "Potion Brewing",
-				"With the new potion system, alchemy has recieved adjustments in regards to potion cooking.\n\n" +
+				"With the new potion system, alchemy has received adjustments in regards to potion cooking.\n\n" +
 				"Seeds now have three different preferences for what potions they can make.\n" +
 				"_-_ Preference 1 will be chosen in any game where that particular potion exists, regardless of what others exist.\n" +
 				"_-_ Preference 2 will only be chosen if it exists, but preference 1's potion doesn't.\n" +

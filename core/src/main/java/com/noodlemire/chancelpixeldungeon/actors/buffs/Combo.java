@@ -209,7 +209,6 @@ public class Combo extends Buff implements ActionIndicator.Action
 
 	private CellSelector.Listener finisher = new CellSelector.Listener()
 	{
-
 		private finisherType type;
 
 		@Override

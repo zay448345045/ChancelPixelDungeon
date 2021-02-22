@@ -71,6 +71,8 @@ public class DynamicRecovery extends Buff
 		else
 			deactivate();
 
+		hero.critBoost = false;
+
 		return true;
 	}
 
