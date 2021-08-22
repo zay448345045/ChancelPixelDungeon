@@ -33,6 +33,8 @@ public class Gnoll extends Mob
 
 		EXP = Random.IntRange(2, 4);
 
+		TIME_TO_REST = 2;
+
 		setHT(11 + EXP, true);
 
 		loot = Gold.class;
@@ -42,7 +44,7 @@ public class Gnoll extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(EXP - 1, 2 + EXP * 2);
+		return EXP * 2 + 2;
 	}
 
 	@Override

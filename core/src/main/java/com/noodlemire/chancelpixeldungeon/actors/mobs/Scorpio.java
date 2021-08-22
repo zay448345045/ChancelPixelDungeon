@@ -40,6 +40,9 @@ public class Scorpio extends Mob
 
 		EXP = Random.IntRange(23, 26);
 
+		TIME_TO_REST = 2;
+		setAttacksBeforeRest(2);
+
 		setHT(EXP * 5, true);
 		viewDistance = Light.DISTANCE;
 
@@ -52,7 +55,7 @@ public class Scorpio extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(EXP + 3, EXP * 2 - 10);
+		return EXP * 2 - 10 + 8 * restTimeNeeded(false);
 	}
 
 	@Override

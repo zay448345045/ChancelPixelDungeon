@@ -57,7 +57,21 @@ public class Statue extends Mob
 		weapon.enchant(Enchantment.random());
 		weapon.cursed = false;
 
-		setHT(20 + Dungeon.depth * 5, true);
+		setRestTime();
+
+		setHT(20 + EXP * 5, true);
+	}
+
+	private void setRestTime()
+	{
+		if(weapon.speedFactor(this) >= 1.5f)
+			TIME_TO_REST = 4;
+		else
+		{
+			setAttacksBeforeRest(weapon.speedFactor(this) <= 0.7f ? 2 : 1);
+
+			TIME_TO_REST = 2;
+		}
 	}
 
 	private static final String WEAPON = "weapon";
@@ -73,7 +87,8 @@ public class Statue extends Mob
 	public void restoreFromBundle(Bundle bundle)
 	{
 		super.restoreFromBundle(bundle);
-		weapon = (Weapon) bundle.get(WEAPON);
+		//weapon = (Weapon) bundle.get(WEAPON);
+		setRestTime();
 	}
 
 	@Override
@@ -87,13 +102,21 @@ public class Statue extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return weapon.damageRoll(this);
+		int dmg = weapon.damageRoll(this);
+
+		if(weapon.speedFactor(this) > 0.7f)
+			return dmg;
+
+		int base = (int)(dmg * 0.75f);
+		int bonus = (int)Math.ceil(dmg * 0.25f);
+
+		return base + bonus * restTimeNeeded(false);
 	}
 
 	@Override
 	public int attackSkill(Char target)
 	{
-		return (int) ((9 + Dungeon.depth) * weapon.accuracyFactor(this));
+		return (int) ((9 + EXP) * weapon.accuracyFactor(this));
 	}
 
 	@Override
@@ -111,13 +134,13 @@ public class Statue extends Mob
 	@Override
 	public int drRoll()
 	{
-		return Random.NormalIntRange(0, Dungeon.depth + weapon.defenseFactor(this));
+		return Random.NormalIntRange(0, EXP + weapon.defenseFactor(this));
 	}
 
 	@Override
 	public int defenseSkill()
 	{
-		return 4 + Dungeon.depth;
+		return 4 + EXP;
 	}
 
 	@Override

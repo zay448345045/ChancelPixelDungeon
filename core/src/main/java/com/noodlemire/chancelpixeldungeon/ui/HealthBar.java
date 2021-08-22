@@ -27,7 +27,6 @@ import com.watabou.noosa.ui.Component;
 
 public class HealthBar extends Component
 {
-
 	private static final int COLOR_BG = 0xFFCC0000;
 	private static final int COLOR_HP = 0xFF00EE00;
 	private static final int COLOR_SHLD = 0xFFBBEEBB;
@@ -59,7 +58,6 @@ public class HealthBar extends Component
 	@Override
 	protected void layout()
 	{
-
 		Bg.x = Shld.x = Hp.x = x;
 		Bg.y = Shld.y = Hp.y = y;
 

@@ -306,7 +306,7 @@ public class TimekeepersHourglass extends Artifact
 
 	public class timeFreeze extends ArtifactBuff
 	{
-		float partialTime = 1f;
+		float partialTime = 2f;
 
 		ArrayList<Integer> presses = new ArrayList<>();
 
@@ -327,7 +327,6 @@ public class TimekeepersHourglass extends Artifact
 				charge = 0;
 				detach();
 			}
-
 		}
 
 		public void setDelayedPress(int cell)

@@ -5,7 +5,6 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.CorrosiveGas;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 
 public class CorrosionImbue extends DurationBuff implements Expulsion
 {
@@ -29,13 +28,6 @@ public class CorrosionImbue extends DurationBuff implements Expulsion
 	public int icon()
 	{
 		return BuffIndicator.POISON;
-	}
-
-	@Override
-	public void tintIcon(Image icon)
-	{
-		if(!FlavourBuff.greyIcon(icon, 5f, left()))
-			icon.hardlight(1f, 0.5f, 0f);
 	}
 
 	@Override

@@ -29,7 +29,6 @@ import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 
 public class Blindness extends FlavourBuff implements Expulsion
 {
-
 	{
 		type = buffType.NEGATIVE;
 	}

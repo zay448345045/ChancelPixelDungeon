@@ -144,11 +144,6 @@ public abstract class Potion extends Item implements Transmutable
 		handler.save(bundle);
 	}
 
-	public static void saveSelectively(Bundle bundle, ArrayList<Item> items)
-	{
-		handler.saveSelectively(bundle, items);
-	}
-
 	@SuppressWarnings("unchecked")
 	public static void restore(Bundle bundle)
 	{

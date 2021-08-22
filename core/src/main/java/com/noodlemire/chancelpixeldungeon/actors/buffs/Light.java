@@ -26,7 +26,6 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 
 public class Light extends FlavourBuff
 {
@@ -61,12 +60,6 @@ public class Light extends FlavourBuff
 	public int icon()
 	{
 		return BuffIndicator.LIGHT;
-	}
-
-	@Override
-	public void tintIcon(Image icon)
-	{
-		greyIcon(icon, 20f, cooldown());
 	}
 
 	@Override

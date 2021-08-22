@@ -56,6 +56,8 @@ public class Tengu extends Mob
 		setHT(200, true);
 		EXP = 20;
 
+		setAttacksBeforeRest(2);
+
 		HUNTING = new Hunting();
 
 		flying = true; //doesn't literally fly, but he is fleet-of-foot enough to avoid hazards
@@ -74,7 +76,7 @@ public class Tengu extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(6, 20);
+		return 20 + 5 * restTimeNeeded(false);
 	}
 
 	@Override
@@ -136,11 +138,8 @@ public class Tengu extends Mob
 	@Override
 	public void die(Object cause)
 	{
-
 		if(Dungeon.hero.subClass == HeroSubClass.NONE)
-		{
 			Dungeon.level.drop(new TomeOfMastery(), pos).sprite.drop();
-		}
 
 		GameScene.bossSlain();
 		super.die(cause);
@@ -159,7 +158,7 @@ public class Tengu extends Mob
 	@Override
 	protected boolean canAttack(Char enemy)
 	{
-		return new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos;
+		return !restNeeded() && new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos;
 	}
 
 	//tengu's attack is always visible
@@ -251,13 +250,9 @@ public class Tengu extends Mob
 		BossHealthBar.assignBoss(this);
 		if(HP() <= HT() / 2) BossHealthBar.bleed(true);
 		if(HP() == HT())
-		{
 			yell(Messages.get(this, "notice_mine", Dungeon.hero.givenName()));
-		}
 		else
-		{
 			yell(Messages.get(this, "notice_face", Dungeon.hero.givenName()));
-		}
 	}
 
 	{
@@ -276,20 +271,22 @@ public class Tengu extends Mob
 	//tengu is always hunting
 	private class Hunting extends Mob.Hunting
 	{
-
 		@Override
 		public boolean act(boolean enemyInFOV, boolean justAlerted)
 		{
+			if(restNeeded())
+			{
+				rest();
+				return true;
+			}
+
 			lookForEnemy(enemyInFOV);
 			if(enemyInFOV && !isCharmedBy(enemy) && canAttack(enemy))
 			{
-
 				return doAttack(enemy);
-
 			}
 			else
 			{
-
 				if(enemyInFOV)
 				{
 					target = enemy.pos;
@@ -305,7 +302,6 @@ public class Tengu extends Mob
 
 				spend(TICK);
 				return true;
-
 			}
 		}
 	}

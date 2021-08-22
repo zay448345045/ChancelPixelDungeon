@@ -26,7 +26,6 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.hero.HeroClass;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.items.Item;
-import com.noodlemire.chancelpixeldungeon.items.bags.Bag;
 import com.noodlemire.chancelpixeldungeon.items.potions.Potion;
 import com.noodlemire.chancelpixeldungeon.items.rings.Ring;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.Scroll;
@@ -45,7 +44,6 @@ import java.util.UUID;
 
 public enum Rankings
 {
-
 	INSTANCE;
 
 	public static final int TABLE_SIZE = 11;
@@ -59,7 +57,6 @@ public enum Rankings
 
 	public void submit(boolean win, Class cause)
 	{
-
 		load();
 
 		Record rec = new Record();
@@ -122,29 +119,13 @@ public enum Rankings
 
 	public void saveGameData(Record rec)
 	{
-		System.out.println("Creating game data");
 		rec.gameData = new Bundle();
 
-		System.out.println("Getting belongings");
 		Belongings belongings = Dungeon.hero.belongings;
 
-		System.out.println("Save the hero and belongings");
 		//save the hero and belongings
 		ArrayList<Item> allItems = (ArrayList<Item>) belongings.backpack.items.clone();
-		//remove items that won't show up in the rankings screen
-		for(Item item : belongings.backpack.items.toArray(new Item[0]))
-		{
-			if(item instanceof Bag)
-			{
-				for(Item bagItem : ((Bag) item).items.toArray(new Item[0]))
-				{
-					if(Dungeon.quickslot.contains(bagItem)) belongings.backpack.items.add(bagItem);
-				}
-				belongings.backpack.items.remove(item);
-			}
-			else if(!Dungeon.quickslot.contains(item))
-				belongings.backpack.items.remove(item);
-		}
+
 		rec.gameData.put(HERO, Dungeon.hero);
 
 		//save stats
@@ -159,14 +140,10 @@ public enum Rankings
 
 		//save handler information
 		Bundle handler = new Bundle();
-		Scroll.saveSelectively(handler, belongings.backpack.items);
-		System.out.println("Getting potions.");
-		Potion.saveSelectively(handler, belongings.backpack.items);
-		System.out.println("Potions get?");
-		//include worn miscs
-		//if(belongings.misc1 != null) belongings.backpack.items.add(belongings.misc1);
-		//if(belongings.misc2 != null) belongings.backpack.items.add(belongings.misc2);
-		Ring.saveSelectively(handler, belongings.backpack.items);
+		Scroll.save(handler);
+		Potion.save(handler);
+
+		Ring.save(handler);
 		rec.gameData.put(HANDLERS, handler);
 
 		//restore items now that we're done saving
@@ -195,6 +172,8 @@ public enum Rankings
 		Badges.loadLocal(data.getBundle(BADGES));
 
 		Dungeon.hero = (Hero) data.get(HERO);
+
+		Dungeon.hero.rankings = true;
 
 		Statistics.restoreFromBundle(data.getBundle(STATS));
 
@@ -226,7 +205,6 @@ public enum Rankings
 
 	public void load()
 	{
-
 		if(records != null)
 		{
 			return;

@@ -27,7 +27,6 @@ import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 
 public class Doom extends Buff
 {
-
 	{
 		type = buffType.NEGATIVE;
 	}

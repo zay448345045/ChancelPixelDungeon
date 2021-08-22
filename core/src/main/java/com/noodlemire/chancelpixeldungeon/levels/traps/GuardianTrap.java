@@ -35,7 +35,6 @@ import com.watabou.noosa.audio.Sample;
 
 public class GuardianTrap extends Trap
 {
-
 	{
 		color = RED;
 		shape = STARS;
@@ -44,7 +43,6 @@ public class GuardianTrap extends Trap
 	@Override
 	public void activate()
 	{
-
 		for(Mob mob : Dungeon.level.mobs)
 		{
 			mob.beckon(pos);
@@ -71,11 +69,10 @@ public class GuardianTrap extends Trap
 
 	public static class Guardian extends Statue
 	{
-
 		{
 			spriteClass = GuardianSprite.class;
 
-			EXP = 0;
+			EXP = Dungeon.depth;
 			state = WANDERING;
 		}
 
@@ -104,7 +101,6 @@ public class GuardianTrap extends Trap
 
 	public static class GuardianSprite extends StatueSprite
 	{
-
 		public GuardianSprite()
 		{
 			super();

@@ -55,6 +55,7 @@ import com.noodlemire.chancelpixeldungeon.items.armor.glyphs.Stone;
 import com.noodlemire.chancelpixeldungeon.items.armor.glyphs.Swiftness;
 import com.noodlemire.chancelpixeldungeon.items.armor.glyphs.Thorns;
 import com.noodlemire.chancelpixeldungeon.items.armor.glyphs.Viscosity;
+import com.noodlemire.chancelpixeldungeon.items.rings.RingOfTenacity;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.HeroSprite;
@@ -80,8 +81,8 @@ public class Armor extends EquipableItem
 		DEFENSE(-1.5f, 1f),
 		NONE(0f, 0f);
 
-		private float evasionFactor;
-		private float defenceFactor;
+		private final float evasionFactor;
+		private final float defenceFactor;
 
 		Augment(float eva, float df)
 		{
@@ -158,7 +159,6 @@ public class Armor extends EquipableItem
 	@Override
 	public void execute(Hero hero, String action)
 	{
-
 		super.execute(hero, action);
 
 		if(action.equals(AC_DETACH) && seal != null)
@@ -221,13 +221,11 @@ public class Armor extends EquipableItem
 		if(seal.level() > 0)
 		{
 			//doesn't trigger upgrading logic such as affecting curses/glyphs
-			level(level() + 1);
+			level(rawLevel() + 1);
 			Badges.validateItemLevelAquired(this);
 		}
 		if(isEquipped(Dungeon.hero))
-		{
 			Buff.affect(Dungeon.hero, BrokenSeal.WarriorShield.class).setArmor(this);
-		}
 	}
 
 	public BrokenSeal checkSeal()
@@ -254,14 +252,9 @@ public class Armor extends EquipableItem
 			if(sealBuff != null) sealBuff.setArmor(null);
 
 			return true;
-
 		}
 		else
-		{
-
 			return false;
-
-		}
 	}
 
 	@Override
@@ -277,15 +270,12 @@ public class Armor extends EquipableItem
 
 	public int DRMax(int lvl)
 	{
-		int max = tier * (2 + lvl) + augment.defenseFactor(lvl);
+		int max = tier * (3 + lvl) + augment.defenseFactor(lvl);
+
 		if(lvl > max)
-		{
 			return ((lvl - max) + 1) / 2;
-		}
 		else
-		{
 			return max;
-		}
 	}
 
 	public final int DRMin()
@@ -297,13 +287,30 @@ public class Armor extends EquipableItem
 	{
 		int max = DRMax(lvl);
 		if(lvl >= max)
-		{
 			return (lvl - max);
-		}
 		else
-		{
 			return lvl;
-		}
+	}
+
+	private int dispMin()
+	{
+		return levelKnown ? DRMin() : DRMin(0);
+	}
+
+	private int dispMax()
+	{
+		return levelKnown ? DRMax() : DRMax(0) - augment.defenseFactor(-level());
+	}
+
+	@Override
+	public int level()
+	{
+		int bonus = 0;
+
+		if(Dungeon.hero != null && this == Dungeon.hero.belongings.armor)
+			bonus = RingOfTenacity.levelBonus(Dungeon.hero);
+
+		return super.level() + bonus;
 	}
 
 	public float evasionFactor(Char owner, float evasion)
@@ -328,7 +335,6 @@ public class Armor extends EquipableItem
 
 	public float speedFactor(Char owner, float speed)
 	{
-
 		if(owner instanceof Hero)
 		{
 			int aEnc = STRReq() - ((Hero) owner).STR();
@@ -349,19 +355,15 @@ public class Armor extends EquipableItem
 			if(!enemyNear) speed *= (1.2f + 0.04f * level());
 		}
 		else if(hasGlyph(Flow.class) && Dungeon.level.water[owner.pos])
-		{
 			speed *= (1.5f + 0.1f * level());
-		}
 
-		if(hasGlyph(Bulk.class) &&
-		   (Dungeon.level.map[owner.pos] == Terrain.DOOR
+		if(hasGlyph(Bulk.class) && (Dungeon.level.map[owner.pos] == Terrain.DOOR
 		    || Dungeon.level.map[owner.pos] == Terrain.OPEN_DOOR))
 		{
 			speed /= 3f;
 		}
 
 		return speed;
-
 	}
 
 	public float stealthFactor(Char owner, float stealth)
@@ -433,14 +435,14 @@ public class Armor extends EquipableItem
 
 		if(levelKnown)
 		{
-			info += "\n\n" + Messages.get(Armor.class, "curr_absorb", DRMin(), DRMax(), STRReq());
+			info += "\n\n" + Messages.get(Armor.class, "curr_absorb", dispMin(), dispMax(), STRReq());
 
 			if(STRReq() > Dungeon.hero.STR())
 				info += " " + Messages.get(Armor.class, "too_heavy");
 		}
 		else
 		{
-			info += "\n\n" + Messages.get(Armor.class, "avg_absorb", DRMin(0), DRMax(0), STRReq(0));
+			info += "\n\n" + Messages.get(Armor.class, "avg_absorb", dispMin(), dispMax(), STRReq(0));
 
 			if(STRReq(0) > Dungeon.hero.STR())
 				info += " " + Messages.get(Armor.class, "probably_too_heavy");
@@ -519,7 +521,7 @@ public class Armor extends EquipableItem
 
 	public int STRReq()
 	{
-		return STRReq(level());
+		return STRReq(rawLevel());
 	}
 
 	public int STRReq(int lvl)

@@ -62,7 +62,6 @@ public class GreatCrab extends Crab
 			moving = 0;
 			return true;
 		}
-
 	}
 
 	@Override
@@ -77,9 +76,7 @@ public class GreatCrab extends Crab
 			sprite.showStatus(CharSprite.NEUTRAL, Messages.get(this, "blocked"));
 		}
 		else
-		{
 			super.damage(dmg, src);
-		}
 	}
 
 	@Override

@@ -24,20 +24,22 @@ package com.noodlemire.chancelpixeldungeon.actors.hero;
 import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Badges;
 import com.noodlemire.chancelpixeldungeon.Bones;
+import com.noodlemire.chancelpixeldungeon.CPDSettings;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.GamesInProgress;
 import com.noodlemire.chancelpixeldungeon.Statistics;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Amok;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Awareness;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Barkskin;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Berserk;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Combo;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Corruption;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Drowsy;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.DynamicRecovery;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.FlavourBuff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Fury;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Haste;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Hunger;
@@ -57,6 +59,7 @@ import com.noodlemire.chancelpixeldungeon.actors.mobs.npcs.NPC;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.CheckedCell;
 import com.noodlemire.chancelpixeldungeon.effects.Flare;
+import com.noodlemire.chancelpixeldungeon.effects.PathIndicator;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.items.Amulet;
 import com.noodlemire.chancelpixeldungeon.items.Ankh;
@@ -85,7 +88,6 @@ import com.noodlemire.chancelpixeldungeon.items.rings.RingOfEvasion;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfFuror;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfHaste;
 import com.noodlemire.chancelpixeldungeon.items.rings.RingOfMight;
-import com.noodlemire.chancelpixeldungeon.items.rings.RingOfTenacity;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.Scroll;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfBlessing;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfIdentify;
@@ -133,6 +135,8 @@ public class Hero extends Char
 
 		alignment = Alignment.ALLY;
 	}
+
+	public boolean rankings = false;
 
 	private static final int STARTING_STR = 10;
 
@@ -262,7 +266,7 @@ public class Hero extends Char
 		{
 			for(Item item : belongings.miscSlots)
 			{
-				if (item instanceof BraceletOfForce)
+				if(item instanceof BraceletOfForce)
 				{
 					((BraceletOfForce) item).gainCharge();
 					break;
@@ -423,7 +427,7 @@ public class Hero extends Char
 
 		float accuracy = RingOfAccuracy.accuracyMultiplier(this);
 		if(wep instanceof MissileWeapon && rangedAttack
-		   && Dungeon.level.distance(pos, target.pos) == 1)
+				&& Dungeon.level.distance(pos, target.pos) == 1)
 			accuracy *= 0.5f;
 
 		if(wep != null)
@@ -596,17 +600,16 @@ public class Hero extends Char
 		//calls to dungeon.observe will also update hero's local FOV.
 		fieldOfView = Dungeon.level.heroFOV;
 
-		if (!ready)
+		if(!ready)
 			//do a full observe (including fog update) if not resting.
-			if (!resting || buff(MindVision.class) != null || buff(Awareness.class) != null || heroClass == HeroClass.HUNTRESS)
+			if(!resting || buff(MindVision.class) != null || buff(Awareness.class) != null || heroClass == HeroClass.HUNTRESS)
 				Dungeon.observe();
 			else
 				//otherwise just directly re-calculate FOV
 				Dungeon.level.updateFieldOfView(this, fieldOfView);
 
 		checkVisibleDangers();
-		if(buff(FlavourBuff.class) != null)
-			BuffIndicator.refreshHero();
+		BuffIndicator.refreshHero();
 
 		if(paralysed > 0)
 		{
@@ -679,8 +682,8 @@ public class Hero extends Char
 	public void interrupt()
 	{
 		if(isAlive() && curAction != null &&
-		   ((curAction.dst != pos) ||
-		    (curAction instanceof HeroAction.Ascend || curAction instanceof HeroAction.Descend)))
+				((curAction.dst != pos) ||
+						(curAction instanceof HeroAction.Ascend || curAction instanceof HeroAction.Descend)))
 		{
 			lastAction = curAction;
 		}
@@ -716,17 +719,34 @@ public class Hero extends Char
 
 	private boolean actInteract(HeroAction.Interact action)
 	{
-		NPC npc = action.npc;
+		Char ch = action.ch;
 
-		if(Dungeon.level.adjacent(pos, npc.pos))
+		if(Dungeon.level.adjacent(pos, ch.pos))
 		{
 			ready();
-			sprite.turnTo(pos, npc.pos);
-			return npc.interact();
+			sprite.turnTo(pos, ch.pos);
+			if(ch instanceof NPC)
+				return ((NPC) ch).interact();
+			else if(Dungeon.level.passable[pos] || Dungeon.hero.flying)
+			{
+				int curPos = ch.pos;
+
+				ch.sprite.move(ch.pos, pos);
+				ch.move(pos);
+
+				sprite.move(pos, curPos);
+				move(curPos);
+
+				spend(1 / Dungeon.hero.speed());
+				busy();
+				return true;
+			}
+			else
+				return false;
 		}
 		else
 		{
-			if(fieldOfView[npc.pos] && getCloser(npc.pos))
+			if(fieldOfView[ch.pos] && getCloser(ch.pos))
 				return true;
 			else
 			{
@@ -792,9 +812,9 @@ public class Hero extends Char
 					heap.pickUp();
 
 					if(item instanceof Dewdrop
-					   || item instanceof TimekeepersHourglass.sandBag
-					   || item instanceof DriedRose.Petal
-					   || item instanceof Key)
+							|| item instanceof TimekeepersHourglass.sandBag
+							|| item instanceof DriedRose.Petal
+							|| item instanceof Key)
 					{
 						//Do Nothing
 					}
@@ -840,7 +860,7 @@ public class Hero extends Char
 			if(heap != null && (heap.type != Type.HEAP && heap.type != Type.FOR_SALE))
 			{
 				if((heap.type == Type.LOCKED_CHEST && Notes.keyCount(new GoldenKey(Dungeon.depth)) < 1)
-				   || (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1))
+						|| (heap.type == Type.CRYSTAL_CHEST && Notes.keyCount(new CrystalKey(Dungeon.depth)) < 1))
 				{
 
 					GLog.w(Messages.get(this, "locked_chest"));
@@ -888,10 +908,10 @@ public class Hero extends Char
 			int door = Dungeon.level.map[doorCell];
 
 			if(door == Terrain.LOCKED_DOOR
-			   && Notes.keyCount(new IronKey(Dungeon.depth)) > 0)
+					&& Notes.keyCount(new IronKey(Dungeon.depth)) > 0)
 				hasKey = true;
 			else if(door == Terrain.LOCKED_EXIT
-			        && Notes.keyCount(new SkeletonKey(Dungeon.depth)) > 0)
+					&& Notes.keyCount(new SkeletonKey(Dungeon.depth)) > 0)
 				hasKey = true;
 
 			if(hasKey)
@@ -925,12 +945,32 @@ public class Hero extends Char
 		if(slowbuff != null) slowbuff.detach();
 	}
 
+	public void checkFollowers()
+	{
+		if(buff(TimekeepersHourglass.timeFreeze.class) == null && buff(Slow.Freeze.class) == null)
+		{
+			for(Mob m : Dungeon.level.mobs)
+				if(Dungeon.level.adjacent(pos, m.pos) && m.getEnemy() == this
+						&& !m.properties().contains(Property.BOSS)
+						&& !m.properties().contains(Property.MINIBOSS)
+						&& !m.properties().contains(Property.IMMOVABLE))
+					InterlevelScene.followingEnemies.add(m);
+
+			for(Mob m : InterlevelScene.followingEnemies)
+			{
+				Dungeon.level.mobs.remove(m);
+			}
+		}
+	}
+
 	private boolean actDescend(HeroAction.Descend action)
 	{
 		int stairs = action.dst;
 		if(pos == stairs && pos == Dungeon.level.exit)
 		{
 			curAction = null;
+
+			checkFollowers();
 
 			detachTimeFreeze();
 
@@ -971,6 +1011,8 @@ public class Hero extends Char
 			else
 			{
 				curAction = null;
+
+				checkFollowers();
 
 				detachTimeFreeze();
 
@@ -1041,9 +1083,10 @@ public class Hero extends Char
 	{
 		if(wep != null) damage = wep.proc(this, enemy, damage);
 
-		switch (subClass) {
+		switch(subClass)
+		{
 			case SNIPER:
-				if (wep instanceof MissileWeapon && !(wep instanceof Bow.Arrow))
+				if(wep instanceof MissileWeapon && !(wep instanceof Bow.Arrow))
 				{
 					final float delay = attackDelay();
 					Actor.add(new Actor()
@@ -1092,7 +1135,7 @@ public class Hero extends Char
 	public void damage(int dmg, Object src)
 	{
 		if(buff(TimekeepersHourglass.timeStasis.class) != null ||
-		   buff(Haste.Stasis.class) != null)
+				buff(Haste.Stasis.class) != null)
 			return;
 
 		if(!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage) && damageInterrupt)
@@ -1111,11 +1154,9 @@ public class Hero extends Char
 		if(thorns != null)
 			dmg = thorns.proc(dmg, (src instanceof Char ? (Char) src : null), this);
 
-		dmg = (int) Math.ceil(dmg * RingOfTenacity.damageMultiplier(this));
-
 		//TODO improve this when I have proper damage source logic
 		if(belongings.armor != null && belongings.armor.hasGlyph(AntiMagic.class)
-		   && AntiMagic.RESISTS.contains(src.getClass()))
+				&& AntiMagic.RESISTS.contains(src.getClass()))
 			dmg -= Random.NormalIntRange(belongings.armor.DRMin(), belongings.armor.DRMax()) / 3;
 
 		super.damage(dmg, src);
@@ -1162,8 +1203,8 @@ public class Hero extends Char
 		}
 
 		if(target != null && (QuickSlotButton.lastTarget == null ||
-		                      !QuickSlotButton.lastTarget.isAlive() ||
-		                      !fieldOfView[QuickSlotButton.lastTarget.pos]))
+				!QuickSlotButton.lastTarget.isAlive() ||
+				!fieldOfView[QuickSlotButton.lastTarget.pos]))
 			QuickSlotButton.target(target);
 
 		if(newChar)
@@ -1188,11 +1229,15 @@ public class Hero extends Char
 	private boolean getCloser(final int target)
 	{
 		if(target == pos)
+		{
+			PathIndicator.unset();
 			return false;
+		}
 
 		if(rooted)
 		{
 			Camera.main.shake(1, 1f);
+			PathIndicator.unset();
 			return false;
 		}
 
@@ -1213,6 +1258,8 @@ public class Hero extends Char
 					}
 					else
 						Chasm.heroFall(target);
+
+					PathIndicator.unset();
 					return false;
 				}
 				if(Dungeon.level.passable[target] || Dungeon.level.avoid[target])
@@ -1253,9 +1300,26 @@ public class Hero extends Char
 					passable[i] = p[i] && (v[i] || m[i]);
 
 				path = Dungeon.findPath(this, pos, target, passable, fieldOfView);
+
+				if(path != null && path.size() > 1)
+				{
+					int visTarget = target;
+					if(!Dungeon.level.passable[target])
+						visTarget = path.get(path.size() - 2);
+
+					if(CPDSettings.show_destination() || CPDSettings.show_paths())
+					{
+						sprite.parent.addToBack(new PathIndicator(visTarget));
+						PathIndicator.createNodePath(sprite.parent, path);
+					}
+				}
 			}
 
-			if(path == null) return false;
+			if(path == null)
+			{
+				PathIndicator.unset();
+				return false;
+			}
 			step = path.removeFirst();
 		}
 
@@ -1276,10 +1340,22 @@ public class Hero extends Char
 			//FIXME this is a fairly sloppy fix for a crash involving pitfall traps.
 			//really there should be a way for traps to specify whether action should continue or
 			//not when they are pressed.
-			return InterlevelScene.mode != InterlevelScene.Mode.FALL;
+			if(InterlevelScene.mode != InterlevelScene.Mode.FALL)
+			{
+				PathIndicator.follow();
+				return true;
+			}
+			else
+			{
+				PathIndicator.unset();
+				return false;
+			}
 		}
 		else
+		{
+			PathIndicator.unset();
 			return false;
+		}
 	}
 
 	public boolean handle(int cell)
@@ -1293,15 +1369,15 @@ public class Hero extends Char
 		if(Dungeon.level.map[cell] == Terrain.ALCHEMY && cell != pos)
 			curAction = new HeroAction.Alchemy(cell);
 		else if(fieldOfView[cell] && (ch = Actor.findChar(cell)) != null && ch != this)
-			if(ch instanceof NPC)
-				curAction = new HeroAction.Interact((NPC) ch);
+			if(ch instanceof NPC || (ch.buff(Corruption.class) != null && ch.buff(Amok.class) == null))
+				curAction = new HeroAction.Interact(ch);
 			else
 				curAction = new HeroAction.Attack(ch);
 		else if((heap = Dungeon.level.heaps.get(cell)) != null
-		        //moving to an item doesn't auto-pickup when enemies are near...
-		        && (visibleDangers.size() == 0 || cell == pos ||
-		            //...but only for standard heaps; chests and similar open as normal.
-		            (heap.type != Type.HEAP && heap.type != Type.FOR_SALE)))
+				//moving to an item doesn't auto-pickup when enemies are near...
+				&& (visibleDangers.size() == 0 || cell == pos ||
+				//...but only for standard heaps; chests and similar open as normal.
+				(heap.type != Type.HEAP && heap.type != Type.FOR_SALE)))
 		{
 			switch(heap.type)
 			{
@@ -1374,7 +1450,7 @@ public class Hero extends Char
 
 			for(Item item : belongings.backpack.items)
 			{
-				if (item instanceof Bow)
+				if(item instanceof Bow)
 				{
 					bow = item;
 					break;
@@ -1410,7 +1486,7 @@ public class Hero extends Char
 	public void add(Buff buff)
 	{
 		if(buff(TimekeepersHourglass.timeStasis.class) != null ||
-		   buff(Haste.Stasis.class) != null)
+				buff(Haste.Stasis.class) != null)
 			return;
 
 		super.add(buff);
@@ -1527,7 +1603,7 @@ public class Hero extends Char
 
 		int pos = Dungeon.hero.pos;
 
-		ArrayList<Integer> passable = new ArrayList<Integer>();
+		ArrayList<Integer> passable = new ArrayList<>();
 		for(Integer ofs : PathFinder.NEIGHBOURS8)
 		{
 			int cell = pos + ofs;
@@ -1536,7 +1612,7 @@ public class Hero extends Char
 		}
 		Collections.shuffle(passable);
 
-		ArrayList<Item> items = new ArrayList<Item>(Dungeon.hero.belongings.backpack.items);
+		ArrayList<Item> items = new ArrayList<>(Dungeon.hero.belongings.backpack.items);
 		for(Integer cell : passable)
 		{
 			if(items.isEmpty())
@@ -1580,6 +1656,8 @@ public class Hero extends Char
 	{
 		super.move(step);
 
+		moved = true;
+
 		if(!flying)
 			if(Dungeon.level.water[pos])
 				Sample.INSTANCE.play(Assets.SND_WATER, 1, 1, Random.Float(0.8f, 1.25f));
@@ -1621,7 +1699,7 @@ public class Hero extends Char
 	{
 		if(curAction instanceof HeroAction.Unlock)
 		{
-			int doorCell = ((HeroAction.Unlock) curAction).dst;
+			int doorCell = curAction.dst;
 			int door = Dungeon.level.map[doorCell];
 
 			if(door == Terrain.LOCKED_DOOR)
@@ -1642,7 +1720,7 @@ public class Hero extends Char
 		}
 		else if(curAction instanceof HeroAction.OpenChest)
 		{
-			Heap heap = Dungeon.level.heaps.get(((HeroAction.OpenChest) curAction).dst);
+			Heap heap = Dungeon.level.heaps.get(curAction.dst);
 			if(heap.type == Type.SKELETON || heap.type == Type.REMAINS)
 				Sample.INSTANCE.play(Assets.SND_BONES);
 			else if(heap.type == Type.LOCKED_CHEST)

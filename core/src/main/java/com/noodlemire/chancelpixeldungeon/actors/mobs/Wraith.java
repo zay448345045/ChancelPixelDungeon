@@ -30,7 +30,6 @@ import com.noodlemire.chancelpixeldungeon.sprites.WraithSprite;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
-import com.watabou.utils.Random;
 
 public class Wraith extends Mob
 {
@@ -69,7 +68,7 @@ public class Wraith extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(1 + level / 2, 2 + level);
+		return 2 + level;
 	}
 
 	@Override

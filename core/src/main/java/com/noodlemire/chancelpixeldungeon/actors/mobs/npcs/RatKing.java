@@ -27,14 +27,19 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.RatKingSprite;
+import com.watabou.utils.Bundle;
 
 public class RatKing extends NPC
 {
+	private boolean trapped = true;
+
 	{
 		spriteClass = RatKingSprite.class;
 
 		SLEEPING = new RatKingSleeping();
 		state = SLEEPING;
+
+		EXP = 999;
 	}
 
 	@Override
@@ -96,9 +101,36 @@ public class RatKing extends NPC
 	@Override
 	public String description()
 	{
-		return ((RatKingSprite) sprite).festive ?
+		String desc = ((RatKingSprite) sprite).festive ?
 				Messages.get(this, "desc_festive")
 				: super.description();
+
+		if(properties.contains(Property.IMMOVABLE))
+			desc += "\n\n" + Messages.get(this, "trapped");
+
+		return desc;
+	}
+
+	private static final String TRAPPED = "trapped";
+
+	@Override
+	public void storeInBundle(Bundle bundle)
+	{
+		super.storeInBundle(bundle);
+		bundle.put(TRAPPED, trapped);
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle)
+	{
+		super.restoreFromBundle(bundle);
+		trapped = bundle.getBoolean(TRAPPED);
+
+		if(trapped || !bundle.contains(TRAPPED))
+		{
+			properties.add(Property.IMMOVABLE);
+			state = SLEEPING;
+		}
 	}
 
 	private class RatKingSleeping extends Sleeping
@@ -109,11 +141,13 @@ public class RatKing extends NPC
 		{
 			if(Badges.isUnlockedLocal(Badges.Badge.BOSS_SLAIN_1))
 			{
+				trapped = false;
 				properties.remove(Property.IMMOVABLE);
 				return super.act(enemyInFOV, justAlerted);
 			}
 			else
 			{
+				trapped = true;
 				properties.add(Property.IMMOVABLE);
 
 				spend(TICK);

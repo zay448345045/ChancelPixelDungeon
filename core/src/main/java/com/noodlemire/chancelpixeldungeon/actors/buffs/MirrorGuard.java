@@ -35,7 +35,7 @@ import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 
-public class MirrorGuard extends Buff
+public class MirrorGuard extends Buff implements FadePercent
 {
 	{
 		type = buffType.POSITIVE;
@@ -151,5 +151,11 @@ public class MirrorGuard extends Buff
 	{
 		super.restoreFromBundle(bundle);
 		HP = bundle.getFloat(HEALTH);
+	}
+
+	@Override
+	public float fadePercent()
+	{
+		return 1 - HP / maxHP();
 	}
 }

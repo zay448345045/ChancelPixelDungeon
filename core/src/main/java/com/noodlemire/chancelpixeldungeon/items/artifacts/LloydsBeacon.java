@@ -108,7 +108,6 @@ public class LloydsBeacon extends Artifact
 
 		if(action.equals(AC_SET) || action.equals(AC_RETURN))
 		{
-
 			if(Dungeon.bossLevel())
 			{
 				hero.spend(LloydsBeacon.TIME_TO_USE);
@@ -132,14 +131,13 @@ public class LloydsBeacon extends Artifact
 			unBind();
 
 			curUser = hero;
-			int chargesToUse = Dungeon.depth > 20 ? 2 : 1;
 
 			if(!isEquipped(hero))
 			{
 				GLog.i(Messages.get(Artifact.class, "need_to_equip"));
 				QuickSlotButton.cancel();
 			}
-			else if(charge < chargesToUse)
+			else if(charge < 1)
 			{
 				GLog.i(Messages.get(this, "no_charge"));
 				QuickSlotButton.cancel();
@@ -181,7 +179,7 @@ public class LloydsBeacon extends Artifact
 		}
 	}
 
-	private CellSelector.Listener zapper = new CellSelector.Listener()
+	private final CellSelector.Listener zapper = new CellSelector.Listener()
 	{
 		@Override
 		public void onSelect(Integer target)

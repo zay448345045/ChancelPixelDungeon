@@ -32,7 +32,6 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.melee.MagesStaff;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.noodlemire.chancelpixeldungeon.ui.QuickSlotButton;
-import com.watabou.noosa.Image;
 
 public class Recharging extends DurationBuff implements Expulsion
 {
@@ -40,12 +39,6 @@ public class Recharging extends DurationBuff implements Expulsion
 	public int icon()
 	{
 		return BuffIndicator.RECHARGING;
-	}
-
-	@Override
-	public void tintIcon(Image icon)
-	{
-		FlavourBuff.greyIcon(icon, 5f, left());
 	}
 
 	@Override

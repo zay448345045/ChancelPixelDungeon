@@ -82,21 +82,13 @@ public class Shadows extends Invisibility
 	{
 		if(target.isAlive())
 		{
-
 			spend(TICK * 2);
 
 			if(--left <= 0 || Dungeon.hero.visibleDangers() > 0)
-			{
 				detach();
-			}
-
 		}
 		else
-		{
-
 			detach();
-
-		}
 
 		return true;
 	}
@@ -128,5 +120,11 @@ public class Shadows extends Invisibility
 	public String desc()
 	{
 		return Messages.get(this, "desc");
+	}
+
+	@Override
+	public float fadePercent()
+	{
+		return 0;
 	}
 }

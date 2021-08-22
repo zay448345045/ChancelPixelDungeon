@@ -31,7 +31,6 @@ import com.noodlemire.chancelpixeldungeon.items.artifacts.CloakOfShadows;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 
 public class Invisibility extends FlavourBuff implements Expulsion
 {
@@ -69,12 +68,6 @@ public class Invisibility extends FlavourBuff implements Expulsion
 	public int icon()
 	{
 		return BuffIndicator.INVISIBLE;
-	}
-
-	@Override
-	public void tintIcon(Image icon)
-	{
-		greyIcon(icon, 5f, cooldown());
 	}
 
 	@Override

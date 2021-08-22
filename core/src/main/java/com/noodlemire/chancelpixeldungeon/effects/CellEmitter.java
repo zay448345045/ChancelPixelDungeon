@@ -28,10 +28,8 @@ import com.watabou.utils.PointF;
 
 public class CellEmitter
 {
-
 	public static Emitter get(int cell)
 	{
-
 		PointF p = DungeonTilemap.tileToWorld(cell);
 
 		Emitter emitter = GameScene.emitter();

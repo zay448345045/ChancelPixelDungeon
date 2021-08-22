@@ -26,7 +26,6 @@ import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 
 public class TargetHealthIndicator extends HealthBar
 {
-
 	public static TargetHealthIndicator instance;
 
 	private Char target;

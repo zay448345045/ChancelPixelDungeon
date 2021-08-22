@@ -38,7 +38,7 @@ public class Rat extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(1, 3 + EXP);
+		return EXP + 3;
 	}
 
 	@Override

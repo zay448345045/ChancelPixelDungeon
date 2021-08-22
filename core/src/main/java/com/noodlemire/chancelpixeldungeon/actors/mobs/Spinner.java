@@ -41,6 +41,8 @@ public class Spinner extends Mob
 
 		EXP = Random.IntRange(14, 16);
 
+		TIME_TO_REST = 2;
+
 		setHT(EXP * 4, true);
 
 		loot = new MysteryMeat();
@@ -52,7 +54,7 @@ public class Spinner extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(EXP - 4, EXP * 2 - 4);
+		return EXP * 3 - 8;
 	}
 
 	@Override

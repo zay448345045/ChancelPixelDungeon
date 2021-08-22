@@ -28,7 +28,6 @@ import com.watabou.noosa.Image;
 
 public class CheckedCell extends Image
 {
-
 	private float alpha;
 
 	public CheckedCell(int pos)

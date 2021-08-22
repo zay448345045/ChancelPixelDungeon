@@ -62,9 +62,9 @@ public class WndJournal extends WndTabbed
 
 	private static final int ITEM_HEIGHT = 18;
 
-	private GuideTab guideTab;
-	private NotesTab notesTab;
-	private CatalogTab catalogTab;
+	private final GuideTab guideTab;
+	private final NotesTab notesTab;
+	private final CatalogTab catalogTab;
 
 	public static int last_index = 0;
 
@@ -200,7 +200,7 @@ public class WndJournal extends WndTabbed
 	private static class GuideTab extends Component
 	{
 		private ScrollPane list;
-		private ArrayList<GuideItem> pages = new ArrayList<>();
+		private final ArrayList<GuideItem> pages = new ArrayList<>();
 
 		@Override
 		protected void createChildren()
@@ -262,8 +262,8 @@ public class WndJournal extends WndTabbed
 
 		private static class GuideItem extends ListItem
 		{
-			private boolean found;
-			private String page;
+			private final boolean found;
+			private final String page;
 
 			public GuideItem(String page)
 			{
@@ -297,25 +297,77 @@ public class WndJournal extends WndTabbed
 
 	private static class NotesTab extends Component
 	{
+		private static final int BUTTON_HEIGHT = 17;
+
 		private ScrollPane list;
+		private RedButton add;
+
+		private final ArrayList<CustomNoteItem> customItems = new ArrayList<>();
 
 		@Override
 		protected void createChildren()
 		{
-			list = new ScrollPane(new Component());
+			list = new ScrollPane(new Component())
+			{
+				@Override
+				public void onClick(float x, float y)
+				{
+					int size = customItems.size();
+					for(int i = 0; i < size; i++)
+						if(customItems.get(i).onClick(x, y))
+							break;
+				}
+			};
 			add(list);
+
+			add = new RedButton(Messages.get(this, "add"))
+			{
+				@Override
+				protected void onClick()
+				{
+					GameScene.show(new WndTextInput(Messages.get(NotesTab.class, "title"), Messages.get(NotesTab.class, "default_title", Notes.numCustomNotes() + 1),
+							false, Messages.get(NotesTab.class, "enter"), Messages.get(NotesTab.class, "cancel"))
+					{
+						@Override
+						protected void onSelect(boolean positive)
+						{
+							if(positive)
+							{
+								final String title = getText();
+
+								GameScene.show(new WndTextInput(Messages.get(NotesTab.class, "add"), "", true,
+										Messages.get(NotesTab.class, "enter"), Messages.get(NotesTab.class, "cancel"))
+								{
+									@Override
+									protected void onSelect(boolean positive)
+									{
+										if(positive)
+										{
+											Notes.add(title, getText());
+											updateList();
+										}
+									}
+								});
+							}
+						}
+					});
+				}
+			};
+			add(add);
 		}
 
 		@Override
 		protected void layout()
 		{
 			super.layout();
-			list.setRect(0, 0, width, height);
+			list.setRect(0, 0, width, height - BUTTON_HEIGHT);
+			add.setRect(0, list.bottom(), width, BUTTON_HEIGHT);
 		}
 
 		private void updateList()
 		{
 			Component content = list.content();
+			content.clear();
 
 			float pos = 0;
 
@@ -336,6 +388,7 @@ public class WndJournal extends WndTabbed
 
 				pos += Math.max(ITEM_HEIGHT, title.height());
 			}
+
 			for(Notes.Record rec : keys)
 			{
 				ListItem item = new ListItem(Icons.get(Icons.DEPTH),
@@ -373,16 +426,127 @@ public class WndJournal extends WndTabbed
 				pos += item.height();
 			}
 
+			//Custom Notes
+			ArrayList<Notes.CustomRecord> custom = Notes.getCustomNotes();
+			customItems.clear();
+
+			if(!custom.isEmpty())
+			{
+				ColorBlock line = new ColorBlock(width(), 1, 0xFF222222);
+				line.y = pos;
+				content.add(line);
+
+				RenderedTextMultiline title = PixelScene.renderMultiline(Messages.get(this, "custom"), 9);
+				title.hardlight(TITLE_COLOR);
+				title.maxWidth((int) width() - 2);
+				title.setPos((width() - title.width()) / 2f, pos + 1 + ((ITEM_HEIGHT) - title.height()) / 2f);
+				PixelScene.align(title);
+				content.add(title);
+
+				pos += Math.max(ITEM_HEIGHT, title.height());
+			}
+
+			for(int i = 0; i < custom.size(); i++)
+			{
+				Notes.CustomRecord rec = custom.get(i);
+
+				final int index = i;
+				CustomNoteItem item = new CustomNoteItem(rec){
+					@Override
+					public void onDelete()
+					{
+						Notes.remove(index);
+						updateList();
+					}
+				};
+
+				item.setRect(0, pos, width(), ITEM_HEIGHT);
+				content.add(item);
+
+				pos += item.height();
+				customItems.add(item);
+			}
+
 			content.setSize(width(), pos);
 			list.setSize(list.width(), list.height());
 		}
 
+		@Override
+		public synchronized void destroy()
+		{
+			super.destroy();
+
+			for(CustomNoteItem item : customItems)
+				item.destroy();
+		}
+
+		private static class CustomNoteItem extends ListItem
+		{
+			private final Notes.CustomRecord record;
+
+			private RedButton del;
+
+			public CustomNoteItem(Notes.CustomRecord rec)
+			{
+				super(new ItemSprite(ItemSpriteSheet.GUIDE_PAGE, null),
+						Messages.titleCase(rec.title()), -1);
+
+				record = rec;
+			}
+
+			public boolean onClick(float x, float y)
+			{
+				if(inside(x, y) && !record.record().equals(""))
+				{
+					GameScene.show(new WndMessage(record.record()));
+					return true;
+				}
+				else
+					return false;
+			}
+
+			@Override
+			protected void createChildren()
+			{
+				super.createChildren();
+
+				del = new RedButton("X")
+				{
+					@Override
+					protected void onClick()
+					{
+						GameScene.show(new WndOptions(Messages.get(CustomNoteItem.class, "delete", record.title()), Messages.get(CustomNoteItem.class, "sure"),
+								Messages.get(CustomNoteItem.class,"Yes"), Messages.get(CustomNoteItem.class,"No"))
+						{
+							@Override
+							protected void onSelect(int i)
+							{
+								if(i == 0)
+									onDelete();
+							}
+						});
+					}
+				};
+				add(del);
+			}
+
+			@Override
+			protected void layout()
+			{
+				super.layout();
+
+				del.setRect(right() - 17, top(), 17, height());
+			}
+
+			public void onDelete() {}
+		}
 	}
 
 	private static class CatalogTab extends Component
 	{
 		private RedButton[] itemButtons;
 		private static final int NUM_BUTTONS = 7;
+		private static final int BUTTON_HEIGHT = 17;
 
 		private static int currentItemIdx = 0;
 
@@ -396,7 +560,7 @@ public class WndJournal extends WndTabbed
 
 		private ScrollPane list;
 
-		private ArrayList<CatalogItem> items = new ArrayList<>();
+		private final ArrayList<CatalogItem> items = new ArrayList<>();
 
 		@Override
 		protected void createChildren()
@@ -436,8 +600,6 @@ public class WndJournal extends WndTabbed
 			add(list);
 		}
 
-		private static final int BUTTON_HEIGHT = 17;
-
 		@Override
 		protected void layout()
 		{
@@ -459,7 +621,6 @@ public class WndJournal extends WndTabbed
 
 		private void updateList()
 		{
-
 			items.clear();
 
 			for(int i = 0; i < NUM_BUTTONS; i++)
@@ -565,8 +726,8 @@ public class WndJournal extends WndTabbed
 		private static class CatalogItem extends ListItem
 		{
 
-			private Item item;
-			private boolean seen;
+			private final Item item;
+			private final boolean seen;
 
 			public CatalogItem(Item item, boolean IDed, boolean seen)
 			{
@@ -609,7 +770,5 @@ public class WndJournal extends WndTabbed
 				}
 			}
 		}
-
 	}
-
 }

@@ -47,10 +47,6 @@ public class MagicShield extends DurationBuff implements Expulsion
 				shorten((int) reduction);
 				reduction -= (int) reduction;
 			}
-
-			//If the target lost shielding i.e. due to being hit, then subtract that shielding lost from amount
-			if(target.SHLD() < left())
-				shorten(left() - target.SHLD());
 		}
 		else
 			detach();

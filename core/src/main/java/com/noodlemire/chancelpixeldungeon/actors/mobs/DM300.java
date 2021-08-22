@@ -58,6 +58,8 @@ public class DM300 extends Mob
 		setHT(300, true);
 		EXP = 30;
 
+		TIME_TO_REST = 4;
+
 		loot = new ArmorKit();
 		lootChance = 1f;
 
@@ -69,7 +71,7 @@ public class DM300 extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(20, 25);
+		return 50;
 	}
 
 	@Override

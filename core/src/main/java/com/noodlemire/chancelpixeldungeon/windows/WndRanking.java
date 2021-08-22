@@ -28,6 +28,7 @@ import com.noodlemire.chancelpixeldungeon.Rankings;
 import com.noodlemire.chancelpixeldungeon.Statistics;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Belongings;
 import com.noodlemire.chancelpixeldungeon.items.Item;
+import com.noodlemire.chancelpixeldungeon.items.bags.Bag;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.PixelScene;
 import com.noodlemire.chancelpixeldungeon.sprites.HeroSprite;
@@ -49,18 +50,16 @@ import java.util.Locale;
 
 public class WndRanking extends WndTabbed
 {
-
 	private static final int WIDTH = 115;
 	private static final int HEIGHT = 144;
 
 	private Thread thread;
 	private String error = null;
 
-	private Image busy;
+	private final Image busy;
 
 	public WndRanking(final Rankings.Record rec)
 	{
-
 		super();
 		resize(WIDTH, HEIGHT);
 
@@ -122,7 +121,6 @@ public class WndRanking extends WndTabbed
 
 	private void createControls()
 	{
-
 		String[] labels =
 				{Messages.get(this, "stats"), Messages.get(this, "items"), Messages.get(this, "badges")};
 		Group[] pages =
@@ -130,7 +128,6 @@ public class WndRanking extends WndTabbed
 
 		for(int i = 0; i < pages.length; i++)
 		{
-
 			add(pages[i]);
 
 			Tab tab = new RankingTab(labels[i], pages[i]);
@@ -144,8 +141,7 @@ public class WndRanking extends WndTabbed
 
 	private class RankingTab extends LabeledTab
 	{
-
-		private Group page;
+		private final Group page;
 
 		public RankingTab(String label, Group page)
 		{
@@ -166,7 +162,6 @@ public class WndRanking extends WndTabbed
 
 	private class StatsTab extends Group
 	{
-
 		private int GAP = 4;
 
 		public StatsTab()
@@ -227,7 +222,6 @@ public class WndRanking extends WndTabbed
 
 		private float statSlot(Group parent, String label, String value, float pos)
 		{
-
 			RenderedText txt = PixelScene.renderText(label, 7);
 			txt.y = pos;
 			parent.add(txt);
@@ -244,7 +238,6 @@ public class WndRanking extends WndTabbed
 
 	private class ItemsTab extends Group
 	{
-
 		private float pos;
 
 		public ItemsTab()
@@ -252,6 +245,7 @@ public class WndRanking extends WndTabbed
 			super();
 
 			Belongings stuff = Dungeon.hero.belongings;
+			stuff.identify();
 			if(stuff.weapon != null)
 			{
 				addItem(stuff.weapon);
@@ -260,14 +254,7 @@ public class WndRanking extends WndTabbed
 			{
 				addItem(stuff.armor);
 			}
-			/*if(stuff.misc1 != null)
-			{
-				addItem(stuff.misc1);
-			}
-			if(stuff.misc2 != null)
-			{
-				addItem(stuff.misc2);
-			}*/
+			addItem(stuff.backpack);
 
 			pos = 0;
 			for(int i = 0; i < 4; i++)
@@ -279,7 +266,6 @@ public class WndRanking extends WndTabbed
 					slot.setRect(pos, 116, 28, 28);
 
 					add(slot);
-
 				}
 				else
 				{
@@ -304,7 +290,6 @@ public class WndRanking extends WndTabbed
 
 	private class BadgesTab extends Group
 	{
-
 		public BadgesTab()
 		{
 			super();
@@ -320,10 +305,9 @@ public class WndRanking extends WndTabbed
 
 	private class ItemButton extends Button
 	{
-
 		public static final int HEIGHT = 28;
 
-		private Item item;
+		private final Item item;
 
 		private ItemSlot slot;
 		private ColorBlock bg;
@@ -356,7 +340,6 @@ public class WndRanking extends WndTabbed
 		@Override
 		protected void createChildren()
 		{
-
 			bg = new ColorBlock(HEIGHT, HEIGHT, 0x9953564D);
 			add(bg);
 
@@ -412,16 +395,18 @@ public class WndRanking extends WndTabbed
 		@Override
 		protected void onClick()
 		{
-			Game.scene().add(new WndItem(null, item));
+			if(item instanceof Bag)
+				Game.scene().add(new WndBag((Bag)item, null, WndBag.Mode.ALL, null));
+			else
+				Game.scene().add(new WndItem(null, item));
 		}
 	}
 
 	private class QuickSlotButton extends ItemSlot
 	{
-
 		public static final int HEIGHT = 28;
 
-		private Item item;
+		private final Item item;
 		private ColorBlock bg;
 
 		QuickSlotButton(Item item)

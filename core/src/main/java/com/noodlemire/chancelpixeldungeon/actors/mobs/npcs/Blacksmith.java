@@ -55,6 +55,8 @@ public class Blacksmith extends NPC
 		spriteClass = BlacksmithSprite.class;
 
 		properties.add(Property.IMMOVABLE);
+
+		EXP = 22;
 	}
 
 	@Override

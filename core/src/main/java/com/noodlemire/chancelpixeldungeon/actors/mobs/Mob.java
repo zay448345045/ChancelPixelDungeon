@@ -32,6 +32,7 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Amok;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Corruption;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Following;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Hunger;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Invisibility;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Might;
@@ -92,12 +93,17 @@ public abstract class Mob extends Char
 	private int enemySeen;
 	protected boolean alerted = false;
 
+	public int TIME_TO_REST = 1;
+	private int ATTACKS_BEFORE_REST = 1;
+	private int restNeeded = 0;
+
 	protected static final float TIME_TO_WAKE_UP = 1f;
 
 	public static final String STATE = "state";
 	private static final String SEEN = "seen";
 	private static final String TARGET = "target";
 	private static final String EXP_KEY = "exp";
+	private static final String REST = "rest";
 
 	@Override
 	public void storeInBundle(Bundle bundle)
@@ -124,9 +130,11 @@ public abstract class Mob extends Char
 		{
 			bundle.put(STATE, Passive.TAG);
 		}
+
 		bundle.put(SEEN, enemySeen);
 		bundle.put(TARGET, target);
 		bundle.put(EXP_KEY, EXP);
+		bundle.put(REST, restNeeded);
 	}
 
 	@Override
@@ -157,10 +165,9 @@ public abstract class Mob extends Char
 		}
 
 		enemySeen = bundle.getInt(SEEN);
-
 		target = bundle.getInt(TARGET);
-
 		EXP = bundle.getInt(EXP_KEY);
+		restNeeded = bundle.getInt(REST);
 	}
 
 	@Override
@@ -208,7 +215,21 @@ public abstract class Mob extends Char
 		boolean enemyInFOV = enemy != null && enemy.isAlive() && (fieldOfView[enemy.pos] && enemy.invisible <= 0)
 		                     || buff(MindVision.class) != null;
 
+		if (buff(Following.class) != null && enemy != Dungeon.hero)
+		{
+			state = WANDERING;
+			target = Dungeon.hero.pos;
+			enemy = Dungeon.hero;
+			enemyInFOV = false;
+		}
+
 		return state.act(enemyInFOV, justAlerted);
+	}
+
+	@Override
+	public void spend(float time)
+	{
+		super.spend(time);
 	}
 
 	public boolean lookForEnemy(boolean found)
@@ -240,6 +261,11 @@ public abstract class Mob extends Char
 	public boolean enemyInView()
 	{
 		return enemySeen == PATIENCE;
+	}
+
+	public Char getEnemy()
+	{
+		return enemy;
 	}
 
 	protected Char chooseEnemy()
@@ -323,14 +349,11 @@ public abstract class Mob extends Char
 				{
 					enemies.add(Dungeon.hero);
 				}
-
 			}
 
 			//neutral character in particular do not choose enemies.
 			if(enemies.isEmpty())
-			{
 				return null;
-			}
 			else
 			{
 				//go after the closest potential enemy, preferring the hero if two are equidistant
@@ -396,9 +419,65 @@ public abstract class Mob extends Char
 		}
 	}
 
+	public boolean restNeeded()
+	{
+		return restNeeded > ATTACKS_BEFORE_REST - 1;
+	}
+
+	public int restTimeNeeded(boolean adjust)
+	{
+		if(adjust)
+			return restNeeded - (ATTACKS_BEFORE_REST - 1);
+		else
+			return restNeeded;
+	}
+
+	public void needRest()
+	{
+		needRest(TIME_TO_REST + ATTACKS_BEFORE_REST - 1);
+	}
+
+	public void needRest(int n)
+	{
+		if(restNeeded == 0)
+			restNeeded = n;
+		else
+			restNeeded--;
+	}
+
+	public void setAttacksBeforeRest(int n)
+	{
+		ATTACKS_BEFORE_REST = n;
+		restNeeded = n-1;
+	}
+
+	public void rest()
+	{
+		restNeeded = Math.max(0, restNeeded - 1);
+		spend(TICK);
+		sprite.idle();
+
+		int color = CharSprite.DEFAULT;
+
+		switch(restTimeNeeded(true))
+		{
+			case 0:
+				color = CharSprite.NEGATIVE;
+				break;
+			case 1:
+				color = CharSprite.WARNING;
+				break;
+			case 2:
+				color = CharSprite.NEUTRAL;
+				break;
+		}
+
+		sprite.showStatus(color, "...");
+	}
+
 	protected boolean canAttack(Char enemy)
 	{
-		return Dungeon.level.adjacent(pos, enemy.pos);
+		return !restNeeded() && Dungeon.level.adjacent(pos, enemy.pos);
 	}
 
 	protected boolean getCloser(int target)
@@ -583,6 +662,8 @@ public abstract class Mob extends Char
 			damage *= 1.33f;
 		if(buff(Taunted.class) != null)
 			damage *= 2;
+
+		needRest();
 
 		return damage;
 	}
@@ -813,6 +894,8 @@ public abstract class Mob extends Char
 		@Override
 		public boolean act(boolean enemyInFOV, boolean justAlerted)
 		{
+			setAttacksBeforeRest(ATTACKS_BEFORE_REST);
+
 			if(enemyInFOV && Random.Int(distance(enemy) + enemy.stealth() + (enemy.flying ? 2 : 0)) == 0)
 			{
 				enemySeen = PATIENCE;
@@ -845,6 +928,12 @@ public abstract class Mob extends Char
 		@Override
 		public boolean act(boolean enemyInFOV, boolean justAlerted)
 		{
+			if(restNeeded())
+			{
+				rest();
+				return true;
+			}
+
 			if(enemyInFOV && (justAlerted || Random.Int(distance(enemy) / 2 + enemy.stealth()) == 0))
 			{
 				enemySeen = PATIENCE;
@@ -887,6 +976,12 @@ public abstract class Mob extends Char
 		@Override
 		public boolean act(boolean enemyInFOV, boolean justAlerted)
 		{
+			if(restNeeded())
+			{
+				rest();
+				return true;
+			}
+
 			enemyInFOV = lookForEnemy(enemyInFOV);
 			if(enemyInView() && !isCharmedBy(enemy) && canAttack(enemy))
 				return doAttack(enemy);

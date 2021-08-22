@@ -4,7 +4,6 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
 public class Might extends FlavourBuff
@@ -66,12 +65,6 @@ public class Might extends FlavourBuff
 	public int icon()
 	{
 		return BuffIndicator.MIGHT;
-	}
-
-	@Override
-	public void tintIcon(Image icon)
-	{
-		greyIcon(icon, 10f, cooldown());
 	}
 
 	@Override

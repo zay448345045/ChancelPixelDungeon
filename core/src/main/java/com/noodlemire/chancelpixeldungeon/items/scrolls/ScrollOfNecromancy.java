@@ -66,7 +66,7 @@ public class ScrollOfNecromancy extends EnvironmentScroll
 			if(heap != null)
 				if(heap.items.contains(new CorpseDust()))
 					wraithCount += wraithRate * 4;
-				else if(heap.type == Heap.Type.TOMB)
+				else if(heap.type == Heap.Type.TOMB || heap.type == Heap.Type.EBONY_CHEST)
 					wraithCount += wraithRate * 2;
 				else if((heap.type == Heap.Type.REMAINS || heap.type == Heap.Type.SKELETON) && heapCursed(heap))
 					wraithCount += wraithRate;

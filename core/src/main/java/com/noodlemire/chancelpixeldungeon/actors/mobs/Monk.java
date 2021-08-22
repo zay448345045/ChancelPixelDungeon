@@ -41,6 +41,9 @@ public class Monk extends Mob
 
 		EXP = Random.IntRange(15, 19);
 
+		TIME_TO_REST = 3;
+		setAttacksBeforeRest(4);
+
 		setHT(EXP * 5 + 1, true);
 
 		//loot = new Food(); //New loot coming soon.
@@ -52,7 +55,7 @@ public class Monk extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(EXP - 3, EXP * 2 - 5);
+		return EXP * 2 - 20 + 5 * restTimeNeeded(false);
 	}
 
 	@Override
@@ -115,7 +118,7 @@ public class Monk extends Mob
 		return damage;
 	}
 
-	private static String DISARMHITS = "hitsToDisarm";
+	private static final String DISARMHITS = "hitsToDisarm";
 
 	@Override
 	public void storeInBundle(Bundle bundle)

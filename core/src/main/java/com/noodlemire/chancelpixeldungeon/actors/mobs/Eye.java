@@ -49,6 +49,8 @@ public class Eye extends Mob
 		setHT(EXP * 6, true);
 		viewDistance = Light.DISTANCE;
 
+		TIME_TO_REST = 1;
+
 		flying = true;
 
 		HUNTING = new Hunting();
@@ -62,7 +64,7 @@ public class Eye extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(EXP, EXP + 10);
+		return EXP + 10;
 	}
 
 	@Override
@@ -91,7 +93,6 @@ public class Eye extends Mob
 	@Override
 	protected boolean canAttack(Char enemy)
 	{
-
 		if(beamCooldown == 0)
 		{
 			Ballistica aim = new Ballistica(pos, enemy.pos, Ballistica.STOP_TERRAIN);
@@ -130,7 +131,6 @@ public class Eye extends Mob
 	@Override
 	protected boolean doAttack(Char enemy)
 	{
-
 		if(beamCooldown > 0)
 		{
 			return super.doAttack(enemy);
@@ -144,8 +144,9 @@ public class Eye extends Mob
 		}
 		else
 		{
-
 			spend(attackDelay());
+
+			needRest(3);
 
 			beam = new Ballistica(pos, beamTarget, Ballistica.STOP_TERRAIN);
 			if(Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[beam.collisionPos])
@@ -159,7 +160,6 @@ public class Eye extends Mob
 				return true;
 			}
 		}
-
 	}
 
 	@Override
@@ -183,7 +183,6 @@ public class Eye extends Mob
 		{
 			if(Dungeon.level.flamable[pos])
 			{
-
 				Dungeon.level.destroy(pos);
 				GameScene.updateMap(pos);
 				terrainAffected = true;
@@ -195,7 +194,7 @@ public class Eye extends Mob
 
 			if(hit(this, ch, true))
 			{
-				ch.damage(Random.NormalIntRange(EXP * 2 - 10, EXP * 5 - 50), this);
+				ch.damage(EXP * 5 - 40, this);
 
 				if(Dungeon.level.heroFOV[pos])
 				{

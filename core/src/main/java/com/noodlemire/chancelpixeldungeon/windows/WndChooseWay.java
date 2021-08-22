@@ -32,14 +32,12 @@ import com.noodlemire.chancelpixeldungeon.ui.Window;
 
 public class WndChooseWay extends Window
 {
-
 	private static final int WIDTH = 120;
 	private static final int BTN_HEIGHT = 18;
 	private static final float GAP = 2;
 
 	public WndChooseWay(final TomeOfMastery tome, final HeroSubClass way1, final HeroSubClass way2)
 	{
-
 		super();
 
 		IconTitle titlebar = new IconTitle();

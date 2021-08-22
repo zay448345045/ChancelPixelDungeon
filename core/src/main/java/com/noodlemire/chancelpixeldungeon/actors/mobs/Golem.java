@@ -26,6 +26,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Amok;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Sleep;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Terror;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.npcs.Imp;
+import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.sprites.GolemSprite;
 import com.watabou.utils.Random;
 
@@ -36,7 +37,12 @@ public class Golem extends Mob
 
 		EXP = Random.IntRange(19, 21);
 
+		TIME_TO_REST = 4;
+
 		setHT(EXP * 10 - 99, true);
+
+		loot = Generator.Category.STONE;
+		lootChance = 0.5f;
 
 		properties.add(Property.INORGANIC);
 	}
@@ -44,7 +50,7 @@ public class Golem extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(EXP * 2 - 10, EXP * 2);
+		return EXP * 4;
 	}
 
 	@Override

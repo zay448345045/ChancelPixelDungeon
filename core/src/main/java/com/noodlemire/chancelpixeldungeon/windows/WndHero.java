@@ -50,11 +50,11 @@ public class WndHero extends WndTabbed
 	private static final int WIDTH = 115;
 	private static final int HEIGHT = 100;
 
-	private StatsTab stats;
-	private BuffsTab buffs;
+	private final StatsTab stats;
+	private final BuffsTab buffs;
 
-	private SmartTexture icons;
-	private TextureFilm film;
+	private final SmartTexture icons;
+	private final TextureFilm film;
 
 	public WndHero()
 	{
@@ -167,8 +167,8 @@ public class WndHero extends WndTabbed
 		private static final int GAP = 2;
 
 		private float pos;
-		private ScrollPane buffList;
-		private ArrayList<BuffSlot> slots = new ArrayList<>();
+		private final ScrollPane buffList;
+		private final ArrayList<BuffSlot> slots = new ArrayList<>();
 
 		public BuffsTab()
 		{
@@ -217,8 +217,7 @@ public class WndHero extends WndTabbed
 
 		private class BuffSlot extends Component
 		{
-
-			private Buff buff;
+			private final Buff buff;
 
 			Image icon;
 			RenderedText txt;
@@ -239,7 +238,6 @@ public class WndHero extends WndTabbed
 				txt.x = icon.width + GAP;
 				txt.y = this.y + (int) (icon.height - txt.baseLine()) / 2;
 				add(txt);
-
 			}
 
 			@Override

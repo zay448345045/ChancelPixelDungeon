@@ -51,7 +51,7 @@ public class Elemental extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(EXP + 4, EXP * 3 - 10);
+		return EXP * 3 - 10;
 	}
 
 	@Override
@@ -95,5 +95,4 @@ public class Elemental extends Mob
 		else
 			super.add(buff);
 	}
-
 }

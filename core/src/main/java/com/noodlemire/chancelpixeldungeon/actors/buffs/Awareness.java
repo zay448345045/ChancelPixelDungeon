@@ -26,7 +26,6 @@ import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 
 public class Awareness extends FlavourBuff
 {
-
 	public static final float DURATION = 2f;
 
 	@Override

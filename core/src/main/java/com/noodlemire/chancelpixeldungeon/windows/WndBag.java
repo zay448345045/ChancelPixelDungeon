@@ -105,12 +105,12 @@ public class WndBag extends WndTabbed
 
 	private static final int TITLE_HEIGHT = 14;
 
-	private Listener listener;
-	private WndBag.Mode mode;
-	private String title;
+	private final Listener listener;
+	private final WndBag.Mode mode;
+	private final String title;
 
-	private int nCols;
-	private int nRows;
+	private final int nCols;
+	private final int nRows;
 
 	protected int count;
 	protected int col;
@@ -310,9 +310,9 @@ public class WndBag extends WndTabbed
 
 	private class BagTab extends Tab
 	{
-		private Image icon;
+		private final Image icon;
 
-		private Bag bag;
+		private final Bag bag;
 
 		BagTab(Bag bag)
 		{
@@ -525,7 +525,7 @@ public class WndBag extends WndTabbed
 				listener.onSelect(item);
 			}
 			else
-				GameScene.show(new WndItem(WndBag.this, item));
+				GameScene.show(new WndItem(Dungeon.hero.rankings ? null : WndBag.this, item));
 		}
 
 		@Override

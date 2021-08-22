@@ -28,7 +28,6 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.ConfusionGas;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 
 public class Levitation extends FlavourBuff implements Expulsion
 {
@@ -62,12 +61,6 @@ public class Levitation extends FlavourBuff implements Expulsion
 	public int icon()
 	{
 		return BuffIndicator.LEVITATION;
-	}
-
-	@Override
-	public void tintIcon(Image icon)
-	{
-		greyIcon(icon, 5f, cooldown());
 	}
 
 	@Override

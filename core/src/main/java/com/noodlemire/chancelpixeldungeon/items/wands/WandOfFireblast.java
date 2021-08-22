@@ -63,7 +63,7 @@ public class WandOfFireblast extends DamageWand
 	//1x/1.5x/2.25x damage
 	public int max(int lvl)
 	{
-		return (int) Math.round((5 + 3 * lvl) * Math.pow(1.5f, chargesPerCast() - 1));
+		return (int) Math.round((6 + 4 * lvl) * Math.pow(1.5f, chargesPerCast() - 1));
 	}
 
 	//the actual affected cells
@@ -82,8 +82,6 @@ public class WandOfFireblast extends DamageWand
 
 		for(int cell : affectedCells)
 		{
-			damage = Math.min(max(), Math.max(min(), damage));
-
 			//ignore caster cell
 			if(cell == bolt.sourcePos)
 				continue;
@@ -96,12 +94,21 @@ public class WandOfFireblast extends DamageWand
 			Char ch = Actor.findChar(cell);
 			if(ch != null)
 			{
-				processSoulMark(ch, charges);
-				ch.damage(damage, this);
-				Buff.affect(ch, Burning.class).reignite();
+				int range = (int)(4 * Math.pow(1.5, (charges - 1)));
+				int dist = Dungeon.level.distance(Dungeon.hero.pos, cell) - 1;
 
 				if(critBoost)
+				{
+					WandOfBlastWave.throwChar(ch, new Ballistica(ch.pos, Dungeon.hero.pos, Ballistica.PROJECTILE), 2);
+					dist = Math.max(0, dist - 2);
 					critFx(ch);
+				}
+
+				float mult = (1 - (float)dist / range);
+
+				processSoulMark(ch, charges);
+				ch.damage((int)Math.ceil(damage * mult), this);
+				Buff.affect(ch, Burning.class).reignite();
 
 				if(charges >= 3)
 					Buff.affect(ch, Paralysis.class, 4f);
@@ -213,15 +220,6 @@ public class WandOfFireblast extends DamageWand
 	{
 		//consumes 30% of current charges, rounded up, with a minimum of one.
 		return Math.max(1, (int) Math.ceil(curCharges * 0.3f));
-	}
-
-	@Override
-	void wandUsed()
-	{
-		if(Dungeon.hero.critBoost(null) && chargesPerCast() > 1)
-			curCharges++;
-
-		super.wandUsed();
 	}
 
 	@Override

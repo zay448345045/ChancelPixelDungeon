@@ -73,8 +73,8 @@ abstract public class Weapon extends KindOfWeapon
 		DAMAGE(1.5f, 1.67f),
 		NONE(1.0f, 1.00f);
 
-		private float damageFactor;
-		private float delayFactor;
+		private final float damageFactor;
+		private final float delayFactor;
 
 		Augment(float dmg, float dly)
 		{
@@ -191,7 +191,7 @@ abstract public class Weapon extends KindOfWeapon
 
 	public int STRReq()
 	{
-		return STRReq(level());
+		return STRReq(rawLevel());
 	}
 
 	public abstract int STRReq(int lvl);

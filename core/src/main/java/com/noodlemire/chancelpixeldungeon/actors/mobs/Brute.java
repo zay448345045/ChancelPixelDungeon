@@ -58,8 +58,8 @@ public class Brute extends Mob
 	public int damageRoll()
 	{
 		return enraged ?
-				Random.NormalIntRange(EXP + 5, EXP * 5 - 5) :
-				Random.NormalIntRange(EXP / 2, EXP * 2 + 6);
+				EXP * 5 - 5 :
+				EXP * 2;
 	}
 
 	@Override
@@ -92,5 +92,14 @@ public class Brute extends Mob
 			if(Dungeon.level.heroFOV[pos])
 				sprite.showStatus(CharSprite.NEGATIVE, Messages.get(this, "enraged"));
 		}
+	}
+
+	@Override
+	public void needRest()
+	{
+		if(enraged)
+			needRest(3);
+		else
+			super.needRest();
 	}
 }

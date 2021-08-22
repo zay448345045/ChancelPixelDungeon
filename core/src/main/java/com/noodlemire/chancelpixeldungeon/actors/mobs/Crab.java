@@ -35,6 +35,8 @@ public class Crab extends Mob
 
 		EXP = Random.IntRange(4, 5);
 
+		TIME_TO_REST = 4;
+
 		setHT(EXP * 4, true);
 		baseSpeed = 2f;
 
@@ -45,7 +47,7 @@ public class Crab extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(1, EXP * 2);
+		return EXP * 3;
 	}
 
 	@Override
@@ -57,7 +59,7 @@ public class Crab extends Mob
 	@Override
 	public int drRoll()
 	{
-		return Random.NormalIntRange(EXP - 1, EXP);
+		return Random.NormalIntRange(EXP - 4, EXP);
 	}
 
 	@Override

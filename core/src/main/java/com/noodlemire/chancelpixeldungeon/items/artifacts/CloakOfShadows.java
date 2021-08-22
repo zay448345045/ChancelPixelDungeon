@@ -27,6 +27,7 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Blob;
 import com.noodlemire.chancelpixeldungeon.actors.blobs.Darkness;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Expulsion;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.FadePercent;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Preparation;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass;
@@ -246,8 +247,10 @@ public class CloakOfShadows extends Artifact
 
 	}
 
-	public class cloakStealth extends ArtifactBuff implements Expulsion
+	public class cloakStealth extends ArtifactBuff implements Expulsion, FadePercent
 	{
+		private static final int TURNS_PER_CHARGE = 5;
+
 		int turnsToCost = 0;
 
 		@Override
@@ -314,7 +317,7 @@ public class CloakOfShadows extends Artifact
 						GLog.p(Messages.get(this, "levelup"));
 
 					}
-					turnsToCost = 5;
+					turnsToCost = TURNS_PER_CHARGE;
 				}
 				updateQuickslot();
 			}
@@ -358,6 +361,12 @@ public class CloakOfShadows extends Artifact
 
 			updateQuickslot();
 			super.detach();
+		}
+
+		@Override
+		public float fadePercent()
+		{
+			return 1 - (float)turnsToCost / TURNS_PER_CHARGE;
 		}
 	}
 }

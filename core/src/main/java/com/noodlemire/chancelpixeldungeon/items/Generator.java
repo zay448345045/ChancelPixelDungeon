@@ -500,7 +500,7 @@ public class Generator
 			{0, 2, 8, 20, 70}
 	};
 
-	private static HashMap<Category, Float> categoryProbs = new LinkedHashMap<>();
+	private static final HashMap<Category, Float> categoryProbs = new LinkedHashMap<>();
 
 	public static void reset()
 	{
@@ -561,16 +561,32 @@ public class Generator
 	{
 		try
 		{
-
 			return cl.newInstance().random();
-
 		}
 		catch(Exception e)
 		{
-
 			ChancelPixelDungeon.reportException(e);
 			return null;
+		}
+	}
 
+	public static Item randomNormalized(Category cat)
+	{
+		return randomNormalized(cat, 1);
+	}
+
+	public static Item randomNormalized(Category cat, int quantity)
+	{
+		quantity = Math.max(1, quantity);
+
+		try
+		{
+			return ((Item)cat.classes[Random.chances(cat.probs)].newInstance()).quantity(quantity);
+		}
+		catch(Exception e)
+		{
+			ChancelPixelDungeon.reportException(e);
+			return null;
 		}
 	}
 
@@ -581,7 +597,6 @@ public class Generator
 
 	public static Armor randomArmor(int floorSet)
 	{
-
 		floorSet = (int) GameMath.gate(0, floorSet, floorSetTierProbs.length - 1);
 
 		try

@@ -10,7 +10,7 @@ import com.watabou.utils.Bundle;
 
 public class Linkage extends FlavourBuff implements Hero.Doom
 {
-	public static final float DURATION = 20f;
+	public static final float DURATION = 10f;
 
 	public int object = 0;
 

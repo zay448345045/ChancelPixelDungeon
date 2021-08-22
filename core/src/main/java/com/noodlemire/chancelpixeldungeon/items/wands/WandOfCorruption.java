@@ -40,6 +40,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Cripple;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Doom;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Drowsy;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.FlavourBuff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Following;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Frost;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.MagicalSleep;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Ooze;
@@ -58,14 +59,12 @@ import com.noodlemire.chancelpixeldungeon.actors.mobs.Mimic;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Piranha;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Statue;
-import com.noodlemire.chancelpixeldungeon.actors.mobs.Swarm;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Wraith;
 import com.noodlemire.chancelpixeldungeon.actors.mobs.Yog;
 import com.noodlemire.chancelpixeldungeon.effects.MagicMissile;
 import com.noodlemire.chancelpixeldungeon.items.weapon.melee.MagesStaff;
 import com.noodlemire.chancelpixeldungeon.mechanics.Ballistica;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
-import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
@@ -129,18 +128,24 @@ public class WandOfCorruption extends Wand
 
 		if(ch != null)
 		{
-
 			if(!(ch instanceof Mob))
-			{
 				return;
-			}
 
 			Mob enemy = (Mob) ch;
+
+			if(enemy.buff(Corruption.class) != null && enemy.buff(Following.class) == null)
+			{
+				for(Mob m : Dungeon.level.mobs)
+					if(Dungeon.level.heroFOV[m.pos] && m.buff(Corruption.class) != null)
+						Buff.affect(m, Following.class);
+
+				return;
+			}
 
 			float corruptingPower = 2 + level();
 
 			//base enemy resistance is usually based on their exp, but in special cases it is based on other criteria
-			float enemyResist = 1 + enemy.EXP;
+			float enemyResist = 1 + enemy.EXP * 0.625f;
 			if(ch instanceof Mimic || ch instanceof Statue)
 			{
 				enemyResist = 1 + Dungeon.depth;
@@ -162,11 +167,6 @@ public class WandOfCorruption extends Wand
 			{
 				enemyResist = 1 + 5;
 			}
-			else if(ch instanceof Swarm)
-			{
-				//child swarms don't give exp, so we force this here.
-				enemyResist = 1 + 3;
-			}
 
 			//100% health: 3x resist   75%: 2.1x resist   50%: 1.5x resist   25%: 1.1x resist
 			enemyResist *= 1 + 2 * Math.pow(enemy.HP() / (float) enemy.HT(), 2);
@@ -182,39 +182,39 @@ public class WandOfCorruption extends Wand
 
 			//cannot re-corrupt or doom an enemy, so give them a major debuff instead
 			if(enemy.buff(Corruption.class) != null || enemy.buff(Doom.class) != null)
-			{
 				enemyResist = corruptingPower * .99f;
-			}
 
 			if(corruptingPower > enemyResist)
-			{
 				corruptEnemy(enemy);
-			}
 			else
 			{
+				if(enemy.buff(Corruption.class) == null)
+				{
+					for(Mob m : Dungeon.level.mobs)
+					{
+						if(m.buff(Corruption.class) != null && m.buff(Following.class) != null)
+						{
+							Buff.detach(m, Following.class);
+							m.aggro(enemy);
+						}
+					}
+				}
+
 				float debuffChance = corruptingPower / enemyResist;
 				if(Random.Float() < debuffChance)
-				{
 					debuffEnemy(enemy, MAJOR_DEBUFFS);
-				}
 				else
-				{
 					debuffEnemy(enemy, MINOR_DEBUFFS);
-				}
 			}
 
 			processSoulMark(ch, chargesPerCast());
-
 		}
 		else
-		{
 			Dungeon.level.press(bolt.collisionPos, null, true);
-		}
 	}
 
 	private void debuffEnemy(Mob enemy, HashMap<Class<? extends Buff>, Float> category)
 	{
-
 		//do not consider buffs which are already assigned, or that the enemy is immune to.
 		HashMap<Class<? extends Buff>, Float> debuffs = new HashMap<>(category);
 		for(Buff existing : enemy.buffs())
@@ -262,7 +262,7 @@ public class WandOfCorruption extends Wand
 			for(Buff buff : enemy.buffs())
 			{
 				if(buff.type == Buff.buffType.NEGATIVE
-				   && !(buff instanceof SoulMark))
+						&& !(buff instanceof SoulMark))
 				{
 					buff.detach();
 				}
@@ -278,7 +278,6 @@ public class WandOfCorruption extends Wand
 			Statistics.qualifiedForNoKilling = false;
 			if(enemy.EXP > 0)
 			{
-				curUser.sprite.showStatus(CharSprite.POSITIVE, Messages.get(enemy, "exp", enemy.EXP));
 				curUser.earnExp(enemy.EXP);
 			}
 			enemy.rollToDropLoot();
@@ -290,12 +289,16 @@ public class WandOfCorruption extends Wand
 	@Override
 	public void onHit(MagesStaff staff, Char attacker, Char defender, int damage)
 	{
-		// lvl 0 - 25%
-		// lvl 1 - 40%
-		// lvl 2 - 50%
-		if(Random.Int(level() + 4) >= 3)
+		if(defender instanceof Mob)
 		{
-			Buff.prolong(defender, Amok.class, 4 + level() * 2);
+			for(Mob m : Dungeon.level.mobs)
+			{
+				if(m.buff(Following.class) != null)
+				{
+					Buff.detach(m, Following.class);
+					m.aggro(defender);
+				}
+			}
 		}
 	}
 
@@ -320,5 +323,4 @@ public class WandOfCorruption extends Wand
 		particle.setSize(0.5f, 2f);
 		particle.shuffleXY(1f);
 	}
-
 }

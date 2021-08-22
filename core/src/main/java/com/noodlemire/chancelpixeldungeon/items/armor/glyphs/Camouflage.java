@@ -33,7 +33,7 @@ import com.watabou.utils.Bundle;
 public class Camouflage extends Armor.Glyph
 {
 
-	private static ItemSprite.Glowing GREEN = new ItemSprite.Glowing(0x448822);
+	private static final ItemSprite.Glowing GREEN = new ItemSprite.Glowing(0x448822);
 
 	@Override
 	public int proc(Armor armor, Char attacker, Char defender, int damage)
@@ -52,6 +52,7 @@ public class Camouflage extends Armor.Glyph
 	{
 		private int pos;
 		private int left;
+		private int max;
 
 		@Override
 		public boolean act()
@@ -71,6 +72,7 @@ public class Camouflage extends Armor.Glyph
 		public void set(int time)
 		{
 			left = time;
+			max = Math.max(max, left);
 			pos = target.pos;
 			Sample.INSTANCE.play(Assets.SND_MELD);
 		}
@@ -89,6 +91,7 @@ public class Camouflage extends Armor.Glyph
 
 		private static final String POS = "pos";
 		private static final String LEFT = "left";
+		private static final String MAX = "max";
 
 		@Override
 		public void storeInBundle(Bundle bundle)
@@ -96,6 +99,7 @@ public class Camouflage extends Armor.Glyph
 			super.storeInBundle(bundle);
 			bundle.put(POS, pos);
 			bundle.put(LEFT, left);
+			bundle.put(MAX, max);
 		}
 
 		@Override
@@ -104,8 +108,14 @@ public class Camouflage extends Armor.Glyph
 			super.restoreFromBundle(bundle);
 			pos = bundle.getInt(POS);
 			left = bundle.getInt(LEFT);
+			max = bundle.getInt(MAX);
+		}
+
+		@Override
+		public float fadePercent()
+		{
+			return 1 - (float)left / max;
 		}
 	}
-
 }
 

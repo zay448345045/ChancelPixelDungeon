@@ -22,7 +22,6 @@
 package com.noodlemire.chancelpixeldungeon.actors.hero;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
-import com.noodlemire.chancelpixeldungeon.actors.mobs.npcs.NPC;
 
 public class HeroAction
 {
@@ -62,11 +61,11 @@ public class HeroAction
 
 	public static class Interact extends HeroAction
 	{
-		public NPC npc;
+		public Char ch;
 
-		public Interact(NPC npc)
+		public Interact(Char ch)
 		{
-			this.npc = npc;
+			this.ch = ch;
 		}
 	}
 

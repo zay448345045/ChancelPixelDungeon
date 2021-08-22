@@ -55,7 +55,7 @@ public class Shaman extends Mob implements Callback
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(2, EXP + 1);
+		return EXP + 1;
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class Shaman extends Mob implements Callback
 
 			if(hit(this, enemy, true))
 			{
-				int dmg = Random.NormalIntRange(EXP / 2, EXP * 2 - 4);
+				int dmg = EXP * 2;
 				if(Dungeon.level.water[enemy.pos] && !enemy.flying)
 				{
 					dmg *= 1.5f;
@@ -112,9 +112,10 @@ public class Shaman extends Mob implements Callback
 				enemy.sprite.centerEmitter().burst(SparkParticle.FACTORY, 3);
 				enemy.sprite.flash();
 
+				needRest(3);
+
 				if(enemy == Dungeon.hero)
 				{
-
 					Camera.main.shake(2, 0.3f);
 
 					if(!enemy.isAlive())
@@ -138,5 +139,4 @@ public class Shaman extends Mob implements Callback
 	{
 		next();
 	}
-
 }

@@ -7,6 +7,7 @@ import com.watabou.utils.Bundle;
 public class DynamicRecovery extends Buff
 {
 	private int resetTimer = 0;
+	private int lastPos = -1;
 
 	public void resetTimer()
 	{
@@ -16,6 +17,9 @@ public class DynamicRecovery extends Buff
 	@Override
 	public boolean act()
 	{
+		if(lastPos == -1)
+			lastPos = target.pos;
+
 		if(!(target instanceof Hero))
 		{
 			detach();
@@ -26,9 +30,10 @@ public class DynamicRecovery extends Buff
 
 		if(hero.isAlive())
 		{
+			int curPos = hero.pos;
 			float max = hero.dynamax();
 
-			if (hero.buff(Combo.class) == null && !hero.moved && !hero.attacked)
+			if (hero.buff(Combo.class) == null && !hero.moved && curPos == lastPos && !hero.attacked)
 			{
 				float oldFactor = hero.dynamicFactor();
 				hero.dynamic(max * 0.25f);
@@ -47,7 +52,7 @@ public class DynamicRecovery extends Buff
 				}
 			}
 
-			if(resetTimer > 0)
+			if(resetTimer > 0 && !hero.attacked)
 			{
 				resetTimer--;
 				if(resetTimer == 0 && hero.dynamicFactor() < 1)
@@ -67,6 +72,7 @@ public class DynamicRecovery extends Buff
 
 			hero.attacked = false;
 			hero.moved = false;
+			lastPos = curPos;
 		}
 		else
 			deactivate();
@@ -77,6 +83,7 @@ public class DynamicRecovery extends Buff
 	}
 
 	private static final String RESETTIMER = "resetTimer";
+	private static final String LASTPOS = "lastPos";
 
 	@Override
 	public void storeInBundle(Bundle bundle)
@@ -84,6 +91,7 @@ public class DynamicRecovery extends Buff
 		super.storeInBundle(bundle);
 
 		bundle.put(RESETTIMER, resetTimer);
+		bundle.put(LASTPOS, lastPos);
 	}
 
 	@Override
@@ -92,5 +100,8 @@ public class DynamicRecovery extends Buff
 		super.restoreFromBundle(bundle);
 
 		resetTimer = bundle.getInt(RESETTIMER);
+
+		if(bundle.contains(LASTPOS))
+			lastPos = bundle.getInt(LASTPOS);
 	}
 }

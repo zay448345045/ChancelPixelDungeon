@@ -59,6 +59,8 @@ public class King extends Mob
 		setHT(400, true);
 		EXP = 40;
 
+		TIME_TO_REST = 2;
+
 		Undead.count = 0;
 
 		properties.add(Property.BOSS);
@@ -87,7 +89,7 @@ public class King extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(25, 40);
+		return 40;
 	}
 
 	@Override
@@ -272,6 +274,8 @@ public class King extends Mob
 
 			EXP = 0;
 
+			setAttacksBeforeRest(2);
+
 			state = WANDERING;
 
 			properties.add(Property.UNDEAD);
@@ -295,7 +299,7 @@ public class King extends Mob
 		@Override
 		public int damageRoll()
 		{
-			return Random.NormalIntRange(15, 25);
+			return 15 + 10 * restTimeNeeded(false);
 		}
 
 		@Override

@@ -28,6 +28,7 @@ import com.noodlemire.chancelpixeldungeon.GamesInProgress;
 import com.noodlemire.chancelpixeldungeon.Statistics;
 import com.noodlemire.chancelpixeldungeon.actors.Actor;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.items.artifacts.DriedRose;
 import com.noodlemire.chancelpixeldungeon.levels.Level;
 import com.noodlemire.chancelpixeldungeon.levels.features.Chasm;
@@ -54,6 +55,7 @@ import com.watabou.utils.Random;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class InterlevelScene extends PixelScene
 {
@@ -100,6 +102,8 @@ public class InterlevelScene extends PixelScene
 	private static Exception error = null;
 	private float waitingTime;
 	private boolean touched = true;
+
+	public static final HashSet<Mob> followingEnemies = new HashSet<>();
 
 	private void newTipSet()
 	{
@@ -431,7 +435,6 @@ public class InterlevelScene extends PixelScene
 
 	private void fall() throws IOException
 	{
-
 		Actor.fixTime();
 		DriedRose.holdGhostHero(Dungeon.level);
 
@@ -453,7 +456,6 @@ public class InterlevelScene extends PixelScene
 
 	private void ascend() throws IOException
 	{
-
 		Actor.fixTime();
 		DriedRose.holdGhostHero(Dungeon.level);
 
@@ -465,7 +467,6 @@ public class InterlevelScene extends PixelScene
 
 	private void returnTo() throws IOException
 	{
-
 		Actor.fixTime();
 		DriedRose.holdGhostHero(Dungeon.level);
 
@@ -516,7 +517,6 @@ public class InterlevelScene extends PixelScene
 
 	private void reset()
 	{
-
 		Actor.fixTime();
 		DriedRose.holdGhostHero(Dungeon.level);
 

@@ -31,9 +31,10 @@ import com.noodlemire.chancelpixeldungeon.sprites.ImpSprite;
 
 public class ImpShopkeeper extends Shopkeeper
 {
-
 	{
 		spriteClass = ImpSprite.class;
+
+		EXP = 30;
 	}
 
 	private boolean seenBefore = false;

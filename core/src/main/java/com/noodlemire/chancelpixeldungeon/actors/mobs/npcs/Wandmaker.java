@@ -54,6 +54,8 @@ public class Wandmaker extends NPC
 		spriteClass = WandmakerSprite.class;
 
 		properties.add(Property.IMMOVABLE);
+
+		EXP = 15;
 	}
 
 	@Override

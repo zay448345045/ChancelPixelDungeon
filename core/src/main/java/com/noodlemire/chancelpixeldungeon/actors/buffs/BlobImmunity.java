@@ -39,7 +39,6 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Web;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfPurity;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 
 public class BlobImmunity extends FlavourBuff implements Expulsion
 {
@@ -49,12 +48,6 @@ public class BlobImmunity extends FlavourBuff implements Expulsion
 	public int icon()
 	{
 		return BuffIndicator.IMMUNITY;
-	}
-
-	@Override
-	public void tintIcon(Image icon)
-	{
-		greyIcon(icon, 5f, cooldown());
 	}
 
 	@Override

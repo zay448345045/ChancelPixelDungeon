@@ -125,7 +125,6 @@ public class Yog extends Mob
 	@Override
 	public int defenseProc(Char enemy, int damage)
 	{
-
 		ArrayList<Integer> spawnPoints = new ArrayList<>();
 
 		for(int i = 0; i < PathFinder.NEIGHBOURS8.length; i++)
@@ -216,6 +215,8 @@ public class Yog extends Mob
 
 			EXP = 0;
 
+			TIME_TO_REST = 2;
+
 			state = WANDERING;
 
 			properties.add(Property.BOSS);
@@ -232,7 +233,7 @@ public class Yog extends Mob
 		@Override
 		public int damageRoll()
 		{
-			return Random.NormalIntRange(20, 50);
+			return 50;
 		}
 
 		@Override
@@ -308,7 +309,7 @@ public class Yog extends Mob
 		@Override
 		public int damageRoll()
 		{
-			return Random.NormalIntRange(26, 32);
+			return 32;
 		}
 
 		@Override
@@ -328,26 +329,25 @@ public class Yog extends Mob
 		{
 			if(buff(MagicImmunity.class) != null)
 				return super.canAttack(enemy);
-
-			return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+			return !restNeeded() && new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
 		}
 
 		@Override
 		public boolean attack(Char enemy)
 		{
-
 			if(!Dungeon.level.adjacent(pos, enemy.pos))
 			{
 				spend(attackDelay());
 
 				if(hit(this, enemy, true))
 				{
-
-					int dmg = damageRoll();
+					int dmg = 44;
 					enemy.damage(dmg, this);
 
 					enemy.sprite.bloodBurstA(sprite.center(), dmg);
 					enemy.sprite.flash();
+
+					needRest(3);
 
 					if(!enemy.isAlive() && enemy == Dungeon.hero)
 					{
@@ -394,6 +394,8 @@ public class Yog extends Mob
 
 			EXP = 0;
 
+			setAttacksBeforeRest(2);
+
 			state = HUNTING;
 
 			properties.add(Property.DEMONIC);
@@ -408,7 +410,7 @@ public class Yog extends Mob
 		@Override
 		public int damageRoll()
 		{
-			return Random.NormalIntRange(22, 30);
+			return 22 + 8 * restTimeNeeded(false);
 		}
 
 		@Override

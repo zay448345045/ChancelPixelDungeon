@@ -47,6 +47,8 @@ public class Warlock extends Mob implements Callback
 
 		EXP = Random.IntRange(16, 20);
 
+		TIME_TO_REST = 1;
+
 		setHT(80 + EXP, true);
 
 		loot = Generator.Category.POTION;
@@ -58,7 +60,7 @@ public class Warlock extends Mob implements Callback
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(EXP, EXP + 6);
+		return EXP + 12;
 	}
 
 	@Override
@@ -113,8 +115,10 @@ public class Warlock extends Mob implements Callback
 			if(enemy == Dungeon.hero && Random.Int(2) == 0)
 				Buff.prolong(enemy, Weakness.class, Weakness.DURATION);
 
-			int dmg = Random.Int( EXP - 2, EXP + 2 );
+			int dmg = EXP * 2;
 			enemy.damage(dmg, this);
+
+			needRest(2);
 
 			if(!enemy.isAlive() && enemy == Dungeon.hero)
 			{

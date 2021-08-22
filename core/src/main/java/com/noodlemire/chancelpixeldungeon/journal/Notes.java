@@ -32,10 +32,8 @@ import java.util.Collections;
 
 public class Notes
 {
-
 	public static abstract class Record implements Comparable<Record>, Bundlable
 	{
-
 		protected int depth;
 
 		public int depth()
@@ -91,12 +89,9 @@ public class Notes
 
 	public static class LandmarkRecord extends Record
 	{
-
 		protected Landmark landmark;
 
-		public LandmarkRecord()
-		{
-		}
+		public LandmarkRecord() {}
 
 		public LandmarkRecord(Landmark landmark, int depth)
 		{
@@ -137,12 +132,9 @@ public class Notes
 
 	public static class KeyRecord extends Record
 	{
-
 		protected Key key;
 
-		public KeyRecord()
-		{
-		}
+		public KeyRecord() {}
 
 		public KeyRecord(Key key)
 		{
@@ -200,27 +192,74 @@ public class Notes
 		}
 	}
 
+	public static class CustomRecord implements Bundlable
+	{
+		private static final String TITLE = "title";
+		private static final String RECORD = "record";
+
+		private String title;
+		private String record;
+
+		public CustomRecord() {}
+
+		public CustomRecord(String t, String r)
+		{
+			title = t;
+			record = r;
+		}
+
+		public String title()
+		{
+			return title;
+		}
+
+		public String record()
+		{
+			return record;
+		}
+
+		@Override
+		public void storeInBundle(Bundle bundle)
+		{
+			bundle.put(TITLE, title);
+			bundle.put(RECORD, record);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle)
+		{
+			title = bundle.getString(TITLE);
+			record = bundle.getString(RECORD);
+		}
+	}
+
 	private static ArrayList<Record> records;
+	private static ArrayList<CustomRecord> custom;
 
 	public static void reset()
 	{
 		records = new ArrayList<>();
+		custom = new ArrayList<>();
 	}
 
 	private static final String RECORDS = "records";
+	private static final String CUSTOM = "custom";
 
 	public static void storeInBundle(Bundle bundle)
 	{
 		bundle.put(RECORDS, records);
+		bundle.put(CUSTOM, custom);
 	}
 
 	public static void restoreFromBundle(Bundle bundle)
 	{
 		records = new ArrayList<>();
 		for(Bundlable rec : bundle.getCollection(RECORDS))
-		{
 			records.add((Record) rec);
-		}
+
+		custom = new ArrayList<>();
+		for(Bundlable rec : bundle.getCollection(CUSTOM))
+			custom.add((CustomRecord) rec);
 	}
 
 	public static void add(Landmark landmark)
@@ -267,6 +306,27 @@ public class Notes
 		}
 	}
 
+	public static void add(String title, String customNote)
+	{
+		CustomRecord record = new CustomRecord(title, customNote);
+		custom.add(record);
+	}
+
+	public static int numCustomNotes()
+	{
+		return custom.size();
+	}
+
+	public static ArrayList<CustomRecord> getCustomNotes()
+	{
+		return custom;
+	}
+
+	public static void remove(int customIndex)
+	{
+		custom.remove(customIndex);
+	}
+
 	public static int keyCount(Key key)
 	{
 		KeyRecord k = new KeyRecord(key);
@@ -303,5 +363,4 @@ public class Notes
 	{
 		records.remove(rec);
 	}
-
 }

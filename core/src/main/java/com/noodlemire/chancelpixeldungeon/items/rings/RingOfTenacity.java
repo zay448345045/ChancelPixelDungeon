@@ -24,6 +24,7 @@ package com.noodlemire.chancelpixeldungeon.items.rings;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
+import com.noodlemire.chancelpixeldungeon.ui.QuickSlotButton;
 
 import java.text.DecimalFormat;
 
@@ -39,20 +40,34 @@ public class RingOfTenacity extends Ring
 		return new Tenacity();
 	}
 
-	public static float damageMultiplier(Char t)
+	public static int levelBonus(Char t)
 	{
-		//(HT - HP)/HT = heroes current % missing health.
-		return (float) Math.pow(0.85, getBonus(t, Tenacity.class) * ((float) (t.HT() - t.HP()) / t.HT()));
+		int bonus = getBonus(t, Tenacity.class);
+		if(bonus == 0)
+			return 0;
+
+		bonus += Math.abs(bonus) / bonus;
+
+		return (int)(bonus * ((1f - (float)t.HP() / t.HT())));
 	}
 
 	public String statsInfo()
 	{
 		if(isIdentified())
-			return Messages.get(this, "stats", new DecimalFormat("#.##").format(100f * (1f - Math.pow(0.85f, soloBonus()))));
+			return Messages.get(this, "stats", soloBonus(), new DecimalFormat("#.##").format(100f * (1 / (Math.abs(soloBonus()) + 1f))));
 		else
-			return Messages.get(this, "typical_stats", new DecimalFormat("#.##").format(15f));
+			return Messages.get(this, "typical_stats", 1, new DecimalFormat("#.##").format(50f));
 	}
 
-	private class Tenacity extends RingBuff {}
+	private class Tenacity extends RingBuff
+	{
+		@Override
+		public boolean act()
+		{
+			QuickSlotButton.refresh();
+
+			return super.act();
+		}
+	}
 }
 

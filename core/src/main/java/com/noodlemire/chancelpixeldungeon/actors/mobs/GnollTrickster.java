@@ -59,18 +59,6 @@ public class GnollTrickster extends Gnoll
 	private int combo = 0;
 
 	@Override
-	public int attackSkill(Char target)
-	{
-		return 16;
-	}
-
-	@Override
-	public int defenseSkill()
-	{
-		return 5;
-	}
-
-	@Override
 	protected boolean canAttack(Char enemy)
 	{
 		Ballistica attack = new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE);
@@ -149,5 +137,4 @@ public class GnollTrickster extends Gnoll
 		super.restoreFromBundle(bundle);
 		combo = bundle.getInt(COMBO);
 	}
-
 }

@@ -37,7 +37,6 @@ import java.util.Comparator;
 
 public class WndItem extends Window
 {
-
 	private static final float BUTTON_HEIGHT = 16;
 
 	private static final float GAP = 2;
@@ -195,7 +194,7 @@ public class WndItem extends Window
 		}
 	}
 
-	private static Comparator<RedButton> widthComparator = new Comparator<RedButton>()
+	private static final Comparator<RedButton> widthComparator = new Comparator<RedButton>()
 	{
 		@Override
 		public int compare(RedButton lhs, RedButton rhs)

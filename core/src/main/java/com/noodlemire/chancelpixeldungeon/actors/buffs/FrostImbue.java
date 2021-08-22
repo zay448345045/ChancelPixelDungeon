@@ -6,7 +6,6 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.Freezing;
 import com.noodlemire.chancelpixeldungeon.effects.particles.SnowParticle;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 
 public class FrostImbue extends FlavourBuff implements Expulsion, MeleeProc
 {
@@ -25,11 +24,6 @@ public class FrostImbue extends FlavourBuff implements Expulsion, MeleeProc
 	@Override
 	public int icon() {
 		return BuffIndicator.FROST;
-	}
-
-	@Override
-	public void tintIcon(Image icon) {
-		greyIcon(icon, 5f, cooldown());
 	}
 
 	@Override

@@ -28,6 +28,7 @@ import com.noodlemire.chancelpixeldungeon.actors.hero.Belongings;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.windows.WndBag;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -40,7 +41,7 @@ public class Bag extends Item implements Iterable<Item>
 	public static final String AC_OPEN = "OPEN";
 
 	{
-		image = 11;
+		image = ItemSpriteSheet.BACKPACK;
 
 		defaultAction = AC_OPEN;
 

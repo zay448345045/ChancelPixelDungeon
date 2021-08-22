@@ -43,11 +43,12 @@ import com.watabou.utils.Random;
 
 public class Imp extends NPC
 {
-
 	{
 		spriteClass = ImpSprite.class;
 
 		properties.add(Property.IMMOVABLE);
+
+		EXP = 30;
 	}
 
 	private boolean seenBefore = false;

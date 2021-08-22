@@ -176,17 +176,12 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		if(visible)
 		{
 			if(args.length > 0)
-			{
 				text = Messages.format(text, args);
-			}
+
 			if(ch != null)
-			{
 				FloatingText.show(x + width * 0.5f, y, ch.pos, text, color);
-			}
 			else
-			{
 				FloatingText.show(x + width * 0.5f, y, text, color);
-			}
 		}
 	}
 
@@ -265,10 +260,15 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 	public void jump(int from, int to, Callback callback)
 	{
+		jump(from, to, 4, 0.1f, callback);
+	}
+
+	public void jump(int from, int to, float height, float time, Callback callback)
+	{
 		jumpCallback = callback;
 
 		int distance = Dungeon.level.distance(from, to);
-		jumpTweener = new JumpTweener(this, worldToCamera(to), distance * 4, distance * 0.1f);
+		jumpTweener = new JumpTweener(this, worldToCamera(to), distance * height, distance * time);
 		jumpTweener.listener = this;
 		parent.add(jumpTweener);
 
@@ -621,7 +621,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		}
 	}
 
-	private float[] shadowMatrix = new float[16];
+	private final float[] shadowMatrix = new float[16];
 
 	@Override
 	protected void updateMatrix()
@@ -670,7 +670,6 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		}
 
 		super.draw();
-
 	}
 
 	@Override
@@ -678,20 +677,13 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	{
 		if(tweener == jumpTweener)
 		{
-
 			if(visible && Dungeon.level.water[ch.pos] && !ch.flying)
-			{
 				GameScene.ripple(ch.pos);
-			}
 			if(jumpCallback != null)
-			{
 				jumpCallback.call();
-			}
-
 		}
 		else if(tweener == motion)
 		{
-
 			synchronized(this)
 			{
 				isMoving = false;
@@ -702,7 +694,6 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 
 				notifyAll();
 			}
-
 		}
 	}
 

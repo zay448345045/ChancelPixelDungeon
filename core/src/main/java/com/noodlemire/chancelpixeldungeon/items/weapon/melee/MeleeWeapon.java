@@ -28,6 +28,7 @@ import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.items.Item;
 import com.noodlemire.chancelpixeldungeon.items.Transmutable;
+import com.noodlemire.chancelpixeldungeon.items.rings.RingOfTenacity;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.watabou.utils.Random;
@@ -52,18 +53,29 @@ public class MeleeWeapon extends Weapon implements Transmutable
 
 	private int dispMin()
 	{
-		return isIdentified() ? augment.damageFactor(min(level())) : min(0);
+		return levelKnown ? augment.damageFactor(min()) : min(0);
 	}
 
 	private int dispMax()
 	{
-		return isIdentified() ? augment.damageFactor(max(level())) : max(0);
+		return levelKnown ? augment.damageFactor(max()) : max(0);
 	}
 
 	public int STRReq(int lvl)
 	{
 		//strength req decreases at +1,+3,+6,+10,etc.
 		return (8 + tier * 2) - (int) (Math.sqrt(8 * lvl + 1) - 1) / 2;
+	}
+
+	@Override
+	public int level()
+	{
+		int bonus = 0;
+
+		if(Dungeon.hero != null && this == Dungeon.hero.belongings.weapon)
+			bonus = RingOfTenacity.levelBonus(Dungeon.hero);
+
+		return super.level() + bonus;
 	}
 
 	@Override

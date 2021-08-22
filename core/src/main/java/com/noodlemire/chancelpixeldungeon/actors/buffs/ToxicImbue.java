@@ -26,7 +26,6 @@ import com.noodlemire.chancelpixeldungeon.actors.blobs.ToxicGas;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 
 public class ToxicImbue extends DurationBuff implements Expulsion
 {
@@ -50,12 +49,6 @@ public class ToxicImbue extends DurationBuff implements Expulsion
 	public int icon()
 	{
 		return BuffIndicator.IMMUNITY;
-	}
-
-	@Override
-	public void tintIcon(Image icon)
-	{
-		FlavourBuff.greyIcon(icon, 5f, left());
 	}
 
 	@Override

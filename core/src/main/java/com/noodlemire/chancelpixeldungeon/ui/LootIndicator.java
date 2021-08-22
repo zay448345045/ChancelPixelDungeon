@@ -79,15 +79,35 @@ public class LootIndicator extends Tag
 			Heap heap = Dungeon.level.heaps.get(Dungeon.hero.pos);
 			if(heap != null)
 			{
+				Item item;
+				switch(heap.type)
+				{
+					case CHEST:
+					case MIMIC:
+						item = ItemSlot.CHEST;
+						break;
+					case LOCKED_CHEST:
+						item = ItemSlot.LOCKED_CHEST;
+						break;
+					case CRYSTAL_CHEST:
+						item = ItemSlot.CRYSTAL_CHEST;
+						break;
+					case EBONY_CHEST:
+						item = ItemSlot.EBONY_CHEST;
+						break;
+					case TOMB:
+						item = ItemSlot.TOMB;
+						break;
+					case SKELETON:
+						item = ItemSlot.SKELETON;
+						break;
+					case REMAINS:
+						item = ItemSlot.REMAINS;
+						break;
+					default:
+						item = heap.peek();
+				}
 
-				Item item =
-						heap.type == Heap.Type.CHEST || heap.type == Heap.Type.MIMIC ? ItemSlot.CHEST :
-								heap.type == Heap.Type.LOCKED_CHEST ? ItemSlot.LOCKED_CHEST :
-										heap.type == Heap.Type.CRYSTAL_CHEST ? ItemSlot.CRYSTAL_CHEST :
-												heap.type == Heap.Type.TOMB ? ItemSlot.TOMB :
-														heap.type == Heap.Type.SKELETON ? ItemSlot.SKELETON :
-																heap.type == Heap.Type.REMAINS ? ItemSlot.REMAINS :
-																		heap.peek();
 				if(item != lastItem || item.quantity() != lastQuantity)
 				{
 					lastItem = item;

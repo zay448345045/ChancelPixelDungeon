@@ -39,10 +39,10 @@ import com.watabou.noosa.ui.Button;
 
 public class ItemSlot extends Button
 {
-
 	public static final int DEGRADED = 0xFF4444;
 	public static final int UPGRADED = 0x44FF44;
 	public static final int WARNING = 0xFF8800;
+	public static final int BOOSTED = 0x44FFFF;
 
 	private static final float ENABLED = 1.0f;
 	private static final float DISABLED = 0.3f;
@@ -60,7 +60,6 @@ public class ItemSlot extends Button
 	private static final String TXT_KEY_DEPTH = "\u007F%d";
 
 	private static final String TXT_LEVEL = "%+d";
-	private static final String TXT_CURSED = "";//"-";
 
 	// Special "virtual items"
 	public static final Item CHEST = new Item()
@@ -82,6 +81,13 @@ public class ItemSlot extends Button
 		public int image()
 		{
 			return ItemSpriteSheet.CRYSTAL_CHEST;
+		}
+	};
+	public static final Item EBONY_CHEST = new Item()
+	{
+		public int image()
+		{
+			return ItemSpriteSheet.EBONY_CHEST;
 		}
 	};
 	public static final Item TOMB = new Item()
@@ -179,7 +185,7 @@ public class ItemSlot extends Button
 		if (itemIcon != null)
 		{
 			itemIcon.x = x + width - (ItemSpriteSheet.Icons.SIZE + itemIcon.width())/2f;
-			itemIcon.y = y + (ItemSpriteSheet.Icons.SIZE - itemIcon.height)/2f;
+			itemIcon.y = y + (ItemSpriteSheet.Icons.SIZE - itemIcon.height())/2f;
 			PixelScene.align(itemIcon);
 		}
 	}
@@ -279,7 +285,11 @@ public class ItemSlot extends Button
 		{
 			bottomRight.text(Messages.format(TXT_LEVEL, level));
 			bottomRight.measure();
-			bottomRight.hardlight(UPGRADED);
+
+			if(item.levelKnown && item.level() > item.rawLevel())
+				bottomRight.hardlight(BOOSTED);
+			else
+				bottomRight.hardlight(UPGRADED);
 		}
 		else
 			bottomRight.text(null);

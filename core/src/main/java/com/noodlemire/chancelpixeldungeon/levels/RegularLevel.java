@@ -52,6 +52,7 @@ import com.noodlemire.chancelpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.noodlemire.chancelpixeldungeon.levels.traps.BlazingTrap;
 import com.noodlemire.chancelpixeldungeon.levels.traps.BurningTrap;
 import com.noodlemire.chancelpixeldungeon.levels.traps.ChillingTrap;
+import com.noodlemire.chancelpixeldungeon.levels.traps.CursingTrap;
 import com.noodlemire.chancelpixeldungeon.levels.traps.DisintegrationTrap;
 import com.noodlemire.chancelpixeldungeon.levels.traps.ExplosiveTrap;
 import com.noodlemire.chancelpixeldungeon.levels.traps.FrostTrap;
@@ -427,13 +428,16 @@ public abstract class RegularLevel extends Level
 	@Override
 	protected void createItems()
 	{
-		// drops 3/4/5 items 60%/30%/10% of the time
-		int nItems = 3 + Random.chances(new float[]{6, 3, 1});
+		// drops 5/6/7 items 60%/30%/10% of the time
+		int nItems = 5 + Random.chances(new float[]{6, 3, 1});
 
 		for(int i = 0; i < nItems; i++)
 		{
-			Heap.Type type = null;
-			switch(Random.Int(20))
+			Item toDrop = Generator.random();
+			if(toDrop == null) continue;
+
+			Heap.Type type;
+			switch(Random.Int(Dungeon.depth == 1 || !toDrop.canBeCursed() ? 20 : 30)) //Prevent spawning of ebony chests on floor 1
 			{
 				case 0:
 					type = Heap.Type.SKELETON;
@@ -453,6 +457,18 @@ public abstract class RegularLevel extends Level
 				case 9:
 					type = Heap.Type.AMPHORA;
 					break;
+				case 20:
+				case 21:
+				case 22:
+				case 23:
+				case 24:
+				case 25:
+				case 26:
+				case 27:
+				case 28:
+				case 29:
+					type = Heap.Type.EBONY_CHEST;
+					break;
 				default:
 					type = Heap.Type.HEAP;
 			}
@@ -466,10 +482,6 @@ public abstract class RegularLevel extends Level
 				map[cell] = Terrain.GRASS;
 				losBlocking[cell] = false;
 			}
-
-			Item toDrop = Generator.random();
-
-			if(toDrop == null) continue;
 
 			if((toDrop instanceof Artifact && Random.Int(2) == 0) ||
 			   (toDrop.isUpgradable() && Random.Int(4 - toDrop.level()) == 0))
@@ -487,6 +499,15 @@ public abstract class RegularLevel extends Level
 				a.insertItem(toDrop);
 				a.pos = cell;
 				others.add(a);
+			}
+			else if(type == Heap.Type.EBONY_CHEST)
+			{
+				if(toDrop.isUpgradable())
+					toDrop.upgrade();
+
+				CursingTrap.curse(toDrop);
+
+				drop(toDrop, cell).type = type;
 			}
 			else
 			{

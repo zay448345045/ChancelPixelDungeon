@@ -77,12 +77,10 @@ public class Goo extends Mob
 	@Override
 	public int damageRoll()
 	{
-		int min = 1;
-		int max = (HP() * 2 <= HT()) ? 15 : 10;
+		int dmg = (HP() * 2 <= HT()) ? 15 : 10;
 
 		if(pumpedUp > 0)
 		{
-			pumpedUp = 0;
 			PathFinder.buildDistanceMap(pos, BArray.not(Dungeon.level.solid, null), 2);
 			for(int i = 0; i < PathFinder.distance.length; i++)
 				if(PathFinder.distance[i] < Integer.MAX_VALUE)
@@ -90,10 +88,22 @@ public class Goo extends Mob
 
 			Dungeon.playAt(Assets.SND_BURNING, pos);
 
-			return Random.NormalIntRange(min * 3, max * 3);
+			return dmg * 3;
 		}
 		else
-			return Random.NormalIntRange(min, max);
+			return dmg;
+	}
+
+	@Override
+	public void needRest()
+	{
+		if(pumpedUp > 0)
+		{
+			needRest(2);
+			pumpedUp = 0;
+		}
+		else
+			super.needRest();
 	}
 
 	@Override
@@ -241,36 +251,29 @@ public class Goo extends Mob
 				if(PathFinder.distance[i] < Integer.MAX_VALUE)
 					GameScene.add(Blob.seed(i, 2, GooWarn.class));
 			pumpedUp++;
-
-			spend(attackDelay());
-
-			return true;
 		}
 		else if(pumpedUp >= 2 || Random.Int((HP() * 2 <= HT()) ? 2 : 5) > 0)
 		{
 			boolean visible = Dungeon.level.heroFOV[pos];
 
 			if(visible)
+			{
 				if(pumpedUp >= 2)
 					((GooSprite) sprite).pumpAttack();
 				else
 					sprite.attack(enemy.pos);
+			}
 			else
 				attack(enemy);
-
-			spend(attackDelay());
-
-			return !visible;
 		}
 		else
 		{
 			pumpedUp++;
-
 			startPumping();
-			spend(attackDelay());
-
-			return true;
 		}
+
+		spend(attackDelay());
+		return true;
 	}
 
 	@Override

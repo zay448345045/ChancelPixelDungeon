@@ -40,7 +40,6 @@ import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -102,11 +101,6 @@ public class Ring extends KindofMisc implements Transmutable
 	public static void save(Bundle bundle)
 	{
 		handler.save(bundle);
-	}
-
-	public static void saveSelectively(Bundle bundle, ArrayList<Item> items)
-	{
-		handler.saveSelectively(bundle, items);
 	}
 
 	@SuppressWarnings("unchecked")

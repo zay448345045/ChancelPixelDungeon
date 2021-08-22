@@ -9,7 +9,6 @@ import com.noodlemire.chancelpixeldungeon.items.wands.Wand;
 import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 
 public class MagicImmunity extends FlavourBuff implements Expulsion
 {
@@ -30,12 +29,6 @@ public class MagicImmunity extends FlavourBuff implements Expulsion
 	public int icon()
 	{
 		return BuffIndicator.ANTIMAGIC;
-	}
-
-	@Override
-	public void tintIcon(Image icon)
-	{
-		greyIcon(icon, 5f, cooldown());
 	}
 
 	@Override

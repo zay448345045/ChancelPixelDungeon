@@ -162,7 +162,6 @@ public class Chrome
 		@Override
 		public void draw()
 		{
-
 			super.draw();
 
 			if(dirty)

@@ -64,6 +64,7 @@ import com.noodlemire.chancelpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.noodlemire.chancelpixeldungeon.mechanics.ShadowCaster;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
+import com.noodlemire.chancelpixeldungeon.scenes.InterlevelScene;
 import com.noodlemire.chancelpixeldungeon.ui.QuickSlotButton;
 import com.noodlemire.chancelpixeldungeon.utils.BArray;
 import com.noodlemire.chancelpixeldungeon.utils.DungeonSeed;
@@ -73,6 +74,7 @@ import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.FileUtils;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -351,6 +353,55 @@ public class Dungeon
 		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25;
 	}
 
+	private static Char checkAt(int pos)
+	{
+		if (hero.pos == pos)
+			return hero;
+
+		for (Mob mob : level.mobs)
+			if (mob.pos == pos)
+				return mob;
+
+		return null;
+	}
+
+	private static void bounce(Char ch, int pos)
+	{
+		bounce(ch, pos, 2);
+	}
+
+	private static void bounce(final Char ch, int pos, final int i)
+	{
+		int mpos;
+
+		do
+		{
+			mpos = pos + PathFinder.NEIGHBOURS8[Random.Int(PathFinder.NEIGHBOURS8.length)];
+		}
+		while (level.solid[mpos] || level.avoid[mpos]);
+
+		final int fmpos = mpos;
+
+		ch.sprite.jump(pos, fmpos, 10, 1f/i, new Callback()
+		{
+			@Override
+			public void call()
+			{
+				Char other = checkAt(fmpos);
+
+				if(other == null)
+				{
+					ch.pos = fmpos;
+					level.press(fmpos, ch);
+				}
+				else
+				{
+					bounce(ch, fmpos, i+1);
+				}
+			}
+		});
+	}
+
 	@SuppressWarnings("deprecation")
 	public static void switchLevel(final Level level, int pos)
 	{
@@ -361,6 +412,22 @@ public class Dungeon
 
 		Dungeon.level = level;
 		DriedRose.restoreGhostHero(level, pos);
+
+		hero.pos = pos;
+
+		for(Mob m : InterlevelScene.followingEnemies)
+		{
+			final Char prev = checkAt(pos);
+
+			m.pos = pos;
+			level.mobs.add(m);
+
+			if(prev != null)
+			{
+				//bounce(prev, pos);
+			}
+		}
+
 		Actor.init();
 
 		Actor respawner = level.respawner();
@@ -369,14 +436,48 @@ public class Dungeon
 			Actor.addDelayed(respawner, level.respawnTime());
 		}
 
-		hero.pos = pos;
-
 		Light light = hero.buff(Light.class);
 		hero.viewDistance = light == null ? level.viewDistance : Math.max(Light.DISTANCE, level.viewDistance);
 
 		hero.curAction = hero.lastAction = null;
 
 		observe();
+
+		if(!InterlevelScene.followingEnemies.isEmpty())
+		{
+			Actor.add(new Actor()
+			{
+				@Override
+				protected boolean act()
+				{
+					int stairpos = hero.pos;
+
+					bounce(hero, stairpos);
+
+					int i = 1; //This counter is used so that the last enemy in a stack won't be bounced away.
+					for(Mob m : InterlevelScene.followingEnemies)
+					{
+						if(i < InterlevelScene.followingEnemies.size())
+						{
+							i++;
+
+							bounce(m, stairpos);
+						}
+					}
+
+					InterlevelScene.followingEnemies.clear();
+
+					deactivate();
+					return true;
+				}
+			});
+
+			hero.spend(Actor.TICK);
+
+			for(Mob m : InterlevelScene.followingEnemies)
+				m.spend(Actor.TICK);
+		}
+
 		try
 		{
 			saveAll();
@@ -476,7 +577,7 @@ public class Dungeon
 			bundle.put(BESTIARY, bestiary);
 
 			int count = 0;
-			int ids[] = new int[chapters.size()];
+			int[] ids = new int[chapters.size()];
 			for(Integer id : chapters)
 				ids[count++] = id;
 			bundle.put(CHAPTERS, ids);
@@ -576,7 +677,7 @@ public class Dungeon
 			Bestiary.restore(bundle.getBundle(BESTIARY));
 
 			chapters = new HashSet<Integer>();
-			int ids[] = bundle.getIntArray(CHAPTERS);
+			int[] ids = bundle.getIntArray(CHAPTERS);
 			if(ids != null)
 				for(int id : ids)
 					chapters.add(id);
@@ -757,7 +858,7 @@ public class Dungeon
 			BArray.setFalse(passable);
 	}
 
-	public static PathFinder.Path findPath(Char ch, int from, int to, boolean pass[], boolean[] visible)
+	public static PathFinder.Path findPath(Char ch, int from, int to, boolean[] pass, boolean[] visible)
 	{
 		setupPassable();
 		if (ch.flying || ch.buff(Amok.class) != null || ch.buff(Challenged.class) != null)
@@ -777,7 +878,7 @@ public class Dungeon
 		return PathFinder.find(from, to, passable);
 	}
 
-	public static int findStep(Char ch, int from, int to, boolean pass[], boolean[] visible)
+	public static int findStep(Char ch, int from, int to, boolean[] pass, boolean[] visible)
 	{
 		if(Dungeon.level.adjacent(from, to))
 			return Actor.findChar(to) == null && (pass[to] || Dungeon.level.avoid[to]) ? to : -1;
@@ -795,7 +896,7 @@ public class Dungeon
 		return PathFinder.getStep(from, to, passable);
 	}
 
-	public static int flee(Char ch, int cur, int from, boolean pass[], boolean[] visible)
+	public static int flee(Char ch, int cur, int from, boolean[] pass, boolean[] visible)
 	{
 		setupPassable();
 		if(ch.flying)
@@ -813,6 +914,9 @@ public class Dungeon
 
 	public static void playAt(Object id, int pos)
 	{
+		if(level == null)
+			return;
+
 		float volume = (1 - level.trueDistance(pos, hero.pos) / 15);
 
 		if(volume > 0)

@@ -42,6 +42,8 @@ public class Piranha extends Mob
 
 		baseSpeed = 2f;
 
+		setAttacksBeforeRest(2);
+
 		loot = MysteryMeat.class;
 		lootChance = 1f;
 
@@ -74,7 +76,7 @@ public class Piranha extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(Dungeon.depth, 4 + Dungeon.depth * 2);
+		return EXP * 4 + 4 * restTimeNeeded(false);
 	}
 
 	@Override

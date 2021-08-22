@@ -6,13 +6,19 @@ import com.noodlemire.chancelpixeldungeon.items.Generator;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
+import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.GameMath;
+import com.watabou.utils.Random;
+
+import java.text.DecimalFormat;
+import java.util.HashSet;
 
 public class RingOfVolatility extends Ring
 {
 	private static final int DURATION = 300;
 
-	private Ring ring;
+	private final HashSet<Ring> rings = new HashSet<>();
 	private int left = 0;
 
 	{
@@ -25,26 +31,38 @@ public class RingOfVolatility extends Ring
 		return new Volatility();
 	}
 
+	private static float extraChance(Char target)
+	{
+		return (float)Math.pow(1.06, Math.abs(getBonus(target, Volatility.class)));
+	}
+
 	@Override
 	public String statsInfo()
 	{
+		String chance = new DecimalFormat("#.##").format(100 * (Math.pow(1.06, Math.abs(soloBonus())) - 1));
+
 		if(isIdentified())
 		{
-			if(ring == null)
-				return Messages.get(this, "no_effect");
+			if(rings.isEmpty())
+				return Messages.get(this, "no_effect", chance);
 
-			return Messages.get(this, "stats", left) + "\n\n" + ring.statsInfo();
+			StringBuilder stats = new StringBuilder(Messages.get(this, "stats", chance, left));
+
+			for(Ring r : rings)
+				stats.append("\n\n").append(r.statsInfo());
+
+			return stats.toString();
 		}
 		else
-			return Messages.get(this, "typical_stats", DURATION);
+			return Messages.get(this, "typical_stats", "6", DURATION);
 	}
 
 	@Override
 	public void activate(Char ch)
 	{
 		super.activate(ch);
-		if(ring != null)
-			ring.activate(ch);
+		for(Ring r : rings)
+			r.activate(ch);
 	}
 
 	@Override
@@ -52,8 +70,8 @@ public class RingOfVolatility extends Ring
 	{
 		if (super.doUnequip(hero, collect, single))
 		{
-			if(ring != null)
-				ring.buff.detach();
+			for(Ring r : rings)
+				r.buff.detach();
 
 			return true;
 		}
@@ -62,7 +80,7 @@ public class RingOfVolatility extends Ring
 	}
 
 	private static final String LEFT = "left";
-	private static final String RING = "ring";
+	private static final String RINGS = "rings";
 
 	@Override
 	public void storeInBundle(Bundle bundle)
@@ -70,7 +88,7 @@ public class RingOfVolatility extends Ring
 		super.storeInBundle(bundle);
 
 		bundle.put(LEFT, left);
-		bundle.put(RING, ring);
+		bundle.put(RINGS, rings);
 	}
 
 	@Override
@@ -80,48 +98,79 @@ public class RingOfVolatility extends Ring
 
 		left = bundle.getInt(LEFT);
 
-		if(bundle.contains(RING))
+		if(bundle.contains(RINGS))
 		{
-			ring = (Ring) bundle.get(RING);
-			ring.ownedByRing = true;
+			for(Bundlable b : bundle.getCollection(RINGS))
+			{
+				if(b instanceof Ring)
+				{
+					rings.add((Ring)b);
+					((Ring)b).ownedByRing = true;
+				}
+			}
 		}
 	}
 
 	public class Volatility extends RingBuff
 	{
+		private boolean hasAnInstanceOf(Ring inst)
+		{
+			for(Ring r : rings)
+				if(r.getClass().isInstance(inst))
+					return true;
+
+			return false;
+		}
+
 		private void transform()
 		{
-			Class oldType = ring == null ?
-					null :
-					ring.getClass();
+			float chanceLeft = GameMath.gate(1, extraChance(target), Generator.Category.RING.classes.length - 1);
 
 			left = DURATION;
 
-			if(ring != null)
-				ring.buff.detach();
+			for(Ring r : rings)
+				r.buff.detach();
 
-			do
+			rings.clear();
+
+			while(chanceLeft > 1 || (chanceLeft > 0 && Random.Float() < chanceLeft))
 			{
-				ring = Generator.randomRing(false);
-			}
-			while(ring == null || ring instanceof RingOfVolatility || (oldType != null && oldType.isInstance(ring)));
+				Ring ring;
+				chanceLeft--;
 
-			ring.ownedByRing = true;
-			ring.cursed = cursed;
-			ring.level(rawLevel());
-			ring.activate(target);
+				do
+				{
+					ring = (Ring)Generator.randomNormalized(Generator.Category.RING);
+				}
+				while(ring == null || ring instanceof RingOfVolatility || hasAnInstanceOf(ring));
+
+				ring.ownedByRing = true;
+				ring.cursed = cursed;
+				ring.level(rawLevel());
+				ring.activate(target);
+				rings.add(ring);
+			}
 
 			if(isIdentified())
-				GLog.h(Messages.get(RingOfVolatility.class, "transformed"), RingOfVolatility.this.toString(), ring.name());
+			{
+				StringBuilder ringNames = new StringBuilder();
+
+				for(Ring r : rings)
+					ringNames.append(r.name()).append(", ");
+
+				String rn = ringNames.substring(0, ringNames.length() - 2);
+
+				GLog.h(Messages.get(RingOfVolatility.class, "transformed"), RingOfVolatility.this.toString(), rn);
+			}
 		}
 
 		@Override
 		public boolean act()
 		{
-			if(ring != null)
+			for(Ring r : rings)
 			{
-				ring.level(rawLevel());
-				ring.cursed = cursed;
+				r.level(rawLevel());
+				r.cursed = cursed;
 			}
 
 			left--;

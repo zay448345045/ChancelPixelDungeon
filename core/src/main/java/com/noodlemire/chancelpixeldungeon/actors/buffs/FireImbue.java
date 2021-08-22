@@ -31,7 +31,6 @@ import com.noodlemire.chancelpixeldungeon.levels.Terrain;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 import com.watabou.utils.Random;
 
 public class FireImbue extends DurationBuff implements Expulsion, MeleeProc
@@ -69,12 +68,6 @@ public class FireImbue extends DurationBuff implements Expulsion, MeleeProc
 	public int icon()
 	{
 		return BuffIndicator.FIRE;
-	}
-
-	@Override
-	public void tintIcon(Image icon)
-	{
-		FlavourBuff.greyIcon(icon, 5f, left());
 	}
 
 	@Override

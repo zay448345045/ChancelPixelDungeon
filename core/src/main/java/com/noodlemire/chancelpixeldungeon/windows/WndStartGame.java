@@ -169,7 +169,7 @@ public class WndStartGame extends Window
 	private static class HeroBtn extends Button
 	{
 
-		private HeroClass cl;
+		private final HeroClass cl;
 
 		private Image hero;
 
@@ -219,20 +219,9 @@ public class WndStartGame extends Window
 		{
 			super.update();
 			if(cl != GamesInProgress.selectedClass)
-			{
-				if(cl == HeroClass.HUNTRESS && !Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3))
-				{
-					hero.brightness(0f);
-				}
-				else
-				{
-					hero.brightness(0.6f);
-				}
-			}
+				hero.brightness(0.6f);
 			else
-			{
 				hero.brightness(1f);
-			}
 		}
 
 		@Override
@@ -240,15 +229,7 @@ public class WndStartGame extends Window
 		{
 			super.onClick();
 
-			if(cl == HeroClass.HUNTRESS && !Badges.isUnlocked(Badges.Badge.BOSS_SLAIN_3))
-			{
-				ChancelPixelDungeon.scene().add(
-						new WndMessage(Messages.get(WndStartGame.class, "huntress_unlock")));
-			}
-			else
-			{
-				GamesInProgress.selectedClass = cl;
-			}
+			GamesInProgress.selectedClass = cl;
 		}
 	}
 

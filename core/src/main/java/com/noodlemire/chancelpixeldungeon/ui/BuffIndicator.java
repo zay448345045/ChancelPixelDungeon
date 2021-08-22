@@ -25,6 +25,7 @@ import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.FadePercent;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.windows.WndInfoBuff;
 import com.watabou.gltextures.SmartTexture;
@@ -34,6 +35,7 @@ import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.noosa.ui.Button;
 import com.watabou.noosa.ui.Component;
+import com.watabou.utils.GameMath;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -101,9 +103,9 @@ public class BuffIndicator extends Component
 	private SmartTexture texture;
 	private TextureFilm film;
 
-	private LinkedHashMap<Buff, BuffIcon> buffIcons = new LinkedHashMap<>();
+	private final LinkedHashMap<Buff, BuffIcon> buffIcons = new LinkedHashMap<>();
 	private boolean needsRefresh;
-	private Char ch;
+	private final Char ch;
 
 	public BuffIndicator(Char ch)
 	{
@@ -144,7 +146,6 @@ public class BuffIndicator extends Component
 	@Override
 	protected void layout()
 	{
-
 		ArrayList<Buff> newBuffs = new ArrayList<>();
 		for(Buff buff : ch.buffs())
 			if(buff.icon() != NONE)
@@ -203,9 +204,10 @@ public class BuffIndicator extends Component
 
 	private class BuffIcon extends Button
 	{
-		private Buff buff;
+		private final Buff buff;
 
 		public Image icon;
+		public Image grey;
 
 		public BuffIcon(Buff buff)
 		{
@@ -215,20 +217,34 @@ public class BuffIndicator extends Component
 			icon = new Image(texture);
 			icon.frame(film.get(buff.icon()));
 			add(icon);
+
+			grey = new Image( TextureCache.createSolid(0xCC666666));
+			add( grey );
 		}
 
 		public void updateIcon()
 		{
 			icon.frame(film.get(buff.icon()));
 			buff.tintIcon(icon);
+
+			float fadeHeight = buff instanceof FadePercent ?
+					GameMath.gate(0, ((FadePercent) buff).fadePercent(), 1) * icon.height() :
+					0;
+			float zoom = (camera() != null) ? camera().zoom : 1;
+
+			//round up to the nearest pixel if <50% faded, otherwise round down
+			if (fadeHeight < icon.height() / 2f)
+				grey.scale.set(icon.width(), (float) Math.ceil(zoom * fadeHeight) / zoom);
+			else
+				grey.scale.set(icon.width(), (float) Math.floor(zoom * fadeHeight) / zoom);
 		}
 
 		@Override
 		protected void layout()
 		{
 			super.layout();
-			icon.x = this.x + 1;
-			icon.y = this.y + 2;
+			grey.x = icon.x = this.x + 1;
+			grey.y = icon.y = this.y + 2;
 		}
 
 		@Override

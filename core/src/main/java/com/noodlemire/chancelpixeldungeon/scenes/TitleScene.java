@@ -45,11 +45,9 @@ import com.watabou.noosa.ui.Button;
 
 public class TitleScene extends PixelScene
 {
-
 	@Override
 	public void create()
 	{
-
 		super.create();
 
 		Music.INSTANCE.play(Assets.THEME, true);

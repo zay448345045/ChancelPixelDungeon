@@ -473,7 +473,8 @@ public class GameScene extends PixelScene
 
 			InterlevelScene.mode = InterlevelScene.Mode.NONE;
 
-			fadeIn();
+			if(InterlevelScene.followingEnemies.isEmpty())
+				fadeIn();
 		}
 	}
 
@@ -972,6 +973,8 @@ public class GameScene extends PixelScene
 			cancelCellSelector();
 			scene.addToFront(wnd);
 		}
+		else if(Game.scene() != null)
+			Game.scene().add(wnd);
 	}
 
 	public static void updateFog()

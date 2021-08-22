@@ -25,7 +25,6 @@ import com.noodlemire.chancelpixeldungeon.Dungeon;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.scenes.GameScene;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 
 public class MindVision extends FlavourBuff
 {
@@ -41,12 +40,6 @@ public class MindVision extends FlavourBuff
 	public int icon()
 	{
 		return BuffIndicator.MIND_VISION;
-	}
-
-	@Override
-	public void tintIcon(Image icon)
-	{
-		greyIcon(icon, 5f, cooldown());
 	}
 
 	@Override

@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 
 public class ItemExistenceHandler<T extends Item>
 {
@@ -154,29 +153,6 @@ public class ItemExistenceHandler<T extends Item>
 			bundle.put(itemName + PFX_KNOWN, known.contains(item));
 			bundle.put(itemName + PFX_DANGERKNOWN, dangerKnown.contains(item));
 		}
-	}
-
-	public void saveSelectively(Bundle bundle, ArrayList<Item> itemsToSave)
-	{
-		List<Class<? extends T>> items = Arrays.asList(this.items);
-		List<Class<? extends T>> constants = Arrays.asList(this.constantItems);
-
-		for(Item item : itemsToSave)
-		{
-			if(items.contains(item.getClass()))
-				doSelectiveSave(bundle, items, item);
-			else if(constants.contains(items.getClass()))
-				doSelectiveSave(bundle, constants, item);
-		}
-	}
-
-	private void doSelectiveSave(Bundle bundle, List<Class<? extends T>> items, Item item)
-	{
-		Class<? extends T> cls = items.get(items.indexOf(item.getClass()));
-		String itemName = cls.toString();
-		bundle.put(itemName + PFX_LABEL, itemLabels.get(cls));
-		bundle.put(itemName + PFX_KNOWN, known.contains(cls));
-		bundle.put(itemName + PFX_DANGERKNOWN, dangerKnown.contains(cls));
 	}
 
 	private void restore(Bundle bundle, ArrayList<String> labelsLeft, String defaultLabel, int defaultImage)

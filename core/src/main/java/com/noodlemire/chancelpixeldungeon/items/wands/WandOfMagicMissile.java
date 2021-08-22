@@ -60,7 +60,7 @@ public class WandOfMagicMissile extends DamageWand
 
 			if(curUser.critBoost(null))
 			{
-				Buff.affect(curUser, Recharging.class).set(1);
+				Buff.affect(curUser, Recharging.class).set(2);
 				SpellSprite.show(curUser, SpellSprite.CHARGE);
 				critFx(ch);
 			}

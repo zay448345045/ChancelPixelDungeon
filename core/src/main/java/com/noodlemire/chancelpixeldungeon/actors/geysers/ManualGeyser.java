@@ -1,6 +1,5 @@
 package com.noodlemire.chancelpixeldungeon.actors.geysers;
 
-import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.sprites.GeyserSprite;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -34,13 +33,13 @@ public abstract class ManualGeyser extends Geyser
 	}
 
 	@Override
-	public int defenseProc(Char enemy, int damage)
+	public void damage(int dmg, Object src)
 	{
-		spew();
-		((GeyserSprite)sprite).spew();
-		nextSpewTime = Random.Int(50, 101);
+		super.damage(dmg, src);
 
-		return damage;
+		spew();
+		if(sprite instanceof GeyserSprite) ((GeyserSprite)sprite).spew();
+		nextSpewTime = Random.IntRange(50, 100);
 	}
 
 	private static final String SPEWTIME = "nextSpewTime";

@@ -42,17 +42,17 @@ public class WndInfoChar extends WndTitledMessage
 	{
 		private static final int GAP = 2;
 
-		private CharSprite image;
-		private RenderedText name;
-		private HealthBar health;
-		private BuffIndicator buffs;
+		private final CharSprite image;
+		private final RenderedText name;
+		private final HealthBar health;
+		private final BuffIndicator buffs;
 
 		public CharTitle(Char ch)
 		{
 			String chName = ch.name;
 
 			if(ch instanceof Mob)
-				chName = chName + " (" + ((Mob)ch).EXP + ")";
+				chName = chName + " " + Messages.get(ch, "lv", ((Mob) ch).EXP);
 
 			name = PixelScene.renderText(Messages.titleCase(chName), 9);
 			name.hardlight(TITLE_COLOR);

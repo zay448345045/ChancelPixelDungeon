@@ -38,7 +38,6 @@ import java.util.ArrayList;
 
 public class BrokenSeal extends Item
 {
-
 	public static final String AC_AFFIX = "AFFIX";
 
 	//only to be used from the quickslot, for tutorial purposes mostly.
@@ -65,7 +64,6 @@ public class BrokenSeal extends Item
 	@Override
 	public void execute(Hero hero, String action)
 	{
-
 		super.execute(hero, action);
 
 		if(action.equals(AC_AFFIX))
@@ -95,13 +93,9 @@ public class BrokenSeal extends Item
 			{
 				Armor armor = (Armor) item;
 				if(!armor.levelKnown)
-				{
 					GLog.w(Messages.get(BrokenSeal.class, "unknown_armor"));
-				}
 				else if(armor.cursed || armor.level() < 0)
-				{
 					GLog.w(Messages.get(BrokenSeal.class, "degraded_armor"));
-				}
 				else
 				{
 					GLog.p(Messages.get(BrokenSeal.class, "affix"));
@@ -116,7 +110,6 @@ public class BrokenSeal extends Item
 
 	public static class WarriorShield extends Buff
 	{
-
 		private Armor armor;
 		private float partialShield;
 

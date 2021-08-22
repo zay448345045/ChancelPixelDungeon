@@ -148,11 +148,6 @@ public abstract class Scroll extends Item implements Transmutable
 		handler.save(bundle);
 	}
 
-	public static void saveSelectively(Bundle bundle, ArrayList<Item> items)
-	{
-		handler.saveSelectively(bundle, items);
-	}
-
 	@SuppressWarnings("unchecked")
 	public static void restore(Bundle bundle)
 	{
@@ -421,7 +416,7 @@ public abstract class Scroll extends Item implements Transmutable
 
 	public static class ScrollToStone extends Recipe
 	{
-		private static HashMap<Class<? extends Scroll>, Class<? extends Runestone>> stones = new HashMap<>();
+		private static final HashMap<Class<? extends Scroll>, Class<? extends Runestone>> stones = new HashMap<>();
 
 		static
 		{

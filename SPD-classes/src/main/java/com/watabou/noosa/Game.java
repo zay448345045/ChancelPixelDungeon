@@ -38,7 +38,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 import android.view.View;
 
 import com.watabou.glscripts.Script;
@@ -98,7 +97,6 @@ public class Game extends Activity implements GLSurfaceView.Renderer, View.OnTou
 	public static float timeTotal = 0f;
 
 	protected GLSurfaceView view;
-	protected SurfaceHolder holder;
 
 	// Accumulated touch events
 	protected ArrayList<MotionEvent> motionEvents = new ArrayList<MotionEvent>();

@@ -27,7 +27,6 @@ import com.noodlemire.chancelpixeldungeon.items.weapon.Weapon;
 import com.noodlemire.chancelpixeldungeon.items.weapon.enchantments.Lucky;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.utils.GLog;
-import com.watabou.utils.Random;
 
 abstract public class KindOfWeapon extends EquipableItem
 {
@@ -115,7 +114,7 @@ abstract public class KindOfWeapon extends EquipableItem
 		if(owner instanceof Hero)
 			return ((Hero) owner).dynamicRoll(min, max, dynamicFactor(owner));
 		else
-			return Random.NormalIntRange(min, max);
+			return max;
 	}
 
 	public float accuracyFactor(Char owner)

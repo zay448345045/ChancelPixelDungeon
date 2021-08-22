@@ -589,6 +589,7 @@ public class ItemSpriteSheet
 	public static final int HOLDER = BAGS + 2;
 	public static final int BANDOLIER = BAGS + 3;
 	public static final int HOLSTER = BAGS + 4;
+	public static final int BACKPACK = BAGS + 5;
 
 	static
 	{
@@ -597,6 +598,7 @@ public class ItemSpriteSheet
 		assignItemRect(HOLDER, 16, 16);
 		assignItemRect(BANDOLIER, 15, 16);
 		assignItemRect(HOLSTER, 15, 16);
+		assignItemRect(BACKPACK, 21, 21);
 	}
 
 
@@ -607,7 +609,7 @@ public class ItemSpriteSheet
 		film.add(item, x, y, x + width, y + height);
 	}
 
-	//for smaller 8x8 icons that often accompany an item sprite
+	//for smaller 7x7 icons that often accompany an item sprite
 	public static class Icons
 	{
 		private static final int WIDTH = 20;
@@ -651,6 +653,7 @@ public class ItemSpriteSheet
 		public static final int POTION_THUNDERSTORM = POTIONS + 18;
 		public static final int POTION_TOXICITY = POTIONS + 19;
 
+		static
 		{
 			assignIconRect(POTION_CORROSIVITY, 7, 7);
 			assignIconRect(POTION_ENTICEMENT, 7, 7);
@@ -696,6 +699,7 @@ public class ItemSpriteSheet
 		public static final int SCROLL_TRANSMUTATION = SCROLLS + 18;
 		public static final int SCROLL_UPGRADE = SCROLLS + 19;
 
+		static
 		{
 			assignIconRect(SCROLL_BLESSING, 7, 7);
 			assignIconRect(SCROLL_CHARM, 7, 6);
@@ -733,6 +737,7 @@ public class ItemSpriteSheet
 		public static final int RING_VOLATILITY = RINGS + 10;
 		public static final int RING_WEALTH = RINGS + 11;
 
+		static
 		{
 			assignIconRect(RING_ACCURACY, 7, 7);
 			assignIconRect(RING_APTITUDE, 5, 5);

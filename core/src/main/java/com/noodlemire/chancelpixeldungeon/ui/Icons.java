@@ -34,6 +34,7 @@ public enum Icons
 	PREFS,
 	WARNING,
 	TARGET,
+	PATH_END,
 	MASTERY,
 	WATA,
 	SHPX,
@@ -93,6 +94,11 @@ public enum Icons
 				break;
 			case TARGET:
 				icon.frame(icon.texture.uvRect(0, 13, 16, 29));
+				icon.hardlight(0xFFD400);
+				break;
+			case PATH_END:
+				icon.frame(icon.texture.uvRect(0, 13, 16, 29));
+				icon.hardlight(0x888888);
 				break;
 			case MASTERY:
 				icon.frame(icon.texture.uvRect(16, 14, 30, 28));
@@ -161,7 +167,7 @@ public enum Icons
 				icon.frame(icon.texture.uvRect(66, 12, 78, 24));
 				break;
 			case EXIT:
-				icon.frame(icon.texture.uvRect(108, 0, 124, 16));
+				icon.frame(icon.texture.uvRect(110, 3, 123, 12));
 				break;
 			case NOTES:
 				icon.frame(icon.texture.uvRect(79, 40, 94, 56));

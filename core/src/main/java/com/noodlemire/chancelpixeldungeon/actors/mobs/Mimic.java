@@ -58,6 +58,8 @@ public class Mimic extends Mob
 
 		EXP = level;
 
+		TIME_TO_REST = 2;
+
 		setHT((1 + EXP) * 7, true);
 
 		properties.add(Property.DEMONIC);
@@ -90,7 +92,7 @@ public class Mimic extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(HT() / 10, HT() / 4);
+		return HT() / 3;
 	}
 
 	@Override

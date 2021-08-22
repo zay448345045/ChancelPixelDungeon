@@ -47,24 +47,6 @@ public class FetidRat extends Rat
 	}
 
 	@Override
-	public int attackSkill(Char target)
-	{
-		return 12;
-	}
-
-	@Override
-	public int drRoll()
-	{
-		return Random.NormalIntRange(0, 2);
-	}
-
-	@Override
-	public int defenseSkill()
-	{
-		return 5;
-	}
-
-	@Override
 	public int attackProc(Char enemy, int damage)
 	{
 		damage = super.attackProc(enemy, damage);
@@ -79,7 +61,6 @@ public class FetidRat extends Rat
 	@Override
 	public int defenseProc(Char enemy, int damage)
 	{
-
 		GameScene.add(Blob.seed(pos, 20, StenchGas.class));
 
 		return super.defenseProc(enemy, damage);

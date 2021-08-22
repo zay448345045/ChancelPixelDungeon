@@ -314,14 +314,33 @@ public class CPDSettings extends GameSettings
 	//Controls
 
 	public static final String KEY_AVOID_BLOBS = "avoid_blobs";
+	public static final String KEY_SHOW_PATHS = "show_path";
+	public static final String KEY_SHOW_DEST = "show_dest";
 
 	public static void avoid_blobs(boolean value)
 	{
 		put(KEY_AVOID_BLOBS, value);
 	}
-
 	public static boolean avoid_blobs()
 	{
 		return getBoolean(KEY_AVOID_BLOBS, false);
+	}
+
+	public static void show_paths(boolean value)
+	{
+		put(KEY_SHOW_PATHS, value);
+	}
+	public static boolean show_paths()
+	{
+		return getBoolean(KEY_SHOW_PATHS, false);
+	}
+
+	public static void show_destination(boolean value)
+	{
+		put(KEY_SHOW_DEST, value);
+	}
+	public static boolean show_destination()
+	{
+		return getBoolean(KEY_SHOW_DEST, true);
 	}
 }

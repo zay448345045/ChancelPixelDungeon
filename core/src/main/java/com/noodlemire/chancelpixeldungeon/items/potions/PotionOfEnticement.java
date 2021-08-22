@@ -11,6 +11,7 @@ public class PotionOfEnticement extends Potion
 {
 	{
 		icon = ItemSpriteSheet.Icons.POTION_ENTICEMENT;
+		harmful = true;
 
 		if(isIdentified()) defaultAction = AC_THROW;
 	}

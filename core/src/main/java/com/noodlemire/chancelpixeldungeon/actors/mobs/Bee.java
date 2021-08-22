@@ -39,13 +39,9 @@ public class Bee extends Mob
 
 		viewDistance = 4;
 
-		EXP = 0;
-
 		flying = true;
 		state = WANDERING;
 	}
-
-	private int level;
 
 	//-1 refers to a pot that has gone missing.
 	private int potPos;
@@ -60,7 +56,6 @@ public class Bee extends Mob
 	public void storeInBundle(Bundle bundle)
 	{
 		super.storeInBundle(bundle);
-		bundle.put(LEVEL, level);
 		bundle.put(POTPOS, potPos);
 		bundle.put(POTHOLDER, potHolder);
 	}
@@ -69,16 +64,18 @@ public class Bee extends Mob
 	public void restoreFromBundle(Bundle bundle)
 	{
 		super.restoreFromBundle(bundle);
-		spawn(bundle.getInt(LEVEL));
 		potPos = bundle.getInt(POTPOS);
 		potHolder = bundle.getInt(POTHOLDER);
+
+		if(bundle.contains(LEVEL))
+			spawn(bundle.getInt(LEVEL));
 	}
 
 	public void spawn(int level)
 	{
-		this.level = level;
+		EXP = level;
 
-		setHT((3 + level) * 4, true);
+		setHT((3 + EXP) * 4, true);
 	}
 
 	public void setPotInfo(int potPos, Char potHolder)
@@ -99,13 +96,13 @@ public class Bee extends Mob
 	@Override
 	public int defenseSkill()
 	{
-		return 9 + level;
+		return 8 + EXP * 2;
 	}
 
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(HT() / 10, HT() / 4);
+		return 2 + EXP * 2;
 	}
 
 	@Override
@@ -133,7 +130,6 @@ public class Bee extends Mob
 			//if the pot is on the ground
 		else
 		{
-
 			//try to find a new enemy in these circumstances
 			if(enemy == null || !enemy.isAlive() || state == WANDERING
 			   || Dungeon.level.distance(enemy.pos, potPos) > 3

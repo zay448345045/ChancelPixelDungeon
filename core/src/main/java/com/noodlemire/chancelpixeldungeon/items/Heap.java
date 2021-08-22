@@ -23,6 +23,8 @@ package com.noodlemire.chancelpixeldungeon.items;
 
 import com.noodlemire.chancelpixeldungeon.Assets;
 import com.noodlemire.chancelpixeldungeon.Dungeon;
+import com.noodlemire.chancelpixeldungeon.actors.Actor;
+import com.noodlemire.chancelpixeldungeon.actors.Char;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Burning;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Frost;
@@ -50,9 +52,11 @@ import com.noodlemire.chancelpixeldungeon.items.wands.Wand;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
+import com.noodlemire.chancelpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -60,7 +64,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
-public class Heap implements Bundlable
+public class Heap implements Bundlable, Hero.Doom
 {
 	private static final int SEEDS_TO_POTION = 3;
 
@@ -71,6 +75,7 @@ public class Heap implements Bundlable
 		CHEST,
 		LOCKED_CHEST,
 		CRYSTAL_CHEST,
+		EBONY_CHEST,
 		TOMB,
 		SKELETON,
 		REMAINS,
@@ -101,6 +106,8 @@ public class Heap implements Bundlable
 				return ItemSpriteSheet.LOCKED_CHEST;
 			case CRYSTAL_CHEST:
 				return ItemSpriteSheet.CRYSTAL_CHEST;
+			case EBONY_CHEST:
+				return ItemSpriteSheet.EBONY_CHEST;
 			case TOMB:
 				return ItemSpriteSheet.TOMB;
 			case SKELETON:
@@ -130,6 +137,24 @@ public class Heap implements Bundlable
 				{
 					type = Type.CHEST;
 				}
+				break;
+			case EBONY_CHEST:
+				CellEmitter.get(pos).burst(ShadowParticle.CURSE, 6);
+				Sample.INSTANCE.play(Assets.SND_CURSED);
+
+				for(int n : PathFinder.NEIGHBOURS9)
+				{
+					Char ch = Actor.findChar(pos + n);
+
+					if(ch != null && ch.isAlive())
+					{
+						int damage = Random.NormalIntRange(Dungeon.depth, Dungeon.depth * 3);
+						damage -= ch.drRoll();
+
+						ch.damage(damage, this);
+					}
+				}
+
 				break;
 			case TOMB:
 				Wraith.spawnAround(hero.pos);
@@ -307,7 +332,7 @@ public class Heap implements Bundlable
 	public void explode()
 	{
 		//breaks open most standard containers, mimics die.
-		if(type == Type.MIMIC || type == Type.CHEST || type == Type.SKELETON)
+		if(type == Type.MIMIC || type == Type.CHEST || type == Type.EBONY_CHEST || type == Type.SKELETON)
 		{
 			type = Type.HEAP;
 			sprite.link();
@@ -436,6 +461,8 @@ public class Heap implements Bundlable
 				return Messages.get(this, "locked_chest");
 			case CRYSTAL_CHEST:
 				return Messages.get(this, "crystal_chest");
+			case EBONY_CHEST:
+				return Messages.get(this, "ebony_chest");
 			case TOMB:
 				return Messages.get(this, "tomb");
 			case SKELETON:
@@ -463,6 +490,8 @@ public class Heap implements Bundlable
 					return Messages.get(this, "crystal_chest_desc", Messages.get(this, "wand"));
 				else
 					return Messages.get(this, "crystal_chest_desc", Messages.get(this, "ring"));
+			case EBONY_CHEST:
+				return Messages.get(this, "ebony_chest_desc");
 			case TOMB:
 				return Messages.get(this, "tomb_desc");
 			case SKELETON:
@@ -512,4 +541,10 @@ public class Heap implements Bundlable
 		bundle.put(ITEMS, items);
 	}
 
+	@Override
+	public void onDeath()
+	{
+		Dungeon.fail(getClass());
+		GLog.n(Messages.get(this, "ondeath"));
+	}
 }

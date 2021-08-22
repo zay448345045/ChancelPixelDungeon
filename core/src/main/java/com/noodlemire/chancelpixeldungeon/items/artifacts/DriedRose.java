@@ -455,6 +455,7 @@ public class DriedRose extends Artifact
 
 			if(rose == null) return;
 			setHT(20 + 4 * rose.level(), false);
+			EXP = rose.level();
 		}
 
 		public void saySpawned()
@@ -881,8 +882,8 @@ public class DriedRose extends Artifact
 		private static final float BTN_GAP = 12;
 		private static final int WIDTH = 116;
 
-		private WndBlacksmith.ItemButton btnWeapon;
-		private WndBlacksmith.ItemButton btnArmor;
+		private final WndBlacksmith.ItemButton btnWeapon;
+		private final WndBlacksmith.ItemButton btnArmor;
 
 		WndGhostHero(final DriedRose rose)
 		{

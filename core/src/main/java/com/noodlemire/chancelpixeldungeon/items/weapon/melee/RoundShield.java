@@ -22,6 +22,8 @@
 package com.noodlemire.chancelpixeldungeon.items.weapon.melee;
 
 import com.noodlemire.chancelpixeldungeon.actors.Char;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.MagicShield;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 
 public class RoundShield extends MeleeWeapon
@@ -47,7 +49,7 @@ public class RoundShield extends MeleeWeapon
 	@Override
 	public int crit(Char attacker, Char defender, int damage)
 	{
-		attacker.SHLD(Math.max(damage - attacker.SHLD(), 0));
+		Buff.affect(attacker, MagicShield.class).set(Math.max(damage - attacker.SHLD(), 0));
 
 		return damage;
 	}

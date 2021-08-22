@@ -137,6 +137,138 @@ public class ChangesScene extends PixelScene
 		ChangeInfo changes;
 
 		//************************
+		//    CPD v0.1 BETA 9
+		//************************
+
+		changes = new ChangeInfo("CPD v0.1 BETA 9", true, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		infos.add(changes);
+
+		changes = new ChangeInfo("New Content", false, "");
+		changes.hardlight(Window.TITLE_COLOR);
+		infos.add(changes);
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.DYNAMIC), "Enemy Dynamic Strength",
+				"Enemy AI has received a massive overhaul. Now, they always behave as " +
+						"if they use the Dynamic Strength system just as you do. The damage " +
+						"they deal is consistent (Aside from random armor), but they must " +
+						"wait between attacks.\n\n" +
+						"Each enemy has different behavior. Some enemies deal less than others, " +
+						"but also wait fewer turns. Others will deal a massive amount of damage " +
+						"at once, but will wait several turns before attacking or moving again. " +
+						"And occasionally, you'll see an enemy attack multiple times before " +
+						"waiting.\n\n" +
+						"Wait time can be signified when you see \"...\" floating above the " +
+						"enemy's head. The coloring follows the same pattern as your own " +
+						"indicator, so you can use at as a refence for how many turns the " +
+						"enemy will wait before attacking again."));
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.GUIDE_PAGE, null), "Custom Notes",
+				"It is now possible to write your own custom notes in-game!\n\n" +
+						"You're able to give each entry its own title, and an optional body. Later, " +
+						"if you decide that you don't need the note anymore, you can remove it " +
+						"easily with the [X] button.\n\n" +
+						"You can find this in the same section as the notes that the game " +
+						"generates for you. Your custom notes will always be shown at the bottom of " +
+						"the list."));
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.EBONY_CHEST, null), "Ebony Chests",
+				"Rarely, you may find one of these black chests throughout the dungeon. " +
+						"Although you don't need a key to open them, they deal some damage to " +
+						"every adjacent create, including yourself, when you open it.\n\n" +
+						"It always has good loot, though. It always has some kind of equipment, " +
+						"other than artifacts, and the items it gives are always cursed and " +
+						"upgraded. Be careful with how you handle these...\n\n" +
+						"If you have a Scroll of Necromancy, each nearby Ebony Chest will allow " +
+						"two more corrupted wraiths to spawn."));
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.RING_ONYX, null), "Reworked Rings",
+				"_-_ Ring of Volatility: Now, it also has a small chance to provide a " +
+						"second ring effect at the same time. At very high levels, it can even " +
+						"provide a third ring effect!\n\n" +
+						"_-_ Ring of Tenacity: Now, instead of its previous function, it will " +
+						"upgrade your worn weapon and armor, scaling depending on how low your " +
+						"health is. Your equipment's effective level is always shown when your " +
+						"inventory is open, so at any time, you can see how strong your gear is."));
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.WAND_CORRUPTION, null), "Reworked Wands",
+				"_-_ Wand of Corruption: You now have the ability to make corrupted enemies " +
+						"follow you by shooting them again! Your followers will stay behind you " +
+						"indefinitely. The next time you shoot a non-corrupted enemy, every one " +
+						"of your followers will stop following you to instead focus that enemy " +
+						"down. If you tap on a corrupted enemy, you will switch places with it, " +
+						"rather than trying to attack it. The Battlemage's Staff's melee hit now " +
+						"also makes your followers target the hit foe.\n\n" +
+						"_-_ Wand of Fireblast: The damage this wand deals now depends on how far " +
+						"away the enemies are. The closer they are to you, the higher the damage is. " +
+						"Crits with this wand now pull enemies towards you. The damage dealt to " +
+						"them will be increased due to them now being closer.\n\n" +
+						"_-_ Wand of Magic Missile: It now grants 2 turns of recharging on crit, " +
+						"up from 1."));
+
+		changes.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.BACKPACK, null), "Inventory Rankings Screen",
+				"From now on, whenever a game is ended, you'll be able to click on this icon " +
+						"in the Rankings screen to view the entire inventory that you had in that run."));
+
+		changes = new ChangeInfo("Changes", false, "");
+		changes.hardlight(CharSprite.WARNING);
+		infos.add(changes);
+
+		changes.addButton(new ChangeButton(new Image(Assets.GOLEM, 0, 0, 15, 16), "Mob Changes",
+				"_-_ Golems now have a 50% chance to drop a random runestone on death.\n" +
+						"_-_ Bee damage, accuracy, and evasion have all been increased.\n" +
+						"_-_ Mob descriptions now show (Lv #) rather than just the number, to " +
+						"signify their level.\n" +
+						"_-_ Some NPCs have non-zero levels for flavor purposes.\n" +
+						"_-_ Mobs are now able to follow you up and down stairs.\n" +
+						"_-_ Enemy corruption resistance has been dropped by an average of 62.5%\n" +
+						"_-_ Vampire Bats no longer heal themselves off of inorganic enemies.\n" +
+						"_-_ Mirror Images now die immediately after running out of HP. Delaying " +
+						"their death rarely mattered before, but it caused a variety of issues."));
+
+		changes.addButton(new ChangeButton(Icons.get(Icons.PREFS), Messages.get(this, "misc"),
+				"_-_ Bomb damage has been increased. Distance has a greater effect on the damage " +
+						"dealt.\n" +
+						"_-_ Linkage's duration is now 10 turns, down from 20.\n" +
+						"_-_ Lloyd's Beacon no longer takes 2 charges to use in the Demon Halls.\n" +
+						"_-_ Various buff icons have height-based greying as they run out, like in " +
+						"Shattered PD\n" +
+						"_-_ Huntress is now unlocked by default.\n" +
+						"_-_ A couple more items are generated per floor.\n" +
+						"_-_ Potions of Enticement are now marked as harmful.\n" +
+						"_-_ Armor's base max defense has been increased by 50%.\n" +
+						"_-_ Shops are able to choose from a greater variety of melee and missile " +
+						"weapons.\n" +
+						"_-_ Manual Geysers are now triggered by all forms of damage.\n" +
+						"_-_ Optionally, you can have the game create visuals to mark the path " +
+						"that your character is currently set to follow.\n" +
+						"_-_ The shielding gained from defensive melee weapon crits now degrades on " +
+						"its own if damage doesn't deplete it."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.SPINNER, 144, 0, 16, 16), Messages.get(this, "bugfixes") + " 1",
+				"_-_ Crabs having more minimum defense than intended.\n" +
+						"_-_ Cases where Rat King could be woken up too early.\n" +
+						"_-_ The Might buff being able to drain all of your HP once its duration " +
+						"runs out, effectively killing you.\n" +
+						"_-_ Potion, Scroll, and Ring icons not being aligned properly.\n" +
+						"_-_ The text for gaining EXP being shown twice when an enemy gets corrupted.\n" +
+						"_-_ The Exit icon having a piece of stairs stuck to it\n" +
+						"_-_ Cases where Goo's charge attack could crash the game.\n" +
+						"_-_ Various alternate movement techniques being counted as not moving, " +
+						"and replenishing DS."));
+
+		changes.addButton(new ChangeButton(new Image(Assets.SPINNER, 144, 0, 16, 16), Messages.get(this, "bugfixes") + " 2",
+				"_-_ Timekeeper's Hourglass exploit that allowed effectively infinite time " +
+						"freeze.\n" +
+						"_-_ Dynamic Strength's reset behaving improperly when attacking geysers " +
+						"and amphoras if no enemies are around.\n" +
+						"_-_ Armor showing its augmented defense when its level isn't known.\n" +
+						"_-_ Cases where attacking a Gooey Orb could crash the game.\n" +
+						"_-_ Wands showing crit visuals when zapping a Geyser or Amphora.\n" +
+						"_-_ The Magic Shield buff sometimes showing an incorrect duration after " +
+						"you get attacked."));
+
+		//************************
 		//    CPD v0.1 BETA 8
 		//************************
 
@@ -2670,12 +2802,12 @@ public class ChangesScene extends PixelScene
 
 		protected ColorBlock line;
 
-		private RenderedText title;
-		private boolean major;
+		private final RenderedText title;
+		private final boolean major;
 
 		private RenderedTextMultiline text;
 
-		private ArrayList<ChangeButton> buttons = new ArrayList<>();
+		private final ArrayList<ChangeButton> buttons = new ArrayList<>();
 
 		public ChangeInfo(String title, boolean majorTitle, String text)
 		{

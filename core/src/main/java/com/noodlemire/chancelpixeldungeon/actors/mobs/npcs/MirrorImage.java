@@ -39,7 +39,6 @@ import com.noodlemire.chancelpixeldungeon.sprites.CharSprite;
 import com.noodlemire.chancelpixeldungeon.sprites.MirrorSprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
 
 public class MirrorImage extends NPC
 {
@@ -55,6 +54,8 @@ public class MirrorImage extends NPC
 
 		WANDERING = new Wandering();
 
+		TIME_TO_REST = 2;
+
 		//before other mobs
 		actPriority = MOB_PRIO + 1;
 	}
@@ -63,35 +64,9 @@ public class MirrorImage extends NPC
 	private int heroID;
 	public int armTier;
 
-	private int deathTimer = -1;
-
 	@Override
 	protected boolean act()
 	{
-		if(!isAlive())
-		{
-			deathTimer--;
-
-			if(deathTimer > 0)
-			{
-				sprite.alpha((deathTimer + 3) / 8f);
-				spend(TICK);
-			}
-			else
-			{
-				destroy();
-				sprite.die();
-			}
-			return true;
-		}
-
-		if(deathTimer != -1)
-		{
-			if(paralysed == 0) sprite.remove(CharSprite.State.PARALYSED);
-			deathTimer = -1;
-			sprite.resetColor();
-		}
-
 		if(hero == null)
 		{
 			hero = (Hero) Actor.findById(heroID);
@@ -112,25 +87,13 @@ public class MirrorImage extends NPC
 		return super.act();
 	}
 
-	@Override
-	public void die(Object cause)
-	{
-		if(deathTimer == -1)
-		{
-			deathTimer = 5;
-			sprite.add(CharSprite.State.PARALYSED);
-		}
-	}
-
 	private static final String HEROID = "hero_id";
-	private static final String TIMER = "timer";
 
 	@Override
 	public void storeInBundle(Bundle bundle)
 	{
 		super.storeInBundle(bundle);
 		bundle.put(HEROID, heroID);
-		bundle.put(TIMER, deathTimer);
 	}
 
 	@Override
@@ -138,7 +101,6 @@ public class MirrorImage extends NPC
 	{
 		super.restoreFromBundle(bundle);
 		heroID = bundle.getInt(HEROID);
-		deathTimer = bundle.getInt(TIMER);
 	}
 
 	public void duplicate(Hero hero, int HP)
@@ -147,6 +109,7 @@ public class MirrorImage extends NPC
 		heroID = this.hero.id();
 		setHT(MirrorGuard.maxHP(hero), false);
 		setHP(HP);
+		EXP = hero.lvl;
 	}
 
 	public void duplicateIndividual(Hero hero)
@@ -163,7 +126,7 @@ public class MirrorImage extends NPC
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(1 + hero.lvl / 8, 4 + hero.lvl / 2);
+		return 2 + 2 * hero.lvl;
 	}
 
 	@Override

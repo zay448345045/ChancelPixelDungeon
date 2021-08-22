@@ -50,6 +50,8 @@ public class Succubus extends Mob
 
 		EXP = Random.IntRange(16, 22);
 
+		TIME_TO_REST = 2;
+
 		setHT(90 + EXP, true);
 		viewDistance = Light.DISTANCE;
 
@@ -62,7 +64,7 @@ public class Succubus extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(EXP + 8, EXP * 2);
+		return EXP * 2;
 	}
 
 	@Override

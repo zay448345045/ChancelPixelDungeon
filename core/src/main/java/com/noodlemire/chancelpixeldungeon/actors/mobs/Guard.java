@@ -49,6 +49,8 @@ public class Guard extends Mob
 
 		EXP = Random.IntRange(9, 11);
 
+		TIME_TO_REST = 4;
+
 		setHT(EXP * 5, true);
 
 		loot = null;    //see createloot.
@@ -63,7 +65,7 @@ public class Guard extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(EXP - 5, EXP * 2 - 6);
+		return EXP * 3 - 6;
 	}
 
 	private boolean chain(int target)

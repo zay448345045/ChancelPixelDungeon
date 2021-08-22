@@ -48,6 +48,9 @@ public class Thief extends Mob
 
 		EXP = Random.IntRange(5, 8);
 
+		TIME_TO_REST = 2;
+		setAttacksBeforeRest(2);
+
 		setHT(14 + EXP * 2, true);
 
 		//see createloot
@@ -86,7 +89,7 @@ public class Thief extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(1, 5 + EXP);
+		return EXP + 1 + 4 * restTimeNeeded(false);
 	}
 
 	@Override
@@ -162,7 +165,6 @@ public class Thief extends Mob
 
 	protected boolean steal(Hero hero)
 	{
-
 		Item item = hero.belongings.randomUnequipped();
 
 		if(item != null && !item.unique && item.level() < 1)
@@ -190,9 +192,7 @@ public class Thief extends Mob
 			return true;
 		}
 		else
-		{
 			return false;
-		}
 	}
 
 	@Override
@@ -210,7 +210,6 @@ public class Thief extends Mob
 
 	private class Wandering extends Mob.Wandering
 	{
-
 		@Override
 		public boolean act(boolean enemyInFOV, boolean justAlerted)
 		{

@@ -36,6 +36,8 @@ public class Bat extends Mob
 
 		EXP = Random.IntRange(8, 12);
 
+		TIME_TO_REST = 2;
+
 		setHT(EXP * 4 + 5, true);
 		baseSpeed = 2f;
 
@@ -48,7 +50,7 @@ public class Bat extends Mob
 	@Override
 	public int damageRoll()
 	{
-		return Random.NormalIntRange(EXP / 2, EXP * 2 + 2);
+		return EXP * 2 + 2;
 	}
 
 	@Override
@@ -75,7 +77,7 @@ public class Bat extends Mob
 		damage = super.attackProc(enemy, damage);
 		int reg = damage;
 
-		if(reg > 0)
+		if(reg > 0 && !enemy.properties().contains(Property.INORGANIC))
 		{
 			heal(reg, this);
 			sprite.emitter().burst(Speck.factory(Speck.HEALING), 1);

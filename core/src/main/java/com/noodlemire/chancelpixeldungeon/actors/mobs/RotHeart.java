@@ -44,7 +44,7 @@ public class RotHeart extends Mob
 
 		setHT(84, true);
 
-		EXP = 4;
+		EXP = 10;
 
 		state = PASSIVE;
 

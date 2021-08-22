@@ -33,6 +33,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.SoulMark;
 import com.noodlemire.chancelpixeldungeon.actors.hero.Hero;
 import com.noodlemire.chancelpixeldungeon.actors.hero.HeroClass;
 import com.noodlemire.chancelpixeldungeon.actors.hero.HeroSubClass;
+import com.noodlemire.chancelpixeldungeon.actors.mobs.Mob;
 import com.noodlemire.chancelpixeldungeon.effects.MagicMissile;
 import com.noodlemire.chancelpixeldungeon.effects.Speck;
 import com.noodlemire.chancelpixeldungeon.items.Generator;
@@ -363,7 +364,8 @@ public abstract class Wand extends KindofMisc implements Transmutable
 
 	public static void critFx(Char ch)
 	{
-		ch.sprite.emitter().burst(Speck.factory(Speck.STAR), 5);
+		if(ch instanceof Mob)
+			ch.sprite.emitter().burst(Speck.factory(Speck.STAR), 5);
 	}
 
 	void wandUsed()
@@ -476,7 +478,7 @@ public abstract class Wand extends KindofMisc implements Transmutable
 		return n;
 	}
 
-	private static CellSelector.Listener zapper = new CellSelector.Listener()
+	private static final CellSelector.Listener zapper = new CellSelector.Listener()
 	{
 		@Override
 		public void onSelect(Integer target)

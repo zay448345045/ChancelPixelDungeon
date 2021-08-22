@@ -29,7 +29,6 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Barkskin;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Buff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.DurationBuff;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Expulsion;
-import com.noodlemire.chancelpixeldungeon.actors.buffs.FlavourBuff;
 import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.particles.EarthParticle;
 import com.noodlemire.chancelpixeldungeon.items.potions.PotionOfHealing;
@@ -39,7 +38,6 @@ import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.sprites.ItemSpriteSheet;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Camera;
-import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
 public class Earthroot extends Plant
@@ -136,12 +134,6 @@ public class Earthroot extends Plant
 		public int icon()
 		{
 			return BuffIndicator.ARMOR;
-		}
-
-		@Override
-		public void tintIcon(Image icon)
-		{
-			FlavourBuff.greyIcon(icon, target.HT() / 4f, left());
 		}
 
 		@Override

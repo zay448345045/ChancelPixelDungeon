@@ -454,6 +454,32 @@ public class WndSettings extends WndTabbed
 			avoidBlobs.setRect(0, 0, WIDTH, BTN_HEIGHT);
 			avoidBlobs.checked(CPDSettings.avoid_blobs());
 			add(avoidBlobs);
+
+			CheckBox showPaths = new CheckBox(Messages.get(this, "show_paths"))
+			{
+				@Override
+				protected void onClick()
+				{
+					super.onClick();
+					CPDSettings.show_paths(checked());
+				}
+			};
+			showPaths.setRect(0, avoidBlobs.bottom() + GAP_TINY, WIDTH, BTN_HEIGHT);
+			showPaths.checked(CPDSettings.show_paths());
+			add(showPaths);
+
+			CheckBox showDest = new CheckBox(Messages.get(this, "show_dest"))
+			{
+				@Override
+				protected void onClick()
+				{
+					super.onClick();
+					CPDSettings.show_destination(checked());
+				}
+			};
+			showDest.setRect(0, showPaths.bottom() + GAP_TINY, WIDTH, BTN_HEIGHT);
+			showDest.checked(CPDSettings.show_destination());
+			add(showDest);
 		}
 	}
 }

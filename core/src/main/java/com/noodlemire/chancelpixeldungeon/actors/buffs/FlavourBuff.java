@@ -21,11 +21,15 @@
 
 package com.noodlemire.chancelpixeldungeon.actors.buffs;
 
-import com.watabou.noosa.Image;
+import com.watabou.utils.Bundle;
 
 //buff whose only internal logic is to wait and detach after a time.
-public class FlavourBuff extends Buff
+public class FlavourBuff extends Buff implements FadePercent
 {
+	private static final String MAX = "max";
+
+	private float max;
+
 	@Override
 	public boolean act()
 	{
@@ -33,24 +37,46 @@ public class FlavourBuff extends Buff
 		return true;
 	}
 
-	public static boolean greyIcon(Image icon, float startGrey, float remaining)
-	{
-		if(remaining >= startGrey)
-		{
-			icon.resetColor();
-			return false;
-		}
-		else
-		{
-			icon.tint(0xb3b3b3, 0.6f + 0.3f * (startGrey - remaining) / startGrey);
-			return true;
-		}
-	}
-
 	//flavour buffs can all just rely on cooldown()
 	protected String dispTurns()
 	{
 		//add one turn as buffs act last, we want them to end at 1 visually, even if they end at 0 internally.
 		return dispTurns(cooldown() + 1f);
+	}
+
+	@Override
+	protected void spend(float time)
+	{
+		super.spend(time);
+
+		max = Math.max(max, cooldown() + 1);
+	}
+
+	@Override
+	protected void postpone(float time)
+	{
+		super.postpone(time);
+
+		max = Math.max(max, time);
+	}
+
+	@Override
+	public void storeInBundle(Bundle bundle)
+	{
+		super.storeInBundle(bundle);
+		bundle.put(MAX, max);
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle)
+	{
+		super.restoreFromBundle(bundle);
+		max = bundle.getFloat(MAX);
+	}
+
+	@Override
+	public float fadePercent()
+	{
+		return 1 - (cooldown() + 1) / max;
 	}
 }

@@ -51,23 +51,7 @@ import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfCleansing;
 import com.noodlemire.chancelpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.noodlemire.chancelpixeldungeon.items.stones.Runestone;
 import com.noodlemire.chancelpixeldungeon.items.wands.Wand;
-import com.noodlemire.chancelpixeldungeon.items.weapon.melee.BattleAxe;
-import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Broadsword;
-import com.noodlemire.chancelpixeldungeon.items.weapon.melee.HandAxe;
-import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Longsword;
-import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Mace;
-import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Shortsword;
-import com.noodlemire.chancelpixeldungeon.items.weapon.melee.Sword;
-import com.noodlemire.chancelpixeldungeon.items.weapon.melee.WarHammer;
-import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Bolas;
-import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.FishingSpear;
-import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Javelin;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.MissileWeapon;
-import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Shuriken;
-import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.ThrowingHammer;
-import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.ThrowingSpear;
-import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Tomahawk;
-import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.Trident;
 import com.noodlemire.chancelpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.noodlemire.chancelpixeldungeon.levels.Level;
 import com.noodlemire.chancelpixeldungeon.levels.Terrain;
@@ -186,34 +170,26 @@ public class ShopRoom extends SpecialRoom
 		switch(Dungeon.depth)
 		{
 			case 6:
-				itemsToSpawn.add((Random.Int(2) == 0 ? new Shortsword().identify() : new HandAxe()).identify());
-				itemsToSpawn.add(Random.Int(2) == 0 ?
-						new FishingSpear().quantity(2) :
-						new Shuriken().quantity(2));
+				itemsToSpawn.add(Generator.randomNormalized(Generator.Category.WEP_T2));
+				itemsToSpawn.add(Generator.randomNormalized(Generator.Category.MIS_T2, 2));
 				itemsToSpawn.add(new LeatherArmor().identify());
 				break;
 
 			case 11:
-				itemsToSpawn.add((Random.Int(2) == 0 ? new Sword().identify() : new Mace()).identify());
-				itemsToSpawn.add(Random.Int(2) == 0 ?
-						new ThrowingSpear().quantity(2) :
-						new Bolas().quantity(2));
+				itemsToSpawn.add(Generator.randomNormalized(Generator.Category.WEP_T3));
+				itemsToSpawn.add(Generator.randomNormalized(Generator.Category.MIS_T3, 2));
 				itemsToSpawn.add(new MailArmor().identify());
 				break;
 
 			case 16:
-				itemsToSpawn.add((Random.Int(2) == 0 ? new Longsword().identify() : new BattleAxe()).identify());
-				itemsToSpawn.add(Random.Int(2) == 0 ?
-						new Javelin().quantity(2) :
-						new Tomahawk().quantity(2));
+				itemsToSpawn.add(Generator.randomNormalized(Generator.Category.WEP_T4));
+				itemsToSpawn.add(Generator.randomNormalized(Generator.Category.MIS_T4, 2));
 				itemsToSpawn.add(new ScaleArmor().identify());
 				break;
 
 			case 21:
-				itemsToSpawn.add(Random.Int(2) == 0 ? new Broadsword().identify() : new WarHammer().identify());
-				itemsToSpawn.add(Random.Int(2) == 0 ?
-						new Trident().quantity(2) :
-						new ThrowingHammer().quantity(2));
+				itemsToSpawn.add(Generator.randomNormalized(Generator.Category.WEP_T5));
+				itemsToSpawn.add(Generator.randomNormalized(Generator.Category.MIS_T5, 2));
 				itemsToSpawn.add(new PlateArmor().identify());
 				itemsToSpawn.add(new Torch());
 				itemsToSpawn.add(new Torch());

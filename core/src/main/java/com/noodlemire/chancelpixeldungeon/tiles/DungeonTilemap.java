@@ -32,7 +32,6 @@ import com.watabou.utils.PointF;
 
 public abstract class DungeonTilemap extends Tilemap
 {
-
 	public static final int SIZE = 16;
 
 	protected int[] map;
@@ -126,7 +125,6 @@ public abstract class DungeonTilemap extends Tilemap
 
 	public void discover(int pos, int oldValue)
 	{
-
 		int visual = getTileVisual(pos, oldValue, false);
 		if(visual < 0) return;
 
@@ -180,5 +178,4 @@ public abstract class DungeonTilemap extends Tilemap
 	{
 		return true;
 	}
-
 }

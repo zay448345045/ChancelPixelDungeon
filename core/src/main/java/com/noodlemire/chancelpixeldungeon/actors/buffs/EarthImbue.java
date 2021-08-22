@@ -28,7 +28,6 @@ import com.noodlemire.chancelpixeldungeon.effects.CellEmitter;
 import com.noodlemire.chancelpixeldungeon.effects.particles.EarthParticle;
 import com.noodlemire.chancelpixeldungeon.messages.Messages;
 import com.noodlemire.chancelpixeldungeon.ui.BuffIndicator;
-import com.watabou.noosa.Image;
 
 public class EarthImbue extends FlavourBuff implements Expulsion, MeleeProc
 {
@@ -45,12 +44,6 @@ public class EarthImbue extends FlavourBuff implements Expulsion, MeleeProc
 	public int icon()
 	{
 		return BuffIndicator.ROOTS;
-	}
-
-	@Override
-	public void tintIcon(Image icon)
-	{
-		greyIcon(icon, 5f, cooldown());
 	}
 
 	@Override

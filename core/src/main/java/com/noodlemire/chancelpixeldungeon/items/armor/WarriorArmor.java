@@ -39,9 +39,8 @@ import com.watabou.utils.PathFinder;
 
 public class WarriorArmor extends ClassArmor
 {
-
-	private static int LEAP_TIME = 1;
-	private static int SHOCK_TIME = 3;
+	private static final int LEAP_TIME = 1;
+	private static final int SHOCK_TIME = 3;
 
 	{
 		image = ItemSpriteSheet.ARMOR_WARRIOR;

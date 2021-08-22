@@ -40,6 +40,7 @@ import com.noodlemire.chancelpixeldungeon.actors.buffs.Frost;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Haste;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Hunger;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Linkage;
+import com.noodlemire.chancelpixeldungeon.actors.buffs.MagicShield;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.MagicalSleep;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.MeleeProc;
 import com.noodlemire.chancelpixeldungeon.actors.buffs.Ooze;
@@ -158,7 +159,6 @@ public abstract class Char extends Actor
 	@Override
 	public void restoreFromBundle(Bundle bundle)
 	{
-
 		super.restoreFromBundle(bundle);
 
 		pos = bundle.getInt(POS);
@@ -232,10 +232,11 @@ public abstract class Char extends Actor
 
 		int oldHT = HT;
 		HT = Math.max(to, 1);
+
 		if(fullHealth)
 			HP = HT;
 		else
-			HP = (int)GameMath.gate(0,HP + (HT - oldHT), HT);
+			HP = (int)GameMath.gate(1,HP + Math.max(0, HT - oldHT), HT);
 	}
 
 	public int SHLD()
@@ -470,6 +471,8 @@ public abstract class Char extends Actor
 			buff(Paralysis.class).processDamage(dmg);
 		}
 
+		MagicShield shield = buff(MagicShield.class);
+
 		//FIXME: when I add proper damage properties, should add an IGNORES_SHIELDS property to use here.
 		if(src instanceof Hunger || SHLD == 0)
 		{
@@ -477,13 +480,22 @@ public abstract class Char extends Actor
 		}
 		else if(SHLD >= dmg)
 		{
+			if(shield != null)
+				shield.shorten(dmg);
+
 			SHLD(-dmg);
 		}
 		else if(SHLD > 0)
 		{
+			if(shield != null)
+				shield.shorten(SHLD);
+
 			HP -= (dmg - SHLD);
 			SHLD = 0;
 		}
+
+		if(shield != null)
+			System.out.println("MS: " + shield.left() + ", SHLD: " + SHLD);
 
 		sprite.showStatus(HP > HT / 2 ?
 						CharSprite.WARNING :
@@ -606,10 +618,8 @@ public abstract class Char extends Actor
 
 	public synchronized void remove(Buff buff)
 	{
-
 		buffs.remove(buff);
 		Actor.remove(buff);
-
 	}
 
 	public synchronized void remove(Class<? extends Buff> buffClass)
@@ -790,8 +800,8 @@ public abstract class Char extends Actor
 		IMMOVABLE,
 		METALLIC;
 
-		private HashSet<Class> resistances;
-		private HashSet<Class> immunities;
+		private final HashSet<Class> resistances;
+		private final HashSet<Class> immunities;
 
 		Property()
 		{
